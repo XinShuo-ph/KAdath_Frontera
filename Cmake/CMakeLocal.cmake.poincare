@@ -1,0 +1,7 @@
+#File specific to poincare
+#need to pass FFTW3
+set(FFTW_LIBRARIES "/export/apps/lib/libfftw3.a")
+#Need to pass lapack and blas
+set(LAPACK_LIBRARIES "-L/share/apps/lib -lgslcblas -llapack")
+#need to pass scalapack
+set(SCALAPACK_LIBRARIES "-lgfortran /share/apps/Scalapack-2.0.2/lib/libscalapack.a")
