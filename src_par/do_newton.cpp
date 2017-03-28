@@ -233,7 +233,6 @@ bool System_of_eqs::do_newton(double precision, double& error) {
       }
 	return res;
 }
-}
 
 
 bool System_of_eqs::do_newton_with_linesearch(double precision, double& error, int ntrymax, double stepmax) 
@@ -480,5 +479,6 @@ void System_of_eqs::compute_p(Array<double>& xx, Array<double> const& second, in
    MPI_Allreduce(auxi.set_data(), xx.set_data(), nn, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
    blacs_gridexit_(&ictxt);
    blacs_gridexit_(&ictxt_in);
+}
 }
 
