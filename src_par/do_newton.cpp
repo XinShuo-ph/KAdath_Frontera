@@ -22,6 +22,7 @@
 #include "matrice.hpp"
 #include "scalar.hpp"
 #include "metric.hpp"
+#include "array_math.cpp"
 
 #include <ctime>
 namespace Kadath {
