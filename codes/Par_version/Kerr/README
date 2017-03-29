@@ -1,0 +1,15 @@
+FILES :
+***********************************
+
+kerr.C : 
+	Computes a sequence of kerr black holes.
+It produces output files kerr_*_*dat where the *s are the resolution and omega.
+
+************************************
+reader.C
+	enables to read an output file and gives various errors. One should type something like : reader kerr_*dat
+
+***********************************
+
+Only kerr is a parallel code.
+
