@@ -5,6 +5,12 @@ endif()
 
 option(PAR_VERSION "Parallel version" ON)
 
+if (PAR_VERSION)
+	message ("Parallel version")
+else(PAR_VERSION)
+	message ("Sequential version")
+endif(PAR_VERSION)
+
 file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.hpp)
 file(GLOB_RECURSE SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
