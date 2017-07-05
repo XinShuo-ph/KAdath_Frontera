@@ -152,5 +152,31 @@ class Metric_symphi : public Metric {
 		
 		virtual int give_type (int) const ;
 } ;
+
+/**
+ * Class to deal with a metric independant of \f$\varphi\f$ and constant. By this one means that it is a given and is not modified by the \c System_of_eqs.
+ * \ingroup metric
+ */
+class Metric_symphi_const : public Metric_symphi {
+
+	public:
+		Metric_symphi_const (Metric_tensor&) ; ///< Constructor from a \c Metric_tensor.
+		Metric_symphi_const (const Metric_symphi_const& ) ; ///< Copy constructor
+	
+	protected:
+		virtual void compute_con (int) const ;
+		virtual void compute_cov (int) const ;
+
+
+	public:
+		virtual ~Metric_symphi_const() ;
+
+		/**
+		* Associate the metric to a given system of equations.
+		* @param syst : the \c System_of_eqs.
+		* @param name : name by which the metric will be known in the system (like "g", "f"...)
+		*/
+		virtual void set_system (System_of_eqs& syst, const char* name) ;
+} ;
 }
 #endif

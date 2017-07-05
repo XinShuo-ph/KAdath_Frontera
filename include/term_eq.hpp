@@ -252,6 +252,7 @@ class Term_eq {
 	friend class Space_bin_bh ;
 	friend class Metric_flat_symphi ;
 	friend class Metric_symphi ;
+	friend class Metric_symphi_const ;
 	friend class Domain_polar_periodic_nucleus ;
 } ;
 }

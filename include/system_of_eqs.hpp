@@ -759,6 +759,7 @@ class System_of_eqs {
 	friend class Metric_const ;
 	friend class Metric_flat_symphi ;
 	friend class Metric_symphi ;
+	friend class Metric_symphi_const ;
 } ;
 
 /**
