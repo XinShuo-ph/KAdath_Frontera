@@ -110,6 +110,9 @@ int Domain_polar_periodic_nucleus::nbr_conditions_val_domain (const Val_domain& 
 		switch (order) {
 		  case 2 :
 		      lim = max-2 ;
+		      break ; 
+		case 0 :
+		      lim = max ;
 		      break ;
 		  default :
 		      cerr << "Unknown case in Domain_polar_periodic_nucleus_nbr_conditions" << endl ;
@@ -118,11 +121,10 @@ int Domain_polar_periodic_nucleus::nbr_conditions_val_domain (const Val_domain& 
 		
 		if (pos(0)>lim)
 			indic = false ;
-
-		if (indic)
-			res ++ ;
 			
-		
+		if (indic)
+			res ++ ;	
+			
 	}
 	while (pos.inc()) ;
 

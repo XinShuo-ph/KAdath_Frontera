@@ -35,7 +35,10 @@ void Domain_polar_periodic_nucleus::export_tau_val_domain (const Val_domain& so,
 	int rlim = 0 ;
 	switch (order) {
 	  case 2 : 
-	      rlim = 2 ;
+	      rlim = 1 ;
+	      break ;
+	case 0 : 
+	      rlim = 0 ;
 	      break ;
 	  default :
 	    cerr << "Unknown order in Domain_polar_periodic_nucleus_export_tau_val_domain" << endl ;
@@ -143,7 +146,7 @@ void Domain_polar_periodic_nucleus::export_tau_val_domain (const Val_domain& so,
 		}
 
 		// Loop on r :
-		for (int i=minr ; i<=maxr ; i++) {
+		for (int i=minr ; i<maxr ; i++) {
 			pos_cf.set(0) = i ;
 
 			// No garlekin
