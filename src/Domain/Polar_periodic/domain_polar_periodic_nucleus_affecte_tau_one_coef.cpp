@@ -83,7 +83,7 @@ int mink, maxk ;
 			abort() ;
 	}
 
-	for (int j=0 ; j<nbr_coefs(1) ; j++) {	
+	for (int j=minj ; j<maxj ; j++) {	
 		int baser = (*so.get_base().bases_1d[0]) (j,k) ;
 	
 		// Compute lquant :
