@@ -17,16 +17,7 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "headcpp.hpp"
-#include "utilities.hpp"
-#include "space.hpp"
-#include "dim_array.hpp"
-#include "base_spectral.hpp"
-#include "val_domain.hpp"
-#include "spheric.hpp"
-#include "scalar.hpp"
-#include "tensor.hpp"
-#include "term_eq.hpp"
+#include "Kadath_point_h/kadath.hpp"
 namespace Kadath {
 // standard constructor
 Domain::Domain (int num, int ttype, const Dim_array& res) : num_dom(num), ndim(res.get_ndim()), nbr_points(res), nbr_coefs(ndim),type_base(ttype) {
@@ -222,7 +213,7 @@ ostream& operator<< (ostream& o, const Domain& so) {
        const Domain_shell_log* shell_log = dynamic_cast<const Domain_shell_log*>(&so) ; 
        const Domain_shell_surr* shell_surr = dynamic_cast<const Domain_shell_surr*>(&so) ;
        const Domain_compact* compact = dynamic_cast<const Domain_compact*>(&so) ;  
-     /*  const Domain_bispheric_rect* bi_rect = dynamic_cast<const Domain_bispheric_rect*>(&so) ;
+       const Domain_bispheric_rect* bi_rect = dynamic_cast<const Domain_bispheric_rect*>(&so) ;
        const Domain_bispheric_chi_first* bi_chi = dynamic_cast<const Domain_bispheric_chi_first*>(&so) ;       
        const Domain_bispheric_eta_first* bi_eta = dynamic_cast<const Domain_bispheric_eta_first*>(&so) ;
        const Domain_critic_inner* critic_inner = dynamic_cast<const Domain_critic_inner*>(&so) ;       
@@ -248,7 +239,8 @@ ostream& operator<< (ostream& o, const Domain& so) {
        const Domain_nucleus_symphi* nucsym = dynamic_cast<const Domain_nucleus_symphi*>(&so) ;
        const Domain_shell_symphi* shellsym = dynamic_cast<const Domain_shell_symphi*>(&so) ;
        const Domain_compact_symphi* compsym = dynamic_cast<const Domain_compact_symphi*>(&so) ;
-*/
+       const Domain_polar_periodic_nucleus* polarperiodicnuc = dynamic_cast<const Domain_polar_periodic_nucleus*>(&so) ;
+
        if (nuc != 0x0)
            o << *nuc << endl ;
        if ((shell != 0x0) && (shell_log==0x0) && (shell_surr==0x0))
@@ -259,7 +251,7 @@ ostream& operator<< (ostream& o, const Domain& so) {
            o << *shell_surr << endl ;
        if (compact !=0x0) 
            o << *compact << endl ;
-     /*  if (bi_rect !=0x0)
+       if (bi_rect !=0x0)
            o << *bi_rect << endl ;
        if (bi_chi !=0x0)
            o << *bi_chi << endl ;
@@ -316,7 +308,8 @@ ostream& operator<< (ostream& o, const Domain& so) {
            o << *shellsym << endl ;
        if (compsym != 0x0)
            o << *compsym << endl ;
-    */
+       if (polarperiodicnuc != 0x0)
+		o << *polarperiodicnuc << endl ;
        return o ;   
 }
 
@@ -653,7 +646,7 @@ Term_eq Domain::connection_spher (const Term_eq& so) const {
   Base_tensor basis (so.get_val_t().get_space()) ;
   basis.set_basis(dom) = SPHERICAL_BASIS ;
 	
-  Tensor auxi_val (so.get_val_t().get_space(), val_res, type_ind, basis) ;
+  Tensor auxi_val (so.get_val_t().get_space(), val_res, type_ind, basis, 3) ;
   for (int cmp=0 ; cmp<auxi_val.get_n_comp() ; cmp ++)
     auxi_val.set(auxi_val.indices(cmp)) = 0  ;
   
@@ -736,7 +729,7 @@ Term_eq Domain::connection_spher (const Term_eq& so) const {
 	
 	  // Need to compute the derivative :
 	  // Tensor for der
-	  Tensor auxi_der (so.get_val_t().get_space(), val_res, type_ind, basis) ;
+	  Tensor auxi_der (so.get_val_t().get_space(), val_res, type_ind, basis, 3) ;
 	  for (int cmp=0 ; cmp<auxi_der.get_n_comp() ; cmp ++)
 	    auxi_der.set(auxi_der.indices(cmp)) = 0  ;
  
@@ -1196,6 +1189,18 @@ Val_domain Domain::mult_x (const Val_domain&) const {
 	abort() ;
 }
 
+Val_domain Domain::mult_cos_time (const Val_domain&) const {
+	cerr << "Multiplication by cos(time) not implemented for" << endl ;
+	cerr << *this << endl  ;
+	abort() ;
+}
+
+Val_domain Domain::mult_sin_time (const Val_domain&) const {
+	cerr << "Multiplication by sin(time) not implemented for" << endl ;
+	cerr << *this << endl  ;
+	abort() ;
+}
+   
 Val_domain Domain::div_1mx2 (const Val_domain&) const {
 	cerr << "Divison by 1-x^2 not implemented for" << endl ;
 	cerr << *this << endl  ;
@@ -1339,6 +1344,12 @@ Val_domain Domain::ddt (const Val_domain&) const {
 
 Val_domain Domain::dt (const Val_domain&) const {
 	cerr << "dt not implemented for" << endl ;
+	cerr << *this << endl ;
+	abort() ;
+}
+
+Val_domain Domain::dtime (const Val_domain&) const {
+	cerr << "dtime not implemented for" << endl ;
 	cerr << *this << endl ;
 	abort() ;
 }

@@ -676,6 +676,11 @@ class System_of_eqs {
 	*/
 	bool do_newton_with_linesearch (double precision, double& error, int ntrymax = 10, double stepmax = 1.0); 
   
+
+	// Parts for implementing gmres
+	void do_arnoldi (int n, Array<double>& qi, Matrice& Hmat) ;
+	void update_gmres (const Array<double>&) ;
+	
 	private:
 	/**
 	* Tests the value of the number of unknowns.
@@ -752,6 +757,8 @@ class System_of_eqs {
 	friend class Metric_ADS ;
 	friend class Metric_AADS ;
 	friend class Metric_const ;
+	friend class Metric_flat_symphi ;
+	friend class Metric_symphi ;
 } ;
 
 /**

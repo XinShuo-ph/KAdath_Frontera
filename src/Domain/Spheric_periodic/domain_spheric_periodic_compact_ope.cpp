@@ -61,11 +61,11 @@ Val_domain Domain_spheric_periodic_compact::div_r (const Val_domain& so) const {
 	return res ;
 }
 
-Val_domain Domain_spheric_periodic_compact::ddt (const Val_domain& so) const {
+Val_domain Domain_spheric_periodic_compact::ddtime (const Val_domain& so) const {
   return (so.der_var(2).der_var(2)*ome*ome) ;
 }
 
-Val_domain Domain_spheric_periodic_compact::dt (const Val_domain& so) const {
+Val_domain Domain_spheric_periodic_compact::dtime (const Val_domain& so) const {
   return (so.der_var(2)*ome) ;
 }
 

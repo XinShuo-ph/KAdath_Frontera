@@ -240,6 +240,8 @@ class Val_domain {
 	Val_domain div_r () const ;  ///< Division by the radius.
 	Val_domain mult_r () const ;  ///< Multiplication by the radius.
 	Val_domain der_r_rtwo () const ; ///< @returns the radial derivative multiplied by \f$r^2\f$ (defined in a compactified domain).
+	Val_domain mult_cos_time() const ; ///< @returns the multiplication by \f$\cos \omega t\f$.
+	Val_domain mult_sin_time() const ; ///< @returns the multiplication by \f$\sin \omega t\f$.
 
 	double integrale() const ; ///< @returns integral in the whole domain.
 	double integ_volume() const ;  ///< @returns integral in the whole domain.
@@ -287,6 +289,7 @@ class Val_domain {
 	friend class Domain_nucleus_symphi ;
 	friend class Domain_shell_symphi ;
 	friend class Domain_compact_symphi ;
+	friend class Domain_polar_periodic_nucleus ;
 
 	friend class Eq_matching_non_std ;
 	friend ostream& operator<< (ostream&, const Val_domain&) ;

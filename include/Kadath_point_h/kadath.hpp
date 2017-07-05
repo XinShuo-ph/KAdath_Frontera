@@ -51,5 +51,6 @@
 #include "spheric_periodic.hpp"
 #include "spheric_symphi.hpp"
 #include "spheric_time.hpp"
+#include "polar_periodic.hpp"
 
 #endif

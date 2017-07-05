@@ -237,6 +237,25 @@ class Ope_lap: public Ope_eq {
 } ;
 
 /**
+ * The operator time derivative.
+ * Computes the first time derivative
+ * \ingroup systems.
+ */
+class Ope_dtime: public Ope_eq {
+  
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : the target.
+		*/
+		Ope_dtime(const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_dtime() ; ///< Destructor
+	
+		virtual Term_eq action() const ;
+} ;
+
+/**
  * The operator Laplacian 2D.
  * Computes the flat 2D Laplacian
  * \ingroup systems.

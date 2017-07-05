@@ -188,12 +188,35 @@ class Tensor {
 	Tensor(const Space& sp, int val, int tipe, const Base_tensor&) ;
 
 	/**
+	* Constructor assuming the dimension of the space and the tensor is different (for dealing with symmetries)
+	* @param sp : the \c Space.
+	* @param val : valence.
+	* @param tipe : \c Array containing the types of each index (COV vs CON).
+	* @param ba : the tensorial basis used.
+	* @param dim : dimension of the tensor.
+	*/
+	Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& ba, int dim) ;
+
+	/**
+	* Constructor where all the indices are of the same type.
+	* The dimension of the space and the tensor is different (for dealing with symmetries)
+	* @param sp : the \c Space.
+	* @param val : valence.
+	* @param tipe : the type of all the indices (COV vs CON).
+	* @param ba : the tensorial basis used.
+	* @param dim : dimension of the tensor.
+	*/
+	Tensor(const Space& sp, int val, int tipe, const Base_tensor&, int dim) ;
+
+
+	/**
 	* Constructor by copy
 	* @param so : the input \c Tensor.
 	* @param copie : if false only the property of the tensor are copied (valence etc...) not the values of the field that are left undefined.
 	*/
 	Tensor(const Tensor&, bool copie = true) ;
 	Tensor (const Space& sp, FILE*) ; ///< Constructor from a file.
+	Tensor (const Space& sp, int dim, FILE*) ; ///< Constructor from a file with explicit passing of the dimension
 
     protected:
 	/**
@@ -203,7 +226,7 @@ class Tensor {
 	 */
          explicit Tensor(const Space& sp) ;
 	/**
-	 * Constructor where the number of components is prescribed (all the indices are of the same type).
+	 * Constructor where the number of components is prescribed.
 	 * @param sp : the \c Space.
 	 * @param val : valence.
 	 * @param tipe : \c Array containing the types of each index (COV vs CON).
@@ -221,6 +244,29 @@ class Tensor {
 	 * @param ba : the tensorial basis used.
 	*/	
 	Tensor (const Space& sp, int val, int tipe, int n_compi, const Base_tensor& ba) ;
+	/**
+	 * Constructor where the number of components is prescribed.
+	 * The dimension of space and the tensor can be different (to deal with symmetries)
+	 * @param sp : the \c Space.
+	 * @param val : valence.
+	 * @param tipe : \c Array containing the types of each index (COV vs CON).
+	 * @param n_compi : number of components.
+	 * @param ba : the tensorial basis used.
+	 * @param dim : dimension of the tensor
+	*/
+	Tensor(const Space& sp, int val, const Array<int>& tipe, int n_compi, const Base_tensor&, int dim) ;
+	
+	/**
+	 * Constructor where the number of components is prescribed (all the indices are of the same type).
+	 * The dimension of space and the tensor can be different (to deal with symmetries)
+	 * @param sp : the \c Space.
+	 * @param val : valence.
+	 * @param tipe : the type of all the indices (COV vs CON).
+	 * @param n_compi : number of components.
+	 * @param ba : the tensorial basis used.
+	 * @param dim : the dimension of the tensor
+	*/	
+	Tensor (const Space& sp, int val, int tipe, int n_compi, const Base_tensor& ba, int dim) ;
 	
     public: 
 	virtual ~Tensor() ;	///< Destructor
@@ -411,6 +457,10 @@ class Tensor {
 	* Returns the number of stored components.
 	*/
 	int get_n_comp() const {return n_comp ;} ; 
+	/**
+	* Returns the number dimension.
+	*/
+	int get_ndim() const {return ndim ;} ; 
 	
 	/**
 	 *  Gives the type (covariant or contravariant) of a given index.

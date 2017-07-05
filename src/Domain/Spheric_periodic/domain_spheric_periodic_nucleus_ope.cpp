@@ -68,11 +68,11 @@ Val_domain Domain_spheric_periodic_nucleus::srdr (const Val_domain& so) const {
   return (div_x(so.der_var(1)) / alpha / alpha) ;
 }
 
-Val_domain Domain_spheric_periodic_nucleus::ddt (const Val_domain& so) const {
+Val_domain Domain_spheric_periodic_nucleus::ddtime(const Val_domain& so) const {
   return (so.der_var(2).der_var(2)*ome*ome) ;
 }
 
-Val_domain Domain_spheric_periodic_nucleus::dt (const Val_domain& so) const {
+Val_domain Domain_spheric_periodic_nucleus::dtime (const Val_domain& so) const {
   return (so.der_var(2)*ome) ;
 }
 

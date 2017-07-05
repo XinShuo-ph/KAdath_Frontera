@@ -142,7 +142,7 @@ Array<int> metric_tensor_indices (int pos, int valence, int ndim) {
 		//////////////
 
 Metric_tensor::Metric_tensor (const Space& sp, int type_descr, const Base_tensor& bb) : 
-	Tensor (sp, 2, type_descr, int(sp.get_ndim()*(sp.get_ndim()+1)/2), bb) {
+	Tensor (sp, 2, type_descr, 6, bb, 3) {
 
 	give_place_array = metric_tensor_position_array ;
 	give_place_index = metric_tensor_position_index ;
@@ -154,11 +154,11 @@ Metric_tensor::Metric_tensor (const Metric_tensor& so, bool copie) :
 }
 
 Metric_tensor::Metric_tensor (const Space& sp, FILE* ff) :
-	Tensor (sp, ff) {
+	Tensor (sp, 3, ff) {
 
 	assert (valence==2) ;
 	assert (type_indice(0)==type_indice(1)) ;
-	assert (n_comp==int(sp.get_ndim()*(sp.get_ndim()+1)/2)) ;
+	assert (n_comp==6) ;
 
 	// Overwrite the storage functions :
 	give_place_array = metric_tensor_position_array ;
@@ -186,8 +186,8 @@ void Metric_tensor::operator= (const Tensor& so) {
 	assert (so.type_indice(0)==get_type()) ;
 	assert (so.type_indice(1)==get_type()) ;
 	
-	for (int i=1 ; i<=espace.get_ndim() ; i++)
-		for (int j=i ; j<=espace.get_ndim() ; j++)
+	for (int i=1 ; i<=ndim ; i++)
+		for (int j=i ; j<=ndim ; j++)
 			set(i,j) = (so(i,j) + so(j,i))/2. ; // On symetrise in case non sym
 }
 
@@ -198,8 +198,8 @@ void Metric_tensor::operator= (double xx) {
 
 Metric_tensor Metric_tensor::inverse(int ndom_max)
 {
-   int dim(espace.get_ndim());
-   assert(dim == 3);
+   
+   assert(ndim == 3);
    Metric_tensor res(*this);
    res.set_index_type(0) = -this->get_index_type(0);
    res.set_index_type(1) = -this->get_index_type(1);
@@ -207,7 +207,7 @@ Metric_tensor Metric_tensor::inverse(int ndom_max)
    {
       Val_domain detval(espace.get_domain(d));     // let's compute the determinant...
       detval = 0.0;
-      gsl_permutation* p(gsl_permutation_calloc(dim));  // initialise to identity 0, 1, 2
+      gsl_permutation* p(gsl_permutation_calloc(ndim));  // initialise to identity 0, 1, 2
       do
       {
          int p1(static_cast<int>(gsl_permutation_get(p, 0)) + 1);   // for tensor indices, you need to add one to get a permutation of 1, 2, 3
@@ -219,12 +219,12 @@ Metric_tensor Metric_tensor::inverse(int ndom_max)
 
       // compute the transposed comatrix
       Val_domain cmpval(espace.get_domain(d));
-      for (int i(1) ; i <= dim ;  ++i)      // sum over components, only the upper triangular part
+      for (int i(1) ; i <= ndim ;  ++i)      // sum over components, only the upper triangular part
       {
-         for (int j(i) ; j <= dim ; ++j)
+         for (int j(i) ; j <= ndim ; ++j)
          {
             cmpval = 0.0;                   // initialise to 0 before each computation
-            p = gsl_permutation_calloc(dim - 1);              // reinitialise to identity 0, 1, ready to be used for next component
+            p = gsl_permutation_calloc(ndim - 1);              // reinitialise to identity 0, 1, ready to be used for next component
             do
             {
                int p1(static_cast<int>(gsl_permutation_get(p, 0)) + 1);  // always add one for tensor indices, now we have a permutation of 1, 2

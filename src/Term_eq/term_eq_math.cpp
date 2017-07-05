@@ -328,12 +328,12 @@ new Tensor(add_one_dom(res.dom,
 	mult_one_dom(res.dom, *aa.der_t, *bb.val_t), mult_one_dom(res.dom, *aa.val_t, *bb.der_t))) : 0x0 ;
 					break ;
 				default: 
-					cerr << "Unknown data storage in operator+" << endl ;
+					cerr << "Unknown data storage in operator*" << endl ;
 					abort() ;
 				}
 			break ;
 		default :
-			cerr << "Unknown data storage in operator+" << endl ;
+			cerr << "Unknown data storage in operator*" << endl ;
 			abort() ;	
 	}
 

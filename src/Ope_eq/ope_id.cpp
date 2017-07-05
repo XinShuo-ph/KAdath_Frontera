@@ -47,6 +47,7 @@ Ope_id::~Ope_id() {
 }
 
 Term_eq Ope_id::action() const {
+
 	Term_eq auxi (*target) ;
 	// First put the names (not for doubles or scalars...)
 	if (name_ind !=0x0) {

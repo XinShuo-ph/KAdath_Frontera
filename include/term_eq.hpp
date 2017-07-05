@@ -218,6 +218,7 @@ class Term_eq {
 	friend class Ope_mult_1mrsL ;
 	friend class Ope_div_1mrsL ;	
 	friend class Ope_div_1mx2 ;
+	friend class Ope_dtime ;
 	friend class Domain ;
 	friend class Domain_nucleus ;
 	friend class Domain_shell ;	
@@ -249,6 +250,9 @@ class Term_eq {
 	friend class Space_polar_adapted ;
 	friend class Space_bin_ns ;
 	friend class Space_bin_bh ;
+	friend class Metric_flat_symphi ;
+	friend class Metric_symphi ;
+	friend class Domain_polar_periodic_nucleus ;
 } ;
 }
 #endif

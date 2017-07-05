@@ -123,6 +123,58 @@ Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb)
     give_indices = std_indices ;
 }
 
+Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& bb, int dim) 
+		: espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
+		   valence(val), basis(bb), type_indice(tipe), 
+		   n_comp(int(pow(ndim, val))), parameters(0x0) {
+		
+    // Des verifs :
+    assert (valence >= 0) ;
+    assert (tipe.get_ndim() == 1) ;
+    assert (valence == tipe.get_size(0)) ;
+    for (int i=0 ; i<valence ; i++)
+	assert ((tipe(i) == COV) || (tipe(i) == CON)) ;
+    
+    cmp = new Scalar*[n_comp] ;
+
+    for (int i=0 ; i<n_comp ; i++)
+	cmp[i] = new Scalar(espace) ;
+
+    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_affected = false ;
+
+    // Storage methods :
+    give_place_array = std_position_array ;
+    give_place_index = std_position_index ;
+    give_indices = std_indices ;
+}
+
+Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb, int dim) 
+		: espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
+		   valence(val), basis(bb), type_indice(val), 
+		   n_comp(int(pow(ndim, val))), parameters(0x0) {
+		
+    // Des verifs :
+    assert (valence >= 0) ;
+    assert ((tipe == COV) || (tipe == CON)) ;
+    type_indice = tipe ;
+    
+    cmp = new Scalar*[n_comp] ;
+
+    for (int i=0 ; i<n_comp ; i++)
+	cmp[i] = new Scalar(espace) ;    
+
+    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_affected = false ;
+    
+    // Storage methods :
+    give_place_array = std_position_array ;
+    give_place_index = std_position_index ;
+    give_indices = std_indices ;
+}
+
+
+
 // Copy constructor
 // ----------------
 Tensor::Tensor (const Tensor& source, bool copy) : 
@@ -210,8 +262,68 @@ Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, con
     name_affected = false ;
 }
 
+Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor& bb, int dim) 
+		: espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
+		   valence(val), basis(bb), type_indice(val), 
+		   n_comp(ncompi), parameters(0x0) {
+		
+    // Des verifs :
+    assert (valence >= 0) ;
+    assert ((tipe == COV) || (tipe == CON)) ;
+    type_indice = tipe ;
+
+    cmp = new Scalar*[n_comp] ;
+
+    for (int i=0 ; i<n_comp ; i++)
+	cmp[i] = new Scalar(espace) ;
+
+    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_affected = false ;
+}
+
+Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, const Base_tensor& bb, int dim) 
+		: espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
+		   valence(val), basis(bb), type_indice(tipe), 
+		   n_comp(ncompi), parameters(0x0) {
+		
+    // Des verifs :
+    assert (valence >= 0) ;
+    assert (tipe.get_ndim() == 1) ;
+    assert (valence == tipe.get_size(0)) ;
+    for (int i=0 ; i<valence ; i++)
+	assert ((tipe(i) == COV) || (tipe(i) == CON)) ;
+    
+    cmp = new Scalar*[n_comp] ;
+
+    for (int i=0 ; i<n_comp ; i++)
+	cmp[i] = new Scalar(espace) ;
+
+    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_affected = false ;
+}
+
 Tensor::Tensor (const Space& sp, FILE* fd) : 
 	espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
+	basis(sp, fd), type_indice(fd), parameters(0x0) {
+
+	fread_be (&valence, sizeof(int), 1, fd) ;
+	assert (type_indice.get_size(0) == valence) ;
+	fread_be (&n_comp, sizeof(int), 1, fd) ;
+	cmp = new Scalar* [n_comp] ;
+	for (int i=0 ; i<n_comp ; i++)
+		cmp[i] = new Scalar (espace, fd) ;
+	// name of indices are not saved :
+        name_indice = (valence==0) ? 0x0 : new char[valence] ;
+        name_affected = false ; 
+
+    // Storage methods (overwritten in case of non std things)
+    give_place_array = std_position_array ;
+    give_place_index = std_position_index ;
+    give_indices = std_indices ;
+}
+
+Tensor::Tensor (const Space& sp, int dim, FILE* fd) : 
+	espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
 	basis(sp, fd), type_indice(fd), parameters(0x0) {
 
 	fread_be (&valence, sizeof(int), 1, fd) ;

@@ -757,7 +757,6 @@ void Metric::manipulate_ind(Term_eq& so, int ind) const {
 				val_res.set_name_ind(i, so.val_t->get_name_ind()[i]) ;
 	}
 
-	
 	if ((doder) && (so.get_der_t().is_name_affected())) {
 			val_der.set_name_affected() ;
 			for (int i=0 ; i<valence ; i++)

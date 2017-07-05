@@ -45,11 +45,11 @@ Val_domain Domain_spheric_periodic_shell::der_r (const Val_domain& so) const {
   return (so.der_var(1)/alpha) ;
 }
 
-Val_domain Domain_spheric_periodic_shell::ddt (const Val_domain& so) const {
+Val_domain Domain_spheric_periodic_shell::ddtime (const Val_domain& so) const {
   return (so.der_var(2).der_var(2)*ome*ome) ;
 }
 
-Val_domain Domain_spheric_periodic_shell::dt (const Val_domain& so) const {
+Val_domain Domain_spheric_periodic_shell::dtime (const Val_domain& so) const {
   return (so.der_var(2)*ome) ;
 }
 

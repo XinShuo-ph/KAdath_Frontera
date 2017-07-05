@@ -32,7 +32,7 @@ Term_eq Ope_dt::action() const {
 	Term_eq target (parts[0]->action()) ;
 	// Check it is a tensor
 	if (target.type_data != TERM_T) {
-		cerr << "Ope_ddt only defined with respect for a tensor" << endl ;
+		cerr << "Ope_dt only defined with respect for a tensor" << endl ;
 		abort() ;
 	}
 

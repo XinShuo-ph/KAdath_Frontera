@@ -107,8 +107,8 @@ class Domain_spheric_periodic_nucleus : public Domain {
      virtual Val_domain laplacian (const Val_domain&, int) const ;
      virtual Val_domain der_r (const Val_domain&) const ; 
      virtual Val_domain srdr (const Val_domain&) const ;
-     virtual Val_domain ddt (const Val_domain&) const ;
-     virtual Val_domain dt (const Val_domain&) const ;
+     virtual Val_domain ddtime (const Val_domain&) const ;
+     virtual Val_domain dtime (const Val_domain&) const ;
 
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
@@ -266,8 +266,8 @@ class Domain_spheric_periodic_shell : public Domain {
      virtual Val_domain div_r (const Val_domain&) const ;
      virtual Val_domain laplacian (const Val_domain&, int) const ;
      virtual Val_domain der_r (const Val_domain&) const ;
-     virtual Val_domain ddt (const Val_domain&) const ;
-     virtual Val_domain dt (const Val_domain&) const ;
+     virtual Val_domain ddtime (const Val_domain&) const ;
+     virtual Val_domain dtime (const Val_domain&) const ;
      virtual Val_domain div_xm1 (const Val_domain&) const ;
      
      virtual void find_other_dom (int, int, int&, int&) const ;     
@@ -502,8 +502,8 @@ class Domain_spheric_periodic_compact : public Domain {
      virtual Val_domain div_r (const Val_domain&) const ;
      virtual Val_domain laplacian (const Val_domain&, int) const ;
      virtual Val_domain der_r (const Val_domain&) const ;
-     virtual Val_domain ddt (const Val_domain&) const ;
-     virtual Val_domain dt (const Val_domain&) const ;
+     virtual Val_domain ddtime (const Val_domain&) const ;
+     virtual Val_domain dtime (const Val_domain&) const ;
 
      virtual void set_val_inf (Val_domain& so, double xx) const ;    
 

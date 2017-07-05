@@ -420,7 +420,15 @@ class Domain {
      * Division by \f$ \sin \chi\f$ .
      */
      virtual Val_domain div_sin_chi (const Val_domain&) const ;
-     
+      /**
+     * Multiplication by \f$ \cos \omega t\f$.
+     */
+     virtual Val_domain mult_cos_time (const Val_domain&) const ;
+    /**
+     * Multiplication by \f$ \sin \omega t\f$.
+     */
+     virtual Val_domain mult_sin_time (const Val_domain&) const ;
+   
 	/**
 	* Changes the tensorial basis from Cartsian to spherical in a given domain.
 	* @param dd [input] : the domain. Should be consistent with *this.
@@ -510,6 +518,15 @@ class Domain {
 	*/
      virtual Val_domain dt (const Val_domain&) const ;
      
+
+	/**
+	* Compute the time derivative of a field.
+	* @param so [input] : the input field.
+	* @returns the result.
+	*/
+     virtual Val_domain dtime (const Val_domain&) const ;
+     
+
 	/**
 	* Returns the vector normal to a surface. Must be a \c Term_eq because the dmain can be a variable one.
 	* @param bound [input] : the boundary where the normal is computed.

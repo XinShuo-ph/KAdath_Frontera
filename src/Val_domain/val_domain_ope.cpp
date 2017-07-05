@@ -116,5 +116,19 @@ Val_domain Val_domain::div_sin_chi() const {
 	else
 		return (zone->div_sin_chi (*this)) ;
 }
+
+Val_domain Val_domain::mult_cos_time () const {
+	if (is_zero)
+		return *this ;
+	else
+		return (zone->mult_cos_time (*this)) ;
+}
+
+Val_domain Val_domain::mult_sin_time () const {
+	if (is_zero)
+		return *this ;
+	else
+		return (zone->mult_sin_time (*this)) ;
+}
 }
 

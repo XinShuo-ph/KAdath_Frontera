@@ -31,7 +31,7 @@ vector<int> ind_com(int i, int j, int k, int l);
 
 
 /**
- * Particular type of \c Tensor, dedicated to thedesription of metrics. It deals with symmetric, second order tensors only.
+ * Particular type of \c Tensor, dedicated to the desription of metrics. It deals with symmetric, second order tensors only.
  * The two indices must be of the same type but can be either COV or CON.
  * \ingroup fields
  */

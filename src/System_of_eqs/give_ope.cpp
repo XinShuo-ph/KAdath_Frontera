@@ -692,6 +692,13 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 		return p_ope ;
 		}
 
+	// Check if dt :
+	indic = is_ope_uni(name, p1, "dtime") ;
+	if (indic) {
+		p_ope = new Ope_dtime(this, give_ope(dd,p1)) ;
+		return p_ope ;
+		}
+
 	// Check if ddr :
 	indic = is_ope_uni(name, p1, "ddr") ;
 	if (indic) {
