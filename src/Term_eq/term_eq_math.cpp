@@ -679,4 +679,10 @@ Term_eq partial (const Term_eq& so, char ind) {
 		}
 	return res ;
 }
+
+Term_eq div_1mx2 (const Term_eq& so) {
+	assert (so.type_data==TERM_T) ;
+
+	return so.val_t->get_space().get_domain(so.dom)->div_1mx2_term_eq(so) ;
+}
 }

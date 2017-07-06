@@ -74,6 +74,7 @@ class Vector : public Tensor {
         using Tensor::set;
 	Scalar& set(int ) ; ///< Read/write access to a component
 	const Scalar& operator()(int ) const; ///<Readonly access to a component
+	const Scalar& at(int) const; ///<Readonly access to a component
 
 	
 	virtual int position(const Array<int>& idx) const {

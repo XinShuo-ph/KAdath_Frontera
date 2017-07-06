@@ -530,7 +530,10 @@ const Scalar& Tensor::operator()(int indice1, int indice2, int indice3,
     return *cmp[position(idx)] ;
 }
 
+const Scalar& Tensor::at(int indice1, int indice2) const {
+    return operator()(indice1,indice2);
 
+}
 
 const Scalar& Tensor::operator()(const Array<int>& ind) const {
     

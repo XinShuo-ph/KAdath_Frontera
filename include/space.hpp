@@ -730,6 +730,13 @@ class Domain {
      virtual Term_eq der_normal_term_eq (const Term_eq& so, int bound) const ;
 
 	/**
+	* Returns the division by \f$1-x^2\f$ of a \c Term_eq 
+	* @param so : input field.
+	* @returns  the result of the division.
+	*/
+	virtual Term_eq div_1mx2_term_eq (const Term_eq&) const ;
+
+	/**
 	* Returns the flat Laplacian of \c Term_eq, for a given harmonic. 
 	* @param so : input field.
 	* @param m : the index of the harmonic.

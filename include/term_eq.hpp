@@ -46,6 +46,7 @@ Term_eq bessel_yl (const Term_eq&, int) ;
 Term_eq bessel_djl (const Term_eq&, int) ;
 Term_eq bessel_dyl (const Term_eq&, int) ;
 Term_eq sqrt (const Term_eq&) ;
+Term_eq div_1mx2 (const Term_eq&) ;
 
 Term_eq scalar_product (const Term_eq&, const Term_eq&) ;
 
@@ -166,6 +167,8 @@ class Term_eq {
 	friend Term_eq sqrt (const Term_eq&) ;
 	friend Term_eq partial (const Term_eq&, char) ;
 
+	friend Term_eq div_1mx2 (const Term_eq&) ;
+
 	friend Term_eq bessel_jl (const Term_eq&, int) ;
 	friend Term_eq bessel_yl (const Term_eq&, int) ;
 	friend Term_eq bessel_djl (const Term_eq&, int) ;
@@ -254,6 +257,7 @@ class Term_eq {
 	friend class Metric_symphi ;
 	friend class Metric_symphi_const ;
 	friend class Domain_polar_periodic_nucleus ;
+	
 } ;
 }
 #endif

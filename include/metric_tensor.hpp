@@ -61,10 +61,9 @@ class Metric_tensor : public Tensor {
  
 		/**
 		* Computes the inverse of the current objetc.
-		* @param ndom_max : computes the inverse in all the domains up to ndom_max.
 		* @return the inverse.
 		*/
-		Metric_tensor inverse(int ndom_max);
+		Metric_tensor inverse();
 	
 		/**
 		* Specialized base setting (for AADS)

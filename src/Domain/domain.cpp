@@ -1626,4 +1626,8 @@ void Domain::filter (Tensor&, int, double) const {
    cerr << *this << endl ;
    abort() ;
 }
+
+Term_eq Domain::div_1mx2_term_eq (const Term_eq& so) const  {
+	return do_comp_by_comp (so, &Domain::div_1mx2) ;
+}
 }

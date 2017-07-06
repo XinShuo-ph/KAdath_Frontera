@@ -291,6 +291,7 @@ void Metric_AADS::compute_christo(int d) const      // WARNING : christo will st
 {
    if (p_met_cov[d] == nullptr) compute_cov(d);
    if (p_met_con[d] == nullptr) compute_con(d);
+   if (m_ads.p_christo[d] == nullptr) m_ads.compute_christo(d);
 
    int dim(espace.get_ndim());
    Array<int> type_ind(3);
@@ -302,33 +303,36 @@ void Metric_AADS::compute_christo(int d) const      // WARNING : christo will st
    Index pos(res_val);
    Val_domain cmpval(espace.get_domain(d));     // components of the tensor
    Val_domain cmpder(espace.get_domain(d));
-   Term_eq derive_h(m_ads.derive_simple(*p_h[d]));   // background covariant derivative of h
    do
    {
       cmpval = 0.0;
       for (int l(1) ; l <= dim ; ++l)
+      {
          cmpval += 0.5 * m_ads.m_eps(d) * (*p_met_con[d]->val_t)(pos(2) + 1, l)(d)                                    // formule (7.30) 3+1 Eric Gourgoulhon
-                 * ( (*derive_h.val_t)(pos(0) + 1, l, pos(1) + 1)(d)
-                   + (*derive_h.val_t)(pos(1) + 1, l, pos(0) + 1)(d)
-                   - (*derive_h.val_t)(l, pos(0) + 1, pos(1) + 1)(d) )
+                 * ( (*p_h[d]->val_t)(pos(1) + 1, l)(d).der_abs(pos(0) + 1)
+                   + (*p_h[d]->val_t)(pos(0) + 1, l)(d).der_abs(pos(1) + 1)
+                   - (*p_h[d]->val_t)(pos(0) + 1, pos(1) + 1)(d).der_abs(l) )
                  - (*p_met_con[d]->val_t)(pos(2) + 1, l)(d)
-                 * ( (*p_h[d]->val_t)(pos(0) + 1, l)(d)*(*p_der_eps)(pos(1) + 1)(d)
-                   + (*p_h[d]->val_t)(pos(1) + 1, l)(d)*(*p_der_eps)(pos(0) + 1)(d)
+                 * ( (*p_h[d]->val_t)(pos(1) + 1, l)(d)*(*p_der_eps)(pos(0) + 1)(d)
+                   + (*p_h[d]->val_t)(pos(0) + 1, l)(d)*(*p_der_eps)(pos(1) + 1)(d)
                    - (*p_h[d]->val_t)(pos(0) + 1, pos(1) + 1)(d)*(*p_der_eps)(l)(d));
+         for (int m(1) ; m <= dim ; ++m) cmpval -= (*p_met_con[d]->val_t)(pos(2) + 1, l)(d)*(*m_ads.p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1, m)(d)*(*p_h[d]->val_t)(l,m)(d);
+      }
       res_val.set(pos).set_domain(d) = cmpval;
 
       if (m_doder)
       {
          cmpder = 0.0;
          for (int l(1) ; l <= dim ; ++l)
+         {
             cmpder += 0.5 * m_ads.m_eps(d) * (*p_met_con[d]->der_t)(pos(2) + 1, l)(d)                                    // formule (7.30) 3+1 Eric Gourgoulhon
-                    * ( (*derive_h.val_t)(pos(0) + 1, l, pos(1) + 1)(d)
-                      + (*derive_h.val_t)(pos(1) + 1, l, pos(0) + 1)(d)
-                      - (*derive_h.val_t)(l, pos(0) + 1, pos(1) + 1)(d) )
+                    * ( (*p_h[d]->val_t)(pos(1) + 1, l)(d).der_abs(pos(0) + 1)
+                      + (*p_h[d]->val_t)(pos(0) + 1, l)(d).der_abs(pos(1) + 1)
+                      - (*p_h[d]->val_t)(pos(0) + 1, pos(1) + 1)(d).der_abs(l) )
                     + 0.5 * m_ads.m_eps(d) * (*p_met_con[d]->val_t)(pos(2) + 1, l)(d)                                    // formule (7.30) 3+1 Eric Gourgoulhon
-                    * ( (*derive_h.der_t)(pos(0) + 1, l, pos(1) + 1)(d)
-                      + (*derive_h.der_t)(pos(1) + 1, l, pos(0) + 1)(d)
-                      - (*derive_h.der_t)(l, pos(0) + 1, pos(1) + 1)(d) )
+                    * ( (*p_h[d]->der_t)(pos(1) + 1, l)(d).der_abs(pos(0) + 1)
+                      + (*p_h[d]->der_t)(pos(0) + 1, l)(d).der_abs(pos(1) + 1)
+                      - (*p_h[d]->der_t)(pos(0) + 1, pos(1) + 1)(d).der_abs(l) )
                     - (*p_met_con[d]->der_t)(pos(2) + 1, l)(d)
                     * ( (*p_h[d]->val_t)(pos(0) + 1, l)(d)*(*p_der_eps)(pos(1) + 1)(d)
                       + (*p_h[d]->val_t)(pos(1) + 1, l)(d)*(*p_der_eps)(pos(0) + 1)(d)
@@ -337,6 +341,9 @@ void Metric_AADS::compute_christo(int d) const      // WARNING : christo will st
                     * ( (*p_h[d]->der_t)(pos(0) + 1, l)(d)*(*p_der_eps)(pos(1) + 1)(d)
                       + (*p_h[d]->der_t)(pos(1) + 1, l)(d)*(*p_der_eps)(pos(0) + 1)(d)
                       - (*p_h[d]->der_t)(pos(0) + 1, pos(1) + 1)(d)*(*p_der_eps)(l)(d));
+            for (int m(1) ; m <= dim ; ++m) cmpder -= (*p_met_con[d]->der_t)(pos(2) + 1, l)(d)*(*m_ads.p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1, m)(d)*(*p_h[d]->val_t)(l,m)(d)
+                                                    + (*p_met_con[d]->val_t)(pos(2) + 1, l)(d)*(*m_ads.p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1, m)(d)*(*p_h[d]->der_t)(l,m)(d);
+         }
          res_der.set(pos).set_domain(d) = cmpder;
       }
    }while(pos.inc());
@@ -456,24 +463,28 @@ Term_eq Metric_AADS::derive(int type_der, char ind_der, const Term_eq& so) const
 void Metric_AADS::compute_ricci_tensor(int d) const    // epsilon^2 *(Ricci - RicciB)
 {
    if (p_christo[d] == nullptr) compute_christo(d);
+   if (m_ads.p_christo[d] == nullptr) m_ads.compute_christo(d);
    int dim(espace.get_ndim());
    Tensor res_val(espace, 2, COV, *p_basis);             // the result to put into Ricci
    Tensor res_der(espace, 2, COV, *p_basis);
    Index pos(res_val);
    Val_domain cmpval(espace.get_domain(d));  // each component
    Val_domain cmpder(espace.get_domain(d));
-   Term_eq derive_C(m_ads.derive_simple(*p_christo[d]));
    do
    {
       cmpval = 0.0;
       for (int k(1) ; k <= dim ; ++k)                                                             // formula (7.40) 3+1 Eric Gourgoulhon
       {
-         cmpval += m_ads.m_eps(d)*(  (*derive_C.val_t)(k, pos(0) + 1, pos(1) + 1, k)(d)
-                                   - (*derive_C.val_t)(pos(0) + 1, pos(1) + 1, k, k)(d) )
+         cmpval += m_ads.m_eps(d)*(  (*p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1, k)(d).der_abs(k)
+                                   - (*p_christo[d]->val_t)(pos(1) + 1, k, k)(d).der_abs(pos(0) + 1) )
                  - (*p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1, k)(d)*(*p_der_eps)(k)(d)
                  + (*p_christo[d]->val_t)(pos(1) + 1, k, k)(d)*(*p_der_eps)(pos(0) + 1)(d);
          for (int l(1) ; l <= dim ; ++l) cmpval += (*p_christo[d]->val_t)(k, l, l)(d) * (*p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1, k)(d)
-                                                 - (*p_christo[d]->val_t)(pos(0) + 1, l, k)(d) * (*p_christo[d]->val_t)(pos(1) + 1, k, l)(d);
+                                                 - (*p_christo[d]->val_t)(pos(0) + 1, l, k)(d) * (*p_christo[d]->val_t)(pos(1) + 1, k, l)(d)
+                                                 + (*m_ads.p_christo[d]->val_t)(k,l,k)(d) * (*p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1,l)(d)
+                                                 - (*m_ads.p_christo[d]->val_t)(k,pos(1) + 1,l)(d) * (*p_christo[d]->val_t)(pos(0) + 1, l,k)(d)
+                                                 - (*m_ads.p_christo[d]->val_t)(pos(0) + 1,l,k)(d) * (*p_christo[d]->val_t)(pos(1) + 1, k,l)(d)
+                                                 + (*m_ads.p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1,l)(d) * (*p_christo[d]->val_t)(l,k,k)(d);
       }
       res_val.set(pos).set_domain(d) = cmpval;
 
@@ -482,14 +493,18 @@ void Metric_AADS::compute_ricci_tensor(int d) const    // epsilon^2 *(Ricci - Ri
          cmpder = 0.0;
          for (int k(1) ; k <= dim ; ++k)
          {
-            cmpder += m_ads.m_eps(d)*(  (*derive_C.der_t)(k, pos(0) + 1, pos(1) + 1, k)(d)
-                                      - (*derive_C.der_t)(pos(0) + 1, pos(1) + 1, k, k)(d) )
+            cmpder += m_ads.m_eps(d)*(  (*p_christo[d]->der_t)(pos(0) + 1, pos(1) + 1, k)(d).der_abs(k)
+                                      - (*p_christo[d]->der_t)(pos(1) + 1, k, k)(d).der_abs(pos(0) + 1) )
                     - (*p_christo[d]->der_t)(pos(0) + 1, pos(1) + 1, k)(d)*(*p_der_eps)(k)(d)
                     + (*p_christo[d]->der_t)(pos(1) + 1, k, k)(d)*(*p_der_eps)(pos(0) + 1)(d);
             for (int l(1) ; l <= dim ; ++l) cmpder += (*p_christo[d]->der_t)(k, l, l)(d) * (*p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1, k)(d)
                                                     + (*p_christo[d]->val_t)(k, l, l)(d) * (*p_christo[d]->der_t)(pos(0) + 1, pos(1) + 1, k)(d)
                                                     - (*p_christo[d]->der_t)(pos(0) + 1, l, k)(d) * (*p_christo[d]->val_t)(pos(1) + 1, k, l)(d)
-                                                    - (*p_christo[d]->val_t)(pos(0) + 1, l, k)(d) * (*p_christo[d]->der_t)(pos(1) + 1, k, l)(d);
+                                                    - (*p_christo[d]->val_t)(pos(0) + 1, l, k)(d) * (*p_christo[d]->der_t)(pos(1) + 1, k, l)(d)
+                                                    + (*m_ads.p_christo[d]->val_t)(k,l,k)(d) * (*p_christo[d]->der_t)(pos(0) + 1, pos(1) + 1,l)(d)
+                                                    - (*m_ads.p_christo[d]->val_t)(k,pos(1) + 1,l)(d) * (*p_christo[d]->der_t)(pos(0) + 1, l,k)(d)
+                                                    - (*m_ads.p_christo[d]->val_t)(pos(0) + 1,l,k)(d) * (*p_christo[d]->der_t)(pos(1) + 1, k,l)(d)
+                                                    + (*m_ads.p_christo[d]->val_t)(pos(0) + 1, pos(1) + 1,l)(d) * (*p_christo[d]->der_t)(l,k,k)(d);
          }
          res_der.set(pos).set_domain(d) = cmpder;
       }
@@ -563,6 +578,22 @@ void Metric_AADS::set_system(System_of_eqs& ss, const char* name_met, const char
 {
    syst = &ss;
    m_ads.init_system(ss, name_back_cov, name_back_con, name_back_ricci);   // put background metric as a cst in the system
+   m_place_syst = ss.ndom*ss.nvar;     // position in the system
+   ss.add_var(name_hmet, *p_hmet);     // unknown for the system (no name, the name is in the metric already)
+   if (ss.met != nullptr)
+   {
+      cerr << "Metric already set for the system" << endl;
+      abort() ;
+   }
+   ss.met = this;
+   ss.name_met = new char[LMAX];
+   trim_spaces(ss.name_met, name_met);
+}
+
+void Metric_AADS::set_system(System_of_eqs& ss, const char* name_met, const char* name_hmet, const char* name_back_cov, const char* name_back_con, const char* name_back_gam, const char* name_back_ricci)
+{
+   syst = &ss;
+   m_ads.init_system(ss, name_back_cov, name_back_con, name_back_gam, name_back_ricci);   // put background metric as a cst in the system
    m_place_syst = ss.ndom*ss.nvar;     // position in the system
    ss.add_var(name_hmet, *p_hmet);     // unknown for the system (no name, the name is in the metric already)
    if (ss.met != nullptr)

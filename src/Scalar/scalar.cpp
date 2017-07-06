@@ -242,6 +242,10 @@ const Val_domain& Scalar::operator() (int i) const {
 	assert ((i>=0) && (i<ndom)) ;
 	return (*val_zones[i]) ;
 }
+const Val_domain& Scalar::at(int i) const {
+	return operator()(i);
+}
+	
 	
 Val_domain& Scalar::set_domain (int l) {
 	assert ((l>=0) && (l<ndom)) ;

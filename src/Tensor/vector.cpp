@@ -104,4 +104,9 @@ Scalar& Vector::set(int index) {
 const Scalar& Vector::operator()(int index) const {
   assert ((index>=1) && (index<=3)) ;
   return *cmp[index - 1] ;
-}}
+}
+
+const Scalar& Vector::at(int index) const {
+  return operator()(index);
+}
+}

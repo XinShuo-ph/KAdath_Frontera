@@ -406,6 +406,53 @@ void Metric_ADS::init_system(System_of_eqs& ss, const char* name_back_cov, const
    ss.add_cst(name_back_ricci, RicciB);
 }
 
+void Metric_ADS::init_system(System_of_eqs& ss, const char* name_back_cov, const char* name_back_con, const char* name_back_gam, const char* name_back_ricci)
+{
+   syst = &ss;                 // Not to be used alone
+   for (int d(ss.dom_min) ; d <= ss.dom_max ; ++d)  // make sure that metric is computed
+   {
+      if (p_met_cov[d] == nullptr) compute_cov(d);
+      if (p_met_con[d] == nullptr) compute_con(d);
+      if (p_christo[d] == nullptr) compute_christo(d);
+      if (p_ricci_tensor[d] == nullptr) compute_ricci_tensor(d);
+   }
+
+   int dim(espace.get_ndim());
+   Metric_tensor gamaBcov(espace, COV, *p_basis);
+   Metric_tensor gamaBcon(espace, CON, *p_basis);
+   gamaBcov = 0.0;
+   gamaBcon = 0.0;
+   for (int i(1) ; i <= dim ; ++i)
+      for (int j(i) ; j <= dim ; ++j)
+         for (int d(ss.dom_min) ; d <= ss.dom_max ; ++d)  // give tensors from Term_eq values
+         {
+            gamaBcov.set(i,j).set_domain(d) = (*p_met_cov[d]->val_t)(i,j)(d);
+            gamaBcon.set(i,j).set_domain(d) = (*p_met_con[d]->val_t)(i,j)(d);
+         }
+
+   Array<int> ind_type(3);
+   ind_type.set(0) = COV; ind_type.set(1) = COV; ind_type.set(2) = CON;
+   Tensor ChristoB(espace, 3, ind_type, *p_basis);
+   ChristoB = 0.0;
+   for (int i(1) ; i <= dim ; ++i)
+      for (int j(1) ; j <= dim ; ++j)
+         for (int k(1) ; k <= dim ; ++k)
+            for (int d(ss.dom_min) ; d <= ss.dom_max ; ++d)  // give tensors from Term_eq values
+               ChristoB.set(i, j, k).set_domain(d) = (*p_christo[d]->val_t)(i, j, k)(d);
+
+   Tensor RicciB(espace, 2, COV, *p_basis);         // background Ricci
+   RicciB = 0.0;
+   for (int i(1) ; i <= dim ; ++i)
+      for (int j(1) ; j <= dim ; ++j)
+            for (int d(ss.dom_min) ; d <= ss.dom_max ; ++d)  // give tensors from Term_eq values
+               RicciB.set(i, j).set_domain(d) = (*p_ricci_tensor[d]->val_t)(i, j)(d);
+
+   ss.add_cst(name_back_cov, gamaBcov);
+   ss.add_cst(name_back_con, gamaBcon);
+   ss.add_cst(name_back_gam, ChristoB);
+   ss.add_cst(name_back_ricci, RicciB);
+}
+
 Term_eq Metric_ADS::div_eps(Term_eq& so, int n) const
 {
    int d(so.get_dom());
@@ -433,9 +480,8 @@ Term_eq Metric_ADS::div_eps(Term_eq& so, int n) const
             }
          }
       }while(pos.inc());
-      //if (m_nd == 1) res = div_1mx2(res);                                    // division by 1 - rho^2
-      if (m_nd == 1) res = res.val_t->get_space().get_domain(d)->do_comp_by_comp (res, &Domain::div_1mx2);   
-	 }
+      if (m_nd == 1) res = div_1mx2(res);                                    // division by 1 - rho^2
+   }
    return res;
 }
 

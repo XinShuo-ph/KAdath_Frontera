@@ -29,7 +29,9 @@
 #include "metric_tensor.hpp"
 #include "base_tensor.hpp"
 #include "vector.hpp"
+#include <cmath>
 #include <vector>
+#include <string>
 #include "gsl/gsl_permutation.h"
 
 namespace Kadath {
@@ -74,11 +76,20 @@ class Metric_ADS : public Metric
 	/**
 	* Put the covariant and contravariant metric, dans the Ricci background into the \c System_of_eqs, as constants.
 	* @param syst : the \c System_of_eqs.
-	* @param name_back_cov : name by which the convariant metric will be known in the system (like "g", "f"...)
-	* @param name_back_con : name of the contravariant description.
-	* @param name_back_con : name of the Ricci tensor.
+	* @param name_back_cov : name of the background convariant metric
+	* @param name_back_con : name of the background contravariant metric
+	* @param name_back_ricci : name of the background Ricci tensor.
 	*/
       void init_system(System_of_eqs& ss, const char* name_back_cov, const char* name_back_con, const char* name_back_ricci);  // put the covariant and contravariant metric in cst of the system
+	/**
+	* Put the covariant and contravariant metric, dans the Ricci background into the \c System_of_eqs, as constants.
+	* @param syst : the \c System_of_eqs.
+	* @param name_back_cov : name of the background convariant metric
+	* @param name_back_con : name of the background contravariant metric
+	* @param name_back_gam : name of the background Christoffels
+	* @param name_back_ricci : name of the background Ricci tensor.
+	*/
+      void init_system(System_of_eqs& ss, const char* name_back_cov, const char* name_back_con, const char* name_back_gam, const char* name_back_ricci);  // put the covariant and contravariant metric in cst of the system
 
    private:
 
@@ -160,11 +171,22 @@ class Metric_AADS : public Metric
 	* @param syst : the \c System_of_eqs.
 	* @param name_met : name by which the metric will be known in the system (like "g", "f"...)
 	* @param name_hmet : name of \f$ h_{ij} \f$, difference with the background.
-	* @param name_back_cov : name by which the convariant metric will be known in the system (like "g", "f"...)
-	* @param name_back_con : name of the contravariant description.
-	* @param name_back_con : name of the Ricci tensor.
+	* @param name_back_cov : name of the background convariant metric
+	* @param name_back_con : name of the background contravariant description.
+	* @param name_back_ricci : name of the background Ricci tensor.
 	*/
       void set_system(System_of_eqs& ss, const char* name_met, const char* name_hmet, const char* name_back_cov, const char* name_back_con, const char* name_back_ricci); 
+ 	/**
+	* Associates the metric to a given system of equations. It also sets the background quantities as constants.
+	* @param syst : the \c System_of_eqs.
+	* @param name_met : name by which the metric will be known in the system (like "g", "f"...)
+	* @param name_hmet : name of \f$ h_{ij} \f$, difference with the background.
+	* @param name_back_cov : name of the  convariant background metric
+	* @param name_back_con : name of the contravariant background metric.
+	* @param name_back_gam : name of the background Christoffels.
+	* @param name_back_ricci : name of the backgroundRicci tensor.
+	*/
+      void set_system(System_of_eqs& ss, const char* name_met, const char* name_hmet, const char* name_back_cov, const char* name_back_con, const char* name_back_gam, const char* name_back_ricci); 
 
       virtual const Metric* get_background() const;                    ///< @return the pointer on the background metric.
       virtual ~Metric_AADS();                               

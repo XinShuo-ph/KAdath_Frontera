@@ -196,18 +196,18 @@ void Metric_tensor::operator= (double xx) {
 		*cmp[i] = xx ;
 }
 
-Metric_tensor Metric_tensor::inverse(int ndom_max)
+Metric_tensor Metric_tensor::inverse()
 {
-   
-   assert(ndim == 3);
+   int dim(espace.get_ndim());
+   assert(dim == 3);
    Metric_tensor res(*this);
    res.set_index_type(0) = -this->get_index_type(0);
    res.set_index_type(1) = -this->get_index_type(1);
-   for (int d(0) ; d <= ndom_max ; ++d)      // sum over components, only the upper triangular part
+   for (int d(0) ; d < espace.get_nbr_domains() ; ++d)      // sum over components, only the upper triangular part
    {
       Val_domain detval(espace.get_domain(d));     // let's compute the determinant...
       detval = 0.0;
-      gsl_permutation* p(gsl_permutation_calloc(ndim));  // initialise to identity 0, 1, 2
+      gsl_permutation* p(gsl_permutation_calloc(dim));  // initialise to identity 0, 1, 2
       do
       {
          int p1(static_cast<int>(gsl_permutation_get(p, 0)) + 1);   // for tensor indices, you need to add one to get a permutation of 1, 2, 3
@@ -219,12 +219,12 @@ Metric_tensor Metric_tensor::inverse(int ndom_max)
 
       // compute the transposed comatrix
       Val_domain cmpval(espace.get_domain(d));
-      for (int i(1) ; i <= ndim ;  ++i)      // sum over components, only the upper triangular part
+      for (int i(1) ; i <= dim ;  ++i)      // sum over components, only the upper triangular part
       {
-         for (int j(i) ; j <= ndim ; ++j)
+         for (int j(i) ; j <= dim ; ++j)
          {
             cmpval = 0.0;                   // initialise to 0 before each computation
-            p = gsl_permutation_calloc(ndim - 1);              // reinitialise to identity 0, 1, ready to be used for next component
+            p = gsl_permutation_calloc(dim - 1);              // reinitialise to identity 0, 1, ready to be used for next component
             do
             {
                int p1(static_cast<int>(gsl_permutation_get(p, 0)) + 1);  // always add one for tensor indices, now we have a permutation of 1, 2
@@ -262,4 +262,5 @@ void Metric_tensor::std_base2()
          cmp[4]->std_base_tp_spher_domain(d);
       }
    }
-}}
+}
+}

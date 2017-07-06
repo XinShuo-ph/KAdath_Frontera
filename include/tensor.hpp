@@ -533,6 +533,7 @@ class Tensor {
 	 *
 	 */
 	const Scalar& operator()(int i1, int i2) const ; 
+	const Scalar& at(int i1, int i2) const ; 
 
 	/** Returns the value of a component for a tensor of valence 3
 	 *  (read only version).

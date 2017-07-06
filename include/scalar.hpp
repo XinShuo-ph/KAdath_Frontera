@@ -122,6 +122,7 @@ class Scalar : public Tensor {
     public:
       Val_domain& set_domain (int) ; ///< Read/write of a particular \c Val_domain.
       const Val_domain& operator() (int) const; ///< Read only of a particular \c Val_domain.
+      const Val_domain& at(int) const; ///< Read only of a particular \c Val_domain.
       void operator= (const Scalar&) ; ///< Assignement to another \c Scalar.
       virtual void operator= (const Tensor&) ; ///< Assignement to a \c Tensor (must be scalar)
       void operator= (double) ; ///< Assignment to a double (sets all the values in the configuration space to that value.
