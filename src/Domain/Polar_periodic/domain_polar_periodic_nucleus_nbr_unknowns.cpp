@@ -120,29 +120,29 @@ int Domain_polar_periodic_nucleus::nbr_unknowns (const Tensor& tt, int dom) cons
 			res += nbr_unknowns_val_domain (tt()(dom), 0) ;
 			break ;
 		case 1 :
-			res += nbr_unknowns_val_domain (tt(1)(dom), 0) ;
-			res += nbr_unknowns_val_domain (tt(2)(dom), 0) ;
-			res += nbr_unknowns_val_domain (tt(3)(dom), 0) ;
+			res += nbr_unknowns_val_domain (tt(1)(dom), 1) ;
+			res += nbr_unknowns_val_domain (tt(2)(dom), 1) ;
+			res += nbr_unknowns_val_domain (tt(3)(dom), 1) ;
 			break ;
 		case 2 :
 			if (tt.get_n_comp()==6) {
-				res += nbr_unknowns_val_domain (tt(1,1)(dom), 0) ;
-				res += nbr_unknowns_val_domain (tt(1,2)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(1,3)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(2,2)(dom), 0) ;
-				res += nbr_unknowns_val_domain (tt(2,3)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(3,3)(dom), 0) ;
+				res += nbr_unknowns_val_domain (tt(1,1)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(1,2)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(1,3)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(2,2)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(2,3)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(3,3)(dom), 2) ;
 			}
 			else {
-				res += nbr_unknowns_val_domain (tt(1,1)(dom), 0) ;
-				res += nbr_unknowns_val_domain (tt(1,2)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(1,3)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(2,1)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(2,2)(dom), 0) ;
-				res += nbr_unknowns_val_domain (tt(2,3)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(3,1)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(3,2)(dom), 1) ;
-				res += nbr_unknowns_val_domain (tt(3,3)(dom), 0) ;
+				res += nbr_unknowns_val_domain (tt(1,1)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(1,2)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(1,3)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(2,1)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(2,2)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(2,3)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(3,1)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(3,2)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(3,3)(dom), 2) ;
 			}
 			break ;
 		default :
