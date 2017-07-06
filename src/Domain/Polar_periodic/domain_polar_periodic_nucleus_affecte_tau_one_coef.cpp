@@ -204,22 +204,22 @@ void Domain_polar_periodic_nucleus::affecte_tau_one_coef (Tensor& tt, int dom, i
 			// symetric
 			if (tt.get_n_comp()==6) {
 				affecte_tau_one_coef_val_domain (tt.set(1,1).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(1,2).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(1,3).set_domain(dom), 0, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(1,2).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(1,3).set_domain(dom), 1, cc, pos_cf) ;
 				affecte_tau_one_coef_val_domain (tt.set(2,2).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(2,3).set_domain(dom), 0, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2,3).set_domain(dom), 1, cc, pos_cf) ;
 				affecte_tau_one_coef_val_domain (tt.set(3,3).set_domain(dom), 0, cc, pos_cf) ;
 			}
 			//  not symetric
 			if (tt.get_n_comp()==9) {
 				affecte_tau_one_coef_val_domain (tt.set(1,1).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(1,2).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(1,3).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(2,1).set_domain(dom), 0, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(1,2).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(1,3).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2,1).set_domain(dom), 1, cc, pos_cf) ;
 				affecte_tau_one_coef_val_domain (tt.set(2,2).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(2,3).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(3,1).set_domain(dom), 0, cc, pos_cf) ;
-				affecte_tau_one_coef_val_domain (tt.set(3,2).set_domain(dom), 0, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2,3).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(3,1).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(3,2).set_domain(dom), 1, cc, pos_cf) ;
 				affecte_tau_one_coef_val_domain (tt.set(3,3).set_domain(dom), 0, cc, pos_cf) ;
 			}
 			break ;

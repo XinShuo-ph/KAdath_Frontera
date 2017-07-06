@@ -218,23 +218,23 @@ void Domain_polar_periodic_nucleus::export_tau (const Tensor& tt, int dom, int o
 			if (tt.get_n_comp()==6) {
 				if (n_cmp==-1) {
 					export_tau_val_domain (tt(1,1)(dom), 0, order, res, pos_res, ncond(0)) ;
-					export_tau_val_domain (tt(1,2)(dom), 0, order, res, pos_res, ncond(1)) ;
-					export_tau_val_domain (tt(1,3)(dom), 0, order, res, pos_res, ncond(2)) ;
+					export_tau_val_domain (tt(1,2)(dom), 1, order, res, pos_res, ncond(1)) ;
+					export_tau_val_domain (tt(1,3)(dom), 1, order, res, pos_res, ncond(2)) ;
 					export_tau_val_domain (tt(2,2)(dom), 0, order, res, pos_res, ncond(3)) ;
-					export_tau_val_domain (tt(2,3)(dom), 0, order, res, pos_res, ncond(4)) ;
+					export_tau_val_domain (tt(2,3)(dom), 1, order, res, pos_res, ncond(4)) ;
 					export_tau_val_domain (tt(3,3)(dom), 0, order, res, pos_res, ncond(5)) ;
 				}
 				else for (int i=0 ; i<n_cmp ; i++) {
 					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==1))
 						export_tau_val_domain (tt(1, 1)(dom), 0, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==2))
-						export_tau_val_domain (tt(1, 2)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(1, 2)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==3))
-						export_tau_val_domain (tt(1, 3)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(1, 3)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==2))
 						export_tau_val_domain (tt(2, 2)(dom), 0, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==3))
-						export_tau_val_domain (tt(2, 3)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(2, 3)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==3) && ((*p_cmp[i])(1)==3))
 						export_tau_val_domain (tt(3, 3)(dom), 0, order, res, pos_res, ncond(i)) ;
 				}
@@ -244,32 +244,32 @@ void Domain_polar_periodic_nucleus::export_tau (const Tensor& tt, int dom, int o
 			if (tt.get_n_comp()==9) {
 				if (n_cmp==-1) {
 					export_tau_val_domain (tt(1,1)(dom), 0, order, res, pos_res, ncond(0)) ;
-					export_tau_val_domain (tt(1,2)(dom), 0, order, res, pos_res, ncond(1)) ;
-					export_tau_val_domain (tt(1,3)(dom), 0, order, res, pos_res, ncond(2)) ;
-					export_tau_val_domain (tt(2,1)(dom), 0, order, res, pos_res, ncond(3)) ;
+					export_tau_val_domain (tt(1,2)(dom), 1, order, res, pos_res, ncond(1)) ;
+					export_tau_val_domain (tt(1,3)(dom), 1, order, res, pos_res, ncond(2)) ;
+					export_tau_val_domain (tt(2,1)(dom), 1, order, res, pos_res, ncond(3)) ;
 					export_tau_val_domain (tt(2,2)(dom), 0, order, res, pos_res, ncond(4)) ;
-					export_tau_val_domain (tt(2,3)(dom), 0, order, res, pos_res, ncond(5)) ;
-					export_tau_val_domain (tt(3,1)(dom), 0, order, res, pos_res, ncond(6)) ;
-					export_tau_val_domain (tt(3,2)(dom), 0, order, res, pos_res, ncond(7)) ;
+					export_tau_val_domain (tt(2,3)(dom), 1, order, res, pos_res, ncond(5)) ;
+					export_tau_val_domain (tt(3,1)(dom), 1, order, res, pos_res, ncond(6)) ;
+					export_tau_val_domain (tt(3,2)(dom), 1, order, res, pos_res, ncond(7)) ;
 					export_tau_val_domain (tt(3,3)(dom), 0, order, res, pos_res, ncond(8)) ;
 				}
 				else for (int i=0 ; i<n_cmp ; i++) {
 					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==1))
 						export_tau_val_domain (tt(1, 1)(dom), 0, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==2))
-						export_tau_val_domain (tt(1, 2)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(1, 2)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==3))
-						export_tau_val_domain (tt(1, 3)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(1, 3)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==1))
-						export_tau_val_domain (tt(2, 1)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(2, 1)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==2))
 						export_tau_val_domain (tt(2, 2)(dom), 0, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==3))
-						export_tau_val_domain (tt(2, 3)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(2, 3)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==3) && ((*p_cmp[i])(1)==1))
-						export_tau_val_domain (tt(3, 1)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(3, 1)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==3) && ((*p_cmp[i])(1)==2))
-						export_tau_val_domain (tt(3, 2)(dom), 0, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(3, 2)(dom), 1, order, res, pos_res, ncond(i)) ;
 					if (((*p_cmp[i])(0)==3) && ((*p_cmp[i])(1)==3))
 						export_tau_val_domain (tt(3, 3)(dom), 0, order, res, pos_res, ncond(i)) ;
 				}
