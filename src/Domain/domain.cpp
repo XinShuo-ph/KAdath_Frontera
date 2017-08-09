@@ -1354,6 +1354,12 @@ Val_domain Domain::dtime (const Val_domain&) const {
 	abort() ;
 }
 
+Val_domain Domain::ddtime(const Val_domain&) const {
+	cerr << "ddtime not implemented for" << endl ;
+	cerr << *this << endl ;
+	abort() ;
+}
+
 double Domain::integ (const Val_domain&, int) const {
 	cerr << "integ not implemented for" << endl ;
 	cerr << *this << endl ;

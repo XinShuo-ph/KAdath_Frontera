@@ -520,12 +520,19 @@ class Domain {
      
 
 	/**
-	* Compute the time derivative of a field.
+	* Computes the time derivative of a field.
 	* @param so [input] : the input field.
 	* @returns the result.
 	*/
      virtual Val_domain dtime (const Val_domain&) const ;
      
+	/**
+	* Computes the second time derivative of a field
+	* @param so [input] : the input field.
+	* @returns the result 
+	*/
+	virtual Val_domain ddtime (const Val_domain&) const ;
+
 
 	/**
 	* Returns the vector normal to a surface. Must be a \c Term_eq because the dmain can be a variable one.

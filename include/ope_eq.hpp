@@ -256,6 +256,26 @@ class Ope_dtime: public Ope_eq {
 } ;
 
 /**
+ * Second time derivative
+ * Computes the second time derivative
+ * \ingroup systems
+ */
+
+class Ope_ddtime: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs
+		* @param so : the target
+		*/
+		Ope_ddtime(const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_ddtime() ; ///< Destructor
+
+		virtual Term_eq action() const ;
+} ;
+
+/**
  * The operator Laplacian 2D.
  * Computes the flat 2D Laplacian
  * \ingroup systems.
