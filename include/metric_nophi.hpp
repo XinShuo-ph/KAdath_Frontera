@@ -17,8 +17,8 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __METRIC_symphi_HPP_
-#define __METRIC_symphi_HPP_
+#ifndef __METRIC_nophi_HPP_
+#define __METRIC_nophi_HPP_
 #include "metric.hpp"
 
 namespace Kadath {
@@ -33,7 +33,7 @@ class Base_tensor ;
 * Class that deals with flat metric assuming a axisymmetric setting (nothing depends on \f$varphi\f$).
 * \ingroup metric
 */
-class Metric_flat_symphi : public Metric {
+class Metric_flat_nophi : public Metric {
 
   protected:
     const Base_tensor& basis ; ///< The tensorial basis used.
@@ -43,8 +43,8 @@ class Metric_flat_symphi : public Metric {
 		* Standard constructor
 		* @param sp : the associated \c Space.
 		*/
-		Metric_flat_symphi (const Space& sp, const Base_tensor& bb) ;
-		Metric_flat_symphi (const Metric_flat_symphi& ) ; ///< Copy constructor
+		Metric_flat_nophi (const Space& sp, const Base_tensor& bb) ;
+		Metric_flat_nophi (const Metric_flat_nophi& ) ; ///< Copy constructor
 
 	protected:
 		virtual void compute_con (int) const ;
@@ -87,7 +87,7 @@ class Metric_flat_symphi : public Metric {
 	Term_eq derive_with_other_spher (int tder, char indder, const Term_eq& so, const Metric* othermet) const ;
 
 	public:
-		virtual ~Metric_flat_symphi() ;	
+		virtual ~Metric_flat_nophi() ;	
 		virtual void update() ;	
 		virtual void update(int) ;
 		virtual void manipulate_ind (Term_eq&, int) const ;
@@ -120,17 +120,17 @@ class Metric_flat_symphi : public Metric {
  * Class to deal with a metric independant of \f$\varphi\f$.
  * \ingroup metric
  */
-class Metric_symphi : public Metric {
+class Metric_nophi : public Metric {
 
 	protected:
 	  Metric_tensor* p_met ; ///< Pointer on the \c Metric_tensor describing the metric.
 	  const Base_tensor& basis ; ///< The tensorial basis used.
-	  Metric_flat_symphi fmet ; ///< Associated flat metric.
+	  Metric_flat_nophi fmet ; ///< Associated flat metric.
 	  int place_syst ; ///< Gives the location of the metric amongst the various unknowns of the associated \c System_of_eqs.
 
 	public:
-		Metric_symphi (Metric_tensor&) ; ///< Constructor from a \c Metric_tensor.
-		Metric_symphi (const Metric_symphi& ) ; ///< Copy constructor.
+		Metric_nophi (Metric_tensor&) ; ///< Constructor from a \c Metric_tensor.
+		Metric_nophi (const Metric_nophi& ) ; ///< Copy constructor.
 
 	protected:
 		virtual void compute_con (int) const ;
@@ -140,7 +140,7 @@ class Metric_symphi : public Metric {
 		virtual void compute_ricci_tensor (int) const ;
 		
 	public:
-		virtual ~Metric_symphi() ;
+		virtual ~Metric_nophi() ;
 		virtual Term_eq derive (int, char, const Term_eq&) const ;
 		/**
 		* Associate the metric to a given system of equations.
@@ -157,11 +157,11 @@ class Metric_symphi : public Metric {
  * Class to deal with a metric independant of \f$\varphi\f$ and constant. By this one means that it is a given and is not modified by the \c System_of_eqs.
  * \ingroup metric
  */
-class Metric_symphi_const : public Metric_symphi {
+class Metric_nophi_const : public Metric_nophi {
 
 	public:
-		Metric_symphi_const (Metric_tensor&) ; ///< Constructor from a \c Metric_tensor.
-		Metric_symphi_const (const Metric_symphi_const& ) ; ///< Copy constructor
+		Metric_nophi_const (Metric_tensor&) ; ///< Constructor from a \c Metric_tensor.
+		Metric_nophi_const (const Metric_nophi_const& ) ; ///< Copy constructor
 	
 	protected:
 		virtual void compute_con (int) const ;
@@ -169,7 +169,7 @@ class Metric_symphi_const : public Metric_symphi {
 
 
 	public:
-		virtual ~Metric_symphi_const() ;
+		virtual ~Metric_nophi_const() ;
 
 		/**
 		* Associate the metric to a given system of equations.

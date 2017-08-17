@@ -20,36 +20,36 @@
 #include "space.hpp"
 #include "system_of_eqs.hpp"
 #include "tensor.hpp"
-#include "metric_symphi.hpp"
+#include "metric_nophi.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
 #include "name_tools.hpp"
 #include "metric_tensor.hpp"
 namespace Kadath {
-Metric_flat_symphi::Metric_flat_symphi (const Space& sp, const Base_tensor& bb) : Metric(sp), basis(bb) {
+Metric_flat_nophi::Metric_flat_nophi (const Space& sp, const Base_tensor& bb) : Metric(sp), basis(bb) {
 
 	for (int d=0 ; d<sp.get_nbr_domains() ; d++)
 		if (bb.get_basis(d)!=SPHERICAL_BASIS) {
-			cerr << "Metric_flat_symphi only defined wrt spherical tensorial basis for now..." << endl ;
+			cerr << "Metric_flat_nophi only defined wrt spherical tensorial basis for now..." << endl ;
 			abort() ;
 		}
 }
 
-Metric_flat_symphi::Metric_flat_symphi (const Metric_flat_symphi& so) : Metric (so), basis(so.basis) {
+Metric_flat_nophi::Metric_flat_nophi (const Metric_flat_nophi& so) : Metric (so), basis(so.basis) {
 }
 
-Metric_flat_symphi::~Metric_flat_symphi() {
+Metric_flat_nophi::~Metric_flat_nophi() {
 }
 
-void Metric_flat_symphi::update() {
+void Metric_flat_nophi::update() {
 	// Nothing to do everything is constant
 }
 
-void Metric_flat_symphi::update(int) {
+void Metric_flat_nophi::update(int) {
 	// Nothing to do everything is constant
 }
 
-void Metric_flat_symphi::compute_cov (int dd) const {
+void Metric_flat_nophi::compute_cov (int dd) const {
 	Metric_tensor res (espace, COV, basis) ;
 
 	for (int i=1 ; i<=3  ; i++)
@@ -65,11 +65,11 @@ void Metric_flat_symphi::compute_cov (int dd) const {
 }
 
 
-int Metric_flat_symphi::give_type(int dd) const {
+int Metric_flat_nophi::give_type(int dd) const {
   return basis.get_basis(dd) ;
 }
 
-void Metric_flat_symphi::compute_con (int dd) const {
+void Metric_flat_nophi::compute_con (int dd) const {
 
 	Metric_tensor res (espace, CON, basis) ;
 	for (int i=1 ; i<=3 ; i++)
@@ -83,19 +83,19 @@ void Metric_flat_symphi::compute_con (int dd) const {
 	p_met_con[dd]->set_der_zero() ;
 }
 
-void Metric_flat_symphi::compute_christo (int) const {
-  cerr << "Computation of Christo not explicit for Metric_flat_symphi" << endl ;
+void Metric_flat_nophi::compute_christo (int) const {
+  cerr << "Computation of Christo not explicit for Metric_flat_nophi" << endl ;
   abort() ;
 }
 
-void Metric_flat_symphi::manipulate_ind (Term_eq& so, int ind) const {
+void Metric_flat_nophi::manipulate_ind (Term_eq& so, int ind) const {
 	// Just change the type of the indice !
 	so.set_val_t()->set_index_type (ind) *= -1 ;
 	if (so.set_der_t() !=0x0)
 		so.set_der_t()->set_index_type (ind) *= -1 ;
 }
 
-Term_eq Metric_flat_symphi::derive_partial_spher (int type_der, char ind_der, const Term_eq& so) const {
+Term_eq Metric_flat_nophi::derive_partial_spher (int type_der, char ind_der, const Term_eq& so) const {
   
 	int dom = so.get_dom() ;
 	bool donames = ((so.val_t->is_name_affected()) || (so.val_t->get_valence()==0)) ? true : false ;
@@ -141,7 +141,7 @@ Term_eq Metric_flat_symphi::derive_partial_spher (int type_der, char ind_der, co
 }
 
 
-Term_eq Metric_flat_symphi::derive_partial (int type_der, char ind_der, const Term_eq& so) const {
+Term_eq Metric_flat_nophi::derive_partial (int type_der, char ind_der, const Term_eq& so) const {
   
 	int dom = so.get_dom() ;
       
@@ -152,7 +152,7 @@ Term_eq Metric_flat_symphi::derive_partial (int type_der, char ind_der, const Te
 
 	// so must be tensor :
 	if (so.get_type_data()!=TERM_T) {
-		cerr << "Metric_flat_symphi::derive partial only defined for tensor data" << endl ;
+		cerr << "Metric_flat_nophi::derive partial only defined for tensor data" << endl ;
 		abort() ;
 	}
 
@@ -160,13 +160,13 @@ Term_eq Metric_flat_symphi::derive_partial (int type_der, char ind_der, const Te
 	  case SPHERICAL_BASIS :
 	      return derive_partial_spher (type_der, ind_der, so) ;
 	  default:
-	      cerr << "Unknown tensorial basis in Metric_flat_symphi::derive_partial" << endl ;
+	      cerr << "Unknown tensorial basis in Metric_flat_nophi::derive_partial" << endl ;
 	      abort() ;
 	}
 }
 
 
-Term_eq Metric_flat_symphi::derive_spher (int type_der, char ind_der, const Term_eq& so) const {
+Term_eq Metric_flat_nophi::derive_spher (int type_der, char ind_der, const Term_eq& so) const {
 
 	// Computation of flat gradient :
 	Term_eq part_der (derive_partial(type_der, ind_der, so)) ;
@@ -217,7 +217,7 @@ Term_eq Metric_flat_symphi::derive_spher (int type_der, char ind_der, const Term
 	}
 }
 
-Term_eq Metric_flat_symphi::derive (int type_der, char ind_der, const Term_eq& so) const {
+Term_eq Metric_flat_nophi::derive (int type_der, char ind_der, const Term_eq& so) const {
 
 	int dom = so.get_dom() ;
 
@@ -228,7 +228,7 @@ Term_eq Metric_flat_symphi::derive (int type_der, char ind_der, const Term_eq& s
 
 	// so must be tensor :
 	if (so.get_type_data()!=TERM_T) {
-		cerr << "Metric_flat_symphi::derive only defined for tensor data" << endl ;
+		cerr << "Metric_flat_nophi::derive only defined for tensor data" << endl ;
 		abort() ;
 	}
 
@@ -236,21 +236,21 @@ Term_eq Metric_flat_symphi::derive (int type_der, char ind_der, const Term_eq& s
 	  case SPHERICAL_BASIS :
 	      return derive_spher (type_der, ind_der, so) ;
 	  default:
-	      cerr << "Unknown tensorial basis in Metric_flat_symphi::derive" << endl ;
+	      cerr << "Unknown tensorial basis in Metric_flat_nophi::derive" << endl ;
 	      abort() ;
 	}
 	
 }
 
 
-Term_eq Metric_flat_symphi::derive_with_other_spher (int type_der, char ind_der, const Term_eq& so, const Metric* manipulator) const {
+Term_eq Metric_flat_nophi::derive_with_other_spher (int type_der, char ind_der, const Term_eq& so, const Metric* manipulator) const {
         int dom = so.get_dom() ;
 	
 	// Call the domain version
 	return so.val_t->get_space().get_domain(dom)->derive_flat_spher (type_der, ind_der, so, manipulator) ;
 }
 
-Term_eq Metric_flat_symphi::derive_with_other (int type_der, char ind_der, const Term_eq& so, const Metric* manipulator) const {
+Term_eq Metric_flat_nophi::derive_with_other (int type_der, char ind_der, const Term_eq& so, const Metric* manipulator) const {
 
 	int dom = so.get_dom() ;
 
@@ -261,7 +261,7 @@ Term_eq Metric_flat_symphi::derive_with_other (int type_der, char ind_der, const
 
 	// so must be tensor :
 	if (so.get_type_data()!=TERM_T) {
-		cerr << "Metric_flat_symphi::derive_with_other only defined for tensor data" << endl ;
+		cerr << "Metric_flat_nophi::derive_with_other only defined for tensor data" << endl ;
 		abort() ;
 	}
 
@@ -269,13 +269,13 @@ Term_eq Metric_flat_symphi::derive_with_other (int type_der, char ind_der, const
 	  case SPHERICAL_BASIS :
 	      return derive_with_other_spher (type_der, ind_der, so, manipulator) ;
 	  default:
-	      cerr << "Unknown tensorial basis in Metric_flat_symphi::derive_with_other" << endl ;
+	      cerr << "Unknown tensorial basis in Metric_flat_nophi::derive_with_other" << endl ;
 	      abort() ;
 	}
 	
 }
 
-void Metric_flat_symphi::set_system (System_of_eqs& ss, const char* name) {
+void Metric_flat_nophi::set_system (System_of_eqs& ss, const char* name) {
 	
 	syst = &ss ;
 	if (syst->met!=0x0) {

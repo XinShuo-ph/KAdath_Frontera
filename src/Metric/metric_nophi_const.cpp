@@ -19,25 +19,25 @@
 
 #include "space.hpp"
 #include "tensor.hpp"
-#include "metric_symphi.hpp"
+#include "metric_nophi.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
 #include "system_of_eqs.hpp"
 #include "metric_tensor.hpp"
 #include "name_tools.hpp"
 namespace Kadath {
-Metric_symphi_const::Metric_symphi_const (Metric_tensor& met) : 
-		Metric_symphi(met) {
+Metric_nophi_const::Metric_nophi_const (Metric_tensor& met) : 
+		Metric_nophi(met) {
 }
 
-Metric_symphi_const::Metric_symphi_const (const Metric_symphi_const& so) :
-		Metric_symphi (*so.p_met) {
+Metric_nophi_const::Metric_nophi_const (const Metric_nophi_const& so) :
+		Metric_nophi (*so.p_met) {
 }
 
-Metric_symphi_const::~Metric_symphi_const() {
+Metric_nophi_const::~Metric_nophi_const() {
 }
 
-void Metric_symphi_const::set_system (System_of_eqs& ss, const char* name_met) {
+void Metric_nophi_const::set_system (System_of_eqs& ss, const char* name_met) {
 
 	syst = &ss ;
 
@@ -58,7 +58,7 @@ void Metric_symphi_const::set_system (System_of_eqs& ss, const char* name_met) {
 
 
 
-void Metric_symphi_const::compute_cov (int dd) const {
+void Metric_nophi_const::compute_cov (int dd) const {
 
 	int dim = espace.get_ndim() ;
 	if (dim!=3) {
@@ -156,7 +156,7 @@ void Metric_symphi_const::compute_cov (int dd) const {
 }
 
 
-void Metric_symphi_const::compute_con (int dd) const {
+void Metric_nophi_const::compute_con (int dd) const {
 	int dim = espace.get_ndim() ;
 	if (dim!=3) {
 		cerr << "Function only implemented for dimension 3" << endl ;

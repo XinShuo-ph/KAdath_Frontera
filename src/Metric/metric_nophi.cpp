@@ -19,37 +19,37 @@
 
 #include "space.hpp"
 #include "tensor.hpp"
-#include "metric_symphi.hpp"
+#include "metric_nophi.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
 #include "system_of_eqs.hpp"
 #include "metric_tensor.hpp"
 #include "name_tools.hpp"
 namespace Kadath {
-Metric_symphi::Metric_symphi (Metric_tensor& met) : 
+Metric_nophi::Metric_nophi (Metric_tensor& met) : 
 		Metric(met.get_space()), p_met(&met), basis(met.get_basis()), fmet(met.get_space(), basis) {
 	type_tensor = met.get_type() ;
 	for (int d=0 ; d<met.get_space().get_nbr_domains() ; d++)
 	if (basis.get_basis(d) != SPHERICAL_BASIS)  {
-		cerr << "Metric_symphi only defined wrt spherical tensorial coordinates" << endl ;
+		cerr << "Metric_nophi only defined wrt spherical tensorial coordinates" << endl ;
 		abort() ;
 	}
 }
 
-Metric_symphi::Metric_symphi (const Metric_symphi& so) : 
+Metric_nophi::Metric_nophi (const Metric_nophi& so) : 
 		Metric (so), p_met(so.p_met), basis(so.basis), fmet(so.fmet), place_syst(so.place_syst) {
 }
 
-Metric_symphi::~Metric_symphi() {
+Metric_nophi::~Metric_nophi() {
 }
 
 
-int Metric_symphi::give_type(int dd) const {
+int Metric_nophi::give_type(int dd) const {
   return basis.get_basis(dd) ;
 }
 
 
-void Metric_symphi::compute_cov (int dd) const {
+void Metric_nophi::compute_cov (int dd) const {
 
 
 	int place = place_syst + (dd-syst->dom_min) ;
@@ -234,7 +234,7 @@ void Metric_symphi::compute_cov (int dd) const {
 }
 
 
-void Metric_symphi::compute_con (int dd) const {
+void Metric_nophi::compute_con (int dd) const {
 
 	int place = place_syst + (dd-syst->dom_min) ;
 	// Right storage : simple copy.
@@ -418,7 +418,7 @@ void Metric_symphi::compute_con (int dd) const {
 	}
 }
 
-void Metric_symphi::compute_christo (int dd) const {
+void Metric_nophi::compute_christo (int dd) const {
       // Need both representation of the metric)
       	if (type_tensor == CON) {
 	  if (p_met_con[dd]==0x0)
@@ -482,7 +482,7 @@ void Metric_symphi::compute_christo (int dd) const {
 }
 
 
-void Metric_symphi::compute_riemann (int dd) const {
+void Metric_nophi::compute_riemann (int dd) const {
 
 		// Need christoffels
 	if (p_christo[dd]==0x0)
@@ -538,7 +538,7 @@ void Metric_symphi::compute_riemann (int dd) const {
 
 
 
-void Metric_symphi::compute_ricci_tensor (int dd) const {
+void Metric_nophi::compute_ricci_tensor (int dd) const {
 	// Need christoffels
 	if (p_christo[dd]==0x0)
 		compute_christo(dd) ;
@@ -605,7 +605,7 @@ void Metric_symphi::compute_ricci_tensor (int dd) const {
 
 
 
-Term_eq Metric_symphi::derive_flat (int type_der, char ind_der, const Term_eq& so) const {
+Term_eq Metric_nophi::derive_flat (int type_der, char ind_der, const Term_eq& so) const {
 		
 	int dd = so.get_dom() ;
 
@@ -620,7 +620,7 @@ Term_eq Metric_symphi::derive_flat (int type_der, char ind_der, const Term_eq& s
 	return res ;
 }
 
-Term_eq Metric_symphi::derive (int type_der, char ind_der, const Term_eq& so) const {
+Term_eq Metric_nophi::derive (int type_der, char ind_der, const Term_eq& so) const {
 
 	int dd = so.get_dom() ;
 
@@ -733,7 +733,7 @@ Term_eq Metric_symphi::derive (int type_der, char ind_der, const Term_eq& so) co
 	return res ;
 }
 
-void Metric_symphi::set_system (System_of_eqs& ss, const char* name_met) {
+void Metric_nophi::set_system (System_of_eqs& ss, const char* name_met) {
 
 	syst = &ss ;
 

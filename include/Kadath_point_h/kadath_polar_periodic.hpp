@@ -35,7 +35,7 @@
 #include "vector.hpp"
 #include "term_eq.hpp"
 #include "system_of_eqs.hpp"
-#include "metric_symphi.hpp"
+#include "metric_nophi.hpp"
 
 #include "polar_periodic.hpp"
 
