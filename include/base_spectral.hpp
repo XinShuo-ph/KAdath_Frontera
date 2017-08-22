@@ -197,7 +197,8 @@ class Base_spectral {
      friend class Domain_nucleus_symphi ;     
      friend class Domain_shell_symphi ;
      friend class Domain_compact_symphi ;
-     friend class Domain_polar_periodic_nucleus ;
+     friend class Domain_polar_periodic_nucleus ; 
+     friend class Domain_polar_periodic_shell ;
 } ;
 }
 #endif

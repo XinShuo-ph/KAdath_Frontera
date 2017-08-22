@@ -109,7 +109,7 @@ int Domain_polar_periodic_nucleus::nbr_conditions_val_domain (const Val_domain& 
 		int lim = 0 ;
 		switch (order) {
 		  case 2 :
-		      lim = max-2 ;
+		      lim = max-1 ;
 		      break ; 
 		case 0 :
 		      lim = max ;
@@ -119,7 +119,7 @@ int Domain_polar_periodic_nucleus::nbr_conditions_val_domain (const Val_domain& 
 		      abort() ;
 		}
 		
-		if (pos(0)>lim)
+		if (pos(0)>=lim)
 			indic = false ;
 			
 		if (indic)

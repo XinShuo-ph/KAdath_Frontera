@@ -240,6 +240,7 @@ ostream& operator<< (ostream& o, const Domain& so) {
        const Domain_shell_symphi* shellsym = dynamic_cast<const Domain_shell_symphi*>(&so) ;
        const Domain_compact_symphi* compsym = dynamic_cast<const Domain_compact_symphi*>(&so) ;
        const Domain_polar_periodic_nucleus* polarperiodicnuc = dynamic_cast<const Domain_polar_periodic_nucleus*>(&so) ;
+       const Domain_polar_periodic_shell* polarperiodicshell = dynamic_cast<const Domain_polar_periodic_shell*>(&so) ;
 
        if (nuc != 0x0)
            o << *nuc << endl ;
@@ -309,7 +310,9 @@ ostream& operator<< (ostream& o, const Domain& so) {
        if (compsym != 0x0)
            o << *compsym << endl ;
        if (polarperiodicnuc != 0x0)
-		o << *polarperiodicnuc << endl ;
+		o << *polarperiodicnuc << endl ; 
+	if (polarperiodicshell != 0x0)
+		o << *polarperiodicshell << endl ;
        return o ;   
 }
 

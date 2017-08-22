@@ -81,7 +81,6 @@ Val_domain Domain_shell::der_normal (const Val_domain& so, int bound) const {
 		case INNER_BC :
 			res /= alpha ;
 			break ;
-		
 		default:
 			cerr << "Unknown boundary case in Domain_shell::der_normal" << endl ;
 			abort() ;

@@ -614,6 +614,27 @@ Term_eq operator* (double xx, const Term_eq& so) {
 	return res ;
 }
 
+Term_eq operator* (const Scalar& fact, const Term_eq& so) {
+	
+	Term_eq res (so.dom, so.type_data) ;
+
+	switch (so.type_data) {
+		case (TERM_D) :
+			cerr << "Multiplication of a Term_èeq by a Scalar onlyu defined for Tensorial type" << endl ;
+			abort() ;
+			break ;
+		case (TERM_T) :
+			res.val_t = new Tensor(mult_one_dom(so.dom, fact, *so.val_t)) ;
+			if (so.der_t!=0x0)
+				res.der_t = new Tensor(mult_one_dom(so.dom, fact, *so.der_t)) ;
+			break ;
+		default :
+			cerr << "Unknown data storage in operator+" << endl ;
+			abort() ;
+		}
+	return res ;
+}
+
 Term_eq operator* (const Term_eq& so, double xx) {
 	return xx*so ;
 }

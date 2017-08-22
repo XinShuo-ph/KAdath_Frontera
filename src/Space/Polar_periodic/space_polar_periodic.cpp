@@ -30,14 +30,13 @@ Space_polar_periodic::Space_polar_periodic(int ttype, double omega, const Dim_ar
 
     ndim = 3 ;
     
-    //nbr_domains = bounds.get_size(0)+1 ;
-    nbr_domains = 1 ;
+    nbr_domains = bounds.get_size(0) ;
     type_base = ttype ;
     domains = new Domain* [nbr_domains] ;
     // Nucleus
     domains[0] = new Domain_polar_periodic_nucleus(0, ttype, bounds(0), omega, res) ;
-    //for (int i=1 ; i<nbr_domains-1 ; i++)
-       //domains[i] = new Domain_polar_shell(i, ttype, bounds(i-1), bounds(i), center, res) ;
+    for (int i=1 ; i<nbr_domains ; i++)
+       domains[i] = new Domain_polar_periodic_shell(i, ttype, bounds(i-1), bounds(i), omega, res) ;
   
 }
 
@@ -49,8 +48,8 @@ Space_polar_periodic::Space_polar_periodic(FILE* fd) {
 	//nucleus :
 	domains[0] = new Domain_polar_periodic_nucleus(0, fd) ;
 	//Shells :
-	//for (int i=1 ; i<nbr_domains-1 ; i++)
-	//	domains[i] = new Domain_polar_shell(i, fd) ;
+	for (int i=1 ; i<nbr_domains-1 ; i++)
+		domains[i] = new Domain_polar_periodic_shell(i, fd) ;
 }
 
 Space_polar_periodic::~Space_polar_periodic() {

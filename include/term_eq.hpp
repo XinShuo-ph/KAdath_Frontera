@@ -163,6 +163,7 @@ class Term_eq {
 	friend Term_eq operator* (const Term_eq&, int) ;
 	friend Term_eq operator* (double, const Term_eq&) ;
 	friend Term_eq operator* (const Term_eq&, double) ;
+	friend Term_eq operator* (const Scalar&, const Term_eq&) ;
 	friend Term_eq operator/ (const Term_eq&, double) ;
 	friend Term_eq sqrt (const Term_eq&) ;
 	friend Term_eq partial (const Term_eq&, char) ;
@@ -257,7 +258,10 @@ class Term_eq {
 	friend class Metric_flat_nophi ;
 	friend class Metric_nophi ;
 	friend class Metric_nophi_const ;
-	friend class Domain_polar_periodic_nucleus ;
+	friend class Metric_nophi_AADS ;
+	friend class Metric_nophi_AADS_const ;
+	friend class Domain_polar_periodic_nucleus ;	
+	friend class Domain_polar_periodic_shell ;
 	
 } ;
 }

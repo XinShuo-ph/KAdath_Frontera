@@ -20,6 +20,8 @@
 #ifndef __METRIC_nophi_HPP_
 #define __METRIC_nophi_HPP_
 #include "metric.hpp"
+#include "scalar.hpp"
+#include "vector.hpp"
 
 namespace Kadath {
 class Space ;
@@ -28,6 +30,7 @@ class Term_eq ;
 class Metric_tensor ;
 class System_of_eqs ;
 class Base_tensor ;
+
 
 /**
 * Class that deals with flat metric assuming a axisymmetric setting (nothing depends on \f$varphi\f$).
@@ -178,5 +181,75 @@ class Metric_nophi_const : public Metric_nophi {
 		*/
 		virtual void set_system (System_of_eqs& syst, const char* name) ;
 } ;
+
+/**
+ * Class to deal with a metric independant of \f$\varphi\f$ with a conformal decomposition (mainly used for AADS spacetimes)
+ * The true metric and the conformal are related via
+ * \f$\gamma_{ij} = \frac{1}{\Omega^2}\tilde{\gamma}_{ij}\f$.
+ * The conformal factor vanishes at some boundary so that the various quantities (Christoffels) are multiplied by appropriate factors
+ * of $\Omega$ to ensure regularity.
+ * \ingroup metric
+ */
+class Metric_nophi_AADS : public Metric {
+
+	protected:
+	  Metric_tensor* p_met ; ///< Pointer on the \c Metric_tensor describing the coformal metric.
+	  const Base_tensor& basis ; ///< The tensorial basis used.
+	  Metric_flat_nophi fmet ; ///< Associated flat metric.
+          Scalar conformal ; ///< The conformal factor $\Omega$ (must be a purely radial function)
+	  Scalar der_conf ; ///< Radial derivative of the conformal factor 
+	  int place_syst ; ///< Gives the location of the metric amongst the various unknowns of the associated \c System_of_eqs.
+
+	public:
+		Metric_nophi_AADS (Metric_tensor&, const Scalar& conf) ; ///< Constructor from a \c Metric_tensor and a conformal factor.
+		Metric_nophi_AADS (const Metric_nophi_AADS& ) ; ///< Copy constructor.
+
+	protected:
+		virtual void compute_con (int) const ;
+		virtual void compute_cov (int) const ;		
+		virtual void compute_christo (int) const ;		
+		virtual void compute_riemann (int) const ;		
+		virtual void compute_ricci_tensor (int) const ;
+	
+	public:
+		virtual ~Metric_nophi_AADS() ;
+		virtual Term_eq derive (int, char, const Term_eq&) const ;
+		/**
+		* Associate the metric to a given system of equations.
+		* @param syst : the \c System_of_eqs.
+		* @param name : name by which the metric will be known in the system (like "g", "f"...)
+		*/
+		virtual void set_system (System_of_eqs& syst, const char* name) ;
+		virtual Term_eq derive_flat (int, char, const Term_eq&) const ;
+		
+		virtual int give_type (int) const ;
+} ;
+
+/**
+ * Class to deal with a metric independant of \f$\varphi\f$ with a conformal decomposition and constant. By this one means that it is a given and is not modified by the \c System_of_eqs.
+ * \ingroup metric
+ */
+class Metric_nophi_AADS_const : public Metric_nophi_AADS {
+
+	public:
+		Metric_nophi_AADS_const (Metric_tensor&, const Scalar&) ; ///< Constructor from a \c Metric_tensor.
+		Metric_nophi_AADS_const (const Metric_nophi_AADS_const& ) ; ///< Copy constructor
+	
+	protected:
+		virtual void compute_con (int) const ;
+		virtual void compute_cov (int) const ;
+
+
+	public:
+		virtual ~Metric_nophi_AADS_const() ;
+
+		/**
+		* Associate the metric to a given system of equations.
+		* @param syst : the \c System_of_eqs.
+		* @param name : name by which the metric will be known in the system (like "g", "f"...)
+		*/
+		virtual void set_system (System_of_eqs& syst, const char* name) ;
+} ;
+
 }
 #endif
