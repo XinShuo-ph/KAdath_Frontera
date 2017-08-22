@@ -48,7 +48,7 @@ Space_polar_periodic::Space_polar_periodic(FILE* fd) {
 	//nucleus :
 	domains[0] = new Domain_polar_periodic_nucleus(0, fd) ;
 	//Shells :
-	for (int i=1 ; i<nbr_domains-1 ; i++)
+	for (int i=1 ; i<nbr_domains ; i++)
 		domains[i] = new Domain_polar_periodic_shell(i, fd) ;
 }
 
