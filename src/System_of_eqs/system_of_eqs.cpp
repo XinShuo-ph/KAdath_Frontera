@@ -651,6 +651,7 @@ Tensor System_of_eqs::give_val_def (const char* so) const {
 	Array<int> ind (res.indices(n)) ;
 	res.set(ind).set_domain(zedom) = auxi(ind)(zedom) ;
       }
+	res.set_basis(zedom) = auxi.get_basis().get_basis(zedom) ;
     }
 
   return res ; 
