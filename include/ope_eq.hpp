@@ -550,6 +550,8 @@ class Ope_srdr: public Ope_eq {
 		virtual Term_eq action() const ;
 } ;
 
+
+
 /**
  * The operator second radial derivative
  * \ingroup systems.
@@ -636,6 +638,24 @@ class Ope_ddt: public Ope_eq {
 		*/
 		Ope_ddt (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_ddt() ; ///< Destructor
+	
+		virtual Term_eq action() const ;
+} ;
+
+/**
+ * The operator division by \f$rf$.
+ * \ingroup systems.
+ */
+class Ope_div_r: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_div_r (const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_div_r() ; ///< Destructor
 	
 		virtual Term_eq action() const ;
 } ;

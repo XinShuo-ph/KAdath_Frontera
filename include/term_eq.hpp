@@ -192,7 +192,8 @@ class Term_eq {
 	friend class Ope_der_background ;
 	friend class Ope_mult_r ;	
 	friend class Ope_mult_x ;
-	friend class Ope_div_rsint ;	
+	friend class Ope_div_rsint ;
+	friend class Ope_div_r ;	
 	friend class Ope_div_sint ;
 	friend class Ope_div_xpone ;
 	friend class Ope_partial ;	

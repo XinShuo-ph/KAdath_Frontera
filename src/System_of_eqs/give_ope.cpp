@@ -721,6 +721,13 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 		return p_ope ;
 		}
 
+	// Check if division by r:
+	indic = is_ope_uni(name, p1, "divr") ;
+	if (indic) {
+		p_ope = new Ope_div_r(this, give_ope(dd,p1)) ;
+		return p_ope ;
+		}
+
 	// Check if division by r sint:
 	indic = is_ope_uni(name, p1, "divrsint") ;
 	if (indic) {
