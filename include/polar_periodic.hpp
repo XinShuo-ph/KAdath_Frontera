@@ -301,7 +301,8 @@ class Domain_polar_periodic_shell : public Domain {
      virtual Val_domain mult_r (const Val_domain&) const ;
      virtual Val_domain div_r (const Val_domain&) const ;
      virtual Val_domain der_r (const Val_domain&) const ; 
-     virtual Val_domain dt (const Val_domain&) const ;
+     virtual Val_domain dt (const Val_domain&) const ; 
+     virtual Val_domain div_1mrsL (const Val_domain&) const ;
      virtual Val_domain dtime (const Val_domain&) const ;
      virtual Val_domain mult_cos_time (const Val_domain&) const ;
      virtual Val_domain mult_sin_time (const Val_domain&) const ;

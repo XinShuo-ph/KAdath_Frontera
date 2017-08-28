@@ -28,6 +28,7 @@ int mult_sin_1d (int, Array<double>&) ;
 int div_sin_1d (int, Array<double>&) ;
 int div_x_1d (int, Array<double>&) ;
 int mult_x_1d (int, Array<double>&) ;
+int div_xm1_1d (int, Array<double>&) ;
 
 Val_domain Domain_polar_periodic_shell::mult_cos_theta (const Val_domain& so) const {
 	so.coef() ;
@@ -78,6 +79,22 @@ Val_domain Domain_polar_periodic_shell::div_r (const Val_domain& so) const {
 	res.base = so.base ;
 	return (res) ;
 }
+
+
+Val_domain Domain_polar_periodic_shell::div_1mrsL (const Val_domain& so) const {
+   if (so.check_if_zero())
+      return so;
+	so.coef() ;
+	Val_domain res(this) ;
+
+	res.base= so.base ;
+
+	res.cf = new Array<double> (-(alpha+beta)/alpha*so.base.ope_1d(div_xm1_1d, 0, *so.cf, res.base)) ;
+	res.in_coef = true ;
+	return res ;
+}
+
+
 
 Val_domain Domain_polar_periodic_shell::der_r (const Val_domain& so) const {
   return (so.der_var(1)/alpha) ;
