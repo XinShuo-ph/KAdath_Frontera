@@ -103,6 +103,10 @@ Val_domain Domain_polar_periodic_nucleus::der_r (const Val_domain& so) const {
   return (so.der_var(1)/alpha) ;
 }
 
+Val_domain Domain_polar_periodic_nucleus::dt (const Val_domain& so) const {
+  return (so.der_var(2)) ;
+}
+
 Val_domain Domain_polar_periodic_nucleus::dtime (const Val_domain& so) const {
   return (so.der_var(3)*ome) ;
 }

@@ -36,6 +36,9 @@ Term_eq Ope_div_r::action() const {
 		abort() ;
 	}
     
+
+	int valence = part.val_t->get_valence() ;
+
 	Term_eq target (part.val_t->get_space().get_domain(dom)->div_r_term_eq(part)) ;
 
 	// The value	
@@ -51,6 +54,13 @@ Term_eq Ope_div_r::action() const {
 		}
 	}
 
+	// Put name indices :
+		if (target.val_t->is_name_affected()) {
+			resval.set_name_affected() ;
+			for (int ncmp = 0 ; ncmp<valence ; ncmp++)
+				resval.set_name_ind (ncmp, target.val_t->get_name_ind()[ncmp]) ;
+		}
+
 	if (target.der_t!=0x0) {
 		Tensor resder (*target.der_t, false) ;
 		for (int i=0 ; i<target.der_t->get_n_comp() ; i++) {
@@ -62,6 +72,12 @@ Term_eq Ope_div_r::action() const {
 				resder.set(ind).set_domain(dom) = value ;
 			}
 			}
+		// Put name indices :
+		if (target.der_t->is_name_affected()) {
+			resder.set_name_affected() ;
+			for (int ncmp = 0 ; ncmp<valence ; ncmp++)
+				resder.set_name_ind (ncmp, target.der_t->get_name_ind()[ncmp]) ;
+		}
 		Term_eq res (dom, resval, resder) ;
 		return res ;
 	}
