@@ -201,17 +201,17 @@ void Domain_polar_periodic_nucleus::export_tau (const Tensor& tt, int dom, int o
 			break ;
 		case 1 :
 			if (n_cmp==-1) {
-					export_tau_val_domain (tt(1)(dom), 1, order, res, pos_res, ncond(0)) ;
-					export_tau_val_domain (tt(2)(dom), 1, order, res, pos_res, ncond(1)) ;
-					export_tau_val_domain (tt(3)(dom), 1, order, res, pos_res, ncond(2)) ;
+					export_tau_val_domain (tt(1)(dom), 2, order, res, pos_res, ncond(0)) ;
+					export_tau_val_domain (tt(2)(dom), 2, order, res, pos_res, ncond(1)) ;
+					export_tau_val_domain (tt(3)(dom), 2, order, res, pos_res, ncond(2)) ;
 				}
 				else for (int i=0 ; i<n_cmp ; i++) {
 					if ((*p_cmp[i])(0)==1)
-						export_tau_val_domain (tt(1)(dom), 1, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(1)(dom), 2, order, res, pos_res, ncond(i)) ;
 					if ((*p_cmp[i])(0)==2)
-						export_tau_val_domain (tt(2)(dom), 1, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(2)(dom), 2, order, res, pos_res, ncond(i)) ;
 					if ((*p_cmp[i])(0)==3)
-						export_tau_val_domain (tt(3)(dom), 1, order, res, pos_res, ncond(i)) ;
+						export_tau_val_domain (tt(3)(dom), 2, order, res, pos_res, ncond(i)) ;
 				}
 			break ;
 		case 2 :

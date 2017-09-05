@@ -142,17 +142,17 @@ Array<int> Domain_polar_periodic_nucleus::nbr_conditions (const Tensor& tt, int 
 			break ;
 		case 1 :
 			if (n_cmp==-1) {
-					res.set(0) = nbr_conditions_val_domain (tt(1)(dom), 1, order) ;
-					res.set(1) = nbr_conditions_val_domain (tt(2)(dom), 1, order) ;
-					res.set(2) = nbr_conditions_val_domain (tt(3)(dom), 1, order) ;
+					res.set(0) = nbr_conditions_val_domain (tt(1)(dom), 2, order) ;
+					res.set(1) = nbr_conditions_val_domain (tt(2)(dom), 2, order) ;
+					res.set(2) = nbr_conditions_val_domain (tt(3)(dom), 2, order) ;
 				}
 				else for (int i=0 ; i<n_cmp ; i++) {
 					if ((*p_cmp[i])(0)==1)
-						res.set(i) = nbr_conditions_val_domain (tt(1)(dom), 1, order) ;
+						res.set(i) = nbr_conditions_val_domain (tt(1)(dom), 2, order) ;
 					if ((*p_cmp[i])(0)==2)
-						res.set(i) = nbr_conditions_val_domain (tt(2)(dom), 1, order) ;
+						res.set(i) = nbr_conditions_val_domain (tt(2)(dom), 2, order) ;
 					if ((*p_cmp[i])(0)==3)
-						res.set(i) = nbr_conditions_val_domain (tt(3)(dom), 1, order) ;
+						res.set(i) = nbr_conditions_val_domain (tt(3)(dom), 2, order) ;
 				}
 			break ;
 		case 2 :

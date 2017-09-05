@@ -196,9 +196,9 @@ void Domain_polar_periodic_nucleus::affecte_tau_one_coef (Tensor& tt, int dom, i
 			affecte_tau_one_coef_val_domain (tt.set().set_domain(dom), 0, cc, pos_cf) ;
 			break ;
 		case 1 :
-			affecte_tau_one_coef_val_domain (tt.set(1).set_domain(dom), 1, cc, pos_cf) ;
-			affecte_tau_one_coef_val_domain (tt.set(2).set_domain(dom), 1, cc, pos_cf) ;
-			affecte_tau_one_coef_val_domain (tt.set(3).set_domain(dom), 1, cc, pos_cf) ;
+			affecte_tau_one_coef_val_domain (tt.set(1).set_domain(dom), 2, cc, pos_cf) ;
+			affecte_tau_one_coef_val_domain (tt.set(2).set_domain(dom), 2, cc, pos_cf) ;
+			affecte_tau_one_coef_val_domain (tt.set(3).set_domain(dom), 2, cc, pos_cf) ;
 			break ;
 		case 2 :
 			// symetric

@@ -185,9 +185,9 @@ void Domain_polar_periodic_nucleus::affecte_tau (Tensor& tt, int dom, const Arra
 			affecte_tau_val_domain (tt.set().set_domain(dom), 0, cf, pos_cf) ;
 			break ;
 		case 1 :
-			affecte_tau_val_domain (tt.set(1).set_domain(dom), 1, cf, pos_cf) ;
-			affecte_tau_val_domain (tt.set(2).set_domain(dom), 1, cf, pos_cf) ;
-			affecte_tau_val_domain (tt.set(3).set_domain(dom), 1, cf, pos_cf) ;
+			affecte_tau_val_domain (tt.set(1).set_domain(dom), 2, cf, pos_cf) ;
+			affecte_tau_val_domain (tt.set(2).set_domain(dom), 2, cf, pos_cf) ;
+			affecte_tau_val_domain (tt.set(3).set_domain(dom), 2, cf, pos_cf) ;
 			break ;
 		case 2 :
 			if (tt.get_n_comp()==6) {
