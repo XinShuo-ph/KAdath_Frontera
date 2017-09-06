@@ -62,4 +62,11 @@ void Space_polar_periodic::save (FILE* fd) const  {
 	for (int i=0 ; i<nbr_domains ; i++)
 		domains[i]->save(fd) ;
 }
+
+
+double Space_polar_periodic::get_omega() const {
+	  const Domain_polar_periodic_nucleus* polarperiodicnuc = dynamic_cast<const Domain_polar_periodic_nucleus*>(domains[0]) ;
+	return polarperiodicnuc->get_ome() ;
+     
+}
 }

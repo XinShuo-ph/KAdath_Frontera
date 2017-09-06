@@ -109,6 +109,10 @@ class Domain_polar_periodic_nucleus : public Domain {
      virtual const Point absol_to_num(const Point&) const;
      virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
+     /**
+	* Returns omega
+	*/ 
+     double get_ome() const {return ome ;} ;
 
   public:
      virtual Val_domain mult_cos_theta (const Val_domain&) const ;
@@ -404,6 +408,8 @@ class Space_polar_periodic : public Space {
 	Space_polar_periodic (FILE*) ; ///< Constructor from a file
 	virtual ~Space_polar_periodic() ;      
 	virtual void save(FILE*) const ;
+
+	double get_omega() const ;
 } ;
 
 }
