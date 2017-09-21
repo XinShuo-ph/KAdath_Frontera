@@ -770,6 +770,24 @@ class Ope_mult_1mrsL: public Ope_eq {
 } ;
 
 /**
+ * The operator multiplication by \f$\sin\theta\f$.
+ * \ingroup systems.
+ */
+class Ope_mult_sint: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_mult_sint (const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_mult_sint() ; ///> Destructor
+	
+		virtual Term_eq action() const ;
+} ;
+
+/**
  * The operator division by \f$\sin\theta\f$.
  * \ingroup systems.
  */
@@ -786,6 +804,7 @@ class Ope_div_sint: public Ope_eq {
 	
 		virtual Term_eq action() const ;
 } ;
+
 
 /**
  * The operator partial derivative

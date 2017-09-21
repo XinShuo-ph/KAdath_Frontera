@@ -196,6 +196,7 @@ class Term_eq {
 	friend class Ope_mult_rsint ;
 	friend class Ope_div_r ;	
 	friend class Ope_div_sint ;
+	friend class Ope_mult_sint ;
 	friend class Ope_div_xpone ;
 	friend class Ope_partial ;	
 	friend class Ope_partial_var ;
