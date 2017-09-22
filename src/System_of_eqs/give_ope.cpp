@@ -602,107 +602,107 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 	// Check if laplacian :
 	indic = is_ope_uni(name, p1, "Lap") ;
 	if (indic) {
-		p_ope = new Ope_lap(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_lap(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	indic = is_ope_uni(name, p1, "lap") ;
 	if (indic) {
-		p_ope = new Ope_lap(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_lap(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	indic = is_ope_uni(name, p1, "Lap2") ;
 	if (indic) {
-		p_ope = new Ope_lap2(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_lap2(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	indic = is_ope_uni(name, p1, "lap2") ;
 	if (indic) {
-		p_ope = new Ope_lap2(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_lap2(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 	// Check if dn :
 	indic = is_ope_uni(name, p1, "dn") ;
 	if (indic) {	
-		p_ope = new Ope_dn(this, bound, give_ope(dd,p1)) ;
+		p_ope = new Ope_dn(this, bound, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 		
 	  // Check if mult by x :
 	indic = is_ope_uni(name, p1, "multx") ;
 	if (indic) {
-		p_ope = new Ope_mult_x(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_mult_x(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if mult by r :
 	indic = is_ope_uni(name, p1, "multr") ;
 	if (indic) {
-		p_ope = new Ope_mult_r(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_mult_r(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if mult by 1 - r/L :
 	indic = is_ope_uni(name, p1, "mult1mrsL") ;
 	if (indic) {
-		p_ope = new Ope_mult_1mrsL(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_mult_1mrsL(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if div by 1 - r/L :
 	indic = is_ope_uni(name, p1, "div1mrsL") ;
 	if (indic) {
-		p_ope = new Ope_div_1mrsL(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_div_1mrsL(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	indic = is_ope_uni(name, p1, "valori") ;
 	if (indic) {
-		p_ope = new Ope_val_ori(this, dd, give_ope(0,p1)) ;
+		p_ope = new Ope_val_ori(this, dd, give_ope(0,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if srdr :
 	indic = is_ope_uni(name, p1, "srdr") ;
 	if (indic) {
-		p_ope = new Ope_srdr(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_srdr(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if ddp :
 	indic = is_ope_uni(name, p1, "ddp") ;
 	if (indic) {
-		p_ope = new Ope_ddp(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_ddp(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if ddt :
 	indic = is_ope_uni(name, p1, "ddt") ;
 	if (indic) {
-		p_ope = new Ope_ddt(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_ddt(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if dt :
 	indic = is_ope_uni(name, p1, "dt") ;
 	if (indic) {
-		p_ope = new Ope_dt(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_dt(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if dt :
 	indic = is_ope_uni(name, p1, "dtime") ;
 	if (indic) {
-		p_ope = new Ope_dtime(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_dtime(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 	
 	// Check if ddt
 	indic = is_ope_uni(name, p1, "ddtime") ;
 	if (indic) {
-		p_ope = new Ope_ddtime (this, give_ope(dd, p1)) ;
+		p_ope = new Ope_ddtime (this, give_ope(dd, p1, bound)) ;
 		return p_ope ;
 		}
 
@@ -710,63 +710,63 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 	// Check if ddr :
 	indic = is_ope_uni(name, p1, "ddr") ;
 	if (indic) {
-		p_ope = new Ope_ddr(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_ddr(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if dr :
 	indic = is_ope_uni(name, p1, "dr") ;
 	if (indic) {
-		p_ope = new Ope_dr(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_dr(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if division by r:
 	indic = is_ope_uni(name, p1, "divr") ;
 	if (indic) {
-		p_ope = new Ope_div_r(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_div_r(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if multiplication by r sint:
 	indic = is_ope_uni(name, p1, "multrsint") ;
 	if (indic) {
-		p_ope = new Ope_mult_rsint(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_mult_rsint(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if division by r sint:
 	indic = is_ope_uni(name, p1, "divrsint") ;
 	if (indic) {
-		p_ope = new Ope_div_rsint(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_div_rsint(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if division by sint:
 	indic = is_ope_uni(name, p1, "divsint") ;
 	if (indic) {
-		p_ope = new Ope_div_sint(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_div_sint(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if multiplication by sint:
 	indic = is_ope_uni(name, p1, "multsint") ;
 	if (indic) {
-		p_ope = new Ope_mult_sint(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_mult_sint(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if division by xpone:
 	indic = is_ope_uni(name, p1, "divxpone") ;
 	if (indic) {
-		p_ope = new Ope_div_xpone(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_div_xpone(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if division by xpone:
 	indic = is_ope_uni(name, p1, "div1mx2") ;
 	if (indic) {
-		p_ope = new Ope_div_1mx2(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_div_1mx2(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
@@ -780,70 +780,70 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 	// Check if integ :
 	indic = is_ope_uni(name, p1, "integvolume") ;
 	if (indic) {
-		p_ope = new Ope_int_volume(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_int_volume(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 	
 	// Check if grad :
 	indic = is_ope_uni(name, p1, "grad") ;
 	if (indic) {
-		p_ope = new Ope_grad(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_grad(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if sqrt :
 	indic = is_ope_uni(name, p1, "sqrt") ;
 	if (indic) {
-		p_ope = new Ope_sqrt(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_sqrt(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if exp :
 	indic = is_ope_uni(name, p1, "exp") ;
 	if (indic) {
-		p_ope = new Ope_exp(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_exp(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if log :
 	indic = is_ope_uni(name, p1, "log") ;
 	if (indic) {
-		p_ope = new Ope_log(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_log(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if scalar product :
 	indic = is_ope_uni(name, p1, p2, "scal") ;
 	if (indic) {
-		p_ope = new Ope_scal(this, give_ope(dd,p1), give_ope(dd,p2)) ;
+		p_ope = new Ope_scal(this, give_ope(dd,p1, bound), give_ope(dd,p2, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if determinant :
 	indic = is_ope_uni(name, p1, "determinant") ;
 	if (indic) {
-		p_ope = new Ope_determinant(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_determinant(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if inverse :
 	indic = is_ope_uni(name, p1, "inverse") ;
 	if (indic) {
-		p_ope = new Ope_inverse(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_inverse(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if inversenodet :
 	indic = is_ope_uni(name, p1, "inversenodet") ;
 	if (indic) {
-		p_ope = new Ope_inverse_nodet(this, give_ope(dd,p1)) ;
+		p_ope = new Ope_inverse_nodet(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
 
 	// Check if fit waves
 	indic = is_ope_uni(name, p1, p2, "fitwaves") ;
 	if (indic) {
-	    p_ope = new Ope_fit_waves(this, give_ope(dd,p1), give_ope(dd,p2)) ;
+	    p_ope = new Ope_fit_waves(this, give_ope(dd,p1, bound), give_ope(dd,p2, bound)) ;
 	    return p_ope ;
 	}
 
@@ -873,21 +873,21 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 	char ind_der ;
 	indic = is_ope_deriv(name, p1, type_der, ind_der) ;
 	if (indic) {
-		 p_ope = new Ope_der (this, type_der, ind_der, give_ope(dd,p1)) ;
+		 p_ope = new Ope_der (this, type_der, ind_der, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 	}
 	
 	// Check if flat derivative :
 	indic = is_ope_deriv_flat(name, p1, type_der, ind_der) ;
 	if (indic) {
-		 p_ope = new Ope_der_flat (this, type_der, ind_der, give_ope(dd,p1)) ;
+		 p_ope = new Ope_der_flat (this, type_der, ind_der, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 	}
 		
 	// Check if background derivative :
 	indic = is_ope_deriv_background(name, p1, type_der, ind_der) ;
 	if (indic) {
-		 p_ope = new Ope_der_background (this, type_der, ind_der, give_ope(dd,p1)) ;
+		 p_ope = new Ope_der_background (this, type_der, ind_der, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 	}
 	
@@ -895,7 +895,7 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 	// Check if partial :
 	indic = is_ope_partial(name, p1, ind_der) ;
 	if (indic) {
-		p_ope = new Ope_partial (this, ind_der, give_ope(dd,p1)) ;
+		p_ope = new Ope_partial (this, ind_der, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 	}
 
@@ -903,7 +903,7 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 	int ind_var ;
 	indic = is_ope_der_var (dd, name, p1, ind_var) ;
 	if (indic) {
-	    p_ope = new Ope_partial_var (this, ind_var, give_ope(dd, p1)) ;
+	    p_ope = new Ope_partial_var (this, ind_var, give_ope(dd, p1, bound)) ;
 	    return p_ope ;
 	}
 
@@ -911,7 +911,7 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 	int val_exp ;
 	indic = is_ope_pow (name, p1, val_exp) ;
 	if (indic) {
-		p_ope = new Ope_pow(this, val_exp, give_ope(dd, p1)) ;
+		p_ope = new Ope_pow(this, val_exp, give_ope(dd, p1, bound)) ;
 		return p_ope ;
 	}
 
