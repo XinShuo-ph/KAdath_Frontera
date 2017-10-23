@@ -30,6 +30,8 @@ Ope_div_xpone::~Ope_div_xpone() {
 Term_eq Ope_div_xpone::action() const {
 
 	Term_eq target (parts[0]->action()) ;
+
+	int valence = target.val_t->get_valence() ;
 	// Check it is a tensor
 	if (target.type_data != TERM_T) {
 		cerr << "Ope_div_xpone only defined with respect to a tensor" << endl ;
@@ -49,7 +51,12 @@ Term_eq Ope_div_xpone::action() const {
 			resval.set(ind).set_domain(dom) = auxi ;
 		}
 	}
-
+	// Put name indices :
+		if (target.val_t->is_name_affected()) {
+			resval.set_name_affected() ;
+			for (int ncmp = 0 ; ncmp<valence ; ncmp++)
+				resval.set_name_ind (ncmp, target.val_t->get_name_ind()[ncmp]) ;
+		}
 	if (target.der_t!=0x0) {
 		Tensor resder (*target.der_t, false) ;
 		for (int i=0 ; i<target.der_t->get_n_comp() ; i++) {
@@ -62,6 +69,12 @@ Term_eq Ope_div_xpone::action() const {
 				resder.set(ind).set_domain(dom) = auxi ;
 			}
 			}
+		// Put name indices :
+		if (target.der_t->is_name_affected()) {
+			resder.set_name_affected() ;
+			for (int ncmp = 0 ; ncmp<valence ; ncmp++)
+				resder.set_name_ind (ncmp, target.der_t->get_name_ind()[ncmp]) ;
+		}
 		Term_eq res (dom, resval, resder) ;
 		return res ;
 	}

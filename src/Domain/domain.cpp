@@ -325,6 +325,14 @@ Term_eq Domain::dr_term_eq (const Term_eq& so) const {
   return do_comp_by_comp (so, &Domain::der_r) ;
 }
 
+Term_eq Domain::dtime_term_eq (const Term_eq& so) const {
+  return do_comp_by_comp (so, &Domain::dtime) ;
+}
+
+Term_eq Domain::ddtime_term_eq (const Term_eq& so) const {
+  return do_comp_by_comp (so, &Domain::ddtime) ;
+}
+
 Term_eq Domain::lap_term_eq (const Term_eq& so, int mm) const {
   return do_comp_by_comp_with_int (so, mm, &Domain::laplacian) ;
 }

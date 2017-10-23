@@ -23,6 +23,7 @@
 #include "headcpp.hpp"
 #include "base_spectral.hpp"
 #include "array.cpp"
+#include "param.hpp"
 
 #define CHEB_TYPE 1
 #define LEG_TYPE 2
@@ -803,7 +804,20 @@ class Domain {
 	*/
      virtual Term_eq dr_term_eq (const Term_eq& so) const ;   
        
-
+	/**
+	* Time derivative of a \c Term_eq. 
+	* @param so : input field.
+	* @returns  result.
+	*/
+     virtual Term_eq dtime_term_eq (const Term_eq& so) const ;   
+       
+	/**
+	* Second time derivative of a \c Term_eq. 
+	* @param so : input field.
+	* @returns  result.
+	*/
+     virtual Term_eq ddtime_term_eq (const Term_eq& so) const ;   
+    
 	 /**
 	* Computes the flat derivative of a \c Term_eq, in spherical orthonormal coordinates.
 	* If the index of the derivative is present in the source, appropriate contraction is performed.
@@ -850,6 +864,15 @@ class Domain {
 	* @param conte : current position in the values vector.
 	*/
      virtual void xx_to_vars_from_adapted (Val_domain& shape, const Array<double>& xx, int& conte) const {} ;
+
+	/**
+	* Computes the new boundary of a \c Domain from a set of values.
+	* @param bound : Variable boundary of the \c Domain.
+	* @param xx : set of values used by the affectation
+	* @param conte : current position in the values vector.
+	*/
+     virtual void xx_to_vars_from_adapted (double bound, const Array<double>& xx, int& conte) const {} ;
+
 	/**
 	* Affects the derivative part of variable a \c Domain from a set of values.
 	* @param xx : set of values used by the affectation
@@ -870,6 +893,17 @@ class Domain {
 	* @param newval : new value of the scalar field.
 	*/
      virtual void update_variable (const Val_domain& shape, const Scalar& oldval, Scalar& newval) const {} ;
+
+
+	/**
+	* Update the value of a scalar, after the shape  of the \c Domain has been changed by the system.
+	* This is intended for variable fields and the new valued is computed using a first order Taylor expansion.
+	* @param bound : modification of the bound of the \c Domain.
+	* @param oldval : old value of the scalar field.
+	* @param newval : new value of the scalar field.
+	*/
+     virtual void update_variable (double bound, const Scalar& oldval, Scalar& newval) const {} ;
+	
 	/**
 	* Update the value of a scalar, after the shape  of the \c Domain has been changed by the system.
 	* This is intended for constant field and the new valued is computed using a true spectral summation.
@@ -880,11 +914,26 @@ class Domain {
      virtual void update_constante (const Val_domain& shape, const Scalar& oldval, Scalar& newval) const {} ;
 
 	/**
+	* Update the value of a scalar, after the shape  of the \c Domain has been changed by the system.
+	* This is intended for constant field and the new valued is computed using a true spectral summation.
+	* @param bound : modification to the bound of the \c Domain.
+	* @param oldval : old value of the scalar field.
+	* @param newval : new value of the scalar field.
+	*/
+     virtual void update_constante (double bound, const Scalar& oldval, Scalar& newval) const {} ;
+
+
+	/**
 	* Updates the variables parts of the \c Domain
 	* @param shape : correction to the variable boundary.
 	*/
      virtual void update_mapping(const Val_domain& shape) {} ;
-     
+     /**
+	* Updates the variables parts of the \c Domain
+	* @param  double : correction to the variable boundary.
+	*/
+     virtual void update_mapping(double bound) {} ;
+    
      /**
       * Sets the value at infinity of a \c Val_domain : not implemented for this type of \c Domain.
       * @param so [input/output] : the \c Val_domain.

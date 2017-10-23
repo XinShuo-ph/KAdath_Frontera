@@ -30,6 +30,8 @@ namespace Kadath {
 * There is a third dimension, being time. The fields are supposed to be periodic.
 * The numerical time goes either to \f$\pi\f$.
 *
+* The period is an unknown, prescribed by additionnal constraints on the solution. 
+*
 * \li The numerical coordinates are :
 *
 * \f$ 0 \leq x \leq 1 \f$
@@ -52,7 +54,10 @@ class Domain_polar_periodic_nucleus : public Domain {
 
  private:
   double alpha ; ///< Relates the numerical radius to the physical one.
-  double ome ; ///< Relates the numerical time to the physical one.
+
+  double ome ; ///< The pulsation.
+  mutable Term_eq* ome_term_eq ; ///< Pointer on the \c Term_eq version of the pulsation.
+
   /**
    * Gives the type of time periodicity.
    * \li if 0 \f$ t^\star\f$ goes to \f$ \pi\f$.
@@ -134,6 +139,25 @@ class Domain_polar_periodic_nucleus : public Domain {
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
+ 	
+
+     virtual int nbr_unknowns_from_adapted() const ;
+     virtual void vars_to_terms() const ;
+     virtual void affecte_coef (int&, int, bool&) const ;
+     virtual void xx_to_vars_from_adapted (double, const Array<double>&, int&) const ;
+     virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
+     virtual void update_term_eq (Term_eq*) const ;
+     virtual void update_variable (double, const Scalar&, Scalar&) const ;   
+     virtual void update_constante (double, const Scalar&, Scalar&) const ;   
+     virtual void update_mapping(double) ;
+
+     /**
+     * Updates the quantities that depend on the frequency.
+     */
+     void update() const ;
+    
+     virtual Term_eq dtime_term_eq (const Term_eq& so) const ;   
+     virtual Term_eq ddtime_term_eq (const Term_eq& so) const ;   
 
          virtual int nbr_unknowns (const Tensor&, int) const ;
 	/**
@@ -217,6 +241,8 @@ class Domain_polar_periodic_nucleus : public Domain {
 * There is a third dimension, being time. The fields are supposed to be periodic.
 * The numerical time goes either to \f$\pi\f$.
 *
+* The period is an unknown, prescribed by additionnal constraints on the solution. 
+*
 * \li The numerical coordinates are :
 *
 * \f$ -1 \leq x \leq 1 \f$
@@ -240,7 +266,11 @@ class Domain_polar_periodic_shell : public Domain {
  private:
   double alpha ; ///< Relates the numerical radius to the physical one.
   double beta ; ///< Relates the numerical radius to the physical one.
-  double ome ; ///< Relates the numerical time to the physical one.
+
+
+  double ome ; ///< The pulsation.
+  mutable Term_eq* ome_term_eq ; ///< Pointer on the \c Term_eq version of the pulsation.
+
   /**
    * Gives the type of time periodicity.
    * \li if 0 \f$ t^\star\f$ goes to \f$ \pi\f$.
@@ -317,6 +347,25 @@ class Domain_polar_periodic_shell : public Domain {
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
+
+     virtual int nbr_unknowns_from_adapted() const ;
+     virtual void vars_to_terms() const ;
+     virtual void affecte_coef (int&, int, bool&) const ;
+     virtual void xx_to_vars_from_adapted (double, const Array<double>&, int&) const ;
+     virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
+     virtual void update_term_eq (Term_eq*) const ;
+     virtual void update_variable (double, const Scalar&, Scalar&) const ;   
+     virtual void update_constante (double, const Scalar&, Scalar&) const ;   
+     virtual void update_mapping(double) ;
+
+     /**
+     * Updates the quantities that depend on the frequency.
+     */
+     void update() const ;
+    
+     virtual Term_eq dtime_term_eq (const Term_eq& so) const ;   
+     virtual Term_eq ddtime_term_eq (const Term_eq& so) const ;   
+
 
          virtual int nbr_unknowns (const Tensor&, int) const ;
 	/**
@@ -408,6 +457,11 @@ class Space_polar_periodic : public Space {
 	Space_polar_periodic (FILE*) ; ///< Constructor from a file
 	virtual ~Space_polar_periodic() ;      
 	virtual void save(FILE*) const ;
+
+	virtual int nbr_unknowns_from_variable_domains() const ;
+	virtual void affecte_coef_to_variable_domains(int& , int, Array<int>&) const ;
+	virtual void xx_to_ders_variable_domains(const Array<double>&, int&) const ;
+	virtual void xx_to_vars_variable_domains(System_of_eqs*, const Array<double>&, int&) const ;
 
 	double get_omega() const ;
 } ;

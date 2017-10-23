@@ -265,7 +265,7 @@ class Term_eq {
 	friend class Metric_nophi_AADS_const ;
 	friend class Domain_polar_periodic_nucleus ;	
 	friend class Domain_polar_periodic_shell ;
-	
+	friend class Space_polar_periodic ;
 } ;
 }
 #endif

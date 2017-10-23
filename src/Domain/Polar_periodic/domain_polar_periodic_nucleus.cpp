@@ -23,6 +23,8 @@
 #include "point.hpp"
 #include "array_math.cpp"
 #include "val_domain.hpp"
+#include "term_eq.hpp"
+#include "scalar.hpp"
 
 namespace Kadath {
 void coef_1d (int, Array<double>&) ;
@@ -41,12 +43,16 @@ Domain_polar_periodic_nucleus::Domain_polar_periodic_nucleus (int num, int ttype
 	    cerr << "Unknown case for type_time" << endl ;
 	    abort()  ;
      }
+
      do_coloc() ;
+     ome_term_eq = 0x0 ;
 }
 
 // Constructor by copy
 Domain_polar_periodic_nucleus::Domain_polar_periodic_nucleus (const Domain_polar_periodic_nucleus& so) : Domain(so), alpha(so.alpha), ome(so.ome), 
 				type_time(so.type_time), maxt(so.maxt) {
+
+	ome_term_eq = 0x0 ;
 }
 
 Domain_polar_periodic_nucleus::Domain_polar_periodic_nucleus (int num, FILE* fd) : Domain(num, fd) {
@@ -65,7 +71,10 @@ Domain_polar_periodic_nucleus::Domain_polar_periodic_nucleus (int num, FILE* fd)
 }
 
 // Destructor
-Domain_polar_periodic_nucleus::~Domain_polar_periodic_nucleus() {}
+Domain_polar_periodic_nucleus::~Domain_polar_periodic_nucleus() {
+	if (ome_term_eq!=0x0)
+		delete ome_term_eq ;
+}
 
 void Domain_polar_periodic_nucleus::save (FILE* fd) const {
 	nbr_points.save(fd) ;
@@ -87,6 +96,122 @@ ostream& operator<< (ostream& o, const Domain_polar_periodic_nucleus& so) {
   return o ;
 }
 
+
+int Domain_polar_periodic_nucleus::nbr_unknowns_from_adapted() const {
+  return 1 ;
+}
+
+
+void Domain_polar_periodic_nucleus::vars_to_terms() const {
+ 
+  if (ome_term_eq != 0x0)
+      delete ome_term_eq ;
+ 
+  ome_term_eq = new Term_eq (num_dom, ome) ;
+  update() ;
+}
+
+void Domain_polar_periodic_nucleus::affecte_coef(int& conte, int cc, bool& found) const {
+    if (conte==cc) {
+	ome_term_eq->set_der_d(1.) ;
+	found = true ;
+	}
+    else {
+	ome_term_eq->set_der_d(0.) ;
+	found = false ;
+	}
+    conte ++ ;  
+    update() ;
+}
+
+void Domain_polar_periodic_nucleus::xx_to_vars_from_adapted(double new_ome, const Array<double>& xx, int& pos) const {
+
+    new_ome -= xx(pos) ; 
+    pos ++ ;
+}
+
+void Domain_polar_periodic_nucleus::update_mapping (double cor) {
+ 
+  ome += cor ;
+  for (int l=0 ; l<ndim ; l++) {
+		if (absol[l] !=0x0) delete absol[l] ;
+		if (cart[l] !=0x0) delete cart[l] ;
+		if (cart_surr[l] !=0x0) delete cart_surr[l] ;
+		absol[l] = 0x0 ;
+		cart_surr[l] = 0x0 ;
+		cart[l]=  0x0 ;
+	}
+	if (radius !=0x0)
+	    delete radius ;
+	radius = 0x0 ;
+  update() ;
+}
+
+void Domain_polar_periodic_nucleus::update_variable (double cor_ome, const Scalar& old, Scalar& res) const {
+      Val_domain cor (-cor_ome * old(num_dom).der_abs(3) / ome) ;
+      res.set_domain(num_dom) = cor + old(num_dom) ; 
+      res.set_domain(num_dom).set_base() = old(num_dom).get_base() ;
+}
+
+
+void Domain_polar_periodic_nucleus::update_constante (double cor_ome, const Scalar& old, Scalar& res) const {
+  
+      Point MM(3) ;
+      Index pos(nbr_points) ;
+      res.set_domain(num_dom).allocate_conf() ;
+      do {
+	  
+	  MM.set(1) = (*absol[0])(pos) ;
+	  MM.set(2) = (*absol[1])(pos) ;
+	  MM.set(3) = (*coloc[2])(pos)/(ome+cor_ome) ;
+	  
+	  res.set_domain(num_dom).set(pos) = old.val_point(MM, +1) ;
+	
+	  }
+      while (pos.inc()) ;
+      
+      res.set_domain(num_dom).set_base() = old(num_dom).get_base() ;
+}
+
+
+
+void Domain_polar_periodic_nucleus::update_term_eq (Term_eq* so) const {
+  
+  Tensor der (*so->val_t, false) ;
+  for (int cmp=0 ; cmp<so->val_t->get_n_comp() ; cmp ++) {
+    
+    
+    
+    Val_domain dert ((*(*so->val_t).cmp[cmp])(num_dom).der_abs(3)) ;
+    
+    if (!dert.check_if_zero()) { 
+      Val_domain res(this) ;
+      res.allocate_conf() ;
+      Index pos (nbr_points) ;     
+      do {
+	res.set(pos) =   (*ome_term_eq->der_d) * (*coloc[2])(pos(2)) * dert(pos) ;
+      }
+    while (pos.inc()) ;
+  res.set_base() = (*(*so->val_t).cmp[cmp])(num_dom).get_base() ;
+  der.cmp[cmp]->set_domain(num_dom) = res ;
+    }
+    else
+      der.cmp[cmp]->set_domain(num_dom).set_zero() ;
+  }
+  
+  so->set_der_t (der) ;
+}
+
+void Domain_polar_periodic_nucleus::xx_to_ders_from_adapted(const Array<double>& xx, int& pos) const {
+     ome_term_eq->set_der_d(xx(pos)) ;
+     pos++ ;
+     update() ;
+}
+
+
+void Domain_polar_periodic_nucleus::update() const {
+  ome_term_eq->set_val_d(ome) ;
+}
 
 Val_domain Domain_polar_periodic_nucleus::der_normal (const Val_domain& so, int bound) const {
 
