@@ -45,13 +45,17 @@ Domain_polar_periodic_shell::Domain_polar_periodic_shell (int num, int ttype, do
 	    abort()  ;
      }
      do_coloc() ;
-     ome_term_eq = 0x0 ;
+     //ome_term_eq = 0x0 ;
+     ome_term_eq = new Term_eq (num_dom, ome) ;
+     ome_term_eq->set_der_d(0.) ;
 }
 
 // Constructor by copy
 Domain_polar_periodic_shell::Domain_polar_periodic_shell (const Domain_polar_periodic_shell& so) : Domain(so), alpha(so.alpha), beta(so.beta), ome(so.ome), 
 				type_time(so.type_time), maxt(so.maxt) {
-	 ome_term_eq = 0x0 ;
+	// ome_term_eq = 0x0 ;
+	 ome_term_eq = new Term_eq (num_dom, ome) ;
+     ome_term_eq->set_der_d(0.) ;
 }
 
 Domain_polar_periodic_shell::Domain_polar_periodic_shell (int num, FILE* fd) : Domain(num, fd) {
@@ -97,7 +101,7 @@ ostream& operator<< (ostream& o, const Domain_polar_periodic_shell& so) {
   return o ;
 }
 
-
+/*
 int Domain_polar_periodic_shell::nbr_unknowns_from_adapted() const {
   return 1 ;
 }
@@ -211,7 +215,7 @@ void Domain_polar_periodic_shell::update_term_eq (Term_eq* so) const {
 void Domain_polar_periodic_shell::update() const {
   ome_term_eq->set_val_d(ome) ;
 }
-
+*/
 Val_domain Domain_polar_periodic_shell::der_normal (const Val_domain& so, int bound) const {
 
 	Val_domain res (so.der_var(1)) ;

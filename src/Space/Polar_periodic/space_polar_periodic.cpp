@@ -65,7 +65,7 @@ void Space_polar_periodic::save (FILE* fd) const  {
 		domains[i]->save(fd) ;
 }
 
-
+/*
 int Space_polar_periodic::nbr_unknowns_from_variable_domains () const {
   
     return domains[0]->nbr_unknowns_from_adapted() ;
@@ -140,7 +140,7 @@ void Space_polar_periodic::xx_to_vars_variable_domains (System_of_eqs* sys, cons
       for (int d=0 ; d<nbr_domains ; d++)
 	      domains[d]->update_mapping(cor_ome) ;
 }
-
+*/
 
 double Space_polar_periodic::get_omega() const {
 	  const Domain_polar_periodic_nucleus* polarperiodicnuc = dynamic_cast<const Domain_polar_periodic_nucleus*>(domains[0]) ;

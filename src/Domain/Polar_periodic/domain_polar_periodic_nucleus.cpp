@@ -45,14 +45,20 @@ Domain_polar_periodic_nucleus::Domain_polar_periodic_nucleus (int num, int ttype
      }
 
      do_coloc() ;
-     ome_term_eq = 0x0 ;
+    // ome_term_eq = 0x0 ; 
+
+    ome_term_eq = new Term_eq (num_dom, ome) ;
+    ome_term_eq->set_der_d(0.) ;
 }
 
 // Constructor by copy
 Domain_polar_periodic_nucleus::Domain_polar_periodic_nucleus (const Domain_polar_periodic_nucleus& so) : Domain(so), alpha(so.alpha), ome(so.ome), 
 				type_time(so.type_time), maxt(so.maxt) {
 
-	ome_term_eq = 0x0 ;
+	//ome_term_eq = 0x0 ;
+
+	ome_term_eq = new Term_eq (num_dom, ome) ;
+    	ome_term_eq->set_der_d(0.) ;
 }
 
 Domain_polar_periodic_nucleus::Domain_polar_periodic_nucleus (int num, FILE* fd) : Domain(num, fd) {
@@ -97,7 +103,7 @@ ostream& operator<< (ostream& o, const Domain_polar_periodic_nucleus& so) {
 }
 
 
-int Domain_polar_periodic_nucleus::nbr_unknowns_from_adapted() const {
+/*int Domain_polar_periodic_nucleus::nbr_unknowns_from_adapted() const {
   return 1 ;
 }
 
@@ -212,7 +218,7 @@ void Domain_polar_periodic_nucleus::xx_to_ders_from_adapted(const Array<double>&
 void Domain_polar_periodic_nucleus::update() const {
   ome_term_eq->set_val_d(ome) ;
 }
-
+*/
 Val_domain Domain_polar_periodic_nucleus::der_normal (const Val_domain& so, int bound) const {
 
 	Val_domain res (so.der_var(1)) ;

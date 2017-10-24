@@ -141,20 +141,20 @@ class Domain_polar_periodic_nucleus : public Domain {
      virtual Val_domain der_normal (const Val_domain&, int) const ;
  	
 
-     virtual int nbr_unknowns_from_adapted() const ;
-     virtual void vars_to_terms() const ;
-     virtual void affecte_coef (int&, int, bool&) const ;
-     virtual void xx_to_vars_from_adapted (double, const Array<double>&, int&) const ;
-     virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
-     virtual void update_term_eq (Term_eq*) const ;
-     virtual void update_variable (double, const Scalar&, Scalar&) const ;   
-     virtual void update_constante (double, const Scalar&, Scalar&) const ;   
-     virtual void update_mapping(double) ;
+  //   virtual int nbr_unknowns_from_adapted() const ;
+   //  virtual void vars_to_terms() const ;
+   //  virtual void affecte_coef (int&, int, bool&) const ;
+   //  virtual void xx_to_vars_from_adapted (double, const Array<double>&, int&) const ;
+   //  virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
+   //  virtual void update_term_eq (Term_eq*) const ;
+   //  virtual void update_variable (double, const Scalar&, Scalar&) const ;   
+   //  virtual void update_constante (double, const Scalar&, Scalar&) const ;   
+   //  virtual void update_mapping(double) ;
 
      /**
      * Updates the quantities that depend on the frequency.
      */
-     void update() const ;
+    // void update() const ;
     
      virtual Term_eq dtime_term_eq (const Term_eq& so) const ;   
      virtual Term_eq ddtime_term_eq (const Term_eq& so) const ;   
@@ -348,7 +348,7 @@ class Domain_polar_periodic_shell : public Domain {
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
 
-     virtual int nbr_unknowns_from_adapted() const ;
+  /*   virtual int nbr_unknowns_from_adapted() const ;
      virtual void vars_to_terms() const ;
      virtual void affecte_coef (int&, int, bool&) const ;
      virtual void xx_to_vars_from_adapted (double, const Array<double>&, int&) const ;
@@ -357,11 +357,11 @@ class Domain_polar_periodic_shell : public Domain {
      virtual void update_variable (double, const Scalar&, Scalar&) const ;   
      virtual void update_constante (double, const Scalar&, Scalar&) const ;   
      virtual void update_mapping(double) ;
-
+*/
      /**
      * Updates the quantities that depend on the frequency.
      */
-     void update() const ;
+  //   void update() const ;
     
      virtual Term_eq dtime_term_eq (const Term_eq& so) const ;   
      virtual Term_eq ddtime_term_eq (const Term_eq& so) const ;   
@@ -458,11 +458,11 @@ class Space_polar_periodic : public Space {
 	virtual ~Space_polar_periodic() ;      
 	virtual void save(FILE*) const ;
 
-	virtual int nbr_unknowns_from_variable_domains() const ;
+	/*virtual int nbr_unknowns_from_variable_domains() const ;
 	virtual void affecte_coef_to_variable_domains(int& , int, Array<int>&) const ;
 	virtual void xx_to_ders_variable_domains(const Array<double>&, int&) const ;
 	virtual void xx_to_vars_variable_domains(System_of_eqs*, const Array<double>&, int&) const ;
-
+*/
 	double get_omega() const ;
 } ;
 
