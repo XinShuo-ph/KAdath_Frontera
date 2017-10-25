@@ -379,16 +379,16 @@ void Tensor::annule_hard() {
 
 
 int Tensor::position (const Array<int>& idx) const {
-    return (give_place_array(idx, espace.get_ndim()));
+    return (give_place_array(idx, ndim));
 }
 
 int Tensor::position (const Index& idx) const {
     
-    return (give_place_index(idx, espace.get_ndim())) ;
+    return (give_place_index(idx, ndim)) ;
 }
 
 Array<int> Tensor::indices (int place) const {
-    return (give_indices(place, valence, espace.get_ndim())) ;
+    return (give_indices(place, valence, ndim)) ;
 }
 
 Scalar& Tensor::set() {
