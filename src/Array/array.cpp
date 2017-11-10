@@ -45,6 +45,15 @@ template <typename T> Array<T>::Array (int i, int j) : dimensions(2){
 	nbr = i*j ;
  	data = new T [nbr] ;
 }
+
+template <typename T> Array<T>::Array (int i, int j, int k) : dimensions(3){
+	dimensions.set(0) = i ;
+	dimensions.set(1) = j ;
+	dimensions.set(2) = k ;
+	nbr = i*j*k ;
+ 	data = new T [nbr] ;
+}
+
 // Copy constructor
 template <typename T> Array<T>::Array (const Array<T>& so) : dimensions(so.dimensions){
 	nbr = so.nbr ;

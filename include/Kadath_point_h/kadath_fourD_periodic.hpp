@@ -17,8 +17,8 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __KADATH_HPP_
-#define __KADATH_HPP_
+#ifndef __KADATH_POLAR_HPP_
+#define __KADATH_POLAR_HPP_
 
 #include "headcpp.hpp"
 #include "array.hpp"
@@ -33,25 +33,7 @@
 #include "scalar.hpp"
 #include "tensor.hpp"
 #include "vector.hpp"
-#include "metric_tensor.hpp"
-#include "metric.hpp"
-#include "metric_AADS.hpp"
-#include "term_eq.hpp"
-#include "system_of_eqs.hpp"
-#include "spheric.hpp"
-#include "bispheric.hpp"
-#include "polar.hpp"
-#include "adapted.hpp"
-#include "adapted_polar.hpp"
-#include "bin_bh.hpp"
-#include "bin_fake.hpp"
-#include "bin_ns.hpp"
-#include "critic.hpp"
-#include "oned.hpp"
-#include "spheric_periodic.hpp"
-#include "spheric_symphi.hpp"
-#include "spheric_time.hpp"
-#include "polar_periodic.hpp"
+
 #include "fourD_periodic.hpp"
 
 #endif

@@ -441,7 +441,7 @@ class Domain_polar_periodic_shell : public Domain {
 
 
 /**
- * The \c Space_polar_periodic class fills the space with one polar nucleus and several polar shells, wuth a periodicity in time.
+ * The \c Space_polar_periodic class fills the space with one polar nucleus and several polar shells, with a periodicity in time.
  * \ingroup domain
  */
 class Space_polar_periodic : public Space {
