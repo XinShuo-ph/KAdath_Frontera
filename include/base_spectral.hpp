@@ -99,6 +99,9 @@ class Base_spectral {
 	void set_non_def() ;
 
      	void operator= (const Base_spectral&) ; ///< Assignement operator.
+
+	const Array<int>* get_base_1d (int i) const {return bases_1d[i] ;} ; ///< Returns one of the 1d base array.
+
 	/**
 	* Allocates the various arrays, for a given number of coefficients.
 	* @param nbr_coefs [input] : a \c Dim_array storing the number of coefficients in each dimenions.
