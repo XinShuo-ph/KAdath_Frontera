@@ -354,7 +354,7 @@ bool Domain_bispheric_eta_first::is_in (const Point& abs, double prec) const {
 // Converts the absolute coordinates to the numerical ones.
 const Point Domain_bispheric_eta_first::absol_to_num(const Point& abs) const {
 
-	assert (is_in(abs)) ;
+	assert (is_in(abs, 1e-12)) ;
 	Point num(3) ;
 		
 	double xx = abs(1) ;

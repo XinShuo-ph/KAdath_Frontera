@@ -85,7 +85,7 @@ Tensor Domain_shell::import (int numdom, int bound, int n_ope, const Array<int>&
       bool found = false ;
       int current = 0 ;
       while ((current<n_ope) && (!found)) {
-	if (parts[0]->get_space().get_domain(zedoms(current))->is_in(MM))
+	if (parts[0]->get_space().get_domain(zedoms(current))->is_in(MM, 1e-12))
 	    found = true ;
 	else 
 	  current ++ ;

@@ -335,7 +335,7 @@ bool Domain_bispheric_rect::is_in (const Point& abs, double prec) const {
 // Convert absolute coordinates to numerical ones
 const Point Domain_bispheric_rect::absol_to_num(const Point& abs) const {
 
-	assert (is_in(abs)) ;
+	assert (is_in(abs, 1e-12)) ;
 	Point num(3) ;
 		
 	double xx = abs(1) ;
