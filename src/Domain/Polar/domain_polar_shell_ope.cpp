@@ -100,6 +100,11 @@ Val_domain Domain_polar_shell::der_r (const Val_domain& so) const {
   return (so.der_var(1)/alpha) ;
 }
 
+
+Val_domain Domain_polar_shell::dt (const Val_domain& so) const {
+  return (so.der_var(2)) ;
+}
+
 double Domain_polar_shell::integrale (const Val_domain& so) const {
   double res = 0 ;
   Val_domain integrant (mult_r(so)) ;

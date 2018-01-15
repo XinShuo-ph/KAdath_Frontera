@@ -122,6 +122,11 @@ Val_domain Domain_polar_compact::der_r (const Val_domain& so) const {
   return (-alpha*so.der_var(1).mult_xm1().mult_xm1()) ;
 }
 
+
+Val_domain Domain_polar_compact::dt (const Val_domain& so) const {
+  return (so.der_var(2)) ;
+}
+
 Val_domain Domain_polar_compact::der_r_rtwo (const Val_domain& so) const {
   return (-so.der_var(1)/alpha) ;
 }

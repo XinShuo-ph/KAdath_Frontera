@@ -105,6 +105,7 @@ class Domain_polar_nucleus : public Domain {
      virtual Val_domain laplacian (const Val_domain&, int) const ;    
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
      virtual Val_domain der_r (const Val_domain&) const ; 
+     virtual Val_domain dt (const Val_domain&) const ; 
      virtual Val_domain srdr (const Val_domain&) const ;
      virtual double integrale (const Val_domain&) const ;
      virtual double integ_volume (const Val_domain&) const ;
@@ -281,6 +282,7 @@ class Domain_polar_shell : public Domain {
      virtual Val_domain laplacian (const Val_domain&, int) const ;
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
      virtual Val_domain der_r (const Val_domain&) const ;
+     virtual Val_domain dt (const Val_domain&) const ;
      virtual double integrale (const Val_domain&) const ;
      virtual double integ_volume (const Val_domain&) const ;
 
@@ -457,6 +459,7 @@ class Domain_polar_compact : public Domain {
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
      virtual Val_domain der_r (const Val_domain&) const ;   
      virtual Val_domain der_r_rtwo (const Val_domain&) const ;
+     virtual Val_domain dt (const Val_domain&) const ; 
      virtual double integrale (const Val_domain&) const ;
      virtual double integ_volume (const Val_domain&) const ;
      virtual void set_val_inf (Val_domain& so, double xx) const ;    
