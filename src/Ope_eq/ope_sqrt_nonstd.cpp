@@ -72,7 +72,7 @@ Term_eq Ope_sqrt_nonstd::action() const {
 			else {
 				resder.set(ind).set_domain(dom) = valder/2./sqrt(value) ;
 				// Force the base
-				resval.set(ind).set_domain(dom).set_base() = rho.get_base() ;
+				resder.set(ind).set_domain(dom).set_base() = rho.get_base() ;
 			}
 			}
 		Term_eq res (dom, resval, resder) ;
