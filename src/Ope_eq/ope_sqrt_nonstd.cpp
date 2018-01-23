@@ -70,9 +70,8 @@ Term_eq Ope_sqrt_nonstd::action() const {
 			if (valder.check_if_zero())
 				resder.set(ind).set_domain(dom).set_zero() ;
 			else {
-				resder.set(ind).set_domain(dom) = valder/2./sqrt(value) ;
-				// Force the base
-				resder.set(ind).set_domain(dom).set_base() = rho.get_base() ;
+				resder.set(ind).set_domain(dom) = target.val_t->get_space().get_domain(dom)->div_sin_theta(valder)/2./
+					target.val_t->get_space().get_domain(dom)->div_sin_theta(resval(ind)(dom)) ;
 			}
 			}
 		Term_eq res (dom, resval, resder) ;
