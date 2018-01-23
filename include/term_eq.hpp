@@ -208,7 +208,8 @@ class Term_eq {
 	friend class Ope_val ;
 	friend class Ope_point ;
 	friend class Ope_val_ori ;
-	friend class Ope_sqrt ;
+	friend class Ope_sqrt ;	
+	friend class Ope_sqrt_nonstd ;
 	friend class Ope_def ;	
 	friend class Ope_def_global ;
 	friend class Ope_srdr ;	
@@ -266,6 +267,7 @@ class Term_eq {
 	friend class Domain_polar_periodic_nucleus ;	
 	friend class Domain_polar_periodic_shell ;
 	friend class Space_polar_periodic ;
+	friend class Space_adapted_bh ;
 } ;
 }
 #endif

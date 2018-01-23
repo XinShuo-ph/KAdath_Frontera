@@ -1030,6 +1030,25 @@ class Ope_sqrt: public Ope_eq {
 } ;
 
 /**
+ * Operator square-root (only defined for a scalar field or a double).
+ * Version where the output base is not standard but the one of rho (polar coordinates).
+ * \ingroup systems.
+ */
+class Ope_sqrt_nonstd: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_sqrt_nonstd(const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_sqrt_nonstd() ; ///< Destructor
+	
+		virtual Term_eq action() const ;
+} ;
+
+/**
  * Operator exponential (only defined for a scalar field or a double)
  * \ingroup systems.
  */

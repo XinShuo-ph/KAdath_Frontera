@@ -798,6 +798,14 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 		return p_ope ;
 		}
 
+	// Check if sqrt rho basis :
+	indic = is_ope_uni(name, p1, "sqrtrho") ;
+	if (indic) {
+		p_ope = new Ope_sqrt_nonstd(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
+
+
 	// Check if exp :
 	indic = is_ope_uni(name, p1, "exp") ;
 	if (indic) {
