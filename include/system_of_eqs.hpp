@@ -748,6 +748,7 @@ class System_of_eqs {
 	friend class Space_bin_bh ;
 	friend class Space_bin_fake ;
 	friend class Space_polar_periodic ;
+	friend class Space_adapted_bh ;
 	friend class Metric ;
 	friend class Metric_general ;
 	friend class Metric_flat ;

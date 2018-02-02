@@ -27,6 +27,7 @@ int mult_sin_1d (int, Array<double>&) ;
 int div_sin_1d (int, Array<double>&) ;
 int div_xm1_1d (int, Array<double>&) ;
 int mult_xm1_1d (int, Array<double>&) ;
+int div_xp1_1d (int, Array<double>&) ;
 
 Val_domain Domain_polar_compact::mult_cos_theta (const Val_domain& so) const {
 	so.coef() ;
@@ -131,6 +132,17 @@ Val_domain Domain_polar_compact::der_r_rtwo (const Val_domain& so) const {
   return (-so.der_var(1)/alpha) ;
 }
 
+
+Val_domain Domain_polar_compact::div_xp1 (const Val_domain& so) const {
+	so.coef() ;
+	Val_domain res(this) ;
+
+	res.base= so.base ;
+
+	res.cf = new Array<double> (so.base.ope_1d(div_xp1_1d, 0, *so.cf, res.base)) ;
+	res.in_coef = true ;
+	return res ;
+}
 
 double Domain_polar_compact::integrale (const Val_domain& so) const {
   double res = 0 ;

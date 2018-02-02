@@ -606,6 +606,7 @@ class Tensor {
 	friend class Space_bin_ns ;
 	friend class Space_bin_bh ;
 	friend class Space_polar_periodic ;
+	friend class Space_adapted_bh ;
   
     // Mathematical operators
     // ----------------------
