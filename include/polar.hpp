@@ -639,6 +639,25 @@ class Space_polar : public Space {
 	void add_eq_int_inf (System_of_eqs& syst, const char* eq) ;
 	
 	/**
+	* Adds an equation being a surface integral in the innermost shell.
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the equation (should contain something like integ(f)=b)
+	*/
+	void add_eq_int_inner (System_of_eqs& syst, const char* eq) ;
+	
+	/**
+	* Adds an equation saying that one coefficient of a field is zero in a given domain
+	* @param syst : the \c System_of_eqs.
+	* @param f : the field
+	* @param domtarget : the target domain.
+	* @param itarget : the index \f$r\f$ of the mode that must vanish.
+	* @param jtarget : the index \f$\theta\f$ of the mode that must vanish.
+	* @param ktarget : the index \f$\varphi\f$ of the mode that must vanish.
+	*/
+	void add_eq_mode (System_of_eqs& syst, const char* f, int domtarget, int itarget, int jtarget, int ktarget) ;
+
+
+	/**
 	* Adds an equation being the value of some field at the origin.
 	* @param syst : the \c System_of_eqs.
 	* @param eq : the string describing the quantity that must be zero at the origin

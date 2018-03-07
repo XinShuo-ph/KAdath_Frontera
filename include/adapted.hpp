@@ -338,6 +338,7 @@ class Domain_shell_inner_adapted : public Domain {
      friend class Space_spheric_adapted ;   
      friend class Space_bin_ns ;
      friend class Space_bin_bh ;
+     friend class Space_adapted_bh ;
 } ;
 
 /**
@@ -641,6 +642,7 @@ class Domain_shell_outer_adapted : public Domain {
      friend class Space_spheric_adapted ;
      friend class Space_bin_ns ;   
      friend class Space_bin_bh ;
+     friend class Space_adapted_bh ;
 } ;
 
 /**
