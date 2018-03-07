@@ -652,9 +652,8 @@ class Space_polar : public Space {
 	* @param domtarget : the target domain.
 	* @param itarget : the index \f$r\f$ of the mode that must vanish.
 	* @param jtarget : the index \f$\theta\f$ of the mode that must vanish.
-	* @param ktarget : the index \f$\varphi\f$ of the mode that must vanish.
 	*/
-	void add_eq_mode (System_of_eqs& syst, const char* f, int domtarget, int itarget, int jtarget, int ktarget) ;
+	void add_eq_mode (System_of_eqs& syst, const char* f, int domtarget, int itarget, int jtarget) ;
 
 
 	/**

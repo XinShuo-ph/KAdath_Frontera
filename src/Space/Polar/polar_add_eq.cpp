@@ -158,12 +158,11 @@ void Space_polar::add_eq_int_inner (System_of_eqs& sys, const char* nom) {
 }
 
 
-void Space_polar::add_eq_mode (System_of_eqs& sys, const char* name, int domtarget, int itarget, int jtarget, int ktarget) {
+void Space_polar::add_eq_mode (System_of_eqs& sys, const char* name, int domtarget, int itarget, int jtarget) {
 
 	Index pos_cf (domains[domtarget]->get_nbr_coefs()) ;
 	pos_cf.set(0) = itarget ;
 	pos_cf.set(1) = jtarget ;
-	pos_cf.set(2) = ktarget ;
 	double value = 1. ;
 	char auxi[LMAX] ;
 	trim_spaces (auxi, name) ;
