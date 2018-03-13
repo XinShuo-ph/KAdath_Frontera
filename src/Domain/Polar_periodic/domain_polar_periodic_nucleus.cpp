@@ -74,6 +74,9 @@ Domain_polar_periodic_nucleus::Domain_polar_periodic_nucleus (int num, FILE* fd)
 	    abort()  ;
 	}
 	do_coloc() ;
+
+	ome_term_eq = new Term_eq (num_dom, ome) ;
+        ome_term_eq->set_der_d(0.) ;
 }
 
 // Destructor

@@ -72,6 +72,8 @@ Domain_polar_periodic_shell::Domain_polar_periodic_shell (int num, FILE* fd) : D
 	    abort()  ;
 	}
 	do_coloc() ;
+	 ome_term_eq = new Term_eq (num_dom, ome) ;
+     ome_term_eq->set_der_d(0.) ;
 }
 
 // Destructor
