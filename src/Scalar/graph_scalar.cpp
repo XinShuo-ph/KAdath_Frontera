@@ -21,7 +21,19 @@
 #include "space.hpp"
 #include "scalar.hpp"
 
-#include <cpgplot.h>  
+
+//Pgplot stuff
+extern "C" {
+int cpgbeg(int unit, const char *file, int nxsub, int nysub);
+void cpgsch(float size);
+void cpgslw(int lw);
+void cpgscf(int font);
+void cpgenv(float xmin, float xmax, float ymin, float ymax, int just, int axis);
+void cpglab(const char *xlbl, const char *ylbl, const char *toplbl);
+void cpgcont(const float *a, int idim, int jdim, int i1, int i2, int j1, int j2, const float *c, int nc, const float *tr);
+void cpgend(void);
+}
+
 namespace Kadath {
 void des_equipot(float* uutab, int nx, int ny, float xmin, float xmax, 
 		 float ymin, float ymax, int ncour, const char* nomx, const char* nomy, 
