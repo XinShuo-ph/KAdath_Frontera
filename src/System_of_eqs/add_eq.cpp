@@ -20,6 +20,8 @@
 #include "system_of_eqs.hpp"
 #include "ope_eq.hpp"
 #include "name_tools.hpp"
+#include "list_comp.hpp"
+
 namespace Kadath {
  void System_of_eqs::add_eq_inside (int dom, const char* nom, int n_cmp, Array<int>** p_cmp) {
     // Is it written like =0 ?
@@ -45,6 +47,10 @@ namespace Kadath {
 		neq ++ ;
 	}
 	nbr_conditions = -1 ;
+}
+
+void System_of_eqs::add_eq_inside (int dom, const char* nom, const List_comp& list) {
+	add_eq_inside (dom, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
 void System_of_eqs::add_eq_order (int dom, int order, const char* nom, int n_cmp, Array<int>** p_cmp) {
@@ -73,6 +79,9 @@ void System_of_eqs::add_eq_order (int dom, int order, const char* nom, int n_cmp
 	nbr_conditions = -1 ;
 }
 
+void System_of_eqs::add_eq_order (int dom, int order, const char* nom, const List_comp& list) {
+	add_eq_order (dom, order, nom, list.get_ncomp(), list.get_pcomp()) ;
+}
 
 void System_of_eqs::add_eq_bc (int dom, int bound, const char* nom, int n_cmp, Array<int>** p_cmp) {
     // Is it written like =0 ?
@@ -98,6 +107,10 @@ void System_of_eqs::add_eq_bc (int dom, int bound, const char* nom, int n_cmp, A
 		neq ++ ;
 	}	
 	nbr_conditions = -1 ;
+}
+
+void System_of_eqs::add_eq_bc (int dom, int bound, const char* nom, const List_comp& list) {
+	add_eq_bc (dom, bound, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
 void System_of_eqs::add_eq_matching (int dom, int bound, const char* nom, int n_cmp, Array<int>** p_cmp) {
@@ -127,6 +140,10 @@ void System_of_eqs::add_eq_matching (int dom, int bound, const char* nom, int n_
 		neq++ ;
 	}	
 	nbr_conditions = -1 ;
+}
+
+void System_of_eqs::add_eq_matching (int dom, int bound, const char* nom, const List_comp& list) {
+	add_eq_matching (dom, bound, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
 void System_of_eqs::add_eq_matching_exception (int dom, int bound, const char* nom, const Param& par, const char* nom_exception, int n_cmp, Array<int>** p_cmp) {
@@ -164,6 +181,10 @@ void System_of_eqs::add_eq_matching_exception (int dom, int bound, const char* n
 	nbr_conditions = -1 ;
 }
 
+void System_of_eqs::add_eq_matching_exception (int dom, int bound, const char* nom, const Param& par, const char* nom_exception, const List_comp& list) {
+	add_eq_matching_exception (dom, bound, nom, par, nom_exception, list.get_ncomp(), list.get_pcomp()) ;
+}
+
 void System_of_eqs::add_eq_matching_one_side (int dom, int bound, const char* nom, int n_cmp, Array<int>** p_cmp) {
       int other_dom ;
 	int other_bound ;
@@ -191,6 +212,10 @@ void System_of_eqs::add_eq_matching_one_side (int dom, int bound, const char* no
 		neq++ ;
 	}	
 	nbr_conditions = -1 ;
+}
+
+void System_of_eqs::add_eq_matching_one_side (int dom, int bound, const char* nom,  const List_comp& list) {
+	add_eq_matching_one_side (dom, bound, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
 void System_of_eqs::add_eq_matching_non_std (int dom, int bound, const char* nom, int n_cmp, Array<int>** p_cmp) {
@@ -230,6 +255,10 @@ void System_of_eqs::add_eq_matching_non_std (int dom, int bound, const char* nom
 	nbr_conditions = -1 ;
 }
 
+void System_of_eqs::add_eq_matching_non_std (int dom, int bound, const char* nom, const List_comp& list) {
+	add_eq_matching_non_std (dom, bound, nom, list.get_ncomp(), list.get_pcomp()) ;
+}
+
 void System_of_eqs::add_eq_matching_import (int dom, int bound, const char* nom, int n_cmp, Array<int>** p_cmp) {
 
 	// First get the number, the indices and associated boundaries of the other domains (member of espace) :
@@ -254,6 +283,10 @@ void System_of_eqs::add_eq_matching_import (int dom, int bound, const char* nom,
 		neq++ ;
 	}	
 	nbr_conditions = -1 ;
+}
+
+void System_of_eqs::add_eq_matching_import (int dom, int bound, const char* nom, const List_comp& list) {
+	add_eq_matching_import (dom, bound, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
 void System_of_eqs::add_eq_full (int dom, const char* nom, int n_cmp, Array<int>** p_cmp) {
@@ -285,6 +318,10 @@ void System_of_eqs::add_eq_full (int dom, const char* nom, int n_cmp, Array<int>
 	nbr_conditions = -1 ;
 }
 
+void System_of_eqs::add_eq_full (int dom, const char* nom, const List_comp& list) {
+	add_eq_full (dom, nom, list.get_ncomp(), list.get_pcomp()) ;
+}
+
 void System_of_eqs::add_eq_one_side (int dom, const char* nom, int n_cmp, Array<int>** p_cmp) {
 
 	// Is it written like =0 ?
@@ -310,6 +347,10 @@ void System_of_eqs::add_eq_one_side (int dom, const char* nom, int n_cmp, Array<
 		neq ++ ;
 	}
 	nbr_conditions = -1 ;
+}
+
+void System_of_eqs::add_eq_one_side (int dom, const char* nom, const List_comp& list) {
+	add_eq_one_side (dom, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
  void System_of_eqs::add_eq_mode (int dom, int bound, const char* nom, const Index& pos_cf, double value) {
@@ -385,6 +426,10 @@ void System_of_eqs::add_eq_order (int dom, const Array<int>& order, const char* 
 	nbr_conditions = -1 ;
 }
 
+void System_of_eqs::add_eq_order (int dom, const Array<int>& order, const char* nom, const List_comp& list) {
+	add_eq_order (dom, order, nom, list.get_ncomp(), list.get_pcomp()) ;
+}
+
 void System_of_eqs::add_eq_bc (int dom, int bound, const Array<int>& order, const char* nom, int n_cmp, Array<int>** p_cmp) {
     // Is it written like =0 ?
 	char p1[LMAX] ;
@@ -409,6 +454,10 @@ void System_of_eqs::add_eq_bc (int dom, int bound, const Array<int>& order, cons
 		neq ++ ;
 	}	
 	nbr_conditions = -1 ;
+}
+
+void System_of_eqs::add_eq_bc (int dom, int bound, const Array<int>& order, const char* nom, const List_comp& list) {
+	add_eq_bc (dom, bound, order, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
 void System_of_eqs::add_eq_matching (int dom, int bound, const Array<int>& order, const char* nom, int n_cmp, Array<int>** p_cmp) {
@@ -440,6 +489,10 @@ void System_of_eqs::add_eq_matching (int dom, int bound, const Array<int>& order
 	nbr_conditions = -1 ;
 }
 
+void System_of_eqs::add_eq_matching (int dom, int bound, const Array<int>& order, const char* nom, const List_comp& list) {
+	add_eq_matching (dom, bound, order, nom, list.get_ncomp(), list.get_pcomp()) ;
+}
+
 void System_of_eqs::add_eq_first_integral (int dom, const char* nom, int n_cmp, Array<int>** p_cmp) {
 
 	// Is it written with =  ?
@@ -457,4 +510,9 @@ void System_of_eqs::add_eq_first_integral (int dom, const char* nom, int n_cmp, 
 	}	
 	nbr_conditions = -1 ;
 }
+
+void System_of_eqs::add_eq_first_integral (int dom, const char* nom, const List_comp& list) {
+	add_eq_first_integral (dom, nom, list.get_ncomp(), list.get_pcomp()) ;
+}
+
 }

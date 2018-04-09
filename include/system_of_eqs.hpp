@@ -26,6 +26,7 @@
 #include "term_eq.hpp"
 #include "metric.hpp"
 #include "param.hpp"
+#include "list_comp.hpp"
 
 #include <vector>
 using std::vector;
@@ -450,6 +451,16 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;	
+
+	/**
+	* Addition of an equation to be solved inside a domain (assumed to be second order).
+	* Version with a list of components
+	* @param dom : number of the \c Domain.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered
+	*/
+	void add_eq_inside (int dom, const char* eq, const List_comp& list) ;	
+
 	/**
 	* Addition of an equation to be solved inside a domain (of arbitrary order).
 	* @param dom : number of the \c Domain.
@@ -459,6 +470,16 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_order (int dom, int order, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation to be solved inside a domain (of arbitrary order).
+	* @param dom : number of the \c Domain.
+	* @param order : order of the equation.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_order (int dom, int order, const char* eq,  const List_comp& list) ;
+
 	/**
 	* Addition of an equation describing a boundary condition.
 	* @param dom : number of the \c Domain.
@@ -468,6 +489,16 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_bc (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation describing a boundary condition.
+	* @param dom : number of the \c Domain.
+	* @param bb : the boundary.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_bc (int dom, int bb, const char* eq, const List_comp& list) ;
+
 	/**
 	* Addition of an equation describing a matching condition between two domains (standard setting)
 	* @param dom : number of the \c Domain.
@@ -477,6 +508,16 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_matching (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation describing a matching condition between two domains (standard setting)
+	* @param dom : number of the \c Domain.
+	* @param bb : the boundary.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_matching (int dom, int bb, const char* eq, const List_comp& list) ;
+
 	/**
 	* Addition of an equation describing a matching condition between two domains (specialized function for time evolution).
 	* @param dom : number of the \c Domain.
@@ -486,6 +527,16 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_matching_one_side (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation describing a matching condition between two domains (specialized function for time evolution).
+	* @param dom : number of the \c Domain.
+	* @param bb : the boundary.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_matching_one_side (int dom, int bb, const char* eq, const List_comp& list) ;
+
 	/**
 	* Addition of an equation describing a matching condition between domains.
 	* The matching is performed in the configuration space.
@@ -498,6 +549,19 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_matching_non_std (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation describing a matching condition between domains.
+	* The matching is performed in the configuration space.
+	* It is intended where the collocations points are different at each side of the boundary.
+	* It can happen when there are more than one touching domain (bispheric vs spheric) and when the number of points is different.
+	* @param dom : number of the \c Domain.
+	* @param bb : the boundary.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_matching_non_std (int dom, int bb, const char* eq, const List_comp& list) ;
+
 	/**
 	* Addition of an equation describing a matching condition between domains using the ("import" setting)
 	* The matching is performed in the configuration space.
@@ -510,6 +574,19 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_matching_import (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation describing a matching condition between domains using the ("import" setting)
+	* The matching is performed in the configuration space.
+	* It is intended where the collocations points are different at each side of the boundary.
+	* It can happen when there are more than one touching domain (bispheric vs spheric) and when the number of points is different.
+	* @param dom : number of the \c Domain.
+	* @param bb : the boundary.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_matching_import (int dom, int bb, const char* eq, const List_comp& list) ;
+
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be zeroth order i.e. with no derivatives).
 	* @param dom : number of the \c Domain.
@@ -518,6 +595,15 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_full (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation to be solved inside a domain (assumed to be zeroth order i.e. with no derivatives).
+	* @param dom : number of the \c Domain.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_full (int dom, const char* eq, const List_comp& list) ;
+
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be first order).
 	* @param dom : number of the \c Domain.
@@ -526,6 +612,15 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_one_side (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation to be solved inside a domain (assumed to be first order).
+	* @param dom : number of the \c Domain.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_one_side (int dom, const char* eq, const List_comp& list) ;
+
 	/**
 	* Addition of a matching condition, except for one coefficient where an alternative condition is enforced (highly specialized usage).
 	* @param dom : number of the \c Domain.
@@ -538,6 +633,16 @@ class System_of_eqs {
 	void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
+	* Addition of a matching condition, except for one coefficient where an alternative condition is enforced (highly specialized usage).
+	* @param dom : number of the \c Domain.
+	* @param eq : string defining the equation.
+	* @param par : parameters for the exceptional condition (i.e. which coefficient is concerned basically).
+	* @param eq_exception : the excpetionnal equation used.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception, const List_comp& list) ;
+
+	/**
 	* Addition of an equation to be solved inside a domain of arbitrary order.
 	* The order can be different for each variable (first order in time and second in \f$r\f$ for instance).
 	* @param dom : number of the \c Domain.
@@ -547,6 +652,17 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_order (int dom, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation to be solved inside a domain of arbitrary order.
+	* The order can be different for each variable (first order in time and second in \f$r\f$ for instance).
+	* @param dom : number of the \c Domain.
+	* @param orders : orders of the equation, for each variable.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_order (int dom, const Array<int>& orders, const char* eq, const List_comp& list) ;
+
 	
 	/**
 	* Addition of an equation a boundary condition of arbitrary orders.
@@ -559,6 +675,19 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation a boundary condition of arbitrary orders.
+	* The order can be different for each variable. It is irrelevant for the variable corresponding to the boundary.
+	* @param dom : number of the \c Domain.
+	* @param bb : the boundary.
+	* @param orders : orders of the equation, for each variable.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) ;
+
+
 	/**
 	* Addition of an equation a matching condition of arbitrary orders.
 	* The order can be different for each variable. It is irrelevant for the variable corresponding to the boundary.
@@ -570,6 +699,18 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+
+	/**
+	* Addition of an equation a matching condition of arbitrary orders.
+	* The order can be different for each variable. It is irrelevant for the variable corresponding to the boundary.
+	* @param dom : number of the \c Domain.
+	* @param bb : the boundary.
+	* @param orders : orders of the equation, for each variable.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) ;
+
 	/**
 	* Addition of an equation representing a first integral.
 	* @param dom : number of the \c Domain.
@@ -578,6 +719,14 @@ class System_of_eqs {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;	
+
+	/**
+	* Addition of an equation representing a first integral.
+	* @param dom : number of the \c Domain.
+	* @param eq : string defining the equation.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_first_integral (int dom, const char* eq, const List_comp& list) ;	
 
 	/**
 	* Addition of an equation prescribing the value of one coefficient of a scalar field, on a given boundary.
