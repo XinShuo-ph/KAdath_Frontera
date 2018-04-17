@@ -294,7 +294,7 @@ class Domain_oned_qcq : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
 
- 
+     virtual Val_domain div_xp1 (const Val_domain&) const ;
      virtual double integrale(const Val_domain&) const ; 
   
      friend ostream& operator<< (ostream& o, const Domain_oned_qcq& so) ; ///< Display
