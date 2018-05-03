@@ -21,6 +21,7 @@
 #define __ONED_HPP_
 
 #include "space.hpp"
+#include "val_domain.hpp" 
 
 namespace Kadath {
 /**
@@ -372,7 +373,8 @@ class Domain_oned_inf : public Domain {
      virtual Val_domain mult_xm1 (const Val_domain&) const ;
      virtual Val_domain div_xm1 (const Val_domain&) const ;
      virtual Val_domain mult_x (const Val_domain&) const ;
-	 
+     virtual Val_domain mult_r (const Val_domain& so) const {return mult_x(so) ;} ;
+
      virtual int nbr_unknowns (const Tensor&, int) const ;
 	/**
 	* Computes the number of true unknowns of a \c Val_domain.
