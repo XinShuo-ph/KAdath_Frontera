@@ -21,6 +21,7 @@
 #define __ONED_HPP_
 
 #include "space.hpp"
+#include "val_domain.hpp" 
 
 namespace Kadath {
 /**
@@ -294,7 +295,7 @@ class Domain_oned_qcq : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
 
- 
+     virtual Val_domain div_xp1 (const Val_domain&) const ;
      virtual double integrale(const Val_domain&) const ; 
   
      friend ostream& operator<< (ostream& o, const Domain_oned_qcq& so) ; ///< Display
@@ -372,7 +373,8 @@ class Domain_oned_inf : public Domain {
      virtual Val_domain mult_xm1 (const Val_domain&) const ;
      virtual Val_domain div_xm1 (const Val_domain&) const ;
      virtual Val_domain mult_x (const Val_domain&) const ;
-	 
+     virtual Val_domain mult_r (const Val_domain& so) const {return mult_x(so) ;} ;
+
      virtual int nbr_unknowns (const Tensor&, int) const ;
 	/**
 	* Computes the number of true unknowns of a \c Val_domain.
