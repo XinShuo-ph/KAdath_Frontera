@@ -50,6 +50,7 @@ Val_domain pow (const Val_domain&, double) ;
 Val_domain sqrt (const Val_domain&) ;
 Val_domain exp (const Val_domain&) ;
 Val_domain log (const Val_domain&) ;
+Val_domain atanh(const Val_domain&);
 double diffmax (const Val_domain&, const Val_domain&) ;
 Val_domain bessel_jl (const Val_domain&, int) ;
 Val_domain bessel_yl (const Val_domain&, int) ;
@@ -323,6 +324,7 @@ class Val_domain {
 	friend Val_domain sqrt (const Val_domain&) ;
 	friend Val_domain exp (const Val_domain&) ;
 	friend Val_domain log (const Val_domain&) ;
+	friend Val_domain atanh(const Val_domain&);
 	friend Val_domain bessel_jl (const Val_domain&, int) ;
 	friend Val_domain bessel_yl (const Val_domain&, int) ;
 	friend Val_domain atan (const Val_domain&) ;

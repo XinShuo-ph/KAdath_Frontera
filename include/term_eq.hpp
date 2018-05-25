@@ -220,6 +220,9 @@ class Term_eq {
 	friend class Ope_dr ;
 	friend class Ope_exp ;	
 	friend class Ope_log ;
+	friend class Ope_atanh;
+	friend class Ope_cos;
+	friend class Ope_sin;
 	friend class Ope_int_volume ;
 	friend class Ope_fit_waves ;
 	friend class Ope_change_basis ;

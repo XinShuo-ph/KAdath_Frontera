@@ -1085,6 +1085,60 @@ class Ope_log: public Ope_eq {
 } ;
 
 /**
+ * Operator inverse hyperbolic tangent (only defined for a scalar field or a double)
+ * \ingroup systems.
+ */
+class Ope_atanh: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_atanh(const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_atanh() ; ///< Destructor.
+	
+		virtual Term_eq action() const ;
+} ;
+
+/**
+ * Operator cosine (only defined for a scalar field or a double)
+ * \ingroup systems.
+ */
+class Ope_cos: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_cos(const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_cos() ; ///< Destructor.
+	
+		virtual Term_eq action() const ;
+} ;
+
+/**
+ * Operator sine (only defined for a scalar field or a double)
+ * \ingroup systems.
+ */
+class Ope_sin: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_sin(const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_sin() ; ///< Destructor.
+	
+		virtual Term_eq action() const ;
+} ;
+
+/**
  * Operator that fits a field to outgoing waves (highly specialized stuff)
  * \ingroup systems.
  */

@@ -48,8 +48,11 @@ namespace Kadath {
   using std::max ;
   using std::min ;
 
+  using std::cos;
+  using std::sin;
   using std::tan ;
   using std::atan ;
+  using std::atanh ;
 
 }
 #endif

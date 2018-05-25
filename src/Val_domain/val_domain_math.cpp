@@ -66,6 +66,7 @@ Val_domain sin(const Val_domain& so) {
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
 		res.c = new Array<double> (sin(*so.c)) ;
+		res.std_base();
 		return res ;
 	}
 }
@@ -78,6 +79,7 @@ Val_domain cos(const Val_domain& so ) {
 		res.is_zero = false ;
 		res.allocate_conf() ;
 		*res.c = 1. ;
+		res.std_base();
 		return res ;
 	}
 	else {
@@ -85,6 +87,7 @@ Val_domain cos(const Val_domain& so ) {
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
 		res.c = new Array<double> (cos(*so.c)) ;
+		res.std_base();
 		return res ;
 	}
 }
@@ -456,6 +459,17 @@ Val_domain log (const Val_domain& so) {
 	Val_domain res (so.zone) ;
 	res.set_in_conf() ;
 	res.c = new Array<double> (log(*so.c)) ;
+	// Provisory ? same base as so...
+	res.base = so.base ;
+	return res ;
+}
+
+Val_domain atanh (const Val_domain& so) {
+	
+	so.coef_i() ;
+	Val_domain res (so.zone) ;
+	res.set_in_conf() ;
+	res.c = new Array<double> (atanh(*so.c)) ;
 	// Provisory ? same base as so...
 	res.base = so.base ;
 	return res ;

@@ -819,6 +819,27 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 		p_ope = new Ope_log(this, give_ope(dd,p1, bound)) ;
 		return p_ope ;
 		}
+	
+	// Check if atanh :
+	indic = is_ope_uni(name, p1, "atanh") ;
+	if (indic) {
+		p_ope = new Ope_atanh(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
+
+	// Check if cos :
+	indic = is_ope_uni(name, p1, "cos") ;
+	if (indic) {
+		p_ope = new Ope_cos(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
+
+	// Check if sin :
+	indic = is_ope_uni(name, p1, "sin") ;
+	if (indic) {
+		p_ope = new Ope_sin(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
 
 	// Check if scalar product :
 	indic = is_ope_uni(name, p1, p2, "scal") ;

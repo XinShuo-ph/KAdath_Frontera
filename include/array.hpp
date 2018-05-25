@@ -49,6 +49,7 @@ template <typename T>  Array<T> pow (const Array<T>&, double) ;
 template <typename T>  Array<T> sqrt (const Array<T>&) ;
 template <typename T>  Array<T> exp (const Array<T>&) ;
 template <typename T>  Array<T> log (const Array<T>&) ;
+template <typename T>  Array<T> atanh (const Array<T>&) ;
 template <typename T>  Array<T> fabs (const Array<T>&) ;
 template <typename T>  T scal (const Array<T>&, const Array<T>&) ;
 template <typename T> T diffmax (const Array<T>&, const Array<T>&) ;
@@ -226,6 +227,9 @@ template <typename T> class Array {
 	friend  Array<T> sqrt <>(const Array<T>&) ;
 	friend  Array<T> exp <>(const Array<T>&) ;	
 	friend  Array<T> log <>(const Array<T>&) ;
+	friend  Array<T> atanh <>(const Array<T>&) ;
+	friend  Array<T> cos <>(const Array<T>&) ;
+	friend  Array<T> sin <>(const Array<T>&) ;
 	friend  Array<T> fabs <>(const Array<T>&) ;
 	friend T scal<>(const Array<T>&, const Array<T>&) ;	
 	friend T diffmax<>(const Array<T>&, const Array<T>&) ;

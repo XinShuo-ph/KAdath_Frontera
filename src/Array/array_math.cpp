@@ -235,6 +235,14 @@ template <typename T>  Array<T> log (const Array<T>& so)  {
 	return res;
 }
 
+template <typename T>  Array<T> atanh (const Array<T>& so)  {
+	Array<T> res(so.dimensions) ;
+	for (int i=0 ; i<so.nbr ; i++)
+	    res.data[i] = atanh(so.data[i]) ;
+
+	return res;
+}
+
 template <typename T>  Array<T> fabs (const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
