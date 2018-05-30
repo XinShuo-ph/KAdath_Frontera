@@ -805,6 +805,13 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 		return p_ope ;
 		}
 
+	// Check if sqrt anti basis :
+	indic = is_ope_uni(name, p1, "sqrtanti") ;
+	if (indic) {
+		p_ope = new Ope_sqrt_anti(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
+
 
 	// Check if exp :
 	indic = is_ope_uni(name, p1, "exp") ;
