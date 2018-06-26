@@ -31,8 +31,9 @@ double chi_lim_eta (double chi, double rext, double a, double chi_c) ;
 double zerosec(double (*f)(double, const Param&), const Param& parf, 
     double x1, double x2, double precis, int nitermax, int& niter) ;
 
-    
-double func_a (double aa, const Param& par) {
+
+
+double func_abns (double aa, const Param& par) {
 	double r1 = par.get_double(0) ;
 	double r2 = par.get_double(1) ;
 	double d = par.get_double(2) ;
@@ -65,7 +66,7 @@ Space_bin_ns::Space_bin_ns (int ttype, double dist, double rinstar1, double rsta
     double precis = PRECISION ;
     int nitermax = 500 ;
     int niter ;
-    double aa = zerosec(func_a, par_a, a_min, a_max, precis, nitermax, niter) ;
+    double aa = zerosec(func_abns, par_a, a_min, a_max, precis, nitermax, niter) ;
     double eta_plus = asinh(aa/routstar2) ;
     double eta_minus = -asinh(aa/routstar1) ;
     
@@ -139,7 +140,7 @@ Space_bin_ns::Space_bin_ns (int ttype, double dist, double rinstar1, double rsta
     double precis = PRECISION ;
     int nitermax = 500 ;
     int niter ;
-    double aa = zerosec(func_a, par_a, a_min, a_max, precis, nitermax, niter) ;
+    double aa = zerosec(func_abns, par_a, a_min, a_max, precis, nitermax, niter) ;
     double eta_plus = asinh(aa/routstar2) ;
     double eta_minus = -asinh(aa/routstar1) ;
     

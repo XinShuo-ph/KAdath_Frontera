@@ -37,7 +37,6 @@ include_directories($ENV{HOME_KADATH}/src/Array)
 #need to use C++11
 add_definitions(-std=c++11)
 
-
 add_library(kadath ${KADATH_SOURCES})
-set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY $ENV{HOME_KADATH}/lib)
+set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY $ENV{HOME_KADATH}/lib COMPILE_FLAGS "-fPIC")
 
