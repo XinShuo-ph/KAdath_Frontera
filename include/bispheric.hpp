@@ -27,6 +27,7 @@
 
 #include "space.hpp"
 #include "spheric.hpp"
+#include "list_comp.hpp"
 
 
 namespace Kadath {
@@ -1459,6 +1460,17 @@ class Space_bispheric : public Space {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, int nused=-1, Array<int>** pused=0x0)  ;
+	
+	
+	/**
+	* Adds a bulk equation and two matching conditions.
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the bulk equation.
+	* @param rac : the string describing the first matching condition.
+	* @param rac_der : the string describing the second matching condition.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, const List_comp& list)  ;
 
 	/**
 	* Adds an equation being a surface integral at infinity.

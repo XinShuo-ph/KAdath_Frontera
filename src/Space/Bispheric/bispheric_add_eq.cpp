@@ -157,6 +157,10 @@ void Space_bispheric::add_eq (System_of_eqs& sys, const char* eq, const char* ra
 	sys.add_eq_inside (nbr_domains-1, eq, nused, pused) ;}
 }
 
+void Space_bispheric::add_eq (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, const List_comp& list) {
+ add_eq (sys, eq, rac, rac_der, list.get_ncomp(), list.get_pcomp()) ;
+}
+
 void Space_bispheric::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 
 	// Check the last domain is of the right type :
