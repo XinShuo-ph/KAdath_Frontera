@@ -162,6 +162,10 @@ void Space_bin_ns::add_eq_nozec (System_of_eqs& sys, const char* eq, const char*
 	}
 }
 
+void Space_bin_ns::add_eq_nozec (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, const List_comp& used) {
+	add_eq_nozec (sys, eq, rac,rac_der, used.get_ncomp(), used.get_pcomp()) ;
+}
+
 void Space_bin_ns::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 
 	// Check the last domain is of the right type :

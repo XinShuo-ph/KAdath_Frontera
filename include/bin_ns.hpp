@@ -23,6 +23,7 @@
 #include "space.hpp"
 #include "spheric.hpp"
 #include "adapted.hpp"
+#include "list_comp.hpp"
 #include "bispheric.hpp"
 
 namespace Kadath {
@@ -123,6 +124,16 @@ class Space_bin_ns : public Space {
 	*/
 	void add_eq_nozec (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, int nused=-1, Array<int>** pused=0x0)  ; 
       
+/**
+	* Adds a bulk equation and two matching conditions. The compactified domain is excluded from the computational space.
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the bulk equation.
+	* @param rac : the string describing the first matching condition.
+	* @param rac_der : the string describing the second matching condition.
+	* @param used : list of components used
+	*/
+	void add_eq_nozec (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, const List_comp& used)  ; 
+
 	virtual int nbr_unknowns_from_variable_domains() const ;
 	virtual void affecte_coef_to_variable_domains(int& , int, Array<int>&) const ;
 	virtual void xx_to_ders_variable_domains(const Array<double>&, int&) const ;
