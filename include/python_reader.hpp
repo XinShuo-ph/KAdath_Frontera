@@ -16,6 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #ifndef PYTHON_READER_HH
 #define PYTHON_READER_HH
 
@@ -71,7 +72,7 @@ class python_reader_t {
           break;
         case VECTOR:
           // read in vector field
-          vars[q.first] = Scalar(space, file);
+          vars[q.first] = Vector(space, file);
           break;
       }
     }
