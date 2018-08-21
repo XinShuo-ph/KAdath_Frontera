@@ -493,26 +493,12 @@ void System_of_eqs::add_eq_matching (int dom, int bound, const Array<int>& order
 	add_eq_matching (dom, bound, order, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
-void System_of_eqs::add_eq_first_integral (int dom, const char* nom, int n_cmp, Array<int>** p_cmp) {
+void System_of_eqs::add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* cst_part) {
 
-	// Is it written with =  ?
-	char p1[LMAX] ;
-	char p2[LMAX] ;
-	bool indic = is_ope_bin(nom, p1, p2, '=') ;
+	eq[neq] = new Eq_first_integral(this, espace.get_domain(dom_min), dom_min, dom_max, integ_part, cst_part) ;
+	neq++ ;
 
-	if (!indic) {
-		cerr << "= needed for first integral" << endl ;
-		abort() ;
-	}
-	else {
-		eq[neq] = new Eq_first_integral(espace.get_domain(dom), dom, give_ope(dom, p1), give_ope(0, p2), n_cmp, p_cmp) ;
-		neq++ ;
-	}	
 	nbr_conditions = -1 ;
-}
-
-void System_of_eqs::add_eq_first_integral (int dom, const char* nom, const List_comp& list) {
-	add_eq_first_integral (dom, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
 
 }

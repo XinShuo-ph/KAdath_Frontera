@@ -722,11 +722,12 @@ class System_of_eqs {
 
 	/**
 	* Addition of an equation representing a first integral.
-	* @param dom : number of the \c Domain.
-	* @param eq : string defining the equation.
-	* @param list : list of the components to be considered.
+	* @param dommin : index of the first \d Domain 
+	* @param dommax : index of the last \d Domain
+	* @param integ_part : name of the integral quantity
+	* @param const_part : equation fixing the value of the integral.
 	*/
-	void add_eq_first_integral (int dom, const char* eq, const List_comp& list) ;	
+	void add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* const_part) ;	
 
 	/**
 	* Addition of an equation prescribing the value of one coefficient of a scalar field, on a given boundary.
@@ -942,12 +943,12 @@ class Equation {
 	    /**
 	     * Constructor
 	     * @param dom : Pointer on the \d Domain
-	     * @param nd : number of the \d Domain (consistence is not checked).
+	     * @param nd : index of the \d Domain (consistence is not checked).
 	     * @param nope : number of operators.
 	     * @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 	    * @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	     */
-	    Equation (const Domain*, int, int, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	    Equation (const Domain*, int nd, int nope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	public:
 	   virtual ~Equation() ; ///< Destructor
@@ -1428,24 +1429,26 @@ class Eq_matching_exception : public Equation {
 } ;
 
 /**
- * Equation for describing a first integral equation (i.e. a constant quantity in all space).
- * Beware : not really tested.
+ * Equation for describing a first integral equation (i.e. a constant quantity in some domains).
  * \ingroup systems
  */
 class Eq_first_integral : public Equation {
 
 	public:
 
+		int dom_min ; ///< Index of the first \c Domain
+		int dom_max ; ///< Index of the last \c Domain
+
 	/**
 	* Constructor
-	* @param dom : Pointer on the \d Domain
-	* @param nd : number of the \d Domain (consistence is not checked).
-	* @param ope : pointer on the operator.
-	* @param ori : pointer on the operator that enables to compute the value of the integral at the origin.
-	* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
-	* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+	* @param syst : Pointer on the associated \c System_of_eqs
+	* @param dom : Pointer on the first \d Domain (needed for \c Equation constructor)
+	* @param dommin : index of the first \d Domain (consistence is not checked).
+	* @param dommax : index of the last \d Domain
+	* @param integ_part : name of the integral quantity
+	* @param const_part : equation fixing the value of the integral.
 	*/
-		Eq_first_integral(const Domain* dom, int nd, Ope_eq* ope, Ope_eq* ori, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+		Eq_first_integral(const System_of_eqs* syst, const Domain* dom, int dommin, int dommax, const char* integ_part, const char* const_part) ;
 		virtual ~Eq_first_integral() ; ///< Destructor.
 
 		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 
@@ -1453,5 +1456,6 @@ class Eq_first_integral : public Equation {
 		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;     
 		virtual bool take_into_account (int) const ;
 } ;
+
 }
 #endif
