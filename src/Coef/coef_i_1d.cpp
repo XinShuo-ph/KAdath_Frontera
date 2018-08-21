@@ -1,5 +1,6 @@
 /*
     Copyright 2017 Philippe Grandclement
+              2018 Ludwig Jens Papenfort
 
     This file is part of Kadath.
 
@@ -18,15 +19,31 @@
 */
 
 #include "base_spectral.hpp"
+#include "base_fftw.hpp"
 #include "headcpp.hpp"
 #include "array.cpp"
 #include <fftw3.h>
+#include <unordered_map>
 
 namespace Kadath {
+// fftw3 computes optimal algorithm once
+// then we store it both in a map for later use
+std::unordered_map<int, fftw_precomp_t> fftw_precomp_map_i;
+
+// get or create buffer and plan
+fftw_precomp_t& coef_i_1d_fftw(int n) {
+  auto precomp_it = fftw_precomp_map_i.find(n);
+  if(precomp_it == fftw_precomp_map_i.end())
+    precomp_it = fftw_precomp_map_i.emplace(std::piecewise_construct,
+                                            std::forward_as_tuple(n),
+                                            std::forward_as_tuple(n,FFTW_HC2R)).first;
+  return (*precomp_it).second;
+}
+
 void coef_i_1d_pasprevu (Array<double>&) {
 	cout << "Coef_1d not implemented." << endl ;
 	abort() ;
-} 
+}
 
 void coef_i_1d_cheb (Array<double>& tab) {
 
@@ -34,11 +51,13 @@ void coef_i_1d_cheb (Array<double>& tab) {
 	int nbr = tab.get_size(0) ;
 
 	if (nbr>3) {
-	double* tab_auxi = new double[nbr-1] ;
+
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
 	double* cf = new double[nbr] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
+
 	double c1 = tab(1) ;
 	double somme = 0 ;
 	cf[1] = 0 ;
@@ -53,9 +72,9 @@ void coef_i_1d_cheb (Array<double>& tab) {
 	for (int i=1 ; i<(nbr-1)/2 ; i++)
 		tab_auxi[i] = 0.5*tab(2*i) ;
 	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;
-	
+
 	fftw_execute(p) ;
-	
+
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
 		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
@@ -65,9 +84,7 @@ void coef_i_1d_cheb (Array<double>& tab) {
 	tab.set(0) = tab_auxi[0] + fmoins0 ;
 	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
-	
-	fftw_destroy_plan(p) ;
-	delete [] tab_auxi ;
+
 	delete [] cf ;
 	}
 }
@@ -77,11 +94,12 @@ void coef_i_1d_cheb_even (Array<double>& tab) {
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 
-	double* tab_auxi = new double[nbr-1] ;
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
 	double* cf = new double[nbr] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
+
 	double c1 = tab(1) ;
 	double somme = 0 ;
 	cf[1] = 0 ;
@@ -96,9 +114,9 @@ void coef_i_1d_cheb_even (Array<double>& tab) {
 	for (int i=1 ; i<(nbr-1)/2 ; i++)
 		tab_auxi[i] = 0.5*tab(2*i) ;
 	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;
-	
+
 	fftw_execute(p) ;
-	
+
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
 		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
@@ -108,9 +126,7 @@ void coef_i_1d_cheb_even (Array<double>& tab) {
 	tab.set(0) = tab_auxi[0] - fmoins0 ;
 	tab.set(nbr-1) = tab_auxi[0] + fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
-	
-	fftw_destroy_plan(p) ;
-	delete [] tab_auxi ;
+
 	delete [] cf ;
 }
 
@@ -119,17 +135,18 @@ void coef_i_1d_cheb_odd (Array<double>& tab) {
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 
-	double* tab_auxi = new double[nbr-1] ;
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
 	double* ti = new double[nbr] ;
 	double* cf = new double[nbr] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
+
 	ti[0] = 0.5*tab(0) ;
 	for (int i=1 ; i<nbr-1 ; i++)
 		ti[i] = 0.5*(tab(i)+tab(i-1)) ;
 	ti[nbr-1] = 0.5*tab(nbr-2) ;
-	
+
 	double c1 = ti[1] ;
 	double somme = 0 ;
 	cf[1] = 0 ;
@@ -144,9 +161,9 @@ void coef_i_1d_cheb_odd (Array<double>& tab) {
 	for (int i=1 ; i<(nbr-1)/2 ; i++)
 		tab_auxi[i] = 0.5*ti[2*i] ;
 	tab_auxi[(nbr-1)/2]=ti[nbr-1] ;
-	
+
 	fftw_execute(p) ;
-	
+
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
 		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
@@ -156,9 +173,7 @@ void coef_i_1d_cheb_odd (Array<double>& tab) {
 	tab.set(0) = 0 ;
 	tab.set(nbr-1) = tab_auxi[0] + fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2]/sin(M_PI*(nbr-1)/4/(nbr-1)) ;
-	
-	fftw_destroy_plan(p) ;
-	delete [] tab_auxi ;
+
 	delete [] ti ;
 	delete [] cf ;
 }
@@ -203,14 +218,16 @@ void coef_i_1d_leg_odd (Array<double>& tab) {
 }
 
 void coef_i_1d_cossin (Array<double>& tab) {
-	
+
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 	int np = nbr-2 ;
 	if (np>1) {
-	double* cf = new double[np] ;
 
-	fftw_plan p = fftw_plan_r2r_1d(np, cf, cf, FFTW_HC2R, FFTW_MEASURE) ;
+  auto & fftw_data = coef_i_1d_fftw(np);
+	double* cf = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
 	cf[0] = tab(0) ;
 	for (int i=1 ; i<np/2 ; i++) {
 	     cf[i] = 0.5*tab(2*i) ;
@@ -221,96 +238,20 @@ void coef_i_1d_cossin (Array<double>& tab) {
 
 	for (int i=0 ; i<np ; i++)
 		tab.set(i) = cf[i] ;
-	fftw_destroy_plan(p) ;
-	delete [] cf ;
 	}
 }
 
 void coef_i_1d_cos (Array<double>& tab) {
-	
+
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 
-	double* tab_auxi = new double[nbr-1] ;
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
 	double* cf = new double[nbr] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
-	double c1 = tab(1) ;
-	double somme = 0 ;
-	cf[1] = 0 ;
-	for (int i=3 ; i<nbr ; i+=2) {
-		cf[i] = tab(i) - c1 ;
-		somme += cf[i] ;
-	}
-	double fmoins0 = (nbr-1)/2 *c1+ somme ;
-	for (int i=3 ; i<nbr ; i+=2)
-		tab_auxi[nbr-1-i/2] = 0.25*(cf[i]-cf[i-2]) ;
-	tab_auxi[0] = tab(0) ;
-	for (int i=1 ; i<(nbr-1)/2 ; i++)
-		tab_auxi[i] = 0.5*tab(2*i) ;
-	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;	
 
-	fftw_execute(p) ;
-	
-	for (int i=1 ; i<(nbr-1)/2 ; i++) {
-		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
-		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
-		tab.set(i) = fp+fm ;
-		tab.set(nbr-i-1) = fp -fm ;
-	}
-	tab.set(0) = tab_auxi[0] + fmoins0 ;
-	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
-	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
-	
-	fftw_destroy_plan(p) ;
-
-	delete [] tab_auxi ;
-	delete [] cf ;
-}
-
-void coef_i_1d_sin (Array<double>& tab) {
-
-	assert (tab.get_ndim()==1) ;
-	int nbr = tab.get_size(0) ;
-
-	double* tab_auxi = new double[nbr-1] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
-	for (int i=2 ; i<nbr-1 ; i+=2)
-	    tab_auxi[nbr-1-i/2] = -0.5*tab(i) ;
-	tab_auxi[0] = 0.5*tab(1) ;
-	for (int i=3 ; i<nbr ; i+=2)
-		tab_auxi[i/2] = 0.25*(tab(i)-tab(i-2)) ;
-	tab_auxi[(nbr-1)/2] = -0.5*tab(nbr-2) ;
-	
-	fftw_execute(p) ;
-	
-	for (int i=1 ; i<(nbr-1)/2 ; i++) {
-		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
-		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i]) ;
-		tab.set(i) = fp+fm ;
-		tab.set(nbr-i-1) = fp -fm ;
-	}
-	tab.set(0) = 0 ;
-	tab.set(nbr-1) =-2* tab_auxi[0] ;
-	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
-	
-	fftw_destroy_plan(p) ;
-	delete [] tab_auxi ;
-}
-
-void coef_i_1d_cos_even (Array<double>& tab) {
-
-	assert (tab.get_ndim()==1) ;
-	int nbr = tab.get_size(0) ;
-	if (nbr>3) {
-	double* tab_auxi = new double[nbr-1] ;
-	double* cf = new double[nbr] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
 	double c1 = tab(1) ;
 	double somme = 0 ;
 	cf[1] = 0 ;
@@ -325,9 +266,9 @@ void coef_i_1d_cos_even (Array<double>& tab) {
 	for (int i=1 ; i<(nbr-1)/2 ; i++)
 		tab_auxi[i] = 0.5*tab(2*i) ;
 	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;
-	
+
 	fftw_execute(p) ;
-	
+
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
 		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
@@ -337,81 +278,28 @@ void coef_i_1d_cos_even (Array<double>& tab) {
 	tab.set(0) = tab_auxi[0] + fmoins0 ;
 	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
-	
-	fftw_destroy_plan(p) ;
-	delete [] tab_auxi ;
+
 	delete [] cf ;
-	}
 }
 
-void coef_i_1d_cos_odd (Array<double>& tab) {
+void coef_i_1d_sin (Array<double>& tab) {
 
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
-	if (nbr>3) {
-	double* tab_auxi = new double[nbr-1] ;
-	double* ti = new double[nbr] ;
-	double* cf = new double[nbr] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
-	ti[0] = 0.5*tab(0) ;
-	for (int i=1 ; i<nbr-1 ; i++)
-		ti[i] = 0.5*(tab(i)+tab(i-1)) ;
-	ti[nbr-1] = 0.5*tab(nbr-2) ;
-	
-	double c1 = ti[1] ;
-	double somme = 0 ;
-	cf[1] = 0 ;
-	for (int i=3 ; i<nbr ; i+=2) {
-		cf[i] = ti[i] - c1 ;
-		somme += cf[i] ;
-	}
-	double fmoins0 = (nbr-1)/2 *c1+ somme ;
-	for (int i=3 ; i<nbr ; i+=2)
-		tab_auxi[nbr-1-i/2] = 0.25*(cf[i]-cf[i-2]) ;
-	tab_auxi[0] = ti[0] ;
-	for (int i=1 ; i<(nbr-1)/2 ; i++)
-		tab_auxi[i] = 0.5*ti[2*i] ;
-	tab_auxi[(nbr-1)/2] = ti[nbr-1] ;	
 
-	fftw_execute(p) ;
-	
-	for (int i=1 ; i<(nbr-1)/2 ; i++) {
-		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
-		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
-		tab.set(i) = (fp+fm)/sin(M_PI*(nbr-1-i)/2/(nbr-1)) ;
-		tab.set(nbr-i-1) = (fp -fm)/sin(M_PI*i/2/(nbr-1)) ;
-	}
-	tab.set(0) = tab_auxi[0] + fmoins0 ;
-	tab.set(nbr-1) = 0 ;
-	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2]/sin(M_PI*(nbr-1)/4/(nbr-1)) ;
-	
-	fftw_destroy_plan(p) ;
-	delete [] tab_auxi ;
-	delete [] ti ;
-	delete [] cf ;
-	}
-}
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
 
-void coef_i_1d_sin_even (Array<double>& tab) {
-
-	assert (tab.get_ndim()==1) ;
-	int nbr = tab.get_size(0) ;
-	if (nbr>3) {
-	double* tab_auxi = new double[nbr-1] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
 	for (int i=2 ; i<nbr-1 ; i+=2)
 	    tab_auxi[nbr-1-i/2] = -0.5*tab(i) ;
 	tab_auxi[0] = 0.5*tab(1) ;
-	for (int i=1 ; i<(nbr-1)/2 ; i++)
-		tab_auxi[i] = 0.25*(tab(2*i+1)-tab(2*i-1)) ;
+	for (int i=3 ; i<nbr ; i+=2)
+		tab_auxi[i/2] = 0.25*(tab(i)-tab(i-2)) ;
 	tab_auxi[(nbr-1)/2] = -0.5*tab(nbr-2) ;
-	
+
 	fftw_execute(p) ;
-	
+
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
 		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i]) ;
@@ -421,28 +309,67 @@ void coef_i_1d_sin_even (Array<double>& tab) {
 	tab.set(0) = 0 ;
 	tab.set(nbr-1) =-2* tab_auxi[0] ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
-	
-	fftw_destroy_plan(p) ;
-	delete [] tab_auxi ;
-	}
 }
 
-void coef_i_1d_sin_odd (Array<double>& tab) {
+void coef_i_1d_cos_even (Array<double>& tab) {
 
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 	if (nbr>3) {
-	double* tab_auxi = new double[nbr-1] ;
+	double* cf = new double[nbr] ;
+
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
+	double c1 = tab(1) ;
+	double somme = 0 ;
+	cf[1] = 0 ;
+	for (int i=3 ; i<nbr ; i+=2) {
+		cf[i] = tab(i) - c1 ;
+		somme += cf[i] ;
+	}
+	double fmoins0 = (nbr-1)/2 *c1+ somme ;
+	for (int i=3 ; i<nbr ; i+=2)
+		tab_auxi[nbr-1-i/2] = 0.25*(cf[i]-cf[i-2]) ;
+	tab_auxi[0] = tab(0) ;
+	for (int i=1 ; i<(nbr-1)/2 ; i++)
+		tab_auxi[i] = 0.5*tab(2*i) ;
+	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;
+
+	fftw_execute(p) ;
+
+	for (int i=1 ; i<(nbr-1)/2 ; i++) {
+		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
+		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
+		tab.set(i) = fp+fm ;
+		tab.set(nbr-i-1) = fp -fm ;
+	}
+	tab.set(0) = tab_auxi[0] + fmoins0 ;
+	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
+	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
+
+	delete [] cf ;
+	}
+}
+
+void coef_i_1d_cos_odd (Array<double>& tab) {
+
+	assert (tab.get_ndim()==1) ;
+	int nbr = tab.get_size(0) ;
+	if (nbr>3) {
 	double* ti = new double[nbr] ;
 	double* cf = new double[nbr] ;
-	
-	fftw_plan p = fftw_plan_r2r_1d(nbr-1, tab_auxi, tab_auxi, FFTW_HC2R, FFTW_MEASURE) ;
-	
+
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
 	ti[0] = 0.5*tab(0) ;
 	for (int i=1 ; i<nbr-1 ; i++)
-		ti[i] = 0.5*(tab(i)-tab(i-1)) ;
-	ti[nbr-1] = -0.5*tab(nbr-2) ;
-	
+		ti[i] = 0.5*(tab(i)+tab(i-1)) ;
+	ti[nbr-1] = 0.5*tab(nbr-2) ;
+
 	double c1 = ti[1] ;
 	double somme = 0 ;
 	cf[1] = 0 ;
@@ -457,9 +384,89 @@ void coef_i_1d_sin_odd (Array<double>& tab) {
 	for (int i=1 ; i<(nbr-1)/2 ; i++)
 		tab_auxi[i] = 0.5*ti[2*i] ;
 	tab_auxi[(nbr-1)/2] = ti[nbr-1] ;
-		
+
 	fftw_execute(p) ;
-	
+
+	for (int i=1 ; i<(nbr-1)/2 ; i++) {
+		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
+		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
+		tab.set(i) = (fp+fm)/sin(M_PI*(nbr-1-i)/2/(nbr-1)) ;
+		tab.set(nbr-i-1) = (fp -fm)/sin(M_PI*i/2/(nbr-1)) ;
+	}
+	tab.set(0) = tab_auxi[0] + fmoins0 ;
+	tab.set(nbr-1) = 0 ;
+	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2]/sin(M_PI*(nbr-1)/4/(nbr-1)) ;
+
+	delete [] ti ;
+	delete [] cf ;
+	}
+}
+
+void coef_i_1d_sin_even (Array<double>& tab) {
+
+	assert (tab.get_ndim()==1) ;
+	int nbr = tab.get_size(0) ;
+	if (nbr>3) {
+
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
+	for (int i=2 ; i<nbr-1 ; i+=2)
+	    tab_auxi[nbr-1-i/2] = -0.5*tab(i) ;
+	tab_auxi[0] = 0.5*tab(1) ;
+	for (int i=1 ; i<(nbr-1)/2 ; i++)
+		tab_auxi[i] = 0.25*(tab(2*i+1)-tab(2*i-1)) ;
+	tab_auxi[(nbr-1)/2] = -0.5*tab(nbr-2) ;
+
+	fftw_execute(p) ;
+
+	for (int i=1 ; i<(nbr-1)/2 ; i++) {
+		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
+		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i]) ;
+		tab.set(i) = fp+fm ;
+		tab.set(nbr-i-1) = fp -fm ;
+	}
+	tab.set(0) = 0 ;
+	tab.set(nbr-1) =-2* tab_auxi[0] ;
+	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
+	}
+}
+
+void coef_i_1d_sin_odd (Array<double>& tab) {
+
+	assert (tab.get_ndim()==1) ;
+	int nbr = tab.get_size(0) ;
+	if (nbr>3) {
+	double* ti = new double[nbr] ;
+	double* cf = new double[nbr] ;
+
+  auto & fftw_data = coef_i_1d_fftw(nbr-1);
+	double* tab_auxi = fftw_data.buffer;
+	fftw_plan p = fftw_data.plan;
+
+	ti[0] = 0.5*tab(0) ;
+	for (int i=1 ; i<nbr-1 ; i++)
+		ti[i] = 0.5*(tab(i)-tab(i-1)) ;
+	ti[nbr-1] = -0.5*tab(nbr-2) ;
+
+	double c1 = ti[1] ;
+	double somme = 0 ;
+	cf[1] = 0 ;
+	for (int i=3 ; i<nbr ; i+=2) {
+		cf[i] = ti[i] - c1 ;
+		somme += cf[i] ;
+	}
+	double fmoins0 = (nbr-1)/2 *c1+ somme ;
+	for (int i=3 ; i<nbr ; i+=2)
+		tab_auxi[nbr-1-i/2] = 0.25*(cf[i]-cf[i-2]) ;
+	tab_auxi[0] = ti[0] ;
+	for (int i=1 ; i<(nbr-1)/2 ; i++)
+		tab_auxi[i] = 0.5*ti[2*i] ;
+	tab_auxi[(nbr-1)/2] = ti[nbr-1] ;
+
+	fftw_execute(p) ;
+
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
 		double fm = 0.5*(tab_auxi[i]-tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
@@ -469,9 +476,7 @@ void coef_i_1d_sin_odd (Array<double>& tab) {
 	tab.set(0) = 0 ;
 	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2]/sin(M_PI*(nbr-1)/4/(nbr-1)) ;
-	
-	fftw_destroy_plan(p) ;
-	delete [] tab_auxi ;
+
 	delete [] ti ;
 	delete [] cf ;
 	}
@@ -479,7 +484,7 @@ void coef_i_1d_sin_odd (Array<double>& tab) {
 
 
 void coef_i_1d_cossin_even (Array<double>& tab) {
-	
+
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 	// Double-sized array :
@@ -494,7 +499,7 @@ void coef_i_1d_cossin_even (Array<double>& tab) {
 	}
 	tab2.set(conte) = tab(nbr-2) ;
 	tab2.set(conte+1) = tab(nbr-1) ;
-	
+
 	coef_i_1d_cossin(tab2) ;
 	for (int i=0 ; i<nbr-2 ; i++)
 	  tab.set(i) = tab2(i) ;
@@ -504,13 +509,13 @@ void coef_i_1d_cossin_even (Array<double>& tab) {
 
 
 void coef_i_1d_cossin_odd (Array<double>& tab) {
-	
+
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 	// Double-sized array :
 	Array<double> tab2 (nbr*2-2) ;
 	int conte = 0 ;
-	for (int i=0 ; i<nbr-2 ; i+=2) { 
+	for (int i=0 ; i<nbr-2 ; i+=2) {
 	    tab2.set(conte) = 0. ;
 	    tab2.set(conte+1) = 0. ;
 	    tab2.set(conte+2) = tab(i) ;
@@ -531,7 +536,7 @@ void coef_i_1d_cossin_odd (Array<double>& tab) {
 void coef_i_1d (int base, Array<double>& tab) {
     static void (*coef_i_1d[NBR_MAX_BASE])(Array<double>&) ;
     static bool premier_appel = true ;
-    
+
     // Premier appel
     if (premier_appel) {
 	premier_appel = false ;
@@ -555,7 +560,7 @@ void coef_i_1d (int base, Array<double>& tab) {
 	coef_i_1d[COSSIN_EVEN] = coef_i_1d_cossin_even ;
 	coef_i_1d[COSSIN_ODD] = coef_i_1d_cossin_odd ;
 	}
-	
+
         coef_i_1d[base](tab) ;
 }
 }
