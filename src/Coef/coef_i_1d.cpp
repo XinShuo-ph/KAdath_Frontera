@@ -24,6 +24,7 @@
 #include "array.cpp"
 #include <fftw3.h>
 #include <unordered_map>
+#include <tuple>
 
 namespace Kadath {
 // fftw3 computes optimal algorithm once
