@@ -247,6 +247,15 @@ Val_domain Domain_nucleus::srdr (const Val_domain& so) const {
   return (div_x(so.der_var(1)) / alpha / alpha) ;
 }
 
+Val_domain Domain_nucleus::laplacian2 (const Val_domain& so, int m) const {
+  Val_domain derr (so.der_var(1)/alpha) ;
+  Val_domain dert (so.der_var(2)) ;
+  Val_domain res (derr.der_var(1)/alpha + div_r(derr + div_r(dert.der_var(2)))) ;
+  if (m!=0)
+    res -= m * m * div_r(div_r(so.div_sin_theta().div_sin_theta())) ;
+  return res ;
+}
+
 double integral_1d (int, const Array<double>&) ;
 double Domain_nucleus::integ_volume (const Val_domain& so) const {
   

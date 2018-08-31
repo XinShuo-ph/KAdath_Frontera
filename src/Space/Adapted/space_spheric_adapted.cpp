@@ -152,15 +152,15 @@ void Space_spheric_adapted::xx_to_vars_variable_domains (System_of_eqs* sys, con
 	Scalar so (*this) ;
 	so = 0 ;
 	for (int d=1 ; d<=2 ; d++)
-	  so.set_domain(d) = (*sys->cst[i*(sys->dom_max-sys->dom_min+1)+d]->val_t->cmp[n])(d) ;
-	
+	  so.set_domain(d) = (*sys->cst[i*(sys->dom_max-sys->dom_min+1)+d-sys->dom_min]->val_t->cmp[n])(d) ;
+	  
 	Scalar res(*this) ;
 	res = 0 ;
 	domains[1]->update_constante(cor_outer, so, res) ;
 	domains[2]->update_constante(cor_inner, so, res) ;
 	
-	sys->cst[i*(sys->dom_max-sys->dom_min+1)+1]->val_t->cmp[n]->set_domain(1) = res(1) ;
-	sys->cst[i*(sys->dom_max-sys->dom_min+1)+2]->val_t->cmp[n]->set_domain(2) = res(2) ;
+	sys->cst[i*(sys->dom_max-sys->dom_min+1)+1-sys->dom_min]->val_t->cmp[n]->set_domain(1) = res(1) ;
+	sys->cst[i*(sys->dom_max-sys->dom_min+1)+2-sys->dom_min]->val_t->cmp[n]->set_domain(2) = res(2) ;
 	
       }
       

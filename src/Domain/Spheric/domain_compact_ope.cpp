@@ -209,6 +209,16 @@ Val_domain Domain_compact::der_partial_var (const Val_domain& so, int which_var)
 		}
 }
 
+Val_domain Domain_compact::laplacian2 (const Val_domain& so, int m) const {
+  Val_domain derr (-alpha*so.der_var(1).mult_xm1().mult_xm1()) ;
+  Val_domain dderr (-alpha*derr.der_var(1).mult_xm1().mult_xm1()) ;
+  Val_domain dert (so.der_var(2)) ;
+  Val_domain res (dderr + div_r(derr + div_r(dert.der_var(2)))) ;
+  if (m!=0)
+    res -= m * m * div_r(div_r(so.div_sin_theta().div_sin_theta())) ;
+  return res ;
+}
+
 double integral_1d (int, const Array<double>&) ;
 double Domain_compact::integ_volume (const Val_domain& so) const {
   

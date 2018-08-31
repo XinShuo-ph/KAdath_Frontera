@@ -198,7 +198,9 @@ class Domain_shell_inner_adapted : public Domain {
      virtual Val_domain ddp (const Val_domain&) const ;
      virtual Val_domain der_r (const Val_domain&) const ;
      virtual Val_domain div_r (const Val_domain&) const ;
-     
+     virtual Val_domain laplacian (const Val_domain&, int) const ;
+     virtual Val_domain laplacian2 (const Val_domain&, int) const ;
+ 
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
@@ -499,7 +501,9 @@ class Domain_shell_outer_adapted : public Domain {
      virtual Val_domain mult_sin_theta (const Val_domain&) const ;
      virtual Val_domain div_sin_theta (const Val_domain&) const ;  
      virtual Val_domain div_cos_theta (const Val_domain&) const ;
-     
+     virtual Val_domain laplacian (const Val_domain&, int) const ;
+     virtual Val_domain laplacian2 (const Val_domain&, int) const ;
+ 
      virtual Tensor change_basis_cart_to_spher (int dd, const Tensor&) const ;
      virtual Tensor change_basis_spher_to_cart (int dd, const Tensor&) const ;
      

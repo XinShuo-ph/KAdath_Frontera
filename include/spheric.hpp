@@ -216,6 +216,7 @@ class Domain_nucleus : public Domain {
      virtual Val_domain ddp (const Val_domain&) const ;
      virtual Val_domain srdr (const Val_domain&) const ;
      virtual Val_domain div_1mx2 (const Val_domain&) const ; 
+     virtual Val_domain laplacian2 (const Val_domain&, int) const ;
 
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
@@ -700,6 +701,8 @@ class Domain_shell : public Domain {
      virtual Val_domain div_xm1 (const Val_domain&) const ;      
      virtual Val_domain mult_xm1 (const Val_domain&) const ;
      virtual Val_domain div_1mx2 (const Val_domain&) const ; 
+     virtual Val_domain laplacian2 (const Val_domain&, int) const ;
+
 
      virtual double multipoles_sym (int, int, int, const Val_domain&, const Array<double>&) const ;   
      virtual double multipoles_asym (int, int, int, const Val_domain&, const Array<double>&) const ;   
@@ -1042,6 +1045,7 @@ class Domain_compact : public Domain {
      virtual Val_domain der_r (const Val_domain&) const ; 
      virtual Val_domain der_r_rtwo (const Val_domain&) const ;
      virtual Val_domain der_partial_var (const Val_domain&, int) const ;
+     virtual Val_domain laplacian2 (const Val_domain&, int) const ;
 
      virtual void set_val_inf (Val_domain&, double) const ;    
 
