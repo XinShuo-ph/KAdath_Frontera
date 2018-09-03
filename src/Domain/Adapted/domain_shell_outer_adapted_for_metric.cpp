@@ -57,6 +57,7 @@ Term_eq Domain_shell_outer_adapted::derive_flat_spher (int type_der, char ind_de
 	Base_tensor basis (so.val_t->get_space(), SPHERICAL_BASIS) ;
 	Tensor auxi_val (so.val_t->get_space(), val_res, type_ind, basis) ;
 	auxi_val = 0 ;
+	auxi_val.std_base() ;
 	
 	if (donames) {
 	  // Set the names of the indices :
@@ -165,7 +166,8 @@ Term_eq Domain_shell_outer_adapted::derive_flat_spher (int type_der, char ind_de
 		// Need to compute the derivative :
 		// Tensor for der
 		Tensor auxi_der (so.val_t->get_space(), val_res, type_ind, basis) ;
-	
+		auxi_der = 0 ;	
+
 		if (donames) {
 		  // Set the names of the indices :
 		  auxi_der.set_name_affected() ;
@@ -253,11 +255,13 @@ Term_eq Domain_shell_outer_adapted::derive_flat_spher (int type_der, char ind_de
 	  while (pos_auxi_der.inc()) ;
 	}
 
-
 		// Need for derivative :
-		Term_eq occi (num_dom, auxi_val, auxi_der) ;
+		Term_eq occi (num_dom, auxi_val, auxi_der) ;	
 		Term_eq auxi (occi/(*rad_term_eq) + fgrad) ;
+
 		
+
+
 		// If derive contravariant : manipulate first indice :
 		if (type_der==CON)
 			manipulator->manipulate_ind (auxi, 0) ;

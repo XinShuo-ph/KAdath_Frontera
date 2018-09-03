@@ -166,7 +166,8 @@ Term_eq Domain_shell_inner_adapted::derive_flat_spher (int type_der, char ind_de
 		// Need to compute the derivative :
 		// Tensor for der
 		Tensor auxi_der (so.val_t->get_space(), val_res, type_ind, basis) ;
-	
+		auxi_der = 0 ;
+
 		if (donames) {
 		  // Set the names of the indices :
 		  auxi_der.set_name_affected() ;
