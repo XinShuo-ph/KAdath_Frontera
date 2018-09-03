@@ -640,7 +640,8 @@ class Domain_shell_outer_adapted : public Domain {
      virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
 
      virtual double integ_volume (const Val_domain&) const ;
-	    
+     virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
+ 
      friend ostream& operator<< (ostream& o, const Domain_shell_outer_adapted& so) ; ///<  Display
      
      friend class Space_spheric_adapted ;
@@ -701,6 +702,8 @@ class Space_spheric_adapted : public Space {
 	* @param eq : the string describing the equation (should contain something like integvolume(f)=b)
 	*/
 	void add_eq_int_volume (System_of_eqs& syst, int nz, const char* eq) ;
+
+	virtual Array<int> get_indices_matching_non_std(int, int) const ;
 } ;
 }
 #endif

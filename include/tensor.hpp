@@ -654,6 +654,7 @@ class Tensor {
 	friend Tensor partial_one_dom (int, char, const Tensor&) ;
 	friend Tensor sqrt_one_dom (int, const Tensor&) ;
 
+	friend class Domain_nucleus ;
 	friend class Domain_shell ;
 	friend class Domain_bispheric_chi_first ;
 	friend class Domain_bispheric_rect ;

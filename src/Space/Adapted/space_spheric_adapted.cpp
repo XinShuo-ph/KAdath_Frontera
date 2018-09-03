@@ -169,6 +169,28 @@ void Space_spheric_adapted::xx_to_vars_variable_domains (System_of_eqs* sys, con
       domains[2]->update_mapping(cor_inner) ;
 }
 
+
+Array<int> Space_spheric_adapted::get_indices_matching_non_std(int dom, int bound) const {
+
+	assert ((dom>=0) && (dom<nbr_domains)) ;
+	Array<int> res (2, 1) ;
+	switch (bound) {
+		case OUTER_BC : 
+			res.set(0,0) = dom+1 ;
+			res.set(1,0) = INNER_BC ; 
+			break ;
+		case INNER_BC :
+			res.set(0,0) = dom-1 ;
+			res.set(1,0) = OUTER_BC ;
+			break ;
+		default :
+			cerr << "Unknown boundary in " << endl ;
+			cerr << *this << endl ;
+			abort() ;
+		}
+	return res ;
+}
+
 void Space_spheric_adapted::add_eq_ori (System_of_eqs& sys, const char* name) {
 
 	Index pos (domains[0]->get_nbr_points()) ;

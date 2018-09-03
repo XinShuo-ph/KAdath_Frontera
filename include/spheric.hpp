@@ -510,6 +510,7 @@ class Domain_nucleus : public Domain {
      virtual Term_eq derive_flat_spher (int, char, const Term_eq&, const Metric*) const ;
      virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
      virtual double integ(const Val_domain& so, int bound) const ;
+     virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
  
      friend ostream& operator<< (ostream& o, const Domain_nucleus& so) ; //< Display
 } ;
