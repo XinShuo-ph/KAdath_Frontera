@@ -185,7 +185,7 @@ Term_eq Domain_shell_inner_adapted::flat_grad_spher (const Term_eq& so) const {
 
 void Domain_shell_inner_adapted::do_normal_spher () const {
   
-    Term_eq grad (flat_grad_spher(*rad_term_eq - *inner_radius_term_eq)) ;
+    Term_eq grad (flat_grad_spher(-(*rad_term_eq) + *inner_radius_term_eq)) ;
 
     Scalar val_norme (sp) ;
     val_norme.set_domain(num_dom) = sqrt((*grad.val_t)(1)(num_dom)*(*grad.val_t)(1)(num_dom)
