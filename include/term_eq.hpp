@@ -258,6 +258,7 @@ class Term_eq {
 	friend class Metric_const ;
 	friend class Metric_ADS ;
 	friend class Metric_AADS ;
+	friend class Metric_conf_factor ;
 	friend class System_of_eqs ;
 	friend class Space_spheric_adapted ;	
 	friend class Space_polar_adapted ;

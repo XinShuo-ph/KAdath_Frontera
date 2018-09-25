@@ -20,6 +20,8 @@
 #ifndef __METRIC_HPP_
 #define __METRIC_HPP_
 #include "metric_tensor.hpp"
+#include "vector.hpp" 
+#include "scalar.hpp"
 
 namespace Kadath {
 class Space ;
@@ -507,5 +509,49 @@ class Metric_dirac_const : public Metric_dirac {
 	public:
 		virtual ~Metric_harmonic() ;
 } ;
+
+/**
+ * Class to deal with a metric with a conformal decomposition (mainly used for AADS spacetimes)
+ * The true metric and the conformal are related via
+ * \f$\gamma_{ij} = \frac{1}{\Omega^2}\tilde{\gamma}_{ij}\f$.
+ * The conformal factor vanishes at some boundary so that the various quantities (Christoffels) are multiplied by appropriate factors
+ * of $\Omega$ to ensure regularity.
+ * \ingroup metric
+ */
+class Metric_conf_factor : public Metric {
+
+	protected:
+	  Metric_tensor* p_met ; ///< Pointer on the \c Metric_tensor describing the coformal metric.
+	  const Base_tensor& basis ; ///< The tensorial basis used.
+	  Metric_flat fmet ; ///< Associated flat metric.
+          Scalar conformal ; ///< The conformal factor $\Omega$ (must be a purely radial function)
+	  Vector grad_conf ; ///< flat gradient of the conformal factor 
+	  int place_syst ; ///< Gives the location of the metric amongst the various unknowns of the associated \c System_of_eqs.
+
+	public:
+		Metric_conf_factor (Metric_tensor&, const Scalar& conf) ; ///< Constructor from a \c Metric_tensor and a conformal factor.
+		Metric_conf_factor (const Metric_conf_factor& ) ; ///< Copy constructor.
+
+	protected:
+		virtual void compute_con (int) const ;
+		virtual void compute_cov (int) const ;		
+		virtual void compute_christo (int) const ;		
+		virtual void compute_riemann (int) const ;		
+		virtual void compute_ricci_tensor (int) const ;
+	
+	public:
+		virtual ~Metric_conf_factor() ;
+		virtual Term_eq derive (int, char, const Term_eq&) const ;
+		/**
+		* Associate the metric to a given system of equations.
+		* @param syst : the \c System_of_eqs.
+		* @param name : name by which the metric will be known in the system (like "g", "f"...)
+		*/
+		virtual void set_system (System_of_eqs& syst, const char* name) ;
+		virtual Term_eq derive_flat (int, char, const Term_eq&) const ;
+		
+		virtual int give_type (int) const ;
+} ;
+
 }
 #endif

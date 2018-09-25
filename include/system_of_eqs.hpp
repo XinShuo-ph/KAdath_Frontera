@@ -914,6 +914,7 @@ class System_of_eqs {
 	friend class Metric_nophi_AADS ;
 	friend class Metric_nophi_const ;
 	friend class Metric_nophi_AADS_const ;
+	friend class Metric_conf_factor ;
 } ;
 
 /**

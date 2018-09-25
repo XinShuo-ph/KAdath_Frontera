@@ -22,22 +22,28 @@
 #include <assert.h>
 #include "scalar.hpp"
 namespace Kadath {
-Space_spheric::Space_spheric(int ttype, const Point& center, const Dim_array& res, const Array<double>& bounds) {
+Space_spheric::Space_spheric(int ttype, const Point& center, const Dim_array& res, const Array<double>& bounds, bool withzec) {
 
     // Verif :
     assert (bounds.get_ndim()== 1) ;
 
     ndim = 3 ;
     
-    nbr_domains = bounds.get_size(0)+1 ;
+    nbr_domains = (withzec) ? bounds.get_size(0)+1 : bounds.get_size(0) ;
     type_base = ttype ;
     domains = new Domain* [nbr_domains] ;
     // Nucleus
     domains[0] = new Domain_nucleus(0, ttype, bounds(0), center, res) ;
-    for (int i=1 ; i<nbr_domains-1 ; i++)
+   if (withzec) { 
+   for (int i=1 ; i<nbr_domains-1 ; i++)
        domains[i] = new Domain_shell(i, ttype, bounds(i-1), bounds(i), center, res) ;
-  
+   
    domains[nbr_domains-1] = new Domain_compact (nbr_domains-1, ttype, bounds(nbr_domains-2), center, res) ;
+   }
+	else { 
+	for (int i=1 ; i<nbr_domains ; i++)
+	       domains[i] = new Domain_shell(i, ttype, bounds(i-1), bounds(i), center, res) ;
+   }
 }
 
 Space_spheric::Space_spheric(int ttype, const Point& center, const Dim_array& res, const Array<double>& bounds, const Array<int>& type_shells) {
