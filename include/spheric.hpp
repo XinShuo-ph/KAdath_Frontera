@@ -1166,7 +1166,7 @@ class Space_spheric : public Space {
 	*/
 	Space_spheric (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds, const Array<int>& type_shells) ;
 
-	Space_spheric (FILE*) ; ///< Constructor from a file
+	Space_spheric (FILE*, bool withzec=true) ; ///< Constructor from a file
 	virtual ~Space_spheric() ; ///< Destructor        
 	virtual void save(FILE*) const ;
 

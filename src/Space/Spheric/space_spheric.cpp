@@ -78,18 +78,26 @@ Space_spheric::Space_spheric(int ttype, const Point& center, const Dim_array& re
    domains[nbr_domains-1] = new Domain_compact (nbr_domains-1, ttype, bounds(nbr_domains-2), center, res) ;
 }
 
-Space_spheric::Space_spheric(FILE* fd) {
+Space_spheric::Space_spheric(FILE* fd, bool withzec) {
 	fread_be (&nbr_domains, sizeof(int), 1, fd) ;
 	fread_be (&ndim, sizeof(int), 1, fd) ;
 	fread_be (&type_base, sizeof(int), 1, fd) ;
 	domains = new Domain* [nbr_domains] ;
 	//nucleus :
 	domains[0] = new Domain_nucleus(0, fd) ;
-	//Shells :
-	for (int i=1 ; i<nbr_domains-1 ; i++)
-		domains[i] = new Domain_shell(i, fd) ;
-	// Compactified
-	domains[nbr_domains-1] = new Domain_compact(nbr_domains-1, fd) ;
+	
+	if (withzec) {
+		//Shells :
+		for (int i=1 ; i<nbr_domains-1 ; i++)
+			domains[i] = new Domain_shell(i, fd) ;
+		// Compactified
+		domains[nbr_domains-1] = new Domain_compact(nbr_domains-1, fd) ;
+	}
+	else {
+		//Shells :
+		for (int i=1 ; i<nbr_domains ; i++)
+			domains[i] = new Domain_shell(i, fd) ;
+	}
 }
 
 Space_spheric::~Space_spheric() {
