@@ -741,6 +741,22 @@ class Domain_shell : public Domain {
 	*/
      Tensor bc_waves (int dom, const Tensor& gamma, const double omega, bool toinf = true) const ;
      
+ /**
+    * Fit some field with a \f$1/r\f$ decay (\c Val_domain version).
+    * @param so : the field to be fitted.
+    * @param dim : the dimension.
+    * @returns : the fit.
+    */
+    Val_domain fitschwarz (const Val_domain&, int) const ;
+
+     /**
+    * Fit some field with a \f$1/r\f$ decay (\c Term_eq version).
+    * @param so : the field to be fitted.
+    * @param dim : the dimension.
+    * @returns : the fit.
+    */
+    Term_eq fitschwarz (const Term_eq&, int) const ;
+
      virtual void find_other_dom (int, int, int&, int&) const ;     
      virtual Val_domain der_normal (const Val_domain&, int) const ;
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
