@@ -553,5 +553,45 @@ class Metric_conf_factor : public Metric {
 		virtual int give_type (int) const ;
 } ;
 
+/**
+ * Class to deal with a metric with a conformaly flat metric.
+ * \ingroup metric
+ */
+class Metric_cfc : public Metric {
+
+	protected:
+	  Scalar* p_conf ; ///< Pointer on the \c Scalar being the conformal factor.
+	  const Base_tensor& basis ;  ///< The tensorial basis used.
+	  Metric_flat fmet ;  ///< Associated flat metric.
+	  int place_syst ; ///< Gives the location of the metric amongst the various unknowns of the associated \c System_of_eqs.
+
+	public:
+		Metric_cfc (Scalar&, const Base_tensor&) ; ///< Constructor from a \c Metric_tensor.
+		Metric_cfc (const Metric_cfc& ) ; ///< Copy constructor
+
+	protected:
+		virtual void compute_con (int) const ;
+		virtual void compute_cov (int) const ;			
+		virtual void compute_christo (int) const ;		
+		virtual void compute_riemann (int) const ;		
+		virtual void compute_ricci_tensor (int) const ;
+		
+	public:
+		virtual ~Metric_cfc() ;
+
+		/**
+		* Associate the metric to a given system of equations.
+		* @param syst : the \c System_of_eqs.
+		* @param name : name by which the metric will be known in the system (like "g", "f"...)
+		*/
+		virtual void set_system (System_of_eqs& syst, const char* name) ;
+		
+		virtual Term_eq derive (int, char, const Term_eq&) const ;
+		virtual Term_eq derive_flat (int, char, const Term_eq&) const ;
+	
+		virtual int give_type (int) const ;
+} ;
+
+
 }
 #endif
