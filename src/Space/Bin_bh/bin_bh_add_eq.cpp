@@ -184,7 +184,7 @@ void Space_bin_bh::add_eq_int_sphere_two (System_of_eqs& sys, const char* nom) {
 		  // Affectation :
 		  // no lhs :
 		  if (indic) {
-			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(1, p1, INNER_BC)) ;
+			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(5, p1, INNER_BC)) ;
 			}
 		  else {
 			sys.eq_int[sys.neq_int]->set_part(0, 
