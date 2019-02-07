@@ -703,7 +703,7 @@ class Domain_shell : public Domain {
      virtual Val_domain mult_xm1 (const Val_domain&) const ;
      virtual Val_domain div_1mx2 (const Val_domain&) const ; 
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
-
+     virtual Val_domain dt (const Val_domain&) const ;
 
      virtual double multipoles_sym (int, int, int, const Val_domain&, const Array<double>&) const ;   
      virtual double multipoles_asym (int, int, int, const Val_domain&, const Array<double>&) const ;   
@@ -1063,6 +1063,7 @@ class Domain_compact : public Domain {
      virtual Val_domain der_r_rtwo (const Val_domain&) const ;
      virtual Val_domain der_partial_var (const Val_domain&, int) const ;
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
+     virtual Val_domain dt (const Val_domain&) const ;
 
      virtual void set_val_inf (Val_domain&, double) const ;    
 

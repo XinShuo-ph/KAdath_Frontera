@@ -245,6 +245,11 @@ Val_domain Domain_shell::div_xm1 (const Val_domain& so) const {
 	return res ;
 }
 
+Val_domain Domain_shell::dt (const Val_domain& so) const {
+  return (so.der_var(2)) ;
+}
+
+
 Val_domain Domain_shell::der_partial_var (const Val_domain& so, int which_var) const {
 
 	switch (which_var) {

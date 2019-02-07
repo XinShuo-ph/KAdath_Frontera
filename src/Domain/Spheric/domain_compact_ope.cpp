@@ -192,6 +192,11 @@ Val_domain Domain_compact::der_r_rtwo (const Val_domain& so) const {
   return (-so.der_var(1)/alpha) ;
 }
 
+Val_domain Domain_compact::dt (const Val_domain& so) const {
+  return (so.der_var(2)) ;
+}
+
+
 Val_domain Domain_compact::der_partial_var (const Val_domain& so, int which_var) const {
 
 	switch (which_var) {
