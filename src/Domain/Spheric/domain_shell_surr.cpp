@@ -150,7 +150,7 @@ bool Domain_shell_surr::is_in (const Point& xx, double prec) const {
 	double z_loc = xx(3) - center(3) ;
 	double air_loc = sqrt (x_loc*x_loc + y_loc*y_loc + z_loc*z_loc) ;
 
-	bool res = ((air_loc <= 1./(alpha+beta)+prec) && (air_loc >= 1./(beta-alpha)-prec)) ? true : false ;
+	bool res = ((air_loc*(alpha+beta) -1  <= +prec) && (air_loc * (beta-alpha) -1 >= -prec)) ? true : false ;
 	return res ;
 }
 

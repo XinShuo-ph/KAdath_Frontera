@@ -175,7 +175,7 @@ bool Domain_shell::is_in (const Point& xx, double prec) const {
 	double z_loc = xx(3) - center(3) ;
 	double air_loc = sqrt (x_loc*x_loc + y_loc*y_loc + z_loc*z_loc) ;
 
-	bool res = ((air_loc <= alpha+beta+prec) && (air_loc >= beta-alpha-prec)) ? true : false ;
+	bool res = ((air_loc / (alpha+beta) - 1  <= prec) && (air_loc/ (beta-alpha) - 1 >= -prec)) ? true : false ;
 	return res ;
 }
 
@@ -408,6 +408,74 @@ void Domain_shell::set_cheb_base_p_spher(Base_spectral& base) const  {
 		 }
 	}	
 }
+void Domain_shell::set_cheb_base_r_mtz(Base_spectral& base) const  {
+
+	int m ;
+
+	assert (type_base == CHEB_TYPE) ;
+
+	base.allocate(nbr_coefs) ;
+	    
+	base.def =true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	
+	Index index (base.bases_1d[0]->get_dimensions()) ;
+	
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? COS_EVEN : SIN_ODD ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = CHEB ;
+		 }
+	}	
+}
+
+void Domain_shell::set_cheb_base_t_mtz(Base_spectral& base) const  {
+
+	int m ;
+
+	assert (type_base == CHEB_TYPE) ;
+
+	base.allocate(nbr_coefs) ;
+	    
+	base.def =true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	
+	Index index (base.bases_1d[0]->get_dimensions()) ;
+	
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? SIN_ODD : COS_EVEN ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = CHEB ;
+		 }
+	}	
+}
+
+void Domain_shell::set_cheb_base_p_mtz(Base_spectral& base) const  {
+
+	int m ;
+
+	assert (type_base == CHEB_TYPE) ;
+
+	base.allocate(nbr_coefs) ;
+	    
+	base.def =true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	
+	Index index (base.bases_1d[0]->get_dimensions()) ;
+	
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? SIN_EVEN: COS_ODD ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = CHEB ;
+		 }
+	}	
+}
 
 // standard base for a symetric function in z, using Legendre
 void Domain_shell::set_legendre_base(Base_spectral& base) const {
@@ -517,6 +585,75 @@ void Domain_shell::set_legendre_base_p_spher(Base_spectral& base) const  {
 	for (int k=0 ; k<nbr_coefs(2) ; k++) {
 	        m = (k%2==0) ? k/2 : (k-1)/2 ;
 		base.bases_1d[1]->set(k) = (m%2==0) ? SIN_ODD : COS_EVEN ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = LEG ;
+		 }
+	}	
+}
+
+void Domain_shell::set_legendre_base_r_mtz(Base_spectral& base) const  {
+
+	int m ;
+
+	assert (type_base == LEG_TYPE) ;
+
+	base.allocate(nbr_coefs) ;
+	    
+	base.def =true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	
+	Index index (base.bases_1d[0]->get_dimensions()) ;
+	
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? COS_EVEN : SIN_ODD ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = LEG ;
+		 }
+	}	
+}
+
+void Domain_shell::set_legendre_base_t_mtz(Base_spectral& base) const  {
+
+	int m ;
+
+	assert (type_base == LEG_TYPE) ;
+
+	base.allocate(nbr_coefs) ;
+	    
+	base.def =true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	
+	Index index (base.bases_1d[0]->get_dimensions()) ;
+	
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? SIN_ODD : COS_EVEN ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = LEG ;
+		 }
+	}	
+}
+
+void Domain_shell::set_legendre_base_p_mtz(Base_spectral& base) const  {
+
+	int m ;
+
+	assert (type_base == LEG_TYPE) ;
+
+	base.allocate(nbr_coefs) ;
+	    
+	base.def =true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	
+	Index index (base.bases_1d[0]->get_dimensions()) ;
+	
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? SIN_EVEN : COS_ODD ;
 		for (int j=0 ; j<nbr_coefs(1) ; j++) {
 		    index.set(0) = j ; index.set(1) = k ;
 		    base.bases_1d[0]->set(index) = LEG ;
