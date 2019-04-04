@@ -114,8 +114,8 @@ void Domain_polar_compact::export_tau_val_domain (const Val_domain& so, int mqua
 					abort() ;
 				}
 			}
-		if ((order==1) && (baset==COS_EVEN))
-		  imax = 2 ;
+		//if ((order==1) && (baset==COS_EVEN))
+		//  imax = 2 ;
 		}
 
 	}

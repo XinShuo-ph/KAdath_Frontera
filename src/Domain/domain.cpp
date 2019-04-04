@@ -647,6 +647,87 @@ Term_eq Domain::partial_spher (const Term_eq& so) const {
 	      }
 }
 
+Term_eq Domain::partial_mtz (const Term_eq& so) const {
+  
+  
+  
+	int dom = so.get_dom() ;
+	int val_res = so.val_t->get_valence() + 1 ;
+	Array<int> type_ind (val_res) ;
+	type_ind.set(0) = COV ;
+	for (int i=1 ; i<val_res ; i++)
+		type_ind.set(i) = so.val_t->get_index_type(i-1) ;
+
+	Base_tensor basis (so.get_val_t().get_space()) ;
+	basis.set_basis(dom) = MTZ_BASIS ;
+	
+	// Tensor for val
+	Tensor auxi_val (so.get_val_t().get_space(), val_res, type_ind, basis) ;
+	
+	//Loop on the components :
+	Index pos_auxi(auxi_val) ;
+	Index pos_so (*so.val_t) ;
+	do {
+		for (int i=0 ; i<val_res-1 ; i++)
+			pos_so.set(i) = pos_auxi(i+1) ;
+		switch (pos_auxi(0)) {
+		    case 0 : 
+		      // d/dr :
+		      auxi_val.set(pos_auxi).set_domain(dom) = (*so.val_t)(pos_so)(dom).der_r() ;
+		      break ;
+		    case 1 :
+		      // cost/r dtheta
+		      auxi_val.set(pos_auxi).set_domain(dom) = (*so.val_t)(pos_so)(dom).der_var(2).div_r().mult_cos_theta() ;
+		      break ;
+		    case 2 :
+		      // cost/r sint d/dphi
+		      auxi_val.set(pos_auxi).set_domain(dom) = (*so.val_t)(pos_so)(dom).der_var(3).div_r().div_sin_theta().mult_cos_theta() ;
+		      break ;
+		    default :
+		      cerr << "Bad indice in Domain::derive_partial_mtz" << endl  ;
+		      abort() ;
+		}
+	}
+	while (pos_auxi.inc()) ;
+
+	if (so.der_t==0x0) {
+		return Term_eq (dom, auxi_val) ;
+	}
+	else {
+		// Need to compute the derivative :
+		// Tensor for der
+		Tensor auxi_der (so.get_val_t().get_space(), val_res, type_ind, basis) ;
+		
+		//Loop on the components :
+		Index pos_auxi_der(auxi_der) ;
+		do {
+			for (int i=0 ; i<val_res-1 ; i++)
+				pos_so.set(i) = pos_auxi_der(i+1) ;
+			switch (pos_auxi_der(0)) {
+			  case 0 : 
+			  // d/dr :
+			  auxi_der.set(pos_auxi_der).set_domain(dom) = (*so.der_t)(pos_so)(dom).der_r() ;
+			  break ;
+			case 1 :
+			  // 1/r dtheta
+			  auxi_der.set(pos_auxi_der).set_domain(dom) = (*so.der_t)(pos_so)(dom).der_var(2).div_r().mult_cos_theta() ;
+			  break ;
+			case 2 :
+			  // 1/r sint d/dphi
+			  auxi_der.set(pos_auxi_der).set_domain(dom) = (*so.der_t)(pos_so)(dom).der_var(3).div_r().div_sin_theta().mult_cos_theta() ;
+			  break ;
+			default :
+			  cerr << "Bad indice in Domain::derive_partial_mtz" << endl  ;
+			  abort() ;
+		    }
+		}
+		while (pos_auxi_der.inc()) ;
+
+		return Term_eq  (dom, auxi_val, auxi_der) ;
+	      }
+}
+
+
 Term_eq Domain::connection_spher (const Term_eq& so) const {
   
   int dom = so.get_dom() ;
@@ -824,6 +905,185 @@ Term_eq Domain::connection_spher (const Term_eq& so) const {
 	return Term_eq (dom, auxi_val, auxi_der) ;
 	}
 }
+
+Term_eq Domain::connection_mtz (const Term_eq& so) const {
+  
+  int dom = so.get_dom() ;
+  assert (dom == num_dom) ;
+  
+  int valence = so.val_t->get_valence() ;
+  int val_res = so.val_t->get_valence() + 1 ;
+
+  Array<int> type_ind (val_res) ;
+  type_ind.set(0) = COV ;
+  for (int i=1 ; i<val_res ; i++)
+      type_ind.set(i) = so.val_t->get_index_type(i-1) ;
+  
+  Base_tensor basis (so.get_val_t().get_space()) ;
+  basis.set_basis(dom) = MTZ_BASIS ;
+	
+  Tensor auxi_val (so.get_val_t().get_space(), val_res, type_ind, basis, 3) ;
+  for (int cmp=0 ; cmp<auxi_val.get_n_comp() ; cmp ++)
+    auxi_val.set(auxi_val.indices(cmp)) = 0  ;
+  
+  for (int ind_sum=0 ; ind_sum<valence ; ind_sum++) {
+
+	  //Loop on the components :
+	  Index pos_auxi(auxi_val) ;
+	  Index pos_so (*so.val_t) ;
+
+	  do {
+		  for (int i=0 ; i<valence ; i++)
+			  pos_so.set(i) = pos_auxi(i+1) ;
+		  // Different cases of the derivative index :
+		  switch (pos_auxi(0)) {
+		      case 0 : 
+			// Dr nothing
+			break ;
+		      case 1 :
+			// Dtheta
+			// Different cases of the source index
+			switch (pos_auxi(ind_sum+1)) {
+			    case 0 :
+			      //Dtheta S_r 
+			      pos_so.set(ind_sum) = 1 ;
+			      auxi_val.set(pos_auxi).set_domain(dom) -= (*so.val_t)(pos_so)(dom).div_r() ;
+			      break ;
+			    case 1 :
+			      // Dtheta S_theta
+			      pos_so.set(ind_sum) = 0 ;
+			      auxi_val.set(pos_auxi).set_domain(dom) += (*so.val_t)(pos_so)(dom).div_r() ;
+			      break ;
+			    case 2 :
+			      //Dtheta S_phi 
+			      break ;
+			    default :
+			      cerr << "Bad indice in Domain::connection_mtz" << endl  ;
+			      abort() ;
+			}
+			break ;
+		      case 2 :
+			// Dphi
+			// Different cases of the source index
+			switch (pos_auxi(ind_sum+1)) {
+			    case 0 :
+			      //Dphi S_r 
+			      pos_so.set(ind_sum) = 2 ;
+			      auxi_val.set(pos_auxi).set_domain(dom) -= (*so.val_t)(pos_so)(dom).div_r() ;
+			      break ;
+			    case 1 :
+			      // Dphi S_theta
+			      pos_so.set(ind_sum) = 2 ;
+			      auxi_val.set(pos_auxi).set_domain(dom) -= (*so.val_t)(pos_so)(dom).div_r().div_sin_theta() ;
+			      break ;
+			    case 2 :
+			      //Dphi S_phi
+			      pos_so.set(ind_sum) = 0 ;
+			      auxi_val.set(pos_auxi).set_domain(dom) += (*so.val_t)(pos_so)(dom).div_r() ;
+			      pos_so.set(ind_sum) = 1 ;
+			      auxi_val.set(pos_auxi).set_domain(dom) += (*so.val_t)(pos_so)(dom).div_r().div_sin_theta() ;
+			      break ;
+			    default :
+			      cerr << "Bad indice in Domain::connection_mtz" << endl  ;
+			      abort() ;
+			}
+			break ;
+		      default :
+			cerr << "Bad indice in Domain::connection_mtz" << endl  ;
+			abort() ;
+		  }
+	  }
+	  while (pos_auxi.inc()) ;
+	}
+	
+	
+	if (so.der_t==0x0) {
+		// No need for derivative :
+		return Term_eq (dom, auxi_val) ;
+	}
+	else {
+	
+	  // Need to compute the derivative :
+	  // Tensor for der
+	  Tensor auxi_der (so.get_val_t().get_space(), val_res, type_ind, basis, 3) ;
+	  for (int cmp=0 ; cmp<auxi_der.get_n_comp() ; cmp ++)
+	    auxi_der.set(auxi_der.indices(cmp)) = 0  ;
+ 
+		// Loop indice summation on connection symbols 
+	for (int ind_sum=0 ; ind_sum<valence ; ind_sum++) {
+
+	  //Loop on the components :
+	  Index pos_auxi_der(auxi_der) ;
+	  Index pos_so (*so.der_t) ;
+
+	  do {
+		  for (int i=0 ; i<valence ; i++)
+			  pos_so.set(i) = pos_auxi_der(i+1) ;
+		  // Different cases of the derivative index :
+		  switch (pos_auxi_der(0)) {
+		      case 0 : 
+			// Dr nothing
+			break ;
+		      case 1 :
+			// Dtheta
+			// Different cases of the source index
+			switch (pos_auxi_der(ind_sum+1)) {
+			    case 0 :
+			      //Dtheta S_r 
+			      pos_so.set(ind_sum) = 1 ;
+			      auxi_der.set(pos_auxi_der).set_domain(dom) -= (*so.der_t)(pos_so)(dom).div_r() ;
+			      break ;
+			    case 1 :
+			      // Dtheta S_theta
+			      pos_so.set(ind_sum) = 0 ;
+			      auxi_der.set(pos_auxi_der).set_domain(dom) += (*so.der_t)(pos_so)(dom).div_r() ;
+			      break ;
+			    case 2 :
+			      //Dtheta S_phi 
+			      break ;
+			    default :
+			      cerr << "Bad indice in Domain::connection_mtz" << endl  ;
+			      abort() ;
+			}
+			break ;
+		      case 2 :
+			// Dphi
+			// Different cases of the source index
+			switch (pos_auxi_der(ind_sum+1)) {
+			    case 0 :
+			      //Dphi S_r 
+			      pos_so.set(ind_sum) = 2 ;
+			      auxi_der.set(pos_auxi_der).set_domain(dom) -= (*so.der_t)(pos_so)(dom).div_r() ;
+			      break ;
+			    case 1 :
+			      // Dphi S_theta
+			      pos_so.set(ind_sum) = 2 ;
+			      auxi_der.set(pos_auxi_der).set_domain(dom) -= (*so.der_t)(pos_so)(dom).div_r().div_sin_theta() ;
+			      break ;
+			    case 2 :
+			      //Dphi S_phi
+			      pos_so.set(ind_sum) = 0 ;
+			      auxi_der.set(pos_auxi_der).set_domain(dom) += (*so.der_t)(pos_so)(dom).div_r() ;
+			      pos_so.set(ind_sum) = 1 ;
+			      auxi_der.set(pos_auxi_der).set_domain(dom) += (*so.der_t)(pos_so)(dom).div_r().div_sin_theta() ;
+			      break ;
+			    default :
+			      cerr << "Bad indice in Domain::connection_mtz" << endl  ;
+			      abort() ;
+			}
+			break ;
+		      default :
+			cerr << "Bad indice in Domain::connection_mtz" << endl  ;
+			abort() ;
+		  }
+	  }
+	  while (pos_auxi_der.inc()) ;
+	}
+
+	return Term_eq (dom, auxi_val, auxi_der) ;
+	}
+}
+
 
 Term_eq Domain::integ_volume_term_eq (const Term_eq& target) const {
   
@@ -1013,7 +1273,23 @@ void Domain::set_cheb_base_p_spher (Base_spectral&) const {
     cerr << *this << endl ;
     abort() ;
 }
+void Domain::set_cheb_base_r_mtz (Base_spectral&) const {
+    cerr << "Cheb base r MTZ not implemented for " << endl ;
+    cerr << *this << endl ;
+    abort() ;
+}
 
+void Domain::set_cheb_base_t_mtz  (Base_spectral&) const {
+    cerr << "Cheb base t MTZ not implemented for " << endl ;
+    cerr << *this << endl ;
+    abort() ;
+}
+
+void Domain::set_cheb_base_p_mtz (Base_spectral&) const {
+    cerr << "Cheb base p MTZ not implemented for " << endl ;
+    cerr << *this << endl ;
+    abort() ;
+}
 void Domain::set_cheb_base_rt_spher (Base_spectral&) const {
     cerr << "Cheb base rt not implemented for " << endl ;
     cerr << *this << endl ;
@@ -1049,6 +1325,23 @@ void Domain::set_legendre_base_p_spher (Base_spectral&) const {
     abort() ;
 }
 
+void Domain::set_legendre_base_r_mtz (Base_spectral&) const {
+    cerr << "Legendre base r MTZ not implemented for " << endl ;
+    cerr << *this << endl ;
+    abort() ;
+}
+
+void Domain::set_legendre_base_t_mtz (Base_spectral&) const {
+    cerr << "Legendre base t MTZ not implemented for " << endl ;
+    cerr << *this << endl ;
+    abort() ;
+}
+
+void Domain::set_legendre_base_p_mtz (Base_spectral&) const {
+    cerr << "Legendre base p MTZ not implemented for " << endl ;
+    cerr << *this << endl ;
+    abort() ;
+}
 void Domain::set_cheb_base_odd (Base_spectral&) const {
     cerr << "Cheb base with odd cosines not implemented for " << endl ;
     cerr << *this << endl ;
@@ -1614,6 +1907,12 @@ const Term_eq* Domain::give_normal (int, int) const {
 
 Term_eq Domain::derive_flat_spher (int, char, const Term_eq&, const Metric*) const {
     cerr << "derive_flat_spher not implemented for" << endl ;
+    cerr << *this << endl ;
+    abort() ;
+}
+
+Term_eq Domain::derive_flat_mtz (int, char, const Term_eq&, const Metric*) const {
+    cerr << "derive_flat_mtz not implemented for" << endl ;
     cerr << *this << endl ;
     abort() ;
 }

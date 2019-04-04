@@ -148,9 +148,16 @@ class Domain_nucleus : public Domain {
      virtual void set_cheb_base_r_spher(Base_spectral&) const ;
      virtual void set_cheb_base_t_spher(Base_spectral&) const ;
      virtual void set_cheb_base_p_spher(Base_spectral&) const ;
+     virtual void set_cheb_base_r_mtz(Base_spectral&) const ;
+     virtual void set_cheb_base_t_mtz(Base_spectral&) const ;
+     virtual void set_cheb_base_p_mtz(Base_spectral&) const ;
+  
      virtual void set_legendre_base_r_spher(Base_spectral&) const ;
      virtual void set_legendre_base_t_spher(Base_spectral&) const ;
      virtual void set_legendre_base_p_spher(Base_spectral&) const ;
+     virtual void set_legendre_base_r_mtz(Base_spectral&) const ;
+     virtual void set_legendre_base_t_mtz(Base_spectral&) const ;
+     virtual void set_legendre_base_p_mtz(Base_spectral&) const ;
 
      virtual void set_cheb_r_base(Base_spectral&) const ;       
      virtual void set_legendre_r_base(Base_spectral&) const ;
@@ -630,10 +637,17 @@ class Domain_shell : public Domain {
      virtual void set_cheb_base_r_spher(Base_spectral&) const ;
      virtual void set_cheb_base_t_spher(Base_spectral&) const ;
      virtual void set_cheb_base_p_spher(Base_spectral&) const ;
+     virtual void set_cheb_base_r_mtz(Base_spectral&) const ;
+     virtual void set_cheb_base_t_mtz(Base_spectral&) const ;
+     virtual void set_cheb_base_p_mtz(Base_spectral&) const ;
+   
      virtual void set_legendre_base_r_spher(Base_spectral&) const ;
      virtual void set_legendre_base_t_spher(Base_spectral&) const ;
      virtual void set_legendre_base_p_spher(Base_spectral&) const ;
-     
+     virtual void set_legendre_base_r_mtz(Base_spectral&) const ;
+     virtual void set_legendre_base_t_mtz(Base_spectral&) const ;
+     virtual void set_legendre_base_p_mtz(Base_spectral&) const ;
+   
      virtual void set_cheb_r_base(Base_spectral&) const ;       
      virtual void set_legendre_r_base(Base_spectral&) const ;
      
@@ -858,7 +872,8 @@ class Domain_shell : public Domain {
      
      virtual double integ_volume (const Val_domain& so) const ;
      virtual Term_eq derive_flat_spher (int, char, const Term_eq&, const Metric*) const ;
-     virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
+     virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;  
+     virtual Term_eq derive_flat_mtz (int, char, const Term_eq&, const Metric*) const ;
      virtual double integ(const Val_domain& so, int bound) const ;
  
      friend ostream& operator<< (ostream& o, const Domain_shell& so) ; ///< Display
@@ -988,7 +1003,13 @@ class Domain_compact : public Domain {
      virtual void set_legendre_base_r_spher(Base_spectral&) const ;
      virtual void set_legendre_base_t_spher(Base_spectral&) const ;
      virtual void set_legendre_base_p_spher(Base_spectral&) const ;
-   
+     virtual void set_legendre_base_r_mtz(Base_spectral&) const ;
+     virtual void set_legendre_base_t_mtz(Base_spectral&) const ;
+     virtual void set_legendre_base_p_mtz(Base_spectral&) const ;
+     virtual void set_cheb_base_r_mtz(Base_spectral&) const ;
+     virtual void set_cheb_base_t_mtz(Base_spectral&) const ;
+     virtual void set_cheb_base_p_mtz(Base_spectral&) const ;
+
      virtual void set_cheb_r_base(Base_spectral&) const ;       
      virtual void set_legendre_r_base(Base_spectral&) const ;
      

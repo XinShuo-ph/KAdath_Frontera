@@ -29,6 +29,7 @@
 // Types of basis :
 #define CARTESIAN_BASIS 0
 #define SPHERICAL_BASIS 1
+#define MTZ_BASIS 2
 
 namespace Kadath {
 
@@ -42,6 +43,7 @@ namespace Kadath {
  * Possible choices :
  * \li CARTESIAN_BASIS : Cartesian 
  * \li SPHERICAL_BASIS : orthonormal spherical.
+ * \li MTZ_BASIS : orthonormal basis, assuming the constant radius sections have a negative curvature.
  * \ingroup fields
  */
 class Base_tensor {

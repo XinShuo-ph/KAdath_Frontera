@@ -633,6 +633,12 @@ void Tensor::std_base() {
 			  cmp[2]->std_base_p_spher_domain(d) ;
 			  done = true ;
 			  }
+			if (basis.get_basis(d) == MTZ_BASIS) {
+			  cmp[0]->std_base_r_mtz_domain(d) ;
+			  cmp[1]->std_base_t_mtz_domain(d) ;
+			  cmp[2]->std_base_p_mtz_domain(d) ;
+			  done = true ;
+			  }
 			if (!done) {
 			    cerr << "Tensor::std_base not yet implemented for " << basis << endl ;
 			    abort() ;

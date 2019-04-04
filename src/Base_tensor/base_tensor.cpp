@@ -76,6 +76,9 @@ ostream& operator<< (ostream& flux , const Base_tensor& so) {
 	  break ;
       case SPHERICAL_BASIS :
 	  flux << "Spherical" << endl ;
+	  break ; 
+	case MTZ_BASIS :
+	  flux << "MTZ" << endl ;
 	  break ;
       default:
 	  cerr << "Unknown tensorial basis" << endl ;

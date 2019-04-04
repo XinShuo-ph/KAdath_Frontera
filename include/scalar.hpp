@@ -188,6 +188,11 @@ class Scalar : public Tensor {
       void std_base_xz_cart_domain(int d) ;///< Sets the basis for the XZ component of a 2-tensor in Cartesian coordinates, in a given \c Domain.
       void std_base_yz_cart_domain(int d) ;///< Sets the basis for the YZ component of a 2-tensor in Cartesian coordinates, in a given \c Domain.
    
+      void std_base_r_mtz_domain(int) ; ///< Sets the basis for the radial component of a vector in orthonormal coordinates in the MTZ context, in a given \c Domain.
+      void std_base_t_mtz_domain(int) ; ///< Sets the basis for the \f$\theta\f$ component of a vector in orthonormal coordinates in the MTZ context, in a given \c Domain.
+      void std_base_p_mtz_domain(int) ; ///< Sets the basis for the \f$\varphi\f$ component of a vector in orthonormal coordinates in the MTZ context, in a given \c Domain.
+   
+
       // For critic solution
       void std_xodd_base() ;  ///< Sets the basis for an odd function in \f$X\f$ (Critic case).
       void std_todd_base() ; ///< Sets the basis for an odd function in \f$T\f$ (Critic case).

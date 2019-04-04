@@ -179,6 +179,10 @@ class Val_domain {
 
 	void std_base_odd() ; ///< Sets the basis in odd polynomials.
 
+	void std_base_r_mtz() ; ///< Sets the basis for the radial component of a vector in orthonormal coordinates in the MTZ context.
+	void std_base_t_mtz() ; ///< Sets the basis for the \f$\theta\f$ component of a vector in orthonormal coordinates in the MTZ context.
+	void std_base_p_mtz() ; ///< Sets the basis for the \f$\varphi\f$ component of a vector in orthonormal coordinates in the MTZ context.
+	
 	/**
 	* Read/write the value of the field in the configuration space. The coefficients are destroyed.
 	* @param pos [input] : point concerned.

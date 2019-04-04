@@ -260,6 +260,19 @@ class Metric_flat : public Metric {
 	Term_eq derive_partial_cart (int tder, char indder, const Term_eq& so) const ;
 
 	/**
+	* Computes the partial derivative part of the covariant derivative, in orthonormal coordinates 
+	* where the constant radii sections have a negative curvature.
+	* The result is \f$ \partial_r, \frac{\cos \theta}{r}\partial_\theta, \frac{\cos \theta}{r\sin\theta}\partial_\varphi\f$.
+	* If need be inner summation of the result is performed and index manipulated.
+	* @param tder : type of the result (COV or CON)
+	* @param indder : name of the index corresponding to the derivative.
+	* @param so : the field to be derived.
+	* @return : the result as a \c Term_eq.
+	*/
+	Term_eq derive_partial_mtz (int tder, char indder, const Term_eq& so) const ;
+	/**
+
+	/**
 	* Computes the flat covariant derivative, in orthonormal spherical coordinates.
 	* If need be inner summation of the result is performed and index manipulated.
 	* @param tder : type of the result (COV or CON)
@@ -268,6 +281,8 @@ class Metric_flat : public Metric {
 	* @return : the result as a \c Term_eq.
 	*/
 	Term_eq derive_spher (int tder, char indder, const Term_eq& so) const ;
+
+	
 	/**
 	* Computes the flat covariant derivative, in Cartesian coordinates.
 	* If need be inner summation of the result is performed and index manipulated.
@@ -277,6 +292,18 @@ class Metric_flat : public Metric {
 	* @return : the result as a \c Term_eq.
 	*/
 	Term_eq derive_cart (int, char, const Term_eq&) const ;
+
+        /**
+	* Computes the flat covariant derivative, in orthonormal coordinates
+        * where the constant radii sections have a negative curvature.
+	* If need be inner summation of the result is performed and index manipulated.
+	* @param tder : type of the result (COV or CON)
+	* @param indder : name of the index corresponding to the derivative.
+	* @param so : the field to be derived.
+	* @return : the result as a \c Term_eq.
+	*/
+	Term_eq derive_mtz (int tder, char indder, const Term_eq& so) const ;
+
 
 	/**
 	* Computes the flat covariant derivative, in orthonormal spherical coordinates.
@@ -289,6 +316,20 @@ class Metric_flat : public Metric {
 	* @return : the result as a \c Term_eq.
 	*/
 	Term_eq derive_with_other_spher (int tder, char indder, const Term_eq& so, const Metric* othermet) const ;
+
+	/**
+	* Computes the flat covariant derivative, in orthonormal coordinates
+        * where the constant radii sections have a negative curvature.
+	* If need be inner summation of the result is performed.
+	* If the CON derivative is asked for, the index is NOT manipulated by the flat metric but by an arbitrary one.
+	* @param tder : type of the result (COV or CON)
+	* @param indder : name of the index corresponding to the derivative.
+	* @param so : the field to be derived.
+	* @param othermet : pointer on the \c Metric used for index manipulation.
+	* @return : the result as a \c Term_eq.
+	*/
+	Term_eq derive_with_other_mtz (int tder, char indder, const Term_eq& so, const Metric* othermet) const ;
+
 	/**
 	* Computes the flat covariant derivative, in Cartesian coordinates.
 	* If need be inner summation of the result is performed.

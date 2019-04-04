@@ -196,6 +196,22 @@ class Domain {
     * @param so [input] : the returned base.
     */
      virtual void set_cheb_base_p_spher(Base_spectral& so) const ;
+/**
+    * Gives the base using Chebyshev polynomials, for the radial component of a vector in the MTZ setting
+    * @param so [input] : the returned base.
+    */
+     virtual void set_cheb_base_r_mtz(Base_spectral& so) const ;
+
+/**
+    * Gives the base using Chebyshev polynomials, for the \f$ \theta\f$ component of a vector in the MTZ setting
+    * @param so [input] : the returned base.
+    */
+     virtual void set_cheb_base_t_mtz(Base_spectral& so) const ;
+/**
+    * Gives the base using Chebyshev polynomials, for the \f$ \varphi\f$ component of a vector in the MTZ setting
+    * @param so [input] : the returned base.
+    */
+     virtual void set_cheb_base_p_mtz(Base_spectral& so) const ;
 
 /**
     * Gives the base using Chebyshev polynomials, for the \f$(r, \theta)\f$ component of a 2-tensor
@@ -228,6 +244,21 @@ class Domain {
     * @param so [input] : the returned base.
     */
      virtual void set_legendre_base_p_spher(Base_spectral& so) const ;
+  	 /**
+    * Gives the base using Legendre polynomials, for the radial component of a vector in the MTZ context
+    * @param so [input] : the returned base.
+    */
+     virtual void set_legendre_base_r_mtz(Base_spectral& so) const ;
+/**
+    * Gives the base using Legendre polynomials, for the \f$ \theta\f$ component of a vector in the MTZ context
+    * @param so [input] : the returned base.
+    */
+     virtual void set_legendre_base_t_mtz(Base_spectral& so) const ;
+/**
+    * Gives the base using Legendre polynomials, for the \f$ \varphi\f$ component of a vector in the MTZ context
+    * @param so [input] : the returned base.
+    */
+     virtual void set_legendre_base_p_mtz(Base_spectral& so) const ;
   
 	/**
     * Gives the base using Chebyshev polynomials, for the \f$ x\f$ component of a vector
@@ -830,6 +861,21 @@ class Domain {
 	*/
      virtual Term_eq derive_flat_spher (int tipe, char ind, const Term_eq& so, const Metric* manip) const ;
 
+
+	 /**
+	* Computes the flat derivative of a \c Term_eq, in spherical coordinates
+	* where the constant radii sections have a negative curvature.
+	* If the index of the derivative is present in the source, appropriate contraction is performed.
+	* If the contravariant version is called for, the index is raised using an arbitrary metric. 
+	* @param tipe : type of derivative (\t COV or \t CON)	
+	* @param ind : name of the index corresponding to the derivative.
+	* @param so : input field.
+	* @param manip : pointer on the metric used to manipulate the derivative index, if need be.
+	* @returns  result.
+	*/
+     virtual Term_eq derive_flat_mtz (int tipe, char ind, const Term_eq& so, const Metric* manip) const ;
+
+ 	
  	/**
 	* Computes the flat derivative of a \c Term_eq, in Cartesian coordinates.
 	* If the index of the derivative is present in the source, appropriate contraction is performed.
@@ -1027,13 +1073,26 @@ class Domain {
 	* @returns the result.
 	*/
      virtual Term_eq partial_cart (const Term_eq& so) const ;
-
+	/**
+	* Computes the part of the gradient containing the partial derivative of the field, in  orthonormal coordinates where
+	* the constant radius sections have negative curvature.
+	* @param so : the input \c Term_eq
+	* @returns the result, being \f$(\partial_r, \frac{\cos \theta}{r} \partial_\theta , \frac{\cos \theta}{r \sin \theta} \partial_\varphi)\f$
+	*/
+     virtual Term_eq partial_mtz (const Term_eq& so) const ;  
 	/**
 	* Computes the part of the gradient involving the connections, in spherical orthonormal coordinates.
 	* @param so : the input \c Term_eq
 	* @returns the result.
 	*/
      virtual Term_eq connection_spher (const Term_eq& so) const ;
+     /**
+	* Computes the part of the gradient involving the connections, in spherical coordinates
+	* where the constant radius sections have negative curvature.
+	* @param so : the input \c Term_eq
+	* @returns the result.
+	*/
+     virtual Term_eq connection_mtz (const Term_eq& so) const ;
      
 	/**
 	* Computes the value of a field at a boundary. The result correspond to one particular coefficient.

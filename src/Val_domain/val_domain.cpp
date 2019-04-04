@@ -484,6 +484,55 @@ void Val_domain::std_base_z_cart() {
 	}
 }
 
+void Val_domain::std_base_r_mtz() {
+	// recupere le type :
+	int typeb = zone->get_type_base() ;
+	switch (typeb) {
+		case CHEB_TYPE :
+			zone->set_cheb_base_r_mtz(base) ;
+			break ;
+		case LEG_TYPE :
+			zone->set_legendre_base_r_mtz(base) ;
+			break ;
+		default:
+			cerr << "Unknown type of base in Val_domain::std_base_r_mtz" ;
+			abort() ;
+	}
+}
+
+void Val_domain::std_base_t_mtz() {
+	// recupere le type :
+	int typeb = zone->get_type_base() ;
+	switch (typeb) {
+		case CHEB_TYPE :
+			zone->set_cheb_base_t_mtz(base) ;
+			break ;
+		case LEG_TYPE :
+			zone->set_legendre_base_t_mtz(base) ;
+			break ;
+		default:
+			cerr << "Unknown type of base in Val_domain::std_base_t_mtz" ;
+			abort() ;
+	}
+}
+
+void Val_domain::std_base_p_mtz() {
+	// recupere le type :
+	int typeb = zone->get_type_base() ;
+	switch (typeb) {
+		case CHEB_TYPE :
+			zone->set_cheb_base_p_mtz(base) ;
+			break ;
+		case LEG_TYPE :
+			zone->set_legendre_base_p_mtz(base) ;
+			break ;
+		default:
+			cerr << "Unknown type of base in Val_domain::std_base_p_mtz" ;
+			abort() ;
+	}
+}
+
+
 void Val_domain::std_xodd_base() {
 	// recupere le type :
 	int typeb = zone->get_type_base() ;

@@ -181,6 +181,53 @@ Term_eq Metric_flat::derive_partial_spher (int type_der, char ind_der, const Ter
 	}
 }
 
+Term_eq Metric_flat::derive_partial_mtz (int type_der, char ind_der, const Term_eq& so) const {
+ 
+	int dom = so.get_dom() ;
+	bool donames = ((so.val_t->is_name_affected()) || (so.val_t->get_valence()==0)) ? true : false ;
+	
+	// Computation of flat gradient :
+	Term_eq auxi (espace.get_domain(dom)->partial_mtz (so)) ;
+	
+	int val_res = auxi.val_t->get_valence() ;
+	
+	if (donames) {
+	// Set the names of the indices :
+	auxi.val_t->set_name_affected() ;
+	auxi.val_t->set_name_ind(0, ind_der) ;
+	for (int i=1 ; i<val_res ; i++)
+		auxi.val_t->set_name_ind(i, so.val_t->get_name_ind()[i-1]) ;
+
+	if (auxi.der_t!=0x0) {
+	  auxi.der_t->set_name_affected() ;
+	  auxi.der_t->set_name_ind(0, ind_der) ;
+	  for (int i=1 ; i<val_res ; i++)
+		auxi.der_t->set_name_ind(i, so.val_t->get_name_ind()[i-1]) ;
+	}
+	}
+	
+	// Manipulate if Contravariant version
+	if (type_der==CON) 
+		manipulate_ind (auxi, 0) ;
+	
+	bool need_sum = false ;
+	if (donames)
+	for (int i=1 ; i<val_res ; i++)
+		if (ind_der== so.val_t->get_name_ind()[i-1])
+			need_sum = true ;
+	
+	if (!need_sum)
+		return auxi ;
+	else {
+	  if (auxi.der_t==0x0)
+	    return Term_eq (dom, auxi.val_t->do_summation_one_dom(dom)) ;
+	  else
+	    return Term_eq (dom, auxi.val_t->do_summation_one_dom(dom), auxi.der_t->do_summation_one_dom(dom)) ;
+	}
+}
+
+
+
 Term_eq Metric_flat::derive_partial (int type_der, char ind_der, const Term_eq& so) const {
   
 	int dom = so.get_dom() ;
@@ -201,6 +248,8 @@ Term_eq Metric_flat::derive_partial (int type_der, char ind_der, const Term_eq& 
 	      return derive_partial_cart (type_der, ind_der, so) ;
 	  case SPHERICAL_BASIS :
 	      return derive_partial_spher (type_der, ind_der, so) ;
+	  case MTZ_BASIS :
+	      return derive_partial_mtz (type_der, ind_der, so) ;
 	  default:
 	      cerr << "Unknown tensorial basis in Metric_flat::derive_partial" << endl ;
 	      abort() ;
@@ -220,6 +269,58 @@ Term_eq Metric_flat::derive_spher (int type_der, char ind_der, const Term_eq& so
 	bool donames = ((so.val_t->is_name_affected()) || (so.val_t->get_valence()==0)) ? true : false ;
 	
 	Term_eq auxi (espace.get_domain(dom)->connection_spher (so)) ;   
+	int val_res = auxi.val_t->get_valence() ;
+	
+	if (donames) {
+	// Set the names of the indices :
+	auxi.val_t->set_name_affected() ;
+	auxi.val_t->set_name_ind(0, ind_der) ;
+	for (int i=1 ; i<val_res ; i++)
+		auxi.val_t->set_name_ind(i, so.val_t->get_name_ind()[i-1]) ;
+
+	if (auxi.der_t!=0x0) {
+	  auxi.der_t->set_name_affected() ;
+	  auxi.der_t->set_name_ind(0, ind_der) ;
+	  for (int i=1 ; i<val_res ; i++)
+		auxi.der_t->set_name_ind(i, so.val_t->get_name_ind()[i-1]) ;
+	}
+	}
+	
+	// Manipulate if Contravariant version
+	if (type_der==CON) 
+		manipulate_ind (auxi, 0) ;
+	
+	
+	bool need_sum = false ;
+	if (donames) 
+	for (int i=1 ; i<val_res ; i++)
+		if (ind_der== so.val_t->get_name_ind()[i-1])
+			need_sum = true ;
+	
+	if (!need_sum) {
+	    return (part_der + auxi) ;
+	}
+	else {
+	  if (auxi.der_t==0x0) {
+	   
+	   
+	    return (part_der +  Term_eq (dom, auxi.val_t->do_summation_one_dom(dom))) ;
+	  } 
+	  else
+	    return (part_der + Term_eq (dom, auxi.val_t->do_summation_one_dom(dom), auxi.der_t->do_summation_one_dom(dom))) ;
+	}
+}
+
+Term_eq Metric_flat::derive_mtz (int type_der, char ind_der, const Term_eq& so) const {
+
+
+	// Computation of flat gradient :
+	Term_eq part_der (derive_partial(type_der, ind_der, so)) ;
+
+	int dom = so.get_dom() ;
+	bool donames = ((so.val_t->is_name_affected()) || (so.val_t->get_valence()==0)) ? true : false ;
+	
+	Term_eq auxi (espace.get_domain(dom)->connection_mtz (so)) ;   
 	int val_res = auxi.val_t->get_valence() ;
 	
 	if (donames) {
@@ -282,6 +383,8 @@ Term_eq Metric_flat::derive (int type_der, char ind_der, const Term_eq& so) cons
 	      return derive_cart (type_der, ind_der, so) ;
 	  case SPHERICAL_BASIS :
 	      return derive_spher (type_der, ind_der, so) ;
+	  case MTZ_BASIS :
+	      return derive_mtz (type_der, ind_der, so) ;
 	  default:
 	      cerr << "Unknown tensorial basis in Metric_flat::derive" << endl ;
 	      abort() ;
@@ -299,6 +402,13 @@ Term_eq Metric_flat::derive_with_other_spher (int type_der, char ind_der, const 
 	
 	// Call the domain version
 	return so.val_t->get_space().get_domain(dom)->derive_flat_spher (type_der, ind_der, so, manipulator) ;
+}
+
+Term_eq Metric_flat::derive_with_other_mtz (int type_der, char ind_der, const Term_eq& so, const Metric* manipulator) const {
+        int dom = so.get_dom() ;
+	
+	// Call the domain version
+	return so.val_t->get_space().get_domain(dom)->derive_flat_mtz (type_der, ind_der, so, manipulator) ;
 }
 
 Term_eq Metric_flat::derive_with_other (int type_der, char ind_der, const Term_eq& so, const Metric* manipulator) const {
@@ -320,7 +430,9 @@ Term_eq Metric_flat::derive_with_other (int type_der, char ind_der, const Term_e
 	  case CARTESIAN_BASIS :
 	      return derive_with_other_cart (type_der, ind_der, so, manipulator) ;
 	  case SPHERICAL_BASIS :
-	      return derive_with_other_spher (type_der, ind_der, so, manipulator) ;
+	      return derive_with_other_spher (type_der, ind_der, so, manipulator) ; 
+	case MTZ_BASIS :
+	      return derive_with_other_mtz (type_der, ind_der, so, manipulator) ;
 	  default:
 	      cerr << "Unknown tensorial basis in Metric_flat::derive_with_other" << endl ;
 	      abort() ;

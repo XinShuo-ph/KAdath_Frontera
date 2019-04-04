@@ -227,6 +227,19 @@ void Scalar::std_base_odd () {
 	   val_zones[l]->std_base_odd() ;
 }
 
+void Scalar::std_base_r_mtz_domain(int d) {
+    val_zones[d]->std_base_r_spher() ;
+}
+
+void Scalar::std_base_t_mtz_domain(int d) {
+    val_zones[d]->std_base_t_spher() ;
+}
+
+void Scalar::std_base_p_mtz_domain(int d) {
+    val_zones[d]->std_base_p_spher() ;
+}
+
+
 void Scalar::allocate_conf() {
  	for (int l=0 ; l<ndom ; l++)
 	    val_zones[l]->allocate_conf() ;
