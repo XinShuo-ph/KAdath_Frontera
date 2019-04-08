@@ -1,0 +1,5 @@
+#File specific to poincare
+#need to pass FFTW3
+set (FFTW_INCLUDE_DIR "/obs/grandcle/install/fftw/3.3.8/gcc/7.1.0/include")
+set(FFTW_LIBRARIES "-L/obs/grandcle/install/fftw/3.3.8/gcc/7.1.0/lib -lfftw3")
+set(SCALAPACK_LIBRARIES "-lgfortran -L/obs/grandcle/install/scalapack-2.0.2/lib  -llapack -lscalapack -lblas")

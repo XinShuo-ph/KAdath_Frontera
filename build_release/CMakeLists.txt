@@ -34,6 +34,10 @@ include_directories($ENV{HOME_KADATH}/include/Kadath_point_h)
 #for templates in Array
 include_directories($ENV{HOME_KADATH}/src/Array)
 
+if (DEFINED FFTW_INCLUDE_DIR)
+	include_directories (${FFTW_INCLUDE_DIR})
+endif()
+
 #need to use C++11
 add_definitions(-std=c++11)
 

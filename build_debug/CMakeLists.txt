@@ -14,7 +14,7 @@ else(PAR_VERSION)
 	message ("Sequential version")
 endif(PAR_VERSION)
 
-set(CMAKE_MODULE_PATH $ENV{HOME_KADATH}/build_release)
+set(CMAKE_MODULE_PATH $ENV{HOME_KADATH}/build_debug)
 
 if(PAR_VERSION)
 	file(COPY $ENV{HOME_KADATH}/src_par/do_newton.cpp DESTINATION $ENV{HOME_KADATH}/src/System_of_eqs/)
@@ -32,6 +32,9 @@ file(GLOB_RECURSE KADATH_SOURCES $ENV{HOME_KADATH}/src/*.cpp )
 include_directories($ENV{HOME_KADATH}/include)
 #for templates in Array
 include_directories($ENV{HOME_KADATH}/src/Array)
+if (DEFINED FFTW_INCLUDE_DIR)
+	include_directories (${FFTW_INCLUDE_DIR})
+endif()
 
 #need to use C++11
 add_definitions(-std=c++11)
