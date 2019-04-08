@@ -1,0 +1,17 @@
+Specificities to install Kadath on mesopsl :
+
+1) In the bashrc define the alias cmake='cmake3'
+et charge les modules suivants : 
+module load gcc/7.1.0
+module load openmpi/2.1.0-gcc-7.1.0
+
+2) Need to install locally (using the sources)
+ - fftw-3.3.8
+ - scalapack (in this case try to also recompile blas and lapack)
+
+3) As usual copy CMakeLocal.cmake.mesopsl to CmakeLocal.cmake
+and change the paths to the local libraries (fftw and scalapack)
+
+Good luck...
+
+
