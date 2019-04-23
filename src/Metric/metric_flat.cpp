@@ -81,6 +81,64 @@ void Metric_flat::compute_christo (int) const {
   abort() ;
 }
 
+void Metric_flat::compute_ricci_tensor (int dd) const {
+
+	Metric_tensor res (espace, COV, basis) ;
+	switch (basis.get_basis(dd)) {
+		case CARTESIAN_BASIS :
+			res = 0 ;
+			break ;
+		case SPHERICAL_BASIS :
+			res = 0 ;
+			break ;
+		case MTZ_BASIS :
+			for (int i=1 ; i<=3 ; i++)
+				for (int j=i ; j<=3 ; j++)
+					res.set(i,j).annule_hard() ;
+			res.set(2,2).set_domain(dd) = -2/pow(espace.get_domain(dd)->get_radius(), 2) ;
+			res.set(3,3).set_domain(dd) = res(2,2)(dd) ;
+			break ;
+		default:
+			cerr << "Unknown tensorial basis in Metric_flat::compute_ricci_tensor" << endl ;
+			abort() ;
+	}
+
+	res.std_base() ;
+	if (p_ricci_tensor[dd]==0x0)
+		p_ricci_tensor[dd] = new Term_eq(dd, res) ;
+	else
+		*p_ricci_tensor[dd] = Term_eq(dd, res) ;
+
+	p_ricci_tensor[dd]->set_der_zero() ;
+}
+
+void Metric_flat::compute_ricci_scalar (int dd) const {
+
+	Scalar res (espace) ;
+	switch (basis.get_basis(dd)) {
+		case CARTESIAN_BASIS :
+			res = 0 ;
+			break ;
+		case SPHERICAL_BASIS :
+			res = 0 ;
+			break ;
+		case MTZ_BASIS :
+			res.set_domain(dd)= -4/pow(espace.get_domain(dd)->get_radius(), 2) ;
+			break ;
+		default:
+			cerr << "Unknown tensorial basis in Metric_flat::compute_ricci_tensor" << endl ;
+			abort() ;
+	}
+
+	res.std_base() ;
+	if (p_ricci_scalar[dd]==0x0)
+		p_ricci_scalar[dd] = new Term_eq(dd, res) ;
+	else
+		*p_ricci_scalar[dd] = Term_eq(dd, res) ;
+
+	p_ricci_scalar[dd]->set_der_zero() ;
+}
+
 void Metric_flat::manipulate_ind (Term_eq& so, int ind) const {
 	// Just change the type of the indice !
 	so.set_val_t()->set_index_type (ind) *= -1 ;

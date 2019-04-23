@@ -237,7 +237,9 @@ class Metric_flat : public Metric {
 		virtual void compute_con (int) const ;
 		virtual void compute_cov (int) const ;		
 		virtual void compute_christo (int) const ;
-		
+		virtual void compute_ricci_tensor (int) const ;
+		virtual void compute_ricci_scalar (int) const ;
+	
   private:
 	/**
 	* Computes the partial derivative part of the covariant derivative, in orthonormal spherical coordinates.
