@@ -92,6 +92,13 @@ int Domain_shell::nbr_unknowns (const Tensor& tt, int dom) const {
 				res += nbr_unknowns_val_domain (tt(3)(dom), 1) ;
 				found = true ;
 			}
+			// MTZ coordinates
+			if (tt.get_basis().get_basis(dom)==MTZ_BASIS) {
+				res += nbr_unknowns_val_domain (tt(1)(dom), 0) ;
+				res += nbr_unknowns_val_domain (tt(2)(dom), 1) ;
+				res += nbr_unknowns_val_domain (tt(3)(dom), 1) ;
+				found = true ;
+			}
 			if (!found) {
 				cerr << "Unknown type of vector Domain_shell::nbr_unknowns" << endl ;
 				abort() ;
@@ -129,6 +136,29 @@ int Domain_shell::nbr_unknowns (const Tensor& tt, int dom) const {
 			}
 			// Spherical coordinates and not symetric
 			if ((tt.get_basis().get_basis(dom)==SPHERICAL_BASIS) && (tt.get_n_comp()==9)) {
+				res += nbr_unknowns_val_domain (tt(1,1)(dom), 0) ;
+				res += nbr_unknowns_val_domain (tt(1,2)(dom), 1) ;
+				res += nbr_unknowns_val_domain (tt(1,3)(dom), 1) ;
+				res += nbr_unknowns_val_domain (tt(2,1)(dom), 1) ;
+				res += nbr_unknowns_val_domain (tt(2,2)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(2,3)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(3,1)(dom), 1) ;
+				res += nbr_unknowns_val_domain (tt(3,2)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(3,3)(dom), 2) ;
+				found = true ;
+			}
+			// MTZ coordinates and symetric
+			if ((tt.get_basis().get_basis(dom)==MTZ_BASIS) && (tt.get_n_comp()==6)) {
+				res += nbr_unknowns_val_domain (tt(1,1)(dom), 0) ;
+				res += nbr_unknowns_val_domain (tt(1,2)(dom), 1) ;
+				res += nbr_unknowns_val_domain (tt(1,3)(dom), 1) ;
+				res += nbr_unknowns_val_domain (tt(2,2)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(2,3)(dom), 2) ;
+				res += nbr_unknowns_val_domain (tt(3,3)(dom), 2) ;
+				found = true ;
+			}
+			// MTZ coordinates and not symetric
+			if ((tt.get_basis().get_basis(dom)==MTZ_BASIS) && (tt.get_n_comp()==9)) {
 				res += nbr_unknowns_val_domain (tt(1,1)(dom), 0) ;
 				res += nbr_unknowns_val_domain (tt(1,2)(dom), 1) ;
 				res += nbr_unknowns_val_domain (tt(1,3)(dom), 1) ;

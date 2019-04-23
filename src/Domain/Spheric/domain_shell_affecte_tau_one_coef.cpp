@@ -130,6 +130,13 @@ void Domain_shell::affecte_tau_one_coef (Tensor& tt, int dom, int cc, int& pos_c
 				affecte_tau_one_coef_val_domain (tt.set(3).set_domain(dom), 1, cc, pos_cf) ;
 				found = true ;
 			}
+			// MTZ coordinates
+			if (tt.get_basis().get_basis(dom)==MTZ_BASIS) {
+				affecte_tau_one_coef_val_domain (tt.set(1).set_domain(dom), 0, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(3).set_domain(dom), 1, cc, pos_cf) ;
+				found = true ;
+			}
 			if (!found) {
 				cerr << "Unknown type of vector Domain_shell::affecte_tau_one_coef" << endl ;
 				abort() ;
@@ -173,6 +180,29 @@ void Domain_shell::affecte_tau_one_coef (Tensor& tt, int dom, int cc, int& pos_c
 			}
 			// Spherical coordinates and not symetric
 			if ((tt.get_basis().get_basis(dom)==SPHERICAL_BASIS) && (tt.get_n_comp()==9)) {
+				affecte_tau_one_coef_val_domain (tt.set(1,1).set_domain(dom), 0,cc ,pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(1,2).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(1,3).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2,1).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2,2).set_domain(dom), 2, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2,3).set_domain(dom), 2, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(3,1).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(3,2).set_domain(dom), 2, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(3,3).set_domain(dom), 2, cc, pos_cf) ;
+				found = true ;
+			}
+			// MTZ coordinates and symetric
+			if ((tt.get_basis().get_basis(dom)==MTZ_BASIS) && (tt.get_n_comp()==6)) {
+				affecte_tau_one_coef_val_domain (tt.set(1,1).set_domain(dom), 0,cc ,pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(1,2).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(1,3).set_domain(dom), 1, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2,2).set_domain(dom), 2, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(2,3).set_domain(dom), 2, cc, pos_cf) ;
+				affecte_tau_one_coef_val_domain (tt.set(3,3).set_domain(dom), 2, cc, pos_cf) ;
+				found = true ;
+			}
+			// MTZ coordinates and not symetric
+			if ((tt.get_basis().get_basis(dom)==MTZ_BASIS) && (tt.get_n_comp()==9)) {
 				affecte_tau_one_coef_val_domain (tt.set(1,1).set_domain(dom), 0,cc ,pos_cf) ;
 				affecte_tau_one_coef_val_domain (tt.set(1,2).set_domain(dom), 1, cc, pos_cf) ;
 				affecte_tau_one_coef_val_domain (tt.set(1,3).set_domain(dom), 1, cc, pos_cf) ;

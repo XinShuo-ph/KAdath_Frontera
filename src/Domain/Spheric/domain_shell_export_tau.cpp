@@ -165,6 +165,23 @@ void Domain_shell::export_tau (const Tensor& tt, int dom, int order, Array<doubl
 				}
 				found = true ;
 			}
+			// MTZ coordinates
+			if (tt.get_basis().get_basis(dom)==MTZ_BASIS) {
+				if (n_cmp==-1) {
+					export_tau_val_domain (tt(1)(dom), 0, order, res, pos_res, ncond(0)) ;
+					export_tau_val_domain (tt(2)(dom), 1, order, res, pos_res, ncond(1)) ;
+					export_tau_val_domain (tt(3)(dom), 1, order, res, pos_res, ncond(2)) ;
+				}
+				else for (int i=0 ; i<n_cmp ; i++) {
+					if ((*p_cmp[i])(0)==1)
+						export_tau_val_domain (tt(1)(dom), 0, order, res, pos_res, ncond(i)) ;
+					if ((*p_cmp[i])(0)==2)
+						export_tau_val_domain (tt(2)(dom), 1, order, res, pos_res, ncond(i)) ;
+					if ((*p_cmp[i])(0)==3)
+						export_tau_val_domain (tt(3)(dom), 1, order, res, pos_res, ncond(i)) ;
+				}
+				found = true ;
+			}
 			if (!found) {
 				cerr << "Unknown type of vector Domain_shell::export_tau" << endl ;
 				abort() ;
@@ -271,6 +288,66 @@ void Domain_shell::export_tau (const Tensor& tt, int dom, int order, Array<doubl
 			}
 			// Spherical coordinates and not symetric
 			if ((tt.get_basis().get_basis(dom)==SPHERICAL_BASIS) && (tt.get_n_comp()==6)) {
+				if (n_cmp==-1) {
+					export_tau_val_domain (tt(1,1)(dom), 0, order, res, pos_res, ncond(0)) ;
+					export_tau_val_domain (tt(1,2)(dom), 1, order, res, pos_res, ncond(1)) ;
+					export_tau_val_domain (tt(1,3)(dom), 1, order, res, pos_res, ncond(2)) ;
+					export_tau_val_domain (tt(2,2)(dom), 2, order, res, pos_res, ncond(3)) ;
+					export_tau_val_domain (tt(2,3)(dom), 2, order, res, pos_res, ncond(4)) ;
+					export_tau_val_domain (tt(3,3)(dom), 2, order, res, pos_res, ncond(5)) ;
+				}
+				else for (int i=0 ; i<n_cmp ; i++) {
+					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==1))
+						export_tau_val_domain (tt(1, 1)(dom), 0, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==2))
+						export_tau_val_domain (tt(1, 2)(dom), 1, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==3))
+						export_tau_val_domain (tt(1, 3)(dom), 1, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==2))
+						export_tau_val_domain (tt(2, 2)(dom), 2, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==3))
+						export_tau_val_domain (tt(2, 3)(dom), 2, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==3) && ((*p_cmp[i])(1)==3))
+						export_tau_val_domain (tt(3, 3)(dom), 2, order, res, pos_res, ncond(i)) ;
+				}
+				found = true ;
+			}//MTZ coordinates and not symetric
+			if ((tt.get_basis().get_basis(dom)==MTZ_BASIS) && (tt.get_n_comp()==9)) {
+				if (n_cmp==-1) {
+					export_tau_val_domain (tt(1,1)(dom), 0, order, res, pos_res, ncond(0)) ;
+					export_tau_val_domain (tt(1,2)(dom), 1, order, res, pos_res, ncond(1)) ;
+					export_tau_val_domain (tt(1,3)(dom), 1, order, res, pos_res, ncond(2)) ;
+					export_tau_val_domain (tt(2,1)(dom), 1, order, res, pos_res, ncond(3)) ;
+					export_tau_val_domain (tt(2,2)(dom), 2, order, res, pos_res, ncond(4)) ;
+					export_tau_val_domain (tt(2,3)(dom), 2, order, res, pos_res, ncond(5)) ;
+					export_tau_val_domain (tt(3,1)(dom), 1, order, res, pos_res, ncond(6)) ;
+					export_tau_val_domain (tt(3,2)(dom), 2, order, res, pos_res, ncond(7)) ;
+					export_tau_val_domain (tt(3,3)(dom), 2, order, res, pos_res, ncond(8)) ;
+				}
+				else for (int i=0 ; i<n_cmp ; i++) {
+					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==1))
+						export_tau_val_domain (tt(1, 1)(dom), 0, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==2))
+						export_tau_val_domain (tt(1, 2)(dom), 1, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==1) && ((*p_cmp[i])(1)==3))
+						export_tau_val_domain (tt(1, 3)(dom), 1, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==1))
+						export_tau_val_domain (tt(2, 1)(dom), 1, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==2))
+						export_tau_val_domain (tt(2, 2)(dom), 2, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==2) && ((*p_cmp[i])(1)==3))
+						export_tau_val_domain (tt(2, 3)(dom), 2, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==3) && ((*p_cmp[i])(1)==1))
+						export_tau_val_domain (tt(3, 1)(dom), 1, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==3) && ((*p_cmp[i])(1)==2))
+						export_tau_val_domain (tt(3, 2)(dom), 2, order, res, pos_res, ncond(i)) ;
+					if (((*p_cmp[i])(0)==3) && ((*p_cmp[i])(1)==3))
+						export_tau_val_domain (tt(3, 3)(dom), 2, order, res, pos_res, ncond(i)) ;
+				}
+				found = true ;
+			}
+			// MTZ coordinates and not symetric
+			if ((tt.get_basis().get_basis(dom)==MTZ_BASIS) && (tt.get_n_comp()==6)) {
 				if (n_cmp==-1) {
 					export_tau_val_domain (tt(1,1)(dom), 0, order, res, pos_res, ncond(0)) ;
 					export_tau_val_domain (tt(1,2)(dom), 1, order, res, pos_res, ncond(1)) ;
