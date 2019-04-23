@@ -228,15 +228,15 @@ void Scalar::std_base_odd () {
 }
 
 void Scalar::std_base_r_mtz_domain(int d) {
-    val_zones[d]->std_base_r_spher() ;
+    val_zones[d]->std_base_r_mtz() ;
 }
 
 void Scalar::std_base_t_mtz_domain(int d) {
-    val_zones[d]->std_base_t_spher() ;
+    val_zones[d]->std_base_t_mtz() ;
 }
 
 void Scalar::std_base_p_mtz_domain(int d) {
-    val_zones[d]->std_base_p_spher() ;
+    val_zones[d]->std_base_p_mtz() ;
 }
 
 
