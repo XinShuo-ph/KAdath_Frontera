@@ -607,7 +607,8 @@ void Metric_general::compute_ricci_tensor (int dd) const {
 			*p_ricci_tensor[dd] = Term_eq(dd, res_val, res_der) ;
 	}	
 
-	
+	// Add flat metric part if needed
+	*p_ricci_tensor[dd] = *p_ricci_tensor[dd] + *fmet.give_ricci_tensor(dd) ;
 }
 
 
