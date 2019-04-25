@@ -52,7 +52,9 @@ namespace Kadath {
   using std::sin;
   using std::tan ;
   using std::atan ;
-  using std::atanh ;
+  using std::atanh ; 
+  using std::cosh;
+  using std::sinh;
 
 }
 #endif

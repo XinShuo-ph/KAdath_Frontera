@@ -304,7 +304,8 @@ class Val_domain {
 	friend ostream& operator<< (ostream&, const Val_domain&) ;
 	friend Val_domain sin(const Val_domain& ) ;
 	friend Val_domain cos(const Val_domain& ) ;
-
+	friend Val_domain sinh(const Val_domain& ) ;
+	friend Val_domain cosh(const Val_domain& ) ;
 	friend Val_domain operator+ (const Val_domain&) ;
 	friend Val_domain operator- (const Val_domain&) ;
 	friend Val_domain operator+ (const Val_domain&, const Val_domain&) ;

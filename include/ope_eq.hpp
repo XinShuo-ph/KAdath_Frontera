@@ -1103,6 +1103,43 @@ class Ope_log: public Ope_eq {
 } ;
 
 /**
+ * Operator  hyperbolic cosine (only defined for a scalar field or a double)
+ * \ingroup systems.
+ */
+class Ope_cosh: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_cosh(const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_cosh() ; ///< Destructor.
+	
+		virtual Term_eq action() const ;
+} ;
+
+/**
+ * Operator  hyperbolic sine (only defined for a scalar field or a double)
+ * \ingroup systems.
+ */
+class Ope_sinh: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_sinh(const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_sinh() ; ///< Destructor.
+	
+		virtual Term_eq action() const ;
+} ;
+
+
+/**
  * Operator inverse hyperbolic tangent (only defined for a scalar field or a double)
  * \ingroup systems.
  */

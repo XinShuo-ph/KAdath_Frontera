@@ -19,7 +19,7 @@
 
 #include "math.h"
 #include "array.hpp"
-  
+
 namespace Kadath {
 template <typename T> void Array<T>::operator+= (const Array<T>& so) {
 	*this = *this + so ;
@@ -67,6 +67,24 @@ template <typename T> Array<T> cos (const Array<T>& so) {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = cos(so.data[i]) ;
+
+	return res ;
+}
+
+template <typename T> Array<T> sinh (const Array<T>& so) {
+
+	Array<T> res(so.dimensions) ;
+	for (int i=0 ; i<so.nbr ; i++)
+	    res.data[i] = sinh(so.data[i]) ;
+
+	return res ;
+}
+
+template <typename T> Array<T> cosh (const Array<T>& so) {
+
+	Array<T> res(so.dimensions) ;
+	for (int i=0 ; i<so.nbr ; i++)
+	    res.data[i] = cosh(so.data[i]) ;
 
 	return res ;
 }

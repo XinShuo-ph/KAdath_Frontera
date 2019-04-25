@@ -848,6 +848,20 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 		return p_ope ;
 		}
 
+	// Check if cosh :
+	indic = is_ope_uni(name, p1, "cosh") ;
+	if (indic) {
+		p_ope = new Ope_cosh(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
+
+	// Check if sinh :
+	indic = is_ope_uni(name, p1, "sinh") ;
+	if (indic) {
+		p_ope = new Ope_sinh(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
+
 	// Check if scalar product :
 	indic = is_ope_uni(name, p1, p2, "scal") ;
 	if (indic) {

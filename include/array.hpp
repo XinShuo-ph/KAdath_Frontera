@@ -29,7 +29,8 @@ template <typename T> class Array ;
 template <typename T> ostream& operator<< (ostream&, const Array<T>& ) ;
 template <typename T> Array<T> sin(const Array<T>& ) ;
 template <typename T> Array<T> cos(const Array<T>& ) ;
-
+template <typename T> Array<T> sinh(const Array<T>& ) ;
+template <typename T> Array<T> cosh(const Array<T>& ) ;
 template <typename T>  Array<T> operator+ (const Array<T>&) ;
 template <typename T>  Array<T> operator- (const Array<T>&) ;
 template <typename T>  Array<T> operator+ (const Array<T>&, const Array<T>&) ;
@@ -208,6 +209,8 @@ template <typename T> class Array {
 	friend  ostream& operator<< <> (ostream&, const Array<T>& ) ;
 	friend  Array<T> sin<> (const Array<T>&) ;
 	friend  Array<T> cos<> (const Array<T>&) ;
+	friend  Array<T> sinh<> (const Array<T>&) ;
+	friend  Array<T> cosh<> (const Array<T>&) ;
 	friend  Array<T> operator+ <>(const Array<T>&) ;
 	friend  Array<T> operator- <> (const Array<T>&) ;
 	friend  Array<T> operator+ <> (const Array<T>&, const Array<T>&) ;
