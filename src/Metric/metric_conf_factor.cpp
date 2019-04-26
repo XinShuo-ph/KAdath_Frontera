@@ -638,6 +638,15 @@ void Metric_conf_factor::compute_ricci_tensor (int dd) const {
 	}	
 
 	
+	// Add flat metric part if needed
+	Term_eq ricci_flat (*fmet.give_ricci_tensor(dd)) ;
+	for (int i=1 ; i<=3 ; i++)
+		for (int j=i ; j<=3 ; j++) {
+			ricci_flat.set_val_t()->set(i,j).set_domain(dd) *= conformal(dd) ;
+			if (ricci_flat.der_t !=0x0)
+				ricci_flat.set_der_t()->set(i,j).set_domain(dd) *= conformal(dd) ;
+	}
+	*p_ricci_tensor[dd] = *p_ricci_tensor[dd] + ricci_flat ;
 }
 
 Term_eq Metric_conf_factor::derive_flat (int type_der, char ind_der, const Term_eq& so) const {
