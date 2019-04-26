@@ -142,7 +142,7 @@ void coef_1d_cheb_odd (Array<double>& tab) {
 	assert (tab.get_ndim()==1) ;
 	int nr = tab.get_size(0) ;
 
-	double* cf = fftw_alloc_real(nr-1);
+	double* cf = fftw_alloc_real(nr);
 	for (int i=0 ; i<nr ; i++)
 	    cf[i] = tab(i) * sin(M_PI/2.*i/(nr-1)) ;
 
@@ -193,7 +193,7 @@ void coef_1d_cheb_odd (Array<double>& tab) {
 	for (int i=0 ; i<nr ; i++)
 	    tab.set(i) = cf[i] ;
 
-	delete [] cf ;
+	fftw_free(cf);
 }
 
 double coloc_leg(int,int) ;
@@ -460,7 +460,7 @@ void coef_1d_cos_odd (Array<double>& tab) {
 	for (int i=0 ; i<nbr ; i++)
 		tab.set(i) = cf[i] ;
 
-	delete [] cf ;
+	fftw_free(cf) ;
 	}
 }
 
@@ -501,7 +501,7 @@ void coef_1d_sin_odd (Array<double>& tab) {
 	int nbr = tab.get_size(0) ;
 	if (nbr>3) {
 	// Symetrie taken into account
-	double* cf = new double[nbr] ;
+	double* cf = fftw_alloc_real(nbr) ;
 	cf[0] = 0 ;
 	for (int i=1 ; i<nbr ; i++)
 	    cf[i] = tab(i)*sin(M_PI*i/2./(nbr-1)) ;
@@ -550,7 +550,7 @@ void coef_1d_sin_odd (Array<double>& tab) {
 	for (int i=0 ; i<nbr ; i++)
 		tab.set(i) = cf[i] ;
 
-	delete [] cf ;
+	fftw_free(cf) ;
 	}
 }
 

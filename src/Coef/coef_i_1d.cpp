@@ -57,7 +57,7 @@ void coef_i_1d_cheb (Array<double>& tab) {
 	double* tab_auxi = fftw_data.buffer;
 	fftw_plan p = fftw_data.plan;
 
-	double* cf = new double[nbr] ;
+	double* cf = fftw_alloc_real(nbr) ;
 
 	double c1 = tab(1) ;
 	double somme = 0 ;
@@ -86,7 +86,7 @@ void coef_i_1d_cheb (Array<double>& tab) {
 	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
 
-	delete [] cf ;
+	fftw_free(cf) ;
 	}
 }
 
@@ -99,7 +99,7 @@ void coef_i_1d_cheb_even (Array<double>& tab) {
 	double* tab_auxi = fftw_data.buffer;
 	fftw_plan p = fftw_data.plan;
 
-	double* cf = new double[nbr] ;
+	double* cf = fftw_alloc_real(nbr) ;
 
 	double c1 = tab(1) ;
 	double somme = 0 ;
@@ -128,7 +128,7 @@ void coef_i_1d_cheb_even (Array<double>& tab) {
 	tab.set(nbr-1) = tab_auxi[0] + fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
 
-	delete [] cf ;
+	fftw_free(cf) ;
 }
 
 void coef_i_1d_cheb_odd (Array<double>& tab) {
@@ -140,8 +140,8 @@ void coef_i_1d_cheb_odd (Array<double>& tab) {
 	double* tab_auxi = fftw_data.buffer;
 	fftw_plan p = fftw_data.plan;
 
-	double* ti = new double[nbr] ;
-	double* cf = new double[nbr] ;
+	double* ti = fftw_alloc_real(nbr) ;
+	double* cf = fftw_alloc_real(nbr) ;
 
 	ti[0] = 0.5*tab(0) ;
 	for (int i=1 ; i<nbr-1 ; i++)
@@ -175,8 +175,8 @@ void coef_i_1d_cheb_odd (Array<double>& tab) {
 	tab.set(nbr-1) = tab_auxi[0] + fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2]/sin(M_PI*(nbr-1)/4/(nbr-1)) ;
 
-	delete [] ti ;
-	delete [] cf ;
+	fftw_free(ti) ;
+	fftw_free(cf) ;
 }
 
 double coloc_leg(int,int) ;
@@ -251,7 +251,7 @@ void coef_i_1d_cos (Array<double>& tab) {
 	double* tab_auxi = fftw_data.buffer;
 	fftw_plan p = fftw_data.plan;
 
-	double* cf = new double[nbr] ;
+	double* cf = fftw_alloc_real(nbr) ;
 
 	double c1 = tab(1) ;
 	double somme = 0 ;
@@ -280,7 +280,7 @@ void coef_i_1d_cos (Array<double>& tab) {
 	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
 
-	delete [] cf ;
+	fftw_free(cf) ;
 }
 
 void coef_i_1d_sin (Array<double>& tab) {
@@ -317,7 +317,7 @@ void coef_i_1d_cos_even (Array<double>& tab) {
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 	if (nbr>3) {
-	double* cf = new double[nbr] ;
+	double* cf = fftw_alloc_real(nbr) ;
 
   auto & fftw_data = coef_i_1d_fftw(nbr-1);
 	double* tab_auxi = fftw_data.buffer;
@@ -350,7 +350,7 @@ void coef_i_1d_cos_even (Array<double>& tab) {
 	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2] ;
 
-	delete [] cf ;
+	fftw_free(cf) ;
 	}
 }
 
@@ -359,8 +359,8 @@ void coef_i_1d_cos_odd (Array<double>& tab) {
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 	if (nbr>3) {
-	double* ti = new double[nbr] ;
-	double* cf = new double[nbr] ;
+	double* ti = fftw_alloc_real(nbr) ;
+	double* cf = fftw_alloc_real(nbr) ;
 
   auto & fftw_data = coef_i_1d_fftw(nbr-1);
 	double* tab_auxi = fftw_data.buffer;
@@ -398,8 +398,8 @@ void coef_i_1d_cos_odd (Array<double>& tab) {
 	tab.set(nbr-1) = 0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2]/sin(M_PI*(nbr-1)/4/(nbr-1)) ;
 
-	delete [] ti ;
-	delete [] cf ;
+	fftw_free(ti);
+	fftw_free(cf) ;
 	}
 }
 
@@ -439,8 +439,8 @@ void coef_i_1d_sin_odd (Array<double>& tab) {
 	assert (tab.get_ndim()==1) ;
 	int nbr = tab.get_size(0) ;
 	if (nbr>3) {
-	double* ti = new double[nbr] ;
-	double* cf = new double[nbr] ;
+	double* ti = fftw_alloc_real(nbr);
+	double* cf = fftw_alloc_real(nbr) ;
 
   auto & fftw_data = coef_i_1d_fftw(nbr-1);
 	double* tab_auxi = fftw_data.buffer;
@@ -478,8 +478,8 @@ void coef_i_1d_sin_odd (Array<double>& tab) {
 	tab.set(nbr-1) = tab_auxi[0] - fmoins0 ;
 	tab.set((nbr-1)/2) = tab_auxi[(nbr-1)/2]/sin(M_PI*(nbr-1)/4/(nbr-1)) ;
 
-	delete [] ti ;
-	delete [] cf ;
+	fftw_free(ti) ;
+	fftw_free(cf) ;
 	}
 }
 
