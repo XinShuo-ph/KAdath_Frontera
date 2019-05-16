@@ -21,17 +21,22 @@
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "name_tools.hpp"
 namespace Kadath {
 Eq_first_integral::Eq_first_integral(const System_of_eqs* syst, const Domain* innerdom, int dommin, int dommax, const char* integ_part, const char* const_part) : Equation(innerdom, dommin, dommax-dommin+2), dom_min(dommin), dom_max(dommax) {
 
 
 	// First the constant part
-	parts[0] = syst->give_ope (dom_min, const_part) ;
+	char auxicst[LMAX] ;
+	trim_spaces(auxicst, const_part) ;
+	parts[0] = syst->give_ope (dom_min, auxicst) ;
 
 	// First all the integral parts
-	for (int d=dom_min ; d<=dom_max; d++)
-		parts[d-dom_min+1] = syst->give_ope (d, integ_part) ;
+	char auxiinteg[LMAX] ;
+	trim_spaces(auxiinteg, integ_part) ;
 	
+	for (int d=dom_min ; d<=dom_max; d++)		
+		parts[d-dom_min+1] = syst->give_ope (d, auxiinteg) ;
 }
 
 Eq_first_integral::~Eq_first_integral() {
@@ -90,7 +95,9 @@ void Eq_first_integral::export_der (int& conte, Term_eq** residus, Array<double>
 	// Inner domain
 	space.get_domain(dom_min)->export_tau (residus[conte]->get_der_t(), dom_min, 0, sec, pos_res, *n_cond) ;
 	// Recover the value of the integral at the origin
-	double valori = residus[conte]->get_der_t()()(dom_min)(pori) ;
+	double valori = 0 ;
+	if (!residus[conte]->get_der_t()()(dom_min).check_if_zero()) 
+		valori = residus[conte]->get_der_t()()(dom_min)(pori) ;
 
 	conte++ ;
 	
