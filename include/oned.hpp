@@ -84,7 +84,7 @@ class Domain_oned_ori : public Domain {
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
      virtual Val_domain der_partial_var (const Val_domain&, int) const ;
-     
+   virtual Val_domain div_r (const Val_domain&) const ;
      virtual int nbr_unknowns (const Tensor&, int) const ;
 	/**
 	* Computes the number of true unknowns of a \c Val_domain.

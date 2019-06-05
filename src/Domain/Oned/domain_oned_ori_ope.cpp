@@ -23,6 +23,10 @@
 #include "array_math.cpp"
 #include "val_domain.hpp"
 namespace Kadath {
+
+
+int div_x_1d (int, Array<double>&) ;
+
 Val_domain Domain_oned_ori::der_partial_var (const Val_domain& so, int which_var) const {
 
 	switch (which_var) {
@@ -33,6 +37,18 @@ Val_domain Domain_oned_ori::der_partial_var (const Val_domain& so, int which_var
 			cerr << "Unknown variable in Domain_oned_ori::der_partial_var" << endl ;
 			abort() ;
 		}
+}
+
+Val_domain Domain_oned_ori::div_r (const Val_domain& so) const {
+	so.coef() ;
+	Val_domain res(this) ;
+
+	res.base= so.base ;
+	
+	res.cf = new Array<double> (so.base.ope_1d(div_x_1d, 0, *so.cf, res.base)) ;
+	*res.cf /= alpha ;
+	res.in_coef = true ;
+	return res ;
 }
 
 double Domain_oned_ori::integrale (const Val_domain& so) const {
