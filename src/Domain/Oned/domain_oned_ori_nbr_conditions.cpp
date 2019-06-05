@@ -28,21 +28,37 @@ int Domain_oned_ori::nbr_conditions_val_domain (const Val_domain& so, int order)
 	
 	int res = 0 ;
 	int basex = (*so.get_base().bases_1d[0])(0) ;
+	int max= 0 ;
 	switch (basex) {
 		case CHEB_EVEN:
-			res = nbr_coefs(0)-order+1 ;
+			max = nbr_coefs(0) ;
 			break ;
 		case LEG_EVEN:
-			res = nbr_coefs(0)-order+1 ;
+			max = nbr_coefs(0) ;
 			break ;
 		case CHEB_ODD:
-			res = nbr_coefs(0)-1-order+1 ;
+			max = nbr_coefs(0)-1 ;
 			break ;
 		case LEG_ODD:
-			res = nbr_coefs(0)-1-order+1 ;
+			max = nbr_coefs(0)-1 ;
 			break ;
 		default:
-			cerr << "Unknowbasis in Domain_oned_ori::nbr_conditions_val_domain" << endl ;
+			cerr << "Unknow basis in Domain_oned_ori::nbr_conditions_val_domain" << endl ;
+			abort() ;
+	}
+
+	switch (order) {
+		case 0 :
+			res = max ;
+			break ;
+		case 1 :
+			res = max-1 ;
+			break ;
+		case 2 :
+			res = max-1 ;
+			break ;
+		default:
+			cerr << "Unknow order in Domain_oned_ori::nbr_conditions_val_domain" << endl ;
 			abort() ;
 	}
 	return res ;

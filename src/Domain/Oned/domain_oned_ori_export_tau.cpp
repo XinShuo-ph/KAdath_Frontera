@@ -33,25 +33,41 @@ void Domain_oned_ori::export_tau_val_domain (const Val_domain& so, int order, Ar
 
 	so.coef() ;
 	    
-	int max =  0 ;
+	int ncf =  0 ;
 	int basex = (*so.get_base().bases_1d[0]) (0) ;
 	switch (basex) {
 		case CHEB_EVEN:
-			max = nbr_coefs(0)-order+1 ;
+			ncf = nbr_coefs(0) ;
 			break ;
 		case LEG_EVEN:
-			max = nbr_coefs(0)-order+1 ;
+			ncf = nbr_coefs(0) ;
 			break ;
 		case CHEB_ODD:
-			max = nbr_coefs(0)-order ;
+			ncf = nbr_coefs(0)-1 ;
 			break ;
 		case LEG_ODD:
-			max = nbr_coefs(0)-order ;
+			ncf = nbr_coefs(0)-1 ;
 			break ;
 		default:
-			cerr << "Unknowbasis in Domain_oned_ori::export_tau_val_domain" << endl ;
+			cerr << "Unknow basis in Domain_oned_ori::export_tau_val_domain" << endl ;
 			abort() ;
 	}
+	double max = 0 ;
+	switch (order) {
+		case 0 :
+			max = ncf ;
+			break ;
+		case 1 :
+			max = ncf-1 ;
+			break ;
+		case 2 :
+			max = ncf-1 ;
+			break ;
+		default :
+			cerr << "Unknow order in Domain_oned_ori::export_tau_val_domain" << endl ;
+			abort() ;
+	}
+
 	
 	Index pos_cf (nbr_coefs) ;
 	for (int i=0 ; i<max ; i++) {
