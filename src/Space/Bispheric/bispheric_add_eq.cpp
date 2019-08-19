@@ -87,74 +87,66 @@ void Space_bispheric::add_matching_one_side (System_of_eqs& sys, const char* nam
 
 void Space_bispheric::add_eq (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, int nused, Array<int>** pused)  {
   
-	// First sphere if any:
-	for (int i=2 ; i<ndom_minus ; i++) {
-	  sys.add_eq_inside (i, eq, nused, pused) ;
-	  sys.add_eq_matching (i, OUTER_BC, rac, nused, pused) ;
-	  sys.add_eq_matching (i, OUTER_BC, rac_der, nused, pused) ;
-	}
+	// First NS 
+	sys.add_eq_inside (0, eq, nused, pused) ;
+	sys.add_eq_matching (0, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching (0, OUTER_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (1, eq, nused, pused) ;
+	sys.add_eq_matching (1, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching (1, OUTER_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (2, eq, nused, pused) ;
 	
-	if (ndom_minus>1) {
-	  sys.add_eq_inside (ndom_minus, eq, nused, pused) ;
-	  // Matching with bispheric
-	  sys.add_eq_matching_import (ndom_minus, OUTER_BC, rac, nused, pused) ;
-	  sys.add_eq_matching_import (ndom_minus+ndom_plus, INNER_BC, rac_der, nused, pused) ;  
-	  sys.add_eq_matching_import (ndom_minus+ndom_plus+1, INNER_BC, rac_der, nused, pused) ;
-	}
 	
-	// second sphere (if any)
-	for (int i=ndom_minus+1 ; i<ndom_minus+ndom_plus-1 ; i++) {
-	  sys.add_eq_inside (i, eq, nused, pused) ;
-	  sys.add_eq_matching (i, OUTER_BC, rac, nused, pused) ;
-	  sys.add_eq_matching (i, OUTER_BC, rac_der, nused, pused) ;
-	}
+	// Matching with bispheric :
+	sys.add_eq_matching_import (2, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (6, INNER_BC, rac_der, nused, pused) ;  
+	sys.add_eq_matching_import (7, INNER_BC, rac_der, nused, pused) ;
 	
-	if (ndom_plus>1) {
-	  sys.add_eq_inside (ndom_minus+ndom_plus-1, eq, nused, pused) ;
-	  // Matching with bispheric
-	  sys.add_eq_matching_import (ndom_minus+ndom_plus-1, OUTER_BC, rac, nused, pused) ;
-	  sys.add_eq_matching_import (ndom_minus+ndom_plus+3, INNER_BC, rac_der, nused, pused) ;
-	  sys.add_eq_matching_import (ndom_minus+ndom_plus+4, INNER_BC, rac_der, nused, pused) ;
-	}
+	// Second NS :
+	sys.add_eq_inside (3, eq, nused, pused) ;
+	sys.add_eq_matching (3, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching (3, OUTER_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (4, eq, nused, pused) ;
+	sys.add_eq_matching (4, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching (4, OUTER_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (5, eq, nused, pused) ;
+	
+	// Matching with bispheric :
+	sys.add_eq_matching_import (5, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (9, INNER_BC, rac_der, nused, pused) ;  
+	sys.add_eq_matching_import (10, INNER_BC, rac_der, nused, pused) ;
 	
 	// Chi first
-	sys.add_eq_inside (ndom_minus+ndom_plus, eq, nused, pused) ;
-	sys.add_eq_matching (ndom_minus+ndom_plus, CHI_ONE_BC, rac, nused, pused) ;
-	sys.add_eq_matching (ndom_minus+ndom_plus, CHI_ONE_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (6, eq, nused, pused) ;
+	sys.add_eq_matching (6, CHI_ONE_BC, rac, nused, pused) ;
+	sys.add_eq_matching (6, CHI_ONE_BC, rac_der, nused, pused) ;
 
 	// Rect :
-	sys.add_eq_inside (ndom_minus+ndom_plus+1, eq, nused, pused) ;
-	sys.add_eq_matching (ndom_minus+ndom_plus+1, ETA_PLUS_BC, rac, nused, pused) ;
-	sys.add_eq_matching (ndom_minus+ndom_plus+1, ETA_PLUS_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (7, eq, nused, pused) ;
+	sys.add_eq_matching (7, ETA_PLUS_BC, rac, nused, pused) ;
+	sys.add_eq_matching (7, ETA_PLUS_BC, rac_der, nused, pused) ;
 
 	// Eta first
-	sys.add_eq_inside (ndom_minus+ndom_plus+2, eq, nused, pused) ;
-	sys.add_eq_matching (ndom_minus+ndom_plus+2, ETA_PLUS_BC, rac, nused, pused) ;
-	sys.add_eq_matching (ndom_minus+ndom_plus+2, ETA_PLUS_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (8, eq, nused, pused) ;
+	sys.add_eq_matching (8, ETA_PLUS_BC, rac, nused, pused) ;
+	sys.add_eq_matching (8, ETA_PLUS_BC, rac_der, nused, pused) ;
 
 	// Rect 
-	sys.add_eq_inside (ndom_minus+ndom_plus+3, eq, nused, pused) ;
-	sys.add_eq_matching (ndom_minus+ndom_plus+3, CHI_ONE_BC, rac, nused, pused) ;
-	sys.add_eq_matching (ndom_minus+ndom_plus+3, CHI_ONE_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (9, eq, nused, pused) ;
+	sys.add_eq_matching (9, CHI_ONE_BC, rac, nused, pused) ;
+	sys.add_eq_matching (9, CHI_ONE_BC, rac_der, nused, pused) ;
 
+	
 	// chi first :
-	sys.add_eq_inside (ndom_minus+ndom_plus+4, eq, nused, pused) ;
+	sys.add_eq_inside (10, eq, nused, pused) ;
 
 	// Matching outer domain :
-	if (ndom_minus+ ndom_plus + 5 <= sys.get_dom_max()) {
-	for (int i=ndom_minus+ndom_plus ; i<=ndom_minus+ndom_plus+4 ; i++)
-		sys.add_eq_matching_import (i, OUTER_BC, rac, nused, pused) ;
-	sys.add_eq_matching_import (ndom_minus+ndom_plus+5, INNER_BC, rac_der, nused, pused) ;
-	
-	// Shells :
-	for (int i=0 ; i<nshells ; i++) {
-	    sys.add_eq_inside (ndom_minus+ndom_plus+5+i, eq, nused, pused) ;
-	    sys.add_eq_matching (ndom_minus+ndom_plus+6+i, INNER_BC, rac, nused, pused) ;
-	    sys.add_eq_matching (ndom_minus+ndom_plus+6+i, INNER_BC, rac_der, nused, pused) ;
-	}
-
+	for (int d=6 ; d<=10 ; d++)
+		sys.add_eq_matching_import (d, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (11, INNER_BC, rac_der, nused, pused) ;
+		
 	 //Compactified domain
-	sys.add_eq_inside (nbr_domains-1, eq, nused, pused) ;}
+	sys.add_eq_inside (11, eq, nused, pused) ;
 }
 
 void Space_bispheric::add_eq (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, const List_comp& list) {

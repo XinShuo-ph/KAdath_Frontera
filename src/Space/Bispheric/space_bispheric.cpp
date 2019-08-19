@@ -293,16 +293,16 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     domains[0] = new Domain_nucleus(0, ttype, rminus(0), center_minus, res) ;
     
     for (int i=1 ; i<ndom_minus ; i++)
-      domains[i+1] = new Domain_shell(i+1, ttype, rminus(i-1), rminus(i), center_minus, res) ;
+      domains[i] = new Domain_shell(i, ttype, rminus(i-1), rminus(i), center_minus, res) ;
       
     Point center_plus (ndim) ;
     center_plus.set(1) = aa*cosh(eta_plus)/sinh(eta_plus) ;
     a_plus = aa*cosh(eta_plus)/sinh(eta_plus) ;
-    domains[1] = new Domain_nucleus(1, ttype, rplus(0), center_plus, res) ;
+    domains[ndom_minus] = new Domain_nucleus(ndom_minus, ttype, rplus(0), center_plus, res) ;
   
  
-    for (int i=ndom_minus+1 ; i<ndom_plus+ndom_minus ; i++)
-       domains[i] = new Domain_shell(i, ttype, rplus(i-ndom_minus-1), rplus(i-ndom_minus), center_plus, res) ;
+    for (int i=1 ; i<ndom_plus ; i++)
+       domains[i+ndom_minus] = new Domain_shell(i+ndom_minus, ttype, rplus(i-1), rplus(i), center_plus, res) ;
     
     // Bispherical domains antitrigo order: 
     domains[ndom_minus+ndom_plus] = new Domain_bispheric_chi_first(ndom_minus+ndom_plus, ttype, aa, eta_minus, rr(0), chi_lim, res_bi) ;
@@ -356,10 +356,16 @@ Space_bispheric::Space_bispheric (FILE*fd, int type_shells, bool old) {
 	domains = new Domain* [nbr_domains] ;
 	
 	domains[0] = new Domain_nucleus(0, fd) ;
-	domains[1] = new Domain_nucleus(1, fd) ;
-        for (int i=2 ; i<ndom_minus+ndom_plus ; i++)
+
+        for (int i=1 ; i<ndom_minus ; i++)
 	  domains[i] = new Domain_shell(i, fd) ;
 	
+	domains[ndom_minus] = new Domain_nucleus(ndom_minus, fd) ;
+
+	for (int i=ndom_minus+1 ; i<ndom_minus+ndom_plus ; i++)
+	  domains[i] = new Domain_shell(i, fd) ;
+	
+
     	// Bispherical domains antitrigo order: 
     	domains[ndom_minus+ndom_plus] = new Domain_bispheric_chi_first(ndom_minus+ndom_plus, fd) ;
     	domains[ndom_minus+ndom_plus+1] = new Domain_bispheric_rect(ndom_minus+ndom_plus+1, fd) ;
@@ -408,7 +414,7 @@ void Space_bispheric::save (FILE* fd) const  {
 
 Array<int> Space_bispheric::get_indices_matching_non_std(int dom, int bound) const {
 
-	if (dom==ndom_minus) {
+	if (dom==ndom_minus-1) {
 	  // First sphere ;
 	  Array<int> res (2,2) ;
 	  switch (bound) {
@@ -446,7 +452,7 @@ Array<int> Space_bispheric::get_indices_matching_non_std(int dom, int bound) con
 	  Array<int> res(2,1) ;
 	  switch (bound) {
 	    case INNER_BC : 
-	      res.set(0,0) = ndom_minus ; // First sphere
+	      res.set(0,0) = ndom_minus-1 ; // First sphere
 	      res.set(1,0) = OUTER_BC ;
 	      break ;
 	    case OUTER_BC :
@@ -464,7 +470,7 @@ Array<int> Space_bispheric::get_indices_matching_non_std(int dom, int bound) con
 	  Array<int> res(2, 1) ;
 	  switch (bound) {
 	    case INNER_BC : 
-	      res.set(0,0) = ndom_minus ; // First sphere
+	      res.set(0,0) = ndom_minus-1 ; // First sphere
 	      res.set(1,0) = OUTER_BC ;
 	      break ;
 	    case OUTER_BC :
