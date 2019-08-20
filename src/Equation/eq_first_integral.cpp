@@ -50,30 +50,36 @@ void Eq_first_integral::export_val (int& conte, Term_eq** residus, Array<double>
 	// Recover pointer on the space
 	const Space& space = residus[conte]->get_val_t().get_space() ;
 
-	int start = pos_res ;
-	
 	// Get the constant part
 	Index pori (space.get_domain(dom_min)->get_nbr_points()) ;
 	double val_cst_part = residus[conte]->get_val_t()()(dom_min)(pori) ;
 	conte ++ ;
 
-	// Inner domain
-	space.get_domain(dom_min)->export_tau (residus[conte]->get_val_t(), dom_min, 0, sec, pos_res, *n_cond) ;
-	// Recover the value of the integral at the origin
-	double valori = residus[conte]->get_val_t()()(dom_min)(pori) ;
+	// Recover origin value of first integral
+	double val_ori = residus[conte]->get_val_t()()(dom_min)(pori) ;
 
-	conte++ ;
-	
-	// Replace the first condition by constant part :
-	sec.set(start) = val_cst_part ;
+	// Inner domain
+	// Remove value at the origin
+	Scalar auximin (space) ;
+	auximin.set_domain(dom_min) = residus[conte]->get_val_t()()(dom_min) - val_ori ;
+	auximin.set_domain(dom_min).coef_i() ;
+
+	// At the origin put the cst_part (no continuity but does it matter ?)
+	Index pos (space.get_domain(dom_min)->get_nbr_points()) ;
+	do {
+		if (pos(0)==0)
+			auximin.set_domain(dom_min).set(pos) = val_cst_part ;
+	}
+	while (pos.inc()) ;
+
+	space.get_domain(dom_min)->export_tau (auximin, dom_min, 0, sec, pos_res, *n_cond) ;
+	conte ++ ;
 
 	// Export all the other domains
 	for (int d=dom_min+1 ; d<=dom_max ; d++) {
-		start = pos_res ;
-		space.get_domain(d)->export_tau (residus[conte]->get_val_t(), d, 0, sec, pos_res, *n_cond) ;
-
-		// Update the integral part
-		sec.set(start) -= valori ;
+		Scalar auxi (space) ;
+		auxi.set_domain(d) = residus[conte]->get_val_t()()(d) - val_ori ;
+		space.get_domain(d)->export_tau (auxi, d, 0, sec, pos_res, *n_cond) ;
 		conte ++ ;
 	}
 }
@@ -90,27 +96,33 @@ void Eq_first_integral::export_der (int& conte, Term_eq** residus, Array<double>
 	// Get the constant part
 	Index pori (space.get_domain(dom_min)->get_nbr_points()) ;
 	double val_cst_part = residus[conte]->get_der_t()()(dom_min)(pori) ;
-
 	conte ++ ;
-	// Inner domain
-	space.get_domain(dom_min)->export_tau (residus[conte]->get_der_t(), dom_min, 0, sec, pos_res, *n_cond) ;
-	// Recover the value of the integral at the origin
-	double valori = 0 ;
-	if (!residus[conte]->get_der_t()()(dom_min).check_if_zero()) 
-		valori = residus[conte]->get_der_t()()(dom_min)(pori) ;
 
-	conte++ ;
-	
-	// Replace the first condition by constant part :
-	sec.set(start) = val_cst_part ;
+	// Recover origin value of first integral
+	double val_ori = residus[conte]->get_der_t()()(dom_min)(pori) ;
+
+	// Inner domain
+	// Remove value at the origin
+	Scalar auximin (space) ;
+	auximin.set_domain(dom_min) = residus[conte]->get_der_t()()(dom_min) - val_ori ;
+	auximin.set_domain(dom_min).coef_i() ;
+
+	// At the origin put the cst_part (no continuity but does it matter ?)
+	Index pos (space.get_domain(dom_min)->get_nbr_points()) ;
+	do {
+		if (pos(0)==0)
+			auximin.set_domain(dom_min).set(pos) = val_cst_part ;
+	}
+	while (pos.inc()) ;
+
+	space.get_domain(dom_min)->export_tau (auximin, dom_min, 0, sec, pos_res, *n_cond) ;
+	conte ++ ;
 
 	// Export all the other domains
 	for (int d=dom_min+1 ; d<=dom_max ; d++) {
-		start = pos_res ;
-		space.get_domain(d)->export_tau (residus[conte]->get_der_t(), d, 0, sec, pos_res, *n_cond) ;
-
-		// Update the integral part
-		sec.set(start) -= valori ;
+		Scalar auxi (space) ;
+		auxi.set_domain(d) = residus[conte]->get_der_t()()(d) - val_ori ;
+		space.get_domain(d)->export_tau (auxi, d, 0, sec, pos_res, *n_cond) ;
 		conte ++ ;
 	}
 }
