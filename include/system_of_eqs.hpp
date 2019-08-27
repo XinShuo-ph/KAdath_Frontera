@@ -26,6 +26,7 @@
 #include "term_eq.hpp"
 #include "metric.hpp"
 #include "param.hpp"
+#include "matrice.hpp"
 #include "list_comp.hpp"
 
 #include <vector>
