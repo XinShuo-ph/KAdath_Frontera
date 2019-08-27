@@ -4,12 +4,19 @@ if(EXISTS $ENV{HOME_KADATH}/Cmake/CMakeLocal.cmake)
 endif()
 
 option(PAR_VERSION "Parallel version" ON)
+option(MKL_VERSION "Parallel version" OFF)
 
 if (PAR_VERSION)
 	message ("Parallel version")
 else(PAR_VERSION)
 	message ("Sequential version")
 endif(PAR_VERSION)
+
+if (MKL_VERSION)
+	message ("Version with MKL ")
+else(MKL_VERSION)
+	message ("Version with scalapack")
+endif(MKL_VERSION)
 
 file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.hpp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
@@ -44,16 +51,27 @@ if (NOT DEFINED LAPACK_LIBRARIES)
     include(FindLAPACK) #FindLAPACK does exist
 endif()
 
+
+#include(FindSUNDIALS)
+
 #Need scalapack if PAR VERSION
 if (PAR_VERSION)
+	if (MKL_VERSION)
+		include(FindMKL)
+	else(MKL_VERSION)
 	if (NOT DEFINED SCALAPACK_LIBRARIES)
 		message ("Need to give scalapack location in CMakeLocal.cmake")
 	endif()
-endif()
+	endif(MKL_VERSION)
+endif(PAR_VERSION)
 
 if(NOT PAR_VERSION)
     if (NOT DEFINED PGPLOT_LIBRARIES)
 	    find_package(PGPLOT REQUIRED) #pgplot probably only used in sequential mode
+    endif()
+
+    if (NOT DEFINED SUNDIALS_LIBRARIES)
+	    include(FindSUNDIALS) #SUNDIAL probably only used in sequential mode	
     endif()
 endif(NOT PAR_VERSION)
 
