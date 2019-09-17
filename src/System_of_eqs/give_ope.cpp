@@ -749,6 +749,13 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 		return p_ope ;
 		}
 
+	// Check if division by cost:
+	indic = is_ope_uni(name, p1, "divcost") ;
+	if (indic) {
+		p_ope = new Ope_div_cost(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
+
 	// Check if multiplication by sint:
 	indic = is_ope_uni(name, p1, "multsint") ;
 	if (indic) {

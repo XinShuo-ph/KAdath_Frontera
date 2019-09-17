@@ -696,6 +696,25 @@ class Ope_mult_rsint: public Ope_eq {
 		virtual Term_eq action() const ;
 } ;
 
+/**
+ * The operator division by \f$r\cos\theta\f$.
+ * \ingroup systems.
+ */
+class Ope_div_cost: public Ope_eq {
+
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : target		
+		*/
+		Ope_div_cost (const System_of_eqs* syst, Ope_eq* so) ;
+		virtual ~Ope_div_cost() ; ///< Destructor
+	
+		virtual Term_eq action() const ;
+} ;
+
+
 
 /**
  * The operator division by \f$x+1\f$.
