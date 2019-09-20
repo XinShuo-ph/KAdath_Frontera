@@ -447,7 +447,7 @@ Array<int> Space_bispheric::get_indices_matching_non_std(int dom, int bound) con
 	return res ;
 	}
 
-	if (dom== ndom_plus+ndom_plus)	{
+	if (dom== ndom_minus+ndom_plus)	{
 	  // first chi first :
 	  Array<int> res(2,1) ;
 	  switch (bound) {
@@ -465,7 +465,7 @@ Array<int> Space_bispheric::get_indices_matching_non_std(int dom, int bound) con
 	return res ;
 	}
 	
-	if (dom==ndom_plus+ndom_plus+1)	{
+	if (dom==ndom_minus+ndom_plus+1)	{
 	  // first rect :
 	  Array<int> res(2, 1) ;
 	  switch (bound) {

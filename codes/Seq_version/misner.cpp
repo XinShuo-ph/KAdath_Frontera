@@ -6,16 +6,18 @@ int main() {
 	// Number of points
 	int nbr = 7 ;
 
+	double scale = 1. ;
+
 	// Parameters of the bispherical :
-	double ecart = 10. ;
-	double r1 = 1. ;
- 	double r2 = 1. ;
-	double rext = ecart*1.5 ;
+	double ecart = 10. * scale;
+	double r1 = 1. * scale ;
+ 	double r2 = 1. * scale ;
+	double rext = ecart*1.5 * scale ;
 	
 	// Espace :
 	int type_base = CHEB_TYPE ;
 	Space_bispheric space(type_base, ecart, r1, r2, rext, nbr) ;
-	
+
 	// Legendre or Chebyshev as one wishes...
 	Scalar conf(space) ;
 	conf = 1 ;
@@ -30,8 +32,21 @@ int main() {
 	// Equations :
 	space.add_bc_sphere_one (syst, "dn(P) + 0.5 / a * P = 0") ;
 	space.add_bc_sphere_two (syst, "dn(P) + 0.5 / b * P = 0") ;
-	space.add_eq (syst, "lap(P) =0", "P", "dn(P)") ;
-	space.add_bc_outer (syst, "P=1") ;
+	
+	/// Bispherical part
+	for (int d=2 ; d<=6 ; d++)
+		syst.add_eq_inside (d, "lap(P) =0") ;
+	space.add_matching (syst, "P") ;
+	space.add_matching (syst, "dn(P)") ;
+	
+	// matching with outer domain 
+	for (int d=2 ; d<=6 ; d++)
+		syst.add_eq_matching_import (d, OUTER_BC, "dn(P) = import(dn(P))") ;
+	syst.add_eq_matching_import(7, INNER_BC, "P=import(P)") ;
+	syst.add_eq_inside (7, "lap(P)=0") ;
+
+	// Outer BC
+	syst.add_eq_bc (7, OUTER_BC, "P=1") ;
 
 	double conv ;
 	bool endloop = false ;
