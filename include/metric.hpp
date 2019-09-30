@@ -597,6 +597,37 @@ class Metric_conf_factor : public Metric {
 } ;
 
 /**
+ * * Class to deal with a metric with a conformal decomposition (mainly used for AADS spacetimes)
+ * The true metric and the conformal are related via
+ * \f$\gamma_{ij} = \frac{1}{\Omega^2}\tilde{\gamma}_{ij}\f$.
+ * The conformal factor vanishes at some boundary so that the various quantities (Christoffels) are multiplied by appropriate factors
+ * of $\Omega$ to ensure regularity.
+ * The metric is assumed to be constant.
+ * \ingroup metric
+ */
+class Metric_conf_factor_const : public Metric_conf_factor {
+
+	public:
+		Metric_conf_factor_const (Metric_tensor&, const Scalar& conf) ; ///< Constructor from a \c Metric_tensor and a conformal factor.
+		Metric_conf_factor_const (const Metric_conf_factor_const& ) ; ///< Copy constructor.
+
+	protected:
+		virtual void compute_con (int) const ;
+		virtual void compute_cov (int) const ;
+
+
+	public:
+		virtual ~Metric_conf_factor_const() ;
+
+		/**
+		* Associate the metric to a given system of equations.
+		* @param syst : the \c System_of_eqs.
+		* @param name : name by which the metric will be known in the system (like "g", "f"...)
+		*/
+		virtual void set_system (System_of_eqs& syst, const char* name) ;
+} ;
+
+/**
  * Class to deal with a metric with a conformaly flat metric.
  * \ingroup metric
  */
