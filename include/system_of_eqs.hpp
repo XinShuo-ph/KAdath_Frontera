@@ -664,7 +664,15 @@ class System_of_eqs {
 	*/
 	void add_eq_order (int dom, const Array<int>& orders, const char* eq, const List_comp& list) ;
 
-	
+	/**
+	* Addition of an equation for the velocity potential of irrotational binaries.
+	* @param dom : number of the \c Domain.
+	* @param order : order of the equation.
+	* @param eq : string defining the equation.
+	* @param const_part : constant par 
+	*/
+	void add_eq_vel_pot (int dom, int order, const char* eq, const char* const_part) ;
+
 	/**
 	* Addition of an equation a boundary condition of arbitrary orders.
 	* The order can be different for each variable. It is irrelevant for the variable corresponding to the boundary.
@@ -1019,6 +1027,34 @@ class Eq_inside : public Equation {
 	*/
 		Eq_inside(const Domain* dom, int nd, Ope_eq* op, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_inside() ; ///< Destructor.
+
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;	
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;		    
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	  
+		virtual bool take_into_account (int) const ;
+} ;
+
+/**
+ * Class for the velocity potential in irrotational binray neutron stars.
+ * It is solved for all harmonics byt l=m=0 for which an exceptionnal condition is enforced.
+ * Typically used for second order PDE.
+ * \ingroup systems
+ */
+class Eq_vel_pot : public Equation {
+
+	public:
+		int order ; ///< Order of the equation.
+
+	/**
+	* Constructor
+	* @param dom : Pointer on the \d Domain
+	* @param nd : number of the \d Domain (consistence is not checked).	
+	* @param ord : order of the equation (probably only safe with 0, 1 or 2).
+	* @param ope : pointer on the operator describing the equation.
+	* @param ope_constant : condition for the constant part
+	*/
+		Eq_vel_pot(const Domain* dom, int nd, int ord, Ope_eq* op, Ope_eq* op_constant) ;
+		virtual ~Eq_vel_pot() ; ///< Destructor.
 
 		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;	
 		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;		    

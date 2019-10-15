@@ -79,6 +79,47 @@ void System_of_eqs::add_eq_order (int dom, int order, const char* nom, int n_cmp
 	nbr_conditions = -1 ;
 }
 
+void System_of_eqs::add_eq_vel_pot (int dom, int order, const char* nom, const char* const_part) {
+    // Is it written like =0 ?
+	char p1[LMAX] ;
+	char p2[LMAX] ;
+	bool indic1 = is_ope_bin(nom, p1, p2, '=') ;
+	
+	char p3[LMAX] ;
+	char p4[LMAX] ;
+	bool indic2 = is_ope_bin(const_part, p3, p4, '=') ;
+	
+
+	if ((!indic1) || (!indic2)) {
+		cerr << "= needed for equations" << endl ;
+		abort() ;
+	}
+	else {
+		// Verif lhs1 = 0 ?
+		indic1 = ((p2[0]=='0') && (p2[1]==' ') && (p2[2]=='\0')) ?
+			true : false ;
+
+		indic2 = ((p4[0]=='0') && (p4[1]==' ') && (p4[2]=='\0')) ?
+			true : false ;
+		
+		// no lhs :
+		if ((indic1) && (indic2))
+			eq[neq] = new Eq_vel_pot(espace.get_domain(dom), dom, order, give_ope(dom, p1), give_ope(dom,p3)) ;
+		// lhs in 1
+		if ((!indic1) && (indic2))
+			eq[neq] = new Eq_vel_pot(espace.get_domain(dom), dom, order, new Ope_sub(this, give_ope(dom, p1), give_ope(dom, p2)), give_ope(dom,p3)) ;
+		// lhs in 2
+		if ((indic1) && (!indic2))
+			eq[neq] = new Eq_vel_pot(espace.get_domain(dom), dom, order, give_ope(dom,p1), new Ope_sub(this, give_ope(dom, p3), give_ope(dom, p4))) ;
+		// both lhs 
+		if ((!indic1) && (!indic2))
+			eq[neq] = new Eq_vel_pot(espace.get_domain(dom), dom, order, new Ope_sub(this, give_ope(dom, p1), give_ope(dom, p2)), new Ope_sub(this, give_ope(dom, p3), give_ope(dom, p4))) ;
+
+		neq ++ ;
+	}
+	nbr_conditions = -1 ;
+}
+
 void System_of_eqs::add_eq_order (int dom, int order, const char* nom, const List_comp& list) {
 	add_eq_order (dom, order, nom, list.get_ncomp(), list.get_pcomp()) ;
 }
