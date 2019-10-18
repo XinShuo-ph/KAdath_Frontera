@@ -134,6 +134,29 @@ class Space_bin_ns : public Space {
 	*/
 	void add_eq_nozec (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, const List_comp& used)  ; 
 
+	/**
+	* Adds a bulk equation and two matching conditions. The outer shells are excluded from the computational space.
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the bulk equation.
+	* @param rac : the string describing the first matching condition.
+	* @param rac_der : the string describing the second matching condition.
+	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
+	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+	*/
+	void add_eq_noshell (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der,int nused=-1, Array<int>** pused=0x0)  ; 
+
+
+	/**
+	* Adds a bulk equation and two matching conditions. The outer shells are excluded from the computational space.
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the bulk equation.
+	* @param rac : the string describing the first matching condition.
+	* @param rac_der : the string describing the second matching condition.
+	* @param used : list of components used
+	*/
+	void add_eq_noshell (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, const List_comp& used)  ; 
+
+
 	virtual int nbr_unknowns_from_variable_domains() const ;
 	virtual void affecte_coef_to_variable_domains(int& , int, Array<int>&) const ;
 	virtual void xx_to_ders_variable_domains(const Array<double>&, int&) const ;

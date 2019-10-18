@@ -166,6 +166,66 @@ void Space_bin_ns::add_eq_nozec (System_of_eqs& sys, const char* eq, const char*
 	add_eq_nozec (sys, eq, rac,rac_der, used.get_ncomp(), used.get_pcomp()) ;
 }
 
+void Space_bin_ns::add_eq_noshell (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, int nused, Array<int>** pused)  {
+  
+	// First NS 
+	sys.add_eq_inside (0, eq, nused, pused) ;
+	sys.add_eq_matching (0, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching (0, OUTER_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (1, eq, nused, pused) ;
+	sys.add_eq_matching (1, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching (1, OUTER_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (2, eq, nused, pused) ;
+	
+	
+	// Matching with bispheric :
+	sys.add_eq_matching_import (2, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (6, INNER_BC, rac_der, nused, pused) ;  
+	sys.add_eq_matching_import (7, INNER_BC, rac_der, nused, pused) ;
+	
+	// Second NS :
+	sys.add_eq_inside (3, eq, nused, pused) ;
+	sys.add_eq_matching (3, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching (3, OUTER_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (4, eq, nused, pused) ;
+	sys.add_eq_matching (4, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching (4, OUTER_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (5, eq, nused, pused) ;
+	
+	// Matching with bispheric :
+	sys.add_eq_matching_import (5, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (9, INNER_BC, rac_der, nused, pused) ;  
+	sys.add_eq_matching_import (10, INNER_BC, rac_der, nused, pused) ;
+	
+	// Chi first
+	sys.add_eq_inside (6, eq, nused, pused) ;
+	sys.add_eq_matching (6, CHI_ONE_BC, rac, nused, pused) ;
+	sys.add_eq_matching (6, CHI_ONE_BC, rac_der, nused, pused) ;
+
+	// Rect :
+	sys.add_eq_inside (7, eq, nused, pused) ;
+	sys.add_eq_matching (7, ETA_PLUS_BC, rac, nused, pused) ;
+	sys.add_eq_matching (7, ETA_PLUS_BC, rac_der, nused, pused) ;
+
+	// Eta first
+	sys.add_eq_inside (8, eq, nused, pused) ;
+	sys.add_eq_matching (8, ETA_PLUS_BC, rac, nused, pused) ;
+	sys.add_eq_matching (8, ETA_PLUS_BC, rac_der, nused, pused) ;
+
+	// Rect 
+	sys.add_eq_inside (9, eq, nused, pused) ;
+	sys.add_eq_matching (9, CHI_ONE_BC, rac, nused, pused) ;
+	sys.add_eq_matching (9, CHI_ONE_BC, rac_der, nused, pused) ;
+
+	
+	// chi first :
+	sys.add_eq_inside (10, eq, nused, pused) ;
+}
+
+void Space_bin_ns::add_eq_noshell (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, const List_comp& used) {
+	add_eq_noshell (sys, eq, rac,rac_der, used.get_ncomp(), used.get_pcomp()) ;
+}
+
 void Space_bin_ns::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 
 	// Check the last domain is of the right type :
