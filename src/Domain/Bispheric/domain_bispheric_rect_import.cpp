@@ -150,6 +150,9 @@ Tensor Domain_bispheric_rect::import (int numdom, int bound, int n_ope, const Ar
 	}
       }
     }
+	    
+    // Assert a std_base :
+    res.std_base() ;
     return res ;
   }
   
