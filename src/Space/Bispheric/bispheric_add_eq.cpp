@@ -153,6 +153,60 @@ void Space_bispheric::add_eq (System_of_eqs& sys, const char* eq, const char* ra
  add_eq (sys, eq, rac, rac_der, list.get_ncomp(), list.get_pcomp()) ;
 }
 
+void Space_bispheric::add_eq_no_nucleus (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, int nused, Array<int>** pused)  {
+  
+	// Shell 1 
+	sys.add_eq_inside (0, eq, nused, pused) ;
+
+	// Matching with bispheric :
+	sys.add_eq_matching_import (0, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (2, INNER_BC, rac_der, nused, pused) ;  
+	sys.add_eq_matching_import (3, INNER_BC, rac_der, nused, pused) ;
+	
+	// Shell 2
+	sys.add_eq_inside (1, eq, nused, pused) ;
+	
+	// Matching with bispheric :
+	sys.add_eq_matching_import (1, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (5, INNER_BC, rac_der, nused, pused) ;  
+	sys.add_eq_matching_import (6, INNER_BC, rac_der, nused, pused) ;
+	
+	// Chi first
+	sys.add_eq_inside (2, eq, nused, pused) ;
+	sys.add_eq_matching (2, CHI_ONE_BC, rac, nused, pused) ;
+	sys.add_eq_matching (2, CHI_ONE_BC, rac_der, nused, pused) ;
+
+	// Rect :
+	sys.add_eq_inside (3, eq, nused, pused) ;
+	sys.add_eq_matching (3, ETA_PLUS_BC, rac, nused, pused) ;
+	sys.add_eq_matching (3, ETA_PLUS_BC, rac_der, nused, pused) ;
+
+	// Eta first
+	sys.add_eq_inside (4, eq, nused, pused) ;
+	sys.add_eq_matching (4, ETA_PLUS_BC, rac, nused, pused) ;
+	sys.add_eq_matching (4, ETA_PLUS_BC, rac_der, nused, pused) ;
+
+	// Rect 
+	sys.add_eq_inside (5, eq, nused, pused) ;
+	sys.add_eq_matching (5, CHI_ONE_BC, rac, nused, pused) ;
+	sys.add_eq_matching (5, CHI_ONE_BC, rac_der, nused, pused) ;
+
+	
+	// chi first :
+	sys.add_eq_inside (6, eq, nused, pused) ;
+
+	// Matching outer domain :
+	for (int d=2 ; d<=6 ; d++)
+		sys.add_eq_matching_import (d, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (7, INNER_BC, rac_der, nused, pused) ;
+		
+	 //Compactified domain
+	sys.add_eq_inside (7, eq, nused, pused) ;
+}
+
+void Space_bispheric::add_eq_no_nucleus (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, const List_comp& list) {
+ add_eq (sys, eq, rac, rac_der, list.get_ncomp(), list.get_pcomp()) ;
+}
 void Space_bispheric::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 
 	// Check the last domain is of the right type :

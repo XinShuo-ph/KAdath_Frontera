@@ -1361,6 +1361,23 @@ class Space_bispheric : public Space {
      */
 	Space_bispheric (int ttype, double dist, int nminus, const Array<double>& rminus, int nplus, const Array<double>& rplus, int nshells, const Array<double>& rr, const Array<int>& type_r, int nr) ;
 
+
+	/**
+     * Constructor without nucleus and one shell around each holes ; a compactified outer domain
+     * @param ttype [input] : the type of basis.
+     * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
+     * @param rhor1 [input] : radius  of the first horizon.
+     * @param rshell1 [input] : radius  of the first shell.
+     * @param rhor2 [input] : radius  of the second horizon.
+     * @param rshell2 [input] : radius  of the second shell.
+     * @param rext [input] : radius  of the bispherical domains.
+     * @param nr [input] : number of points in each dimension 
+     *(\f$ nr-1 \f$ for coordinates of the type \f$ \varphi \f$)
+     *
+     */
+	Space_bispheric (int ttype, double dist, double rhor1, double rshell1, double rhor2, double rshell2, double rext, int nr) ;
+
+
 	/**
 	* Constructor from a file
 	* @param fd : the file
@@ -1472,6 +1489,27 @@ class Space_bispheric : public Space {
 	*/
 	void add_eq (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, const List_comp& list)  ;
 
+	/**
+	* Adds a bulk equation and two matching conditions for a space without nucleii
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the bulk equation.
+	* @param rac : the string describing the first matching condition.
+	* @param rac_der : the string describing the second matching condition.
+	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
+	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+	*/
+	void add_eq_no_nucleus (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, int nused=-1, Array<int>** pused=0x0)  ;
+	
+	
+	/**
+	* Adds a bulk equation and two matching conditions for a space without nucleii
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the bulk equation.
+	* @param rac : the string describing the first matching condition.
+	* @param rac_der : the string describing the second matching condition.
+	* @param list : list of the components to be considered.
+	*/
+	void add_eq_no_nucleus (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, const List_comp& list)  ;
 	/**
 	* Adds an equation being a surface integral at infinity.
 	* @param syst : the \c System_of_eqs.
