@@ -1,12 +1,15 @@
+Code used in the paper :  J. Comput. Phys., 229, 3334 (2010)
+
+
 FILES :
 ***********************************
 
-kerr.C : 
+kerr.cpp : 
 	Computes a sequence of kerr black holes.
 It produces output files kerr_*_*dat where the *s are the resolution and omega.
 
 ************************************
-reader.C
+reader.cpp
 	enables to read an output file and gives various errors. One should type something like : reader kerr_*dat
 
 ***********************************

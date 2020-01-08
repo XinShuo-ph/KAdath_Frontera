@@ -1,0 +1,19 @@
+Code used in the paper : Phys. Rev. D, 90, 024068 (2014)
+
+FILES :
+**********************************
+init.cpp 
+	Computes a boson star from an analytic initial guess. Setting the various parameters to ensure convergence may be tricky.
+	Produces a result file "bosinit.dat"
+
+************************************
+sequence.cpp
+	Computes a sequence of boson stars, varying the omega parameter, starting from one already computed configurations.
+	One should call "sequence conf.dat", where conf.dat contains the initial configuration.
+	The various configurations are called "bos_*_*.dat" where the *s are the winding number k and the omega parameter.
+
+***********************************
+reader.cpp 
+	Enables to read an output file and prints various global quantities. One should type something like : "reader bos.dat" where bos.dat contains the configuration to be read
+	This is not a parallel code
+
