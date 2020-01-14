@@ -55,6 +55,8 @@ template <typename T>  Array<T> fabs (const Array<T>&) ;
 template <typename T>  T scal (const Array<T>&, const Array<T>&) ;
 template <typename T> T diffmax (const Array<T>&, const Array<T>&) ;
 template <typename T>  T max (const Array<T>&) ;
+template <typename T>  T min (const Array<T>&) ;
+template <typename T>  T sum (const Array<T>&) ;
 template <typename T>  Array<T> atan (const Array<T>&) ;
 
 /**
@@ -237,6 +239,8 @@ template <typename T> class Array {
 	friend T scal<>(const Array<T>&, const Array<T>&) ;	
 	friend T diffmax<>(const Array<T>&, const Array<T>&) ;
 	friend T max<> (const Array<T>&) ;
+	friend T min<> (const Array<T>&) ;
+	friend T sum<> (const Array<T>&) ;
 	friend  Array<T> atan <>(const Array<T>&) ;	
 } ;
 }

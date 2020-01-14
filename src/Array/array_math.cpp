@@ -297,6 +297,21 @@ template <typename T>  T max (const Array<T>& so)  {
 	return res;
 }
 
+template <typename T>  T min (const Array<T>& so)  {
+	T res = 0 ;
+	for (int i=0 ; i<so.nbr ; i++)
+		if (so.data[i]<res)
+			res = so.data[i] ;
+	return res;
+}
+
+template <typename T>  T sum (const Array<T>& so)  {
+	T res = 0 ;
+	for (int i=0 ; i<so.nbr ; i++)
+		res += so.data[i] ;
+	return res;
+}
+
 template <typename T>  Array<T> atan (const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
