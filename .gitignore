@@ -1,2 +1,12 @@
+.gitignore
 doc/*
 *~
+/config.h*
+/include/config.h
+/cmake-build-mpi-release/
+/cmake-build-seq-debug/
+/cmake-build-seq-release/
+/cmake-build-mpi-debug/
+/.idea/workspace.xml
+*.log
+/doc/html/

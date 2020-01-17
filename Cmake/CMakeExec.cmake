@@ -1,6 +1,6 @@
-set(CMAKE_MODULE_PATH $ENV{HOME_KADATH}/Cmake)
-if(EXISTS $ENV{HOME_KADATH}/Cmake/CMakeLocal.cmake)
-	include ($ENV{HOME_KADATH}/Cmake/CMakeLocal.cmake)	
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/Cmake)
+if(EXISTS ${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
+	include (${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
 endif()
 
 option(PAR_VERSION "Parallel version" ON)
@@ -21,15 +21,15 @@ endif(MKL_VERSION)
 file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.hpp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 
-include_directories($ENV{HOME_KADATH}/include)
-include_directories($ENV{HOME_KADATH}/src/Array)
-include_directories($ENV{HOME_KADATH}/include/Kadath_point_h)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/Array)
+include_directories(${PROJECT_SOURCE_DIR}/include/Kadath_point_h)
 
 #Get the correct Kadath library (default == Release)
 if (CMAKE_BUILD_TYPE MATCHES Debug)
-	set(LIB_KADATH $ENV{HOME_KADATH}/lib/libkadath-debug.a)
+	set(LIB_KADATH ${PROJECT_SOURCE_DIR}/lib/libkadath-debug.a)
 else()
-	set(LIB_KADATH $ENV{HOME_KADATH}/lib/libkadath.a)
+	set(LIB_KADATH ${PROJECT_SOURCE_DIR}/lib/libkadath.a)
 endif()
 
 #If parallel need to use the PMI wrapper
