@@ -5,9 +5,6 @@ if (EXISTS ${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
 	include(${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
 endif()
 
-#Parallel or sequential
-option(PAR_VERSION "Parallel version" ON)
-
 if (PAR_VERSION)
 	message ("Parallel version")
 else(PAR_VERSION)

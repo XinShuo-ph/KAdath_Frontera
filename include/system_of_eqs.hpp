@@ -891,15 +891,15 @@ class System_of_eqs {
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
 	void check_positive(double delta);
-	/**
-	* Tests the positivity of  \f$\delta\f$
-	* Used by do_newton_with_linesearch ; only implemented in parallel version.
-	*/
-	void check_negative(double delta);
+    /**
+    * Tests the positivity of  \f$\delta\f$
+    * Used by do_newton_with_linesearch ; only implemented in parallel version.
+    */
+    void check_negative(double delta);
 
 	friend class Space_spheric ;
-	friend class Space_bispheric ;		
-	friend class Space_critic ;
+    friend class Space_bispheric ;
+    friend class Space_critic ;
 	friend class Space_polar ;
 	friend class Space_spheric_adapted ;
 	friend class Space_polar_adapted ;

@@ -10,3 +10,4 @@ doc/*
 /.idea/workspace.xml
 *.log
 /doc/html/
+/tests/googletest

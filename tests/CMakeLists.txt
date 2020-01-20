@@ -1,0 +1,5 @@
+project(kadath_tests)
+add_subdirectory(googletest)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+add_executable(kadath_tests_run main_test.cpp ${HEADERS})
+target_link_libraries(kadath_tests_run gtest_main ${KLIB} ${PGPLOT_LIBRARIES} ${GSL_LIBRARIES} ${FFTW_LIBRARIES} ${LAPACK_LIBRARIES} ${SCALAPACK_LIBRARIES})
