@@ -196,6 +196,11 @@ template <typename T> class Array {
             * Returns the \c Dim_array of the \c Array.
 	    */
 	    const Dim_array& get_dimensions() const {return dimensions ;} ;
+	    
+	    /*
+	    * Checks if a 1D array is increasing.
+	    */
+	    const bool is_increasing() const ;
 
 	    void operator+= (const Array<T>&) ; ///< Operator +=
 	    void operator-= (const Array<T>&) ; ///< Operator -=

@@ -21,6 +21,16 @@
 #include "array.hpp"
 
 namespace Kadath {
+template <typename T> const bool Array<T>::is_increasing() const {
+	assert(get_ndim()==1) ;
+	for (int i = 1 ; i < nbr ; i++){
+		if (data[i]-data[i-1] <= 0){
+			return false ;
+		}
+	}
+	return true ;
+}
+
 template <typename T> void Array<T>::operator+= (const Array<T>& so) {
 	*this = *this + so ;
 }
@@ -290,7 +300,7 @@ template <typename T> T diffmax (const Array<T>& a, const Array<T>& b) {
 }
 
 template <typename T>  T max (const Array<T>& so)  {
-	T res = 0 ;
+	T res = so.data[0] ;
 	for (int i=0 ; i<so.nbr ; i++)
 		if (so.data[i]>res)
 			res = so.data[i] ;
@@ -298,7 +308,7 @@ template <typename T>  T max (const Array<T>& so)  {
 }
 
 template <typename T>  T min (const Array<T>& so)  {
-	T res = 0 ;
+	T res = so.data[0] ;
 	for (int i=0 ; i<so.nbr ; i++)
 		if (so.data[i]<res)
 			res = so.data[i] ;
