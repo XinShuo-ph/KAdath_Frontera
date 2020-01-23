@@ -33,6 +33,21 @@ Dim_array::Dim_array(const Dim_array& so) : ndim(so.ndim) {
 	   nbr[i] = so.nbr[i] ;
 }
 
+#ifdef ARRAY_MOVE_SEMANTIC
+// Move constructor.
+Dim_array::Dim_array(Kadath::Dim_array && so) : ndim{so.ndim},nbr{so.nbr}
+{
+   so.nbr = nullptr;
+}
+
+Dim_array & Dim_array::operator=(Dim_array && so)
+{
+    ndim = so.ndim;
+    std::swap(nbr,so.nbr);
+    return *this;
+}
+#endif
+
 Dim_array::Dim_array (FILE* fd) {
 	fread_be(&ndim, sizeof(int), 1, fd) ;
 	nbr = new int[ndim] ;
@@ -41,6 +56,9 @@ Dim_array::Dim_array (FILE* fd) {
 
 // Destructor
 Dim_array::~Dim_array() {
+#ifdef ARRAY_MOVE_SEMANTIC
+    if(nbr)
+#endif
 	delete [] nbr ;
 }
 
@@ -94,4 +112,5 @@ bool operator!= (const Dim_array& a, const Dim_array& b) {
 
 	return !(a==b) ;
 }
+
 }

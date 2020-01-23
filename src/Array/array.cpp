@@ -62,6 +62,14 @@ template <typename T> Array<T>::Array (const Array<T>& so) : dimensions(so.dimen
 	    data[i] = so.data[i] ;
 }
 
+#ifdef ARRAY_MOVE_SEMANTIC
+template <typename T> Array<T>::Array (Array<T> && so) : dimensions{std::move(so.dimensions)}, nbr{so.nbr},
+        data{so.data}
+{
+    so.data = nullptr;
+}
+#endif
+
 template <typename T> Array<T>::Array (FILE* fd) : dimensions(fd) {
 	fread_be(&nbr, sizeof(int), 1, fd) ;
 	data = new T [nbr] ;
@@ -85,6 +93,17 @@ template <typename T> void Array<T>::operator= (const Array<T>& so) {
 	for (int i=0 ; i<nbr ; i++)
 	    data[i] = so.data[i] ;
 }
+
+#ifdef ARRAY_MOVE_SEMANTIC
+template<typename T> Array<T> & Array<T>::operator=(Array<T> && so)
+{
+    dimensions = std::move(so.dimensions);
+    nbr = so.nbr;
+    std::swap(data,so.data);
+    return *this;
+}
+#endif
+
 
 // Assignement to a given value
 template <typename T> void Array<T>::operator= (T xx) {

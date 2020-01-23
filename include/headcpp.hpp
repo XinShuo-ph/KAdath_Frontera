@@ -26,6 +26,7 @@
 #include <typeinfo>
 #include <cmath>
 #include "stdlib.h"
+#include "config.h"
 #define PRECISION 1e-14
 
 using namespace std ;

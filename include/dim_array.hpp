@@ -67,6 +67,11 @@ class Dim_array {
 	friend ostream& operator<< (ostream&, const Dim_array&) ;
 	friend bool operator== (const Dim_array&, const Dim_array&) ;
 	friend bool operator!= (const Dim_array&, const Dim_array&) ;
+
+#ifdef ARRAY_MOVE_SEMANTIC
+	Dim_array(Dim_array &&); ///< Move constructor.
+	Dim_array & operator=(Dim_array &&); ///< Transfer operator.
+#endif
 } ;
 
 ostream& operator<< (ostream&, const Dim_array&) ;
