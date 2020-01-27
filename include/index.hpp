@@ -55,6 +55,11 @@ class Index {
 	Index (const Index&) ; ///< Constructor by copy
 	Index (const Tensor&) ; ///< Constructor for looping on components of a tensor
 	~Index() ; ///<Destructor.
+
+#ifdef ARRAY_MOVE_SEMANTIC
+    Index(Index &&); ///< Move constructor.
+    Index& operator=(Index&&); ///< Move assigment.
+#endif
 	
 	/**
 	* Read/write of the position in a given dimension.

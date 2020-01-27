@@ -48,10 +48,29 @@ Base_spectral::Base_spectral (FILE* fd) {
 	    	bases_1d[i] = 0x0 ;
 }
 
+#ifdef ARRAY_MOVE_SEMANTIC
+    Base_spectral::Base_spectral(Base_spectral && so) : def{so.def}, ndim{0}, bases_1d{nullptr}
+    {
+        std::swap(ndim,so.ndim);
+        std::swap(bases_1d,so.bases_1d);
+        so.def = false;
+    }
+    Base_spectral& Base_spectral::operator=(Base_spectral &&so)
+    {
+        std::swap(def,so.def);
+        ndim = so.ndim;
+        std::swap(bases_1d,so.bases_1d);
+        return *this;
+    }
+#endif
+
 Base_spectral::~Base_spectral() {
-	for (int l=0 ; l<ndim ; l++)
-	     if (bases_1d[l] !=0x0) delete bases_1d[l] ;
-	delete [] bases_1d ;
+    if(bases_1d)
+    {
+        for (int l = 0; l < ndim; l++)
+            if (bases_1d[l] != 0x0) delete bases_1d[l];
+        delete[] bases_1d;
+    }
 }
 
 void Base_spectral::set_non_def() {

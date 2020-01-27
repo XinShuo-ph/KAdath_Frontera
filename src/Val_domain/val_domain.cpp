@@ -47,6 +47,30 @@ Val_domain::Val_domain (const Val_domain& so, bool copie) : zone(so.zone), base(
 	     }
 }
 
+#ifdef ARRAY_MOVE_SEMANTIC
+Val_domain::Val_domain(Val_domain && so) : zone{so.zone}, base{std::move(so.base)}, is_zero{so.is_zero}, c{so.c},
+    cf{so.cf}, in_conf{so.in_conf},  in_coef{so.in_coef}, p_der_var{so.p_der_var}, p_der_abs{so.p_der_abs}
+{
+    so.c = nullptr;
+    so.cf = nullptr;
+    so.p_der_var = nullptr;
+    so.p_der_abs = nullptr;
+}
+Val_domain & Val_domain::operator=(Val_domain && so)
+{
+    assert(zone = so.zone);
+    base = std::move(so.base);
+    is_zero = so.is_zero ;
+    in_conf = so.in_conf ;
+    in_coef = so.in_coef ;
+    std::swap(c,so.c);
+    std::swap(cf,so.cf);
+    std::swap(p_der_var,so.p_der_var);
+    std::swap(p_der_abs,so.p_der_abs);
+    return *this;
+}
+#endif
+
 Val_domain::Val_domain (const Domain* so, FILE* fd) : zone (so), base(fd) {
 	int indic ;
 	fread_be (&indic, sizeof(int), 1, fd) ;
@@ -67,9 +91,9 @@ Val_domain::Val_domain (const Domain* so, FILE* fd) : zone (so), base(fd) {
 }
 
 Val_domain::~Val_domain() {
-	del_deriv() ;
-	delete [] p_der_var ;
-	delete [] p_der_abs ;
+	if(p_der_var != nullptr && p_der_abs != nullptr) del_deriv() ;
+	if(p_der_var != nullptr) delete [] p_der_var ;
+	if(p_der_abs != nullptr) delete [] p_der_abs ;
 	if (c!=0x0)
 		delete c ;
 	if (cf!=0x0)

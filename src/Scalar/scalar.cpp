@@ -53,11 +53,29 @@ Scalar::Scalar (const Space& sp, FILE* fd) : Tensor(sp) {
 	cmp[0] = this ;
 }
 
+//#ifdef ARRAY_MOVE_SEMANTIC
+//Scalar::Scalar(Scalar && so) : Tensor{std::move(so)}, val_zones{nullptr}
+//{
+//    std::swap(val_zones,so.val_zones);
+//    assert(cmp[0]==this);
+//}
+//Scalar & Scalar::operator=(Scalar && so)
+//{
+//    this->Tensor::operator=(std::move(so));
+//    std::swap(val_zones,so.val_zones);
+//    cmp[0] = this;
+//    return *this;
+//}
+//#endif
+
 Scalar::~Scalar () {
-	for (int i=0 ; i<ndom ; i++)
-		delete val_zones[i] ;
-	delete [] val_zones ;
-	cmp[0] = 0x0 ;
+    if(val_zones)
+    {
+        for (int i = 0; i < ndom; i++)
+            delete val_zones[i];
+        delete[] val_zones;
+    }
+    if(cmp) cmp[0] = 0x0 ;
 }
 
 void Scalar::save (FILE* fd) const {

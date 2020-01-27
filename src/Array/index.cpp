@@ -48,8 +48,21 @@ Index::Index (const Tensor& t) : sizes(t.valence) {
 
 // Destructor
 Index::~Index() {
-	delete [] coord ;
+	if(coord) delete [] coord ;
 }
+
+#ifdef ARRAY_MOVE_SEMANTIC
+    Index::Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr}
+    {
+        std::swap(coord,so.coord);
+    }
+    Index& Index::operator=(Index&& so)
+    {
+        sizes = std::move(so.sizes);
+        std::swap(coord,so.coord);
+        return *this;
+    }
+#endif
 
 // Read/write
 int& Index::set(int i) {

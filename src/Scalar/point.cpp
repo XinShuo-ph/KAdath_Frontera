@@ -42,8 +42,21 @@ Point::Point (FILE* fd) {
 }
 
 Point::~Point() {
-	delete [] coord ;
+	if(coord) delete [] coord ;
 }
+
+#ifdef ARRAY_MOVE_SEMANTIC
+Point::Point(Point && so) : ndim{so.ndim}, coord{nullptr}
+{
+    std::swap(coord,so.coord);
+}
+Point & Point::operator=(Point && so)
+{
+    ndim = so.ndim;
+    std::swap(coord,so.coord);
+    return *this;
+}
+#endif
 
 void Point::save (FILE* fd) const {
 	fwrite_be (&ndim, sizeof(int), 1, fd) ;

@@ -76,7 +76,7 @@ Array<int> std_indices (int place, int valence, int ndim) {
 Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& bb) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
 		   valence(val), basis(bb), type_indice(tipe), 
-		   n_comp(int(pow(espace.get_ndim(), val))), parameters(0x0) {
+		   n_comp(int(pow(espace.get_ndim(), val))), parameters(nullptr) {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -342,16 +342,47 @@ Tensor::Tensor (const Space& sp, int dim, FILE* fd) :
     give_indices = std_indices ;
 }
 
-			//--------------//
+//#ifdef ARRAY_MOVE_SEMANTIC
+//Tensor::Tensor(Tensor&& so) : espace{so.espace}, ndom{so.ndom}, ndim{so.ndim}, valence{so.valence},
+//basis{std::move(so.basis)}, type_indice{std::move(so.type_indice)}, name_affected{so.name_affected},
+//name_indice{nullptr}, n_comp{so.n_comp}, cmp{nullptr}, parameters{nullptr}, give_place_array{so.give_place_array},
+//give_place_index{so.give_place_index}, give_indices{so.give_indices}
+//{
+//    std::swap(name_indice,so.name_indice);
+//    std::swap(cmp,so.cmp);
+//    std::swap(parameters,so.parameters);
+//}
+//Tensor & Tensor::operator=(Tensor && so)
+//{
+//    std::swap(ndom,so.ndom);
+//    ndim = so.ndim;
+//    valence = so.valence;
+//    basis = std::move(so.basis);
+//    type_indice = std::move(so.type_indice);
+//    name_affected = so.name_affected;
+//    std::swap(name_indice,so.name_indice);
+//    std::swap(n_comp,so.n_comp);
+//    std::swap(cmp,so.cmp);
+//    std::swap(parameters,so.parameters);
+//    give_place_array = so.give_place_array;
+//    give_place_index = so.give_place_index;
+//    give_indices = so.give_indices;
+//    return *this;
+//}
+//#endif
+//			//--------------//
 			//  Destructor  //
 			//--------------//
 
 
 Tensor::~Tensor () {
-    for (int i=0 ; i<n_comp ; i++)
-	if (cmp[i]!=0x0)
-		delete cmp[i] ;
-    delete [] cmp ;
+    if(cmp != nullptr)
+    {
+        for (int i = 0; i < n_comp; i++)
+            if (cmp[i] != 0x0)
+                delete cmp[i];
+        delete[] cmp;
+    }
     if (name_indice!=0x0)
 	delete [] name_indice ;
     if (parameters!=0x0)

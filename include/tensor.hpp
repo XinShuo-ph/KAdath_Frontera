@@ -24,6 +24,7 @@
 #define COV -1
 #define CON +1
 
+#include <vector>
 #include "base_tensor.hpp"
 #include "array.hpp"
 #include "space.hpp"
@@ -154,12 +155,12 @@ class Tensor {
 	/**
 	* If the indices haves names they are stored here. Each index is associated with a character.
 	*/
-	char* name_indice ;
+	std::vector<char> name_indice ;
 	
 	int n_comp ;	///< Number of stored components, depending on the symmetry.
-	Scalar** cmp ; ///< Array of size \c n_comp  of pointers onto the components.
+	std::vector<std::unique_ptr<Scalar>> cmp ; ///< Array of size \c n_comp  of pointers onto the components.
 
-	Param_tensor* parameters ; ///< Possible additional parameters relevant for the current \c Tensor.
+	std::unique_ptr<Param_tensor> parameters ; ///< Possible additional parameters relevant for the current \c Tensor.
 
 	
 	int (*give_place_array) (const Array<int>&, int) ; ///< Pointer on the function that gives the storage location corresponding to a set of indices values. (\c Array version)
@@ -217,6 +218,11 @@ class Tensor {
 	Tensor(const Tensor&, bool copie = true) ;
 	Tensor (const Space& sp, FILE*) ; ///< Constructor from a file.
 	Tensor (const Space& sp, int dim, FILE*) ; ///< Constructor from a file with explicit passing of the dimension
+
+//#ifdef ARRAY_MOVE_SEMANTIC
+//    Tensor(Tensor&&);///< Move constructor.
+//    Tensor & operator=(Tensor &&);///<Move assignment.
+//#endif
 
     protected:
 	/**

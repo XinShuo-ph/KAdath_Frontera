@@ -35,7 +35,9 @@ if (DEFINED FFTW_INCLUDE_DIR)
 endif()
 
 #need to use C++11
-add_definitions(-std=c++11)
+add_definitions(-std=c++17)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 
 add_library(kadath-debug STATIC ${KADATH_SOURCES})
 #target_link_libraries(kadath-debug ${PGPLOT_LIBRARIES} ${GSL_LIBRARIES} ${FFTW_LIBRARIES} ${LAPACK_LIBRARIES} ${SCALAPACK_LIBRARIES})

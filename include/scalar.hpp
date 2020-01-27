@@ -97,6 +97,11 @@ class Scalar : public Tensor {
 	*/
       Scalar (const Space& sp, FILE* fd) ;
 
+//#ifdef ARRAY_MOVE_SEMANTIC
+//    Scalar(Scalar &&); ///<Move constructor.
+//    Scalar & operator=(Scalar &&); ///<Move assignment.
+//#endif
+
       virtual ~Scalar () ; ///< Destructor.
       
       virtual void save (FILE*) const ; ///< Saving function

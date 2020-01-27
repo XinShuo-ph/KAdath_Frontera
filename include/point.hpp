@@ -41,6 +41,11 @@ class Point {
         Point (FILE*) ; ///< Constructor from a file
 	Point (const Point&) ; ///< Constructor by copy.
 	~Point() ; ///< Destuctor
+
+#ifdef ARRAY_MOVE_SEMANTIC
+    Point(Point &&);///< Move constructor.
+    Point & operator=(Point &&);///<Move assignment.
+#endif
 	
 	void save (FILE*) const ; ///< Saving function
 	void operator= (const Point&) ; ///< Assignement to another \c Point

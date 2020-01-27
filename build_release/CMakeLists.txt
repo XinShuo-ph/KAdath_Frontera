@@ -36,7 +36,7 @@ if (DEFINED FFTW_INCLUDE_DIR)
 endif()
 
 #need to use C++11
-add_definitions(-std=c++11)
+add_definitions(-std=c++17)
 
 add_library(kadath ${KADATH_SOURCES})
 #target_link_libraries(kadath ${PGPLOT_LIBRARIES} ${GSL_LIBRARIES} ${FFTW_LIBRARIES} ${LAPACK_LIBRARIES} ${SCALAPACK_LIBRARIES})
