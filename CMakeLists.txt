@@ -45,7 +45,6 @@ else()
 endif()
 
 #add the tests directory
-enable_testing()
 if(NOT(PAR_VERSION))
     enable_testing()
     add_subdirectory(tests)

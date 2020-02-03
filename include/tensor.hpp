@@ -155,12 +155,12 @@ class Tensor {
 	/**
 	* If the indices haves names they are stored here. Each index is associated with a character.
 	*/
-	std::vector<char> name_indice ;
+	char* name_indice ;
 	
 	int n_comp ;	///< Number of stored components, depending on the symmetry.
-	std::vector<std::unique_ptr<Scalar>> cmp ; ///< Array of size \c n_comp  of pointers onto the components.
+	Scalar** cmp ; ///< Array of size \c n_comp  of pointers onto the components.
 
-	std::unique_ptr<Param_tensor> parameters ; ///< Possible additional parameters relevant for the current \c Tensor.
+	Param_tensor* parameters ; ///< Possible additional parameters relevant for the current \c Tensor.
 
 	
 	int (*give_place_array) (const Array<int>&, int) ; ///< Pointer on the function that gives the storage location corresponding to a set of indices values. (\c Array version)

@@ -193,6 +193,7 @@ bool System_of_eqs::do_newton(double precision, double& error) {
         end = clock();
         if (rank == 0) cout << "Inverting the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
 
+        begin = clock();
 	// Get the global solution
         Array<double> auxi(nn);
         auxi = 0.;
@@ -236,6 +237,8 @@ bool System_of_eqs::do_newton(double precision, double& error) {
 		delete old_fields[i];
 
 	delete [] old_fields;
+    end = clock();
+    if (rank == 0) cout << "Newton update : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
 	res = false;
       }
 	return res;
@@ -560,6 +563,7 @@ namespace Kadath {
         end = clock();
         cout << "Inverting the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
         int conte(0);
+        begin = clock();
         espace.xx_to_vars_variable_domains(this, xx, conte);
         double* old_var_double(new double[nvar_double]);
         for (int i(0) ; i < nvar_double ; ++i) old_var_double[i] = *var_double[i];
@@ -571,6 +575,8 @@ namespace Kadath {
         delete [] old_var_double;
         for (int i(0) ; i<nvar ; i++) delete old_fields[i];
         delete [] old_fields;
+        end = clock();
+        cout << "Newton update : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
         return false;
     }
 
