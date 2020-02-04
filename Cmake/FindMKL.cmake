@@ -6,6 +6,7 @@
 #   MKL_STATAIC       :   use static linking
 #   MKL_MULTI_THREADED:   use multi-threading
 #   MKL_SDL           :   Single Dynamic Library interface
+#   USE_MKL_FFTW3_INTERFACE : Enable MKL FFT through FFTW3 interface
 #
 # This module defines the following variables:
 #
@@ -13,6 +14,7 @@
 #   MKL_INCLUDE_DIR      : where to find mkl.h, etc.
 #   MKL_INCLUDE_DIRS     : set when MKL_INCLUDE_DIR found
 #   MKL_LIBRARIES        : the library to link against.
+#   MKL_LIB_WITHOUT_FFT  : the library without MKL FFT.
 
 
 include(FindPackageHandleStandardArgs)
@@ -56,7 +58,7 @@ endif()
 
 if(MKL_SDL)
     find_library(MKL_LIBRARY mkl_rt
-        PATHS ${MKL_ROOT}/lib/ia32/)
+        PATHS ${MKL_ROOT}/lib/intel64)
 
     set(MKL_MINIMAL_LIBRARY ${MKL_LIBRARY})
 else()
@@ -64,11 +66,11 @@ else()
     if(WIN32)
         set(MKL_INTERFACE_LIBNAME mkl_intel_c)
     else()
-        set(MKL_INTERFACE_LIBNAME mkl_intel)
+        set(MKL_INTERFACE_LIBNAME mkl_intel_lp64)
     endif()
 
     find_library(MKL_INTERFACE_LIBRARY ${MKL_INTERFACE_LIBNAME}
-        PATHS ${MKL_ROOT}/lib/ia32/)
+        PATHS ${MKL_ROOT}/lib/intel64)
 
     ######################## Threading layer ########################
     if(MKL_MULTI_THREADED)
@@ -78,27 +80,46 @@ else()
     endif()
 
     find_library(MKL_THREADING_LIBRARY ${MKL_THREADING_LIBNAME}
-        PATHS ${MKL_ROOT}/lib/ia32/)
+        PATHS ${MKL_ROOT}/lib/intel64)
 
     ####################### Computational layer #####################
     find_library(MKL_CORE_LIBRARY mkl_core
-        PATHS ${MKL_ROOT}/lib/ia32/)
-    find_library(MKL_FFT_LIBRARY mkl_cdft_core
-        PATHS ${MKL_ROOT}/lib/ia32/)
-    find_library(MKL_SCALAPACK_LIBRARY mkl_scalapack_core
-        PATHS ${MKL_ROOT}/lib/ia32/)
+        PATHS ${MKL_ROOT}/lib/intel64)
+    if(USE_MKL_FFTW3_INTERFACE)
+        find_library(MKL_FFT_LIBRARY mkl_cdft_core
+            PATHS ${MKL_ROOT}/lib/intel64)
+    endif()
+    find_library(MKL_SCALAPACK_LIBRARY mkl_scalapack_lp64
+        PATHS ${MKL_ROOT}/lib/intel64)
+    find_library(MKL_BLAS_LIBRARY mkl_blacs_intelmpi_lp64
+        PATHS ${MKL_ROOT}/lib/intel64)
 
     ############################ RTL layer ##########################
     if(WIN32)
         set(MKL_RTL_LIBNAME libiomp5md)
     else()
-        set(MKL_RTL_LIBNAME libiomp5)
+        set(MKL_RTL_LIBNAME iomp5)
     endif()
     find_library(MKL_RTL_LIBRARY ${MKL_RTL_LIBNAME}
-        PATHS ${INTEL_RTL_ROOT}/lib)
+        PATHS ${INTEL_RTL_ROOT}/lib/intel64)
 
-    set(MKL_LIBRARY ${MKL_INTERFACE_LIBRARY} ${MKL_THREADING_LIBRARY} ${MKL_CORE_LIBRARY} ${MKL_FFT_LIBRARY} ${MKL_SCALAPACK_LIBRARY} ${MKL_RTL_LIBRARY})
+    if(USE_MKL_FFTW3_INTERFACE)
+        set(MKL_LIBRARY ${MKL_INTERFACE_LIBRARY} ${MKL_THREADING_LIBRARY} ${MKL_CORE_LIBRARY} ${MKL_FFT_LIBRARY} ${MKL_BLAS_LIBRARY} ${MKL_SCALAPACK_LIBRARY} ${MKL_RTL_LIBRARY})
+    else()
+        set(MKL_LIBRARY ${MKL_INTERFACE_LIBRARY} ${MKL_THREADING_LIBRARY} ${MKL_CORE_LIBRARY} ${MKL_BLAS_LIBRARY} ${MKL_SCALAPACK_LIBRARY} ${MKL_RTL_LIBRARY})
+    endif()
     set(MKL_MINIMAL_LIBRARY ${MKL_INTERFACE_LIBRARY} ${MKL_THREADING_LIBRARY} ${MKL_CORE_LIBRARY} ${MKL_RTL_LIBRARY})
+
+    message("MKL_Libraries found :")
+    message("   MKL_INTERFACE_LIBRARY=${MKL_INTERFACE_LIBRARY}")
+    message("   MKL_THREADING_LIBRARY= ${MKL_THREADING_LIBRARY}")
+    message("   MKL_CORE_LIBRARY= ${MKL_CORE_LIBRARY}")
+    if(USE_MKL_FFTW3_INTERFACE)
+        message("   MKL_FFT_LIBRARY= ${MKL_FFT_LIBRARY}")
+    endif()
+    message("   MKL_SCALAPACK_LIBRARY =  ${MKL_SCALAPACK_LIBRARY}")
+    message("   MKL_RTL_LIBRARY= ${MKL_RTL_LIBRARY}")
+    message("   MKL_BLAS_LIBRARY= ${MKL_BLAS_LIBRARY}")
 endif()
 
 set(CMAKE_FIND_LIBRARY_SUFFIXES ${_MKL_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})

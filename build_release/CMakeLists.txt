@@ -35,7 +35,7 @@ if (DEFINED FFTW_INCLUDE_DIR)
 	include_directories (${FFTW_INCLUDE_DIR})
 endif()
 
-#need to use C++11
+#need to use C++17
 add_definitions(-std=c++17)
 
 add_library(kadath ${KADATH_SOURCES})
