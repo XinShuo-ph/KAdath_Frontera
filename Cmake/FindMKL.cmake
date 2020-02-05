@@ -55,10 +55,15 @@ endif()
 
 
 # MKL is composed by four layers: Interface, Threading, Computational and RTL
+if(LINUX)
+    set(MKL_SEARCH_PATH ${MKL_ROOT}/lib/intel64_lin)
+else()
+    set(MKL_SEARCH_PATH ${MKL_ROOT}/lib/intel64)
+endif()
 
 if(MKL_SDL)
     find_library(MKL_LIBRARY mkl_rt
-        PATHS ${MKL_ROOT}/lib/intel64)
+        PATHS ${MKL_SEARCH_PATH})
 
     set(MKL_MINIMAL_LIBRARY ${MKL_LIBRARY})
 else()
@@ -70,7 +75,7 @@ else()
     endif()
 
     find_library(MKL_INTERFACE_LIBRARY ${MKL_INTERFACE_LIBNAME}
-        PATHS ${MKL_ROOT}/lib/intel64)
+        PATHS ${MKL_SEARCH_PATH})
 
     ######################## Threading layer ########################
     if(MKL_MULTI_THREADED)
@@ -80,19 +85,19 @@ else()
     endif()
 
     find_library(MKL_THREADING_LIBRARY ${MKL_THREADING_LIBNAME}
-        PATHS ${MKL_ROOT}/lib/intel64)
+        PATHS ${MKL_SEARCH_PATH})
 
     ####################### Computational layer #####################
     find_library(MKL_CORE_LIBRARY mkl_core
-        PATHS ${MKL_ROOT}/lib/intel64)
+        PATHS ${MKL_SEARCH_PATH})
     if(USE_MKL_FFTW3_INTERFACE)
         find_library(MKL_FFT_LIBRARY mkl_cdft_core
-            PATHS ${MKL_ROOT}/lib/intel64)
+            PATHS ${MKL_SEARCH_PATH})
     endif()
     find_library(MKL_SCALAPACK_LIBRARY mkl_scalapack_lp64
-        PATHS ${MKL_ROOT}/lib/intel64)
+        PATHS ${MKL_SEARCH_PATH})
     find_library(MKL_BLAS_LIBRARY mkl_blacs_intelmpi_lp64
-        PATHS ${MKL_ROOT}/lib/intel64)
+        PATHS ${MKL_SEARCH_PATH})
 
     ############################ RTL layer ##########################
     if(WIN32)
@@ -100,8 +105,13 @@ else()
     else()
         set(MKL_RTL_LIBNAME iomp5)
     endif()
+    if(LINUX)
+        set(INTEL_RTL_SEARCH_PATH ${INTEL_RTL_ROOT}/lib/intel64_lin)
+    else()
+        set(INTEL_RTL_SEARCH_PATH ${INTEL_RTL_ROOT}/lib/intel64)
+    endif()
     find_library(MKL_RTL_LIBRARY ${MKL_RTL_LIBNAME}
-        PATHS ${INTEL_RTL_ROOT}/lib/intel64)
+        PATHS ${INTEL_RTL_SEARCH_PATH})
 
     if(USE_MKL_FFTW3_INTERFACE)
         set(MKL_LIBRARY ${MKL_INTERFACE_LIBRARY} ${MKL_THREADING_LIBRARY} ${MKL_CORE_LIBRARY} ${MKL_FFT_LIBRARY} ${MKL_BLAS_LIBRARY} ${MKL_SCALAPACK_LIBRARY} ${MKL_RTL_LIBRARY})

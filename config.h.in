@@ -1,0 +1,5 @@
+#cmakedefine PAR_VERSION
+#cmakedefine MKL_VERSION
+#cmakedefine LINUX
+#cmakedefine USE_MKL_FFTW3_INTERFACE
+#cmakedefine ARRAY_MOVE_SEMANTIC

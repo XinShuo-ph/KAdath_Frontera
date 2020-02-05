@@ -1,7 +1,7 @@
 .gitignore
 doc/*
 *~
-/config.h*
+/config.h
 /include/config.h
 /cmake-build-mpi-release/
 /cmake-build-seq-debug/
