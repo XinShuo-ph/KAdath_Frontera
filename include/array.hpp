@@ -200,7 +200,7 @@ template <typename T> class Array {
 	    /*
 	    * Checks if a 1D array is increasing.
 	    */
-	    const bool is_increasing() const ;
+	    bool is_increasing() const ;
 
 	    void operator+= (const Array<T>&) ; ///< Operator +=
 	    void operator-= (const Array<T>&) ; ///< Operator -=

@@ -21,7 +21,7 @@
 #include "array.hpp"
 
 namespace Kadath {
-template <typename T> const bool Array<T>::is_increasing() const {
+template <typename T> bool Array<T>::is_increasing() const {
 	assert(get_ndim()==1) ;
 	for (int i = 1 ; i < nbr ; i++){
 		if (data[i]-data[i-1] <= 0){
