@@ -8,6 +8,7 @@ message("Root directory : ${PROJECT_SOURCE_DIR}")
 #Parallel or sequential
 option(PAR_VERSION "Parallel version" ON)
 option(LINUX "Build for linux" ON)
+option(ENABLE_PROFILING "Enable auto-profiling functions." OFF)
 option(ARRAY_MOVE_SEMANTIC "Enable move semantic for the Array class" ON)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )

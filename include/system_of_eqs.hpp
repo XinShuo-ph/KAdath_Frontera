@@ -28,6 +28,7 @@
 #include "param.hpp"
 #include "matrice.hpp"
 #include "list_comp.hpp"
+#include "profiled_object.hpp"
 
 #include <vector>
 using std::vector;
@@ -49,7 +50,7 @@ class Eq_int ;
  * \ingroup systems
  */
 
-class System_of_eqs {
+class System_of_eqs : public ProfiledObject<System_of_eqs> {
     protected:
 	const Space& espace ; ///< Associated \c Space
 	int dom_min ; ///< Smallest domain number

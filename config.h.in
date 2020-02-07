@@ -3,3 +3,4 @@
 #cmakedefine LINUX
 #cmakedefine USE_MKL_FFTW3_INTERFACE
 #cmakedefine ARRAY_MOVE_SEMANTIC
+#cmakedefine01 ENABLE_PROFILING

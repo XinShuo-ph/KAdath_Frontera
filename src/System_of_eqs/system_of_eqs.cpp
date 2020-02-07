@@ -23,7 +23,8 @@
 #include "scalar.hpp"
 namespace Kadath {
 // Constructor
-System_of_eqs::System_of_eqs (const Space& sp) : espace(sp), dom_min(0), 
+System_of_eqs::System_of_eqs (const Space& sp) :
+        espace(sp), dom_min(0),
 		dom_max(espace.get_nbr_domains()-1), ndom(dom_max-dom_min+1),
 		nvar_double (0), nvar(0), nterm_double(0), assoc_var_double(VARMAX*ndom), nterm(0), assoc_var(VARMAX*ndom), 
 		ncst(0), nterm_cst(0), ncst_hard(0), val_cst_hard(VARMAX), ndef(0), ndef_glob(0),  nopeuser(0), nopeuser_bin(0),

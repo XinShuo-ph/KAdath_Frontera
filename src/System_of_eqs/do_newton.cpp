@@ -540,7 +540,8 @@ namespace Kadath {
         cout << "Size = " << nn << endl;
         cout << "Progression computation : ";
         cout.flush();
-        begin = clock();
+
+        this->start_chrono("do_newton | problem size = ",nn," | matrix computation ");
         Array<double> jx(nn);
         Matrice ope(nn,nn);
         for (int col(nn-1) ; col >= 0 ; col--)
@@ -554,16 +555,19 @@ namespace Kadath {
             for (int line(0) ; line < nn ; line++) ope.set(line,col) = jx(line);
         }
         cout << endl;
-        end = clock();
-        cout << "Loading the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
-        begin = clock();
+        duration const
+            t_load_matrix {this->stop_chrono("do_newton | problem size = ",nn," | matrix computation ")};
+        cout << "Loading the matrix : " << to_seconds(t_load_matrix) << " seconds" << endl;
+
+        this->start_chrono("do_newton | problem size = ",nn," | matrix inversion ");
         ope.set_lu();
         Array<double> xx(ope.solve(second));
-
-        end = clock();
-        cout << "Inverting the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
+        duration const
+                t_inv_matrix {this->stop_chrono("do_newton | problem size = ",nn," | matrix inversion ")};
+        cout << "Inverting the matrix : " << to_seconds(t_inv_matrix) << " seconds" << endl;
         int conte(0);
-        begin = clock();
+
+        this->start_chrono("do_newton | problem size = ",nn," | Newton update ");
         espace.xx_to_vars_variable_domains(this, xx, conte);
         double* old_var_double(new double[nvar_double]);
         for (int i(0) ; i < nvar_double ; ++i) old_var_double[i] = *var_double[i];
@@ -575,8 +579,9 @@ namespace Kadath {
         delete [] old_var_double;
         for (int i(0) ; i<nvar ; i++) delete old_fields[i];
         delete [] old_fields;
-        end = clock();
-        cout << "Newton update : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
+        duration const t_newton_update
+            {this->stop_chrono("do_newton | problem size = ",nn," | Newton update ")};
+        cout << "Newton update : " << to_seconds(t_newton_update) << " seconds" << endl;
         return false;
     }
 

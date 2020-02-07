@@ -1,7 +1,6 @@
 project(kadath_tests)
 add_subdirectory(googletest)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-add_executable(kadath_tests_run main_test.cpp ${HEADERS})
+add_executable(kadath_tests_run utils_test.cpp main_test.cpp ${HEADERS})
 target_link_libraries(kadath_tests_run gtest_main ${KLIB} ${KADATH_DEPENDENCIES})
 set_target_properties(kadath_tests_run  PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-add_test(kadath_tests kadath_tests_run)
