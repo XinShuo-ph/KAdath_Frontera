@@ -28,9 +28,14 @@
 
 using namespace Kadath;
 
-class KadathProfiledObjectTest : public ProfiledObject<KadathProfiledObjectTest,true> , public ::testing::Test
+class KadathProfiledObjectTest : public ProfiledObject<KadathProfiledObjectTest,std::chrono::duration<double>,true>
+        , public ::testing::Test
 {
 public:
+    // Large tolerance, because this is no numeric error, but a variation in CPU time measurements of second long
+    // process, so 1 millisecond is accuracy is good enough. If you encounter trouble with thie tests below,
+    // 0.1 might still be acceptable.
+    static constexpr double tol {5.e-3};
 
 };
 
@@ -55,17 +60,22 @@ TEST_F(KadathProfiledObjectTest,CheckTimeMeasurement)
     }
     stop_chrono(long_sleep_key);
 
-    auto long_sleep_it = get_profiling_map().find(long_sleep_key);
-    EXPECT_FALSE(long_sleep_it == get_profiling_map().end());
-    duration_measure const & long_sleep_duration_measure {long_sleep_it->second};
-    EXPECT_EQ(long_sleep_duration_measure.n,1);
-    EXPECT_GE(to_seconds(long_sleep_duration_measure.d),(ncheck*small_sleep_duration/1000.));
-    auto short_sleeps_it = get_profiling_map().find(short_sleeps_key);
-    EXPECT_FALSE(short_sleeps_it == get_profiling_map().end());
-    duration_measure const & short_sleeps_duration_measure {short_sleeps_it->second};
-    EXPECT_EQ(short_sleeps_duration_measure.n,ncheck);
-    EXPECT_GE(to_seconds<double>(short_sleeps_duration_measure.d),small_sleep_duration/1000.);
+    this->finalize();
 
+    auto long_sleep_it = get_statistic_map().find(long_sleep_key);
+    EXPECT_FALSE(long_sleep_it == get_statistic_map().end());
+    statistics const & long_sleep_duration_measure {long_sleep_it->second};
+    EXPECT_EQ(long_sleep_duration_measure.n_samples,1);
+    EXPECT_GE(long_sleep_duration_measure.total_duration,(ncheck*small_sleep_duration/1000.));
+    EXPECT_EQ(long_sleep_duration_measure.total_duration,long_sleep_duration_measure.average_duration);
+    EXPECT_EQ(long_sleep_duration_measure.std_deviation,0.);
+    auto short_sleeps_it = get_statistic_map().find(short_sleeps_key);
+    EXPECT_FALSE(short_sleeps_it == get_statistic_map().end());
+    statistics const & short_sleeps_duration_measure {short_sleeps_it->second};
+    EXPECT_EQ(short_sleeps_duration_measure.n_samples,ncheck);
+    EXPECT_GE(short_sleeps_duration_measure.total_duration,small_sleep_duration/1000.);
+    EXPECT_NEAR(short_sleeps_duration_measure.average_duration,small_sleep_duration/1000.,tol);
+    EXPECT_NEAR(short_sleeps_duration_measure.std_deviation,0.,tol);
 }
 
 
