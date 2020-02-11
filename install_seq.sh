@@ -1,9 +1,11 @@
-cd build_release
-cmake -DPAR_VERSION=OFF -DCMAKE_BUILD_TYPE=Release .
+mkdir build_seq_release
+cd build_seq_release
+cmake -DPAR_VERSION=OFF -DCMAKE_BUILD_TYPE=Release ..
 make 
 cd ..
-cd build_debug
-cmake -DPAR_VERSION=OFF -DCMAKE_BUILD_TYPE=Debug .
+mkdir build_seq_debug
+cd build_seq_debug
+cmake -DPAR_VERSION=OFF -DCMAKE_BUILD_TYPE=Debug ..
 make
 cd ..
 cd doc
