@@ -25,6 +25,7 @@
 #include <typeinfo>
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include <iomanip>
 #include <numeric>
 #include <deque>
@@ -455,6 +456,10 @@ namespace Kadath {
     template<typename OD>
     void ProfiledObjectBase<OD>::display(std::ostream &os, char const *separator, bool with_units)
     {
+        // entries are sorted from the greater total duration to the smallest.
+        std::vector<std::pair<hash_key,statistics>> sorted_values(statistic_map.begin(),statistic_map.end());
+        std::sort(sorted_values.begin(),sorted_values.end(),[](std::pair<hash_key,statistics> const &l,
+                std::pair<hash_key,statistics> const &r) {return l.second.total_duration > r.second.total_duration;});
         auto  insert_unit_and_separator = [separator,with_units,&os](bool sep = true)
                 {
                     if( with_units)
@@ -466,7 +471,7 @@ namespace Kadath {
                     if(sep) os << ' ' << separator << ' ';
                 };
         std::deque<std::pair<hash_key,std::string>> too_long_id;
-        for (std::pair<hash_key, statistics> const &data : statistic_map)
+        for (std::pair<hash_key, statistics> const &data : sorted_values)
         {
             std::string const id {data.second.user_key};
             if(id.size() < 60) {
