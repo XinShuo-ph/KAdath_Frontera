@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(myproject)
 
-include ($ENV{HOME_KADATH}/Cmake/CMakeExec.cmake)
-
 #Executable 1
 set (PROG1 myprog1)
 set (SOURCES1 src/${PROG1}.cpp)
