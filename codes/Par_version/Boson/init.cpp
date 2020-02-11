@@ -130,6 +130,8 @@ int main(int argc, char** argv) {
 	        cout << "Newton iteration " << ite << " " << conv  << " " << omega << endl ;
 	ite++ ;
 	 }
+
+      syst.finalize();
 }
 
 
@@ -215,6 +217,9 @@ int main(int argc, char** argv) {
 	        cout << "Newton iteration " << ite << " " << conv  << " " << omega << endl ;
 	ite++ ;
 	 }
+      syst.finalize();
+      if(rank==0)
+        profiling_report(syst,std::cout);
 }
 
 

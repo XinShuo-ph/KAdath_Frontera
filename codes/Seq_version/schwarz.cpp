@@ -89,6 +89,8 @@ int main() {
 
 	cout << "Error max " << error_max << endl ;
 
+	profiling_report(syst,std::cout);
+
         return EXIT_SUCCESS ;
 }
 

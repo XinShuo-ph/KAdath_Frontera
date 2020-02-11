@@ -124,7 +124,10 @@ bool System_of_eqs::do_newton(double precision, double& error) {
 	int start = bsize*rank;
 	bool done = false;
 	int current = 0;
-   begin = clock();
+
+	hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
+	        nn," | matrix computation ");
+
 	while (!done) {
 		for (int i=0 ; i<bsize ; i++)
 			if (start+i<nn) {
@@ -145,10 +148,13 @@ bool System_of_eqs::do_newton(double precision, double& error) {
 
 	// Wait for everybody
 	MPI_Barrier(MPI_COMM_WORLD);
-        end = clock();
-        if (rank == 0) cout << "Loading the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
 
-        begin = clock();
+    duration const t_load_matrix {this->stop_chrono(chrono_key)};
+
+    if (rank == 0) cout << "Loading the matrix : " << to_seconds(t_load_matrix) << " seconds" << endl;
+
+    chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
+                                        nn," | matrix translation ");
 	// Now translate to a 2D cyclic decomposition
 	int npcol, nprow;
 	split_two_d (nproc, npcol, nprow);
@@ -183,17 +189,19 @@ bool System_of_eqs::do_newton(double precision, double& error) {
         Array<int> descsec(9);
         int one = 1;
         descinit_ (descsec.set_data(), &nn, &one, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
-        end = clock();
-        if (rank == 0) cout << "Translating the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
+        duration const t_trans_matrix {this->stop_chrono(chrono_key)};
+
+        if (rank == 0) cout << "Translating the matrix : " << to_seconds(t_trans_matrix) << " seconds" << endl;
 
 	// Inversion
         Array<int> ipiv (nn);
-        begin = clock();
+        chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
+                                          nn," | matrix inversion ");
         pdgesv_ (&nn, &one, matloc.set_data(), &one, &one, descamat.set_data(), ipiv.set_data(), secloc.set_data(), &one, &one, descsec.set_data(), &info);
-        end = clock();
-        if (rank == 0) cout << "Inverting the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
+        duration const t_inv_matrix {this->stop_chrono(chrono_key)};
+        if (rank == 0) cout << "Inverting the matrix : " << to_seconds(t_inv_matrix) << " seconds" << endl;
 
-        begin = clock();
+        chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", nn, " | update ");
 	// Get the global solution
         Array<double> auxi(nn);
         auxi = 0.;
@@ -237,8 +245,8 @@ bool System_of_eqs::do_newton(double precision, double& error) {
 		delete old_fields[i];
 
 	delete [] old_fields;
-    end = clock();
-    if (rank == 0) cout << "Newton update : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
+	duration const t_newton_update {this->stop_chrono(chrono_key)};
+    if (rank == 0) cout << "Newton update : " << to_seconds(t_newton_update) << " seconds" << endl << endl;
 	res = false;
       }
 	return res;
@@ -541,7 +549,7 @@ namespace Kadath {
         cout << "Progression computation : ";
         cout.flush();
 
-        this->start_chrono("do_newton | problem size = ",nn," | matrix computation ");
+        hash_key chrono_key = this->start_chrono("do_newton | problem size = ",nn," | matrix computation ");
         Array<double> jx(nn);
         Matrice ope(nn,nn);
         for (int col(nn-1) ; col >= 0 ; col--)
@@ -556,18 +564,18 @@ namespace Kadath {
         }
         cout << endl;
         duration const
-            t_load_matrix {this->stop_chrono("do_newton | problem size = ",nn," | matrix computation ")};
+            t_load_matrix {this->stop_chrono(chrono_key)};
         cout << "Loading the matrix : " << to_seconds(t_load_matrix) << " seconds" << endl;
 
-        this->start_chrono("do_newton | problem size = ",nn," | matrix inversion ");
+        chrono_key = this->start_chrono("do_newton | problem size = ",nn," | matrix inversion ");
         ope.set_lu();
         Array<double> xx(ope.solve(second));
         duration const
-                t_inv_matrix {this->stop_chrono("do_newton | problem size = ",nn," | matrix inversion ")};
+                t_inv_matrix {this->stop_chrono(chrono_key)};
         cout << "Inverting the matrix : " << to_seconds(t_inv_matrix) << " seconds" << endl;
         int conte(0);
 
-        this->start_chrono("do_newton | problem size = ",nn," | Newton update ");
+        chrono_key = this->start_chrono("do_newton | problem size = ",nn," | Newton update ");
         espace.xx_to_vars_variable_domains(this, xx, conte);
         double* old_var_double(new double[nvar_double]);
         for (int i(0) ; i < nvar_double ; ++i) old_var_double[i] = *var_double[i];
@@ -580,7 +588,7 @@ namespace Kadath {
         for (int i(0) ; i<nvar ; i++) delete old_fields[i];
         delete [] old_fields;
         duration const t_newton_update
-            {this->stop_chrono("do_newton | problem size = ",nn," | Newton update ")};
+            {this->stop_chrono(chrono_key)};
         cout << "Newton update : " << to_seconds(t_newton_update) << " seconds" << endl;
         return false;
     }

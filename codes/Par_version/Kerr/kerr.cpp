@@ -111,6 +111,7 @@ int main(int argc, char** argv) {
 			ite++ ;
 	} 
     }
+    syst_init.finalize();
       
     Metric_tensor gfixed (espace, CON, basis) ;
 	for (int i=1 ; i<=3 ; i++)
@@ -264,6 +265,7 @@ int main(int argc, char** argv) {
 		fclose(ff) ;
 		}
 		}
+	syst.finalize();
   }
 	for (int i=0 ; i<n_evol_inner ; i++)
 	  delete p_evol_inner[i] ;
@@ -275,6 +277,7 @@ int main(int argc, char** argv) {
 		delete p_dirac[i] ;
 	delete [] p_dirac ;
 
+	profiling_report(syst_init,std::cout);
 	MPI_Finalize() ;
 	return EXIT_SUCCESS ;
 }

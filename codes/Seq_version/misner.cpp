@@ -56,5 +56,6 @@ int main() {
 		cout << "Newton iteration " << ite << " " << conv << endl ;
 		ite++ ;
 	}
+    profiling_report(syst,std::cout);
 	return EXIT_SUCCESS ;
 }

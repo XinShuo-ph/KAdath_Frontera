@@ -25,27 +25,176 @@
 #include <typeinfo>
 #include <iostream>
 #include <string>
+#include <iomanip>
 #include <numeric>
 #include <deque>
+#include <cassert>
 #include <type_traits>
 #include <functional>
 #include "config.h"
 
-#if ENABLE_PROFILING == 1
+
 namespace std{
     //! Trivial overload for compatibility.
     inline std::string const & to_string(std::string const &s) {return s;}
     //! Trivial overload for compatibility.
     inline std::string to_string(char const * s) {return std::string{s};}
 }
-#endif
+
 
 namespace Kadath {
+
+    enum : bool {WITHOUT_UNITS = false,WITH_UNITS = true};
+
+    template<typename Duration> struct TimeUnitTraits {};
+    template<typename T> struct TimeUnitTraits<std::chrono::duration<T,std::nano>>
+    {
+        static constexpr char const * const value = "ns";
+        static constexpr char const * const complete_value = "nanosecond(s)";
+    };
+    template<typename T> struct TimeUnitTraits<std::chrono::duration<T,std::micro>>
+    {
+        static constexpr char const * const value = "µs";
+        static constexpr char const * const complete_value = "microsecond(s)";
+    };
+    template<typename T> struct TimeUnitTraits<std::chrono::duration<T,std::milli>>
+    {
+        static constexpr char const * const value = "ms";
+        static constexpr char const * const complete_value = "millisecond(s)";
+    };
+    template<typename T> struct TimeUnitTraits<std::chrono::duration<T>>
+    {
+        static constexpr char const * const value = "s";
+        static constexpr char const * const complete_value = "second(s)";
+    };
+    template<typename T> struct TimeUnitTraits<std::chrono::duration<T,std::ratio<60>>>
+    {
+        static constexpr char const * const value = "min";
+        static constexpr char const * const complete_value = "minute(s)";
+    };
+    template<typename T> struct TimeUnitTraits<std::chrono::duration<T,std::ratio<3600>>>
+    {
+        static constexpr char const * const value = "h";
+        static constexpr char const * const complete_value = "hour(s)";
+    };
+    template<typename T> struct TimeUnitTraits<std::chrono::duration<T,std::ratio<3600*24>>>
+    {
+        static constexpr char const * const value = "d";
+        static constexpr char const * const complete_value = "day(s)";
+    };
+    template<typename T> struct TimeUnitTraits<std::chrono::duration<T,std::ratio<3600*24*365>>>
+    {
+        static constexpr char const * const value = "y";
+        static constexpr char const * const complete_value = "year(s)";
+    };
 
     //! Convert the cmake option value into a static boolean value.
     constexpr bool auto_profiling_enabled {ENABLE_PROFILING == 1};
     //! Dumny type used to pass as undefined type template parameter.
     struct UndefinedType {};
+
+    template<typename OutputDuration> class ProfiledObjectBase
+    {
+    public:
+        using hash_key = std::size_t;
+        using duration = std::chrono::high_resolution_clock::duration;
+
+        //! Agglomerate for statistics.
+        struct statistics {
+            std::string user_key;
+            unsigned long n_samples;
+            double total_duration;
+            double average_duration;
+            double std_deviation;
+        };
+
+    protected:
+        //! Map containing statistics concerning each sequence of measures.
+        inline static std::map<hash_key,statistics> statistic_map{};
+
+    public:
+        //! Read-only access to statistics.
+        static std::map<hash_key,statistics> const & get_statistic_map() {return statistic_map;}
+
+        static constexpr char const * const get_unit() {return TimeUnitTraits<OutputDuration>::value;}
+        static constexpr char const * const get_complete_unit() {return TimeUnitTraits<OutputDuration>::complete_value;}
+
+        /**
+         * Sends the data into the passed output stream.
+         * @param os output stream to send the data to (can be \c cout, \c cerr, an \c ofstream, etc.).
+         * @return a reference toward the current object (\c *this).
+         */
+        static void display(std::ostream & os,char const * separator = "|",bool with_units = WITH_UNITS);
+        /**
+         * Helper function for the conversion to different time units.
+         * @tparam D output time duration type (must be an instantiation of the \c std::chrono::duration template type).
+         * @tparam T output numeric representation type (must either be an unsigned integer type or a floating point).
+         * @param d time duration to convert.
+         * @return converted time duration in the desired numeric type.
+         */
+        template<typename D,typename T=double> static inline T to(duration const &d)
+        {
+            static_assert(std::is_floating_point<T>::value || std::is_unsigned<T>::value);
+            return std::chrono::duration_cast<std::chrono::duration<T,typename D::period>>(d).count();
+        }
+        /**
+         * Covenience function for the conversion to hours.
+         * @tparam T numeric type to express the conversion result to (\c double by default).
+         * @param d the time duration to convert.
+         * @return the result of the conversion in the desired numeric type.
+         */
+        template<typename T=double> static inline T to_hours(duration const &d)
+        {return to<std::chrono::hours,T>(d);}
+        /**
+         * Covenience function for the conversion to minutes.
+         * @tparam T numeric type to express the conversion result to (\c double by default).
+         * @param d the time duration to convert.
+         * @return the result of the conversion in the desired numeric type.
+         */
+        template<typename T=double> static inline T to_minutes(duration const &d)
+        {return to<std::chrono::minutes,T>(d);}
+        /**
+         * Covenience function for the conversion to seconds.
+         * @tparam T numeric type to express the conversion result to (\c double by default).
+         * @param d the time duration to convert.
+         * @return the result of the conversion in the desired numeric type.
+         */
+        template<typename T=double> static inline T to_seconds(duration const &d)
+        {return to<std::chrono::seconds,T>(d);}
+        /**
+         * Covenience function for the conversion to milliseconds.
+         * @tparam T numeric type to express the conversion result to (\c double by default).
+         * @param d the time duration to convert.
+         * @return the result of the conversion in the desired numeric type.
+         */
+        template<typename T=double> static inline T to_milliseconds(duration const &d)
+        {return to<std::chrono::milliseconds,T>(d);}
+        /**
+         * Covenience function for the conversion to microseconds.
+         * @tparam T numeric type to express the conversion result to (\c double by default).
+         * @param d the time duration to convert.
+         * @return the result of the conversion in the desired numeric type.
+         */
+        template<typename T=double> static inline T to_microseconds(duration const &d)
+        {return to<std::chrono::microseconds,T>(d);}
+        /**
+         * Covenience function for the conversion to nanoseconds.
+         * @tparam T numeric type to express the conversion result to (\c double by default).
+         * @param d the time duration to convert.
+         * @return the result of the conversion in the desired numeric type.
+         */
+        template<typename T=double> static inline T to_nanoseconds(duration const &d)
+        {return to<std::chrono::nanoseconds,T>(d);}
+        //! Conversion to the hh:mm:ss format.
+        static inline std::tuple<unsigned,unsigned,double> to_hh_mm_ss(duration const & d)
+        {
+            unsigned const hh {to<std::chrono::hours,unsigned>(d)};
+            unsigned const hh_to_min {hh*60};
+            unsigned const mm {to<std::chrono::minutes,unsigned>(d) - hh_to_min};
+            double const ss {to<std::chrono::seconds>(d) - (hh_to_min + mm)*60.};
+            return {hh,mm,ss};
+        }
+    };
 
     /**
      * Class used to evaluate the total duration of multiple calls of some parts of the methods within its derived class,
@@ -62,29 +211,35 @@ namespace Kadath {
     class ProfiledObject;
 
     //! Specialization for the disabled profiling case.
-    template<class Derived,typename OutputDuration> class ProfiledObject<Derived,OutputDuration,false>
+    template<class Derived,typename OutputDuration> class ProfiledObject<Derived,OutputDuration,false> :
+            public ProfiledObjectBase<OutputDuration>
     {
     public:
         using hash_key = std::size_t;
         using clock = std::chrono::high_resolution_clock;
         using duration = clock::duration ;
         using time_point = clock::time_point;
-        struct duration_measure {
-            duration d;
-            unsigned n;
-        };
 
+        static void display(std::ostream &,char const * separator = "|",bool with_unit = WITH_UNITS)  {}
     protected:
-        template<typename... T> inline hash_key start_chrono(T... ) const {};
-        inline duration stop_chrono(hash_key) const {return duration{};}
+        mutable time_point start;
+
+    public:
+        template<typename... T> inline hash_key start_chrono(T... ) const {start = clock::now();};
+        inline duration stop_chrono(hash_key) const {return clock::now()-start;}
         template<typename... T> inline duration stop_chrono(T... ) const {return duration{};};
+        void reset() const {}
+        void finalize() const {}
     };
 
     //! Specialization for the enabled profiling case.
-    template<class Derived,typename OutputDuration> class ProfiledObject<Derived,OutputDuration,true>
+    template<class Derived,typename OutputDuration> class ProfiledObject<Derived,OutputDuration,true> :
+            public ProfiledObjectBase<OutputDuration>
     {
     public:
-        using hash_key = std::size_t;
+        using Base = ProfiledObjectBase<OutputDuration>;
+        using hash_key = typename Base::hash_key ;
+        using statistics = typename Base::statistics;
         //! Highest resolution STL clock type.
         using clock = std::chrono::high_resolution_clock;
         //! The default duration clock type.
@@ -102,21 +257,11 @@ namespace Kadath {
         //! Const iterator type for the user key map.
         using uk_const_iterator = typename std::map<hash_key,std::string>::const_iterator;
 
-        //! Agglomerate for statistics.
-        struct statistics {
-            std::string user_key;
-            unsigned long n_samples;
-            double total_duration;
-            double average_duration;
-            double std_deviation;
-        };
     protected:
         //! The hash function.
         std::hash<std::string> hash;
         //! Map containing the measured durations, associated to its hash keys.
         mutable std::map<hash_key,duration_deque> profiling_map;
-        //! Map containing statistics concerning each sequence of measures.
-        std::map<hash_key,statistics> statistic_map;
         //! Correspondence beetween hash keys and user-given string keys.
         mutable std::map<hash_key,std::string> user_keys;
         //! Map containing the measures being processed (this design allows overlapping block code measures).
@@ -132,10 +277,10 @@ namespace Kadath {
 
     public:
         //! Constructor.
-        ProfiledObject(char const * _name = typeid(Derived).name()) : hash{}, profiling_map{}, statistic_map{},
+        ProfiledObject(char const * _name = typeid(Derived).name()) : hash{}, profiling_map{},
             user_keys{}, current_measures{}, name{_name} {}
         //! Destructor.
-        virtual ~ProfiledObject() {}
+        virtual ~ProfiledObject() { this->finalize();}
 
         /**
          * Method to call at the begining of a code block to time. The argument are cast into strings and then
@@ -167,7 +312,7 @@ namespace Kadath {
         template<typename... T> inline duration stop_chrono(std::string const & key_prefix, T... key_parts) const
         {
             std::string user_key{key_prefix + to_string(key_parts...)};
-            return _stop_chrono(hash(user_key));
+            return _stop_chrono(hash(name + "." + user_key));
         }
 
         //! Accessor for the \c name data member.
@@ -178,98 +323,24 @@ namespace Kadath {
         std::map<hash_key,duration_deque> const & get_profiling_map() const {return profiling_map;}
         //! Read-only access to the user keys dictionnary.
         std::map<hash_key,std::string> const & get_user_keys() const {return user_keys;}
-        //! Read-only access to statistics.
-        std::map<hash_key,statistics> const & get_statistic_map() const {return statistic_map;}
 
-        /**
-         * Helper function for the conversion to different time units.
-         * @tparam D output time duration type (must be an instantiation of the \c std::chrono::duration template type).
-         * @tparam T output numeric representation type (must either be an unsigned integer type or a floating point).
-         * @param d time duration to convert.
-         * @return converted time duration in the desired numeric type.
-         */
-        template<typename D,typename T=double> static inline T to(duration const &d)
-        {
-            static_assert(std::is_floating_point<T>::value || std::is_unsigned<T>::value);
-            return std::chrono::duration_cast<std::chrono::duration<T,typename D::period>>(d).count();
-        }
-        /**
-         * Covenience function for the conversion to hours.
-         * @tparam T numeric type to express the conversion result to (\c double by default).
-         * @param d the time duration to convert.
-         * @return the result of the conversion in the desired numeric type.
-         */
-        template<typename T=double> static inline T to_hours(duration const &d)
-        {return to<std::chrono::hours,double>(d);}
-        /**
-         * Covenience function for the conversion to minutes.
-         * @tparam T numeric type to express the conversion result to (\c double by default).
-         * @param d the time duration to convert.
-         * @return the result of the conversion in the desired numeric type.
-         */
-        template<typename T=double> static inline T to_minutes(duration const &d)
-        {return to<std::chrono::minutes,double>(d);}
-        /**
-         * Covenience function for the conversion to seconds.
-         * @tparam T numeric type to express the conversion result to (\c double by default).
-         * @param d the time duration to convert.
-         * @return the result of the conversion in the desired numeric type.
-         */
-        template<typename T=double> static inline T to_seconds(duration const &d)
-        {return to<std::chrono::seconds,double>(d);}
-        /**
-         * Covenience function for the conversion to milliseconds.
-         * @tparam T numeric type to express the conversion result to (\c double by default).
-         * @param d the time duration to convert.
-         * @return the result of the conversion in the desired numeric type.
-         */
-        template<typename T=double> static inline T to_milliseconds(duration const &d)
-        {return to<std::chrono::milliseconds,double>(d);}
-        /**
-         * Covenience function for the conversion to microseconds.
-         * @tparam T numeric type to express the conversion result to (\c double by default).
-         * @param d the time duration to convert.
-         * @return the result of the conversion in the desired numeric type.
-         */
-        template<typename T=double> static inline T to_microseconds(duration const &d)
-        {return to<std::chrono::microseconds,double>(d);}
-        /**
-         * Covenience function for the conversion to nanoseconds.
-         * @tparam T numeric type to express the conversion result to (\c double by default).
-         * @param d the time duration to convert.
-         * @return the result of the conversion in the desired numeric type.
-         */
-        template<typename T=double> static inline T to_nanoseconds(duration const &d)
-        {return to<std::chrono::nanoseconds,double>(d);}
-        //! Conversion to the hh:mm:ss format.
-        static inline std::tuple<unsigned,unsigned,double> to_hh_mm_ss(duration const & d)
-        {
-            unsigned const hh {to<std::chrono::hours,unsigned>(d)};
-            unsigned const hh_to_min {hh*60};
-            unsigned const mm {to<std::chrono::minutes,unsigned>(d) - hh_to_min};
-            double const ss {to<std::chrono::seconds>(d) - (hh_to_min + mm)*60.};
-            return {hh,mm,ss};
-        }
 
-        /**
-         * Sends the data into the passed output stream.
-         * @param os output stream to send the data to (can be \c cout, \c cerr, an \c ofstream, etc.).
-         * @return a reference toward the current object (\c *this).
-         */
-        ProfiledObject & display(std::ostream & os) const;
 
+
+
+    public:
         /**
          * Empty all maps to reset the object.
          * @return Reference toward the current object.
          */
-        ProfiledObject & reset();
+        void reset() const;
 
          /**
           * Computes statistical data and erase measure-related maps. Another set of measure can be made, and if so,
           * another call to \c finalize() will update the statistics according to the new data.
           * @return a reference toward the current object.
           */
-         ProfiledObject & finalize();
+         void finalize() const;
 
     private:
         //! Implementation of \c start_chrono (see the interface without the underscore prefix for informations).
@@ -280,10 +351,11 @@ namespace Kadath {
     };
 
 
-    template<class Derived,typename OD> std::size_t ProfiledObject<Derived,OD,true>::_start_chrono(
-            std::string const &user_key) const
+    template<class Derived,typename OD>
+    typename ProfiledObject<Derived,OD,true>::hash_key
+    ProfiledObject<Derived,OD,true>::_start_chrono(std::string const &user_key) const
     {
-        hash_key const key {hash(user_key)};
+        hash_key const key {hash(name + "." + user_key)};
         auto user_key_it = user_keys.find(key);
         pm_iterator pm_location{};
         if(user_key_it == user_keys.end())
@@ -317,7 +389,7 @@ namespace Kadath {
     typename ProfiledObject<Derived,OD,true>::duration ProfiledObject<Derived,OD,true>::_stop_chrono(hash_key key) const
     {
         time_point const current_measure_stop_time {clock::now()};
-        std::map<hash_key,time_point>::iterator const current_measure{current_measures.find(key)};
+        typename std::map<hash_key,time_point>::iterator const current_measure{current_measures.find(key)};
         if(current_measure == current_measures.end())
         {
             std::cerr << "Error while profiling " << name << " measure key cannot be "
@@ -335,33 +407,14 @@ namespace Kadath {
         }
     }
 
-    template<class Derived,typename OD>
-    ProfiledObject<Derived,OD,true> & ProfiledObject<Derived,OD,true>::display(std::ostream &os) const
-    {
-        assert(current_measures.empty());
-        assert(profiling_map.size() == user_keys.size());
-        pm_const_iterator i {profiling_map.begin()};
-        uk_const_iterator j {user_keys.begin()};
-        for(;i != profiling_map.end() && j != user_keys.end();i++,j++)
-        {
-            assert(i->first == j->first);
-
-        }
-        return *this;
-    }
-
-    template<class Derived,typename OD>
-    ProfiledObject<Derived,OD,true> & ProfiledObject<Derived,OD,true>::reset()
+    template<class Derived,typename OD> void ProfiledObject<Derived,OD,true>::reset() const
     {
         profiling_map.clear();
-        statistic_map.clear();
         user_keys.clear();
         current_measures.clear();
-        return *this;
     }
 
-    template<class Derived,typename OD>
-    ProfiledObject<Derived,OD,true> & ProfiledObject<Derived,OD,true>::finalize()
+    template<class Derived,typename OD> void ProfiledObject<Derived,OD,true>::finalize() const
     {
         assert(current_measures.empty());
         assert(profiling_map.size() == user_keys.size());
@@ -371,29 +424,91 @@ namespace Kadath {
         {
             hash_key const key {i->first};
             assert(key == j->first);
-            typename std::map<hash_key,statistics>::iterator stat_it = statistic_map.find(key);
-            if(stat_it == statistic_map.end())
+            typename std::map<hash_key,statistics>::iterator stat_it = Base::statistic_map.find(key);
+            if(stat_it == Base::statistic_map.end())
             {
+                std::string input_name {name};
+                input_name += ".";
+                input_name += j->second;
                 std::tie(stat_it,std::ignore) =
-                    statistic_map.emplace(key,statistics{j->second,0ul,0.,0.,0.});
+                    Base::statistic_map.emplace(key,statistics{input_name,0ul,0.,0.,0.});
             }
             unsigned long nsamples {stat_it->second.n_samples + static_cast<unsigned long>(i->second.size())};
             double total {stat_it->second.total_duration};
             double average {total};
             double std_dev {stat_it->second.std_deviation * stat_it->second.n_samples};
             total = std::accumulate(i->second.begin(),i->second.end(),total,[](double l,duration const & r)
-                {return l + to<OD>(r);});
+                {return l + Base::template to<OD>(r);});
             average = total;
             average /= nsamples;
             std_dev = std::accumulate(i->second.begin(),i->second.end(),std_dev,[average](double l,duration const &r)
-                {double const _r{to<OD>(r)-average}; return l + _r*_r;});
+                {double const _r{Base::template to<OD>(r)-average}; return l + _r*_r;});
             std_dev /= nsamples;
             stat_it->second.n_samples = nsamples;
             stat_it->second.total_duration = total;
             stat_it->second.average_duration = average;
             stat_it->second.std_deviation = std_dev;
         }
-        return *this;
+        this->reset();
+    }
+
+    template<typename OD>
+    void ProfiledObjectBase<OD>::display(std::ostream &os, char const *separator, bool with_units)
+    {
+        auto  insert_unit_and_separator = [separator,with_units,&os](bool sep = true)
+                {
+                    if( with_units)
+                    {
+                        os << ' ' << std::setw(3) << get_unit();
+                    } else {
+                        os << "    ";
+                    }
+                    if(sep) os << ' ' << separator << ' ';
+                };
+        std::deque<std::pair<hash_key,std::string>> too_long_id;
+        for (std::pair<hash_key, statistics> const &data : statistic_map)
+        {
+            std::string const id {data.second.user_key};
+            if(id.size() < 60) {
+                os << std::setw(60) << data.second.user_key;
+            } else {
+                hash_key const id_hk {std::hash<std::string>{}(id)};
+                too_long_id.push_back({id_hk,id});
+                os << std::setw(60) << id_hk;
+            }
+            os << " " << separator << ' ';
+            os << std::setw(10) << data.second.total_duration;
+            insert_unit_and_separator();
+            os << std::setw(10) << data.second.average_duration;
+            insert_unit_and_separator();
+            os << std::setw(10) << sqrt(data.second.std_deviation);
+            insert_unit_and_separator();
+            os << std::setw(10) << data.second.n_samples << ' ';
+            if(with_units) os << "sample(s) ";
+            os << "\n";
+        }
+        for(auto const & tlid : too_long_id)
+        {
+            os << "#" << std::setw(20) << tlid.first << " : " << tlid.second  << std::endl;
+        }
+    }
+
+    template<class C> void profiling_report(C const & c,std::ostream & os)
+    {
+#if ENABLE_PROFILING==1
+        os << "=======================================================================" << std::endl;
+        if(c.get_statistic_map().empty())
+        {
+            c.finalize();
+        }
+        os << "Profiling report : " << std::endl;
+        os << "=======================================================================" << std::endl << std::endl;
+        os << "                            id                              " << " | ";
+        os << " total time    |  average time  |   std. dev.    |    N " << std::endl;
+        os << "============================================================" << "=|=";
+        os << "===============|================|================|======================" << std::endl;
+#endif
+        c.display(std::cout);
     }
 
 }

@@ -39,6 +39,7 @@ public:
 
 };
 
+
 TEST_F(KadathProfiledObjectTest,CheckTimeMeasurement)
 {
     constexpr unsigned short ncheck {10u};
