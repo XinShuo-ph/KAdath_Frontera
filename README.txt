@@ -8,3 +8,6 @@ not functional at the moment.
 
 For a sequential build with gcc and gnu libraries :
 cmake -DCMAKE_BUILD_TYPE=Release -DPAR_VERSION=OFF
+
+You may run instal_*.sh script for quick configuration and install (for faster compilation, one can edit them
+and add the -j option followed by the desired number of compilation threads).
