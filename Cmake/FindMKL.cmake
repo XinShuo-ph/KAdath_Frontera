@@ -19,7 +19,7 @@
 
 include(FindPackageHandleStandardArgs)
 
-set(INTEL_ROOT "/opt/intel" CACHE PATH "Folder contains intel libs")
+set(INTEL_ROOT $ENV{INTELROOT} CACHE PATH "Folder contains intel libs")
 set(MKL_ROOT $ENV{MKLROOT} CACHE PATH "Folder contains MKL")
 
 # Find include dir
@@ -106,9 +106,9 @@ else()
         set(MKL_RTL_LIBNAME iomp5)
     endif()
     if(LINUX)
-        set(INTEL_RTL_SEARCH_PATH ${INTEL_RTL_ROOT}/lib/intel64_lin)
+        set(INTEL_RTL_SEARCH_PATH ${INTEL_ROOT}/lib/intel64_lin)
     else()
-        set(INTEL_RTL_SEARCH_PATH ${INTEL_RTL_ROOT}/lib/intel64)
+        set(INTEL_RTL_SEARCH_PATH ${INTEL_ROOT}/lib/intel64)
     endif()
     find_library(MKL_RTL_LIBRARY ${MKL_RTL_LIBNAME}
         PATHS ${INTEL_RTL_SEARCH_PATH})
