@@ -30,6 +30,10 @@
 #include "metric.hpp"
 #include "array_math.cpp"
 
+#ifdef ENABLE_GPU_USE
+#include "magma_v2.h"
+#endif
+
 #include <ctime>
 namespace Kadath {
 extern "C" {

@@ -19,19 +19,16 @@ else(MKL_VERSION)
 	message ("Version with scalapack")
 endif(MKL_VERSION)
 
+if(ENABLE_GPU_USE)
+	message("GPU-based computation enabled.")
+endif()
+
 file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.hpp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/Array)
 include_directories(${PROJECT_SOURCE_DIR}/include/Kadath_point_h)
-
-#Get the correct Kadath library (default == Release)
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-	set(LIB_KADATH ${PROJECT_SOURCE_DIR}/lib/libkadath-debug.a)
-else()
-	set(LIB_KADATH ${PROJECT_SOURCE_DIR}/lib/libkadath.a)
-endif()
 
 #If parallel need to use the PMI wrapper
 if(PAR_VERSION)
@@ -76,6 +73,17 @@ if(NOT PAR_VERSION)
     endif()
 endif(NOT PAR_VERSION)
 
+if(ENABLE_GPU_USE)
+	if(NOT DEFINED CUDA_LIBRARIES)
+		find_package(CUDA REQUIRED)
+	endif()
+	if(NOT DEFINED MAGMA_LIBRARIES)
+		find_package(PkgConfig REQUIRED)
+		pkg_check_module(MAGMA magma)
+	endif()
+	set(MAGMA_LINKER_FLAGS "-L${MAGMA_LIBDIR}$")
+endif(ENABLE_GPU_USE)
+
 SET(KADATH_DEPENDENCIES ${GSL_LIBRARIES})
 if(PAR_VERSION)
 	if(MKL_VERSION)
@@ -89,6 +97,11 @@ if(PAR_VERSION)
 	endif()
 else()
 	set(KADATH_DEPENDENCIES ${KADATH_DEPENDENCIES} ${PGPLOT_LIBRARIES} ${FFTW_LIBRARIES} ${LAPACK_LIBRARIES})
+endif()
+
+if(ENABLE_GPU_USE)
+	set(KADATk_DEPENDENCIES ${MAGMA_LINKER_FLAGS} ${MAGMA_LIBRARIES} ${CUDA_CUBLAS_LIBRARIES} ${CUDA_LIBRARIES}
+			${CUDA_cusparse_LIBRARY} ${KADATH_DEPENDENCIES})
 endif()
 #need to use C++17
 add_definitions(-std=c++17)

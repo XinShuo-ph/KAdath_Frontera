@@ -9,6 +9,7 @@ message("Root directory : ${PROJECT_SOURCE_DIR}")
 option(PAR_VERSION "Parallel version" ON)
 option(LINUX "Build for linux" ON)
 option(ENABLE_PROFILING "Enable auto-profiling functions." OFF)
+option(ENABLE_GPU_USE "Enables the use of GPU(s) if available." OFF)
 option(ARRAY_MOVE_SEMANTIC "Enable move semantic for the Array class" ON)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )
@@ -30,9 +31,13 @@ if(PAR_VERSION)
     find_package(MPI REQUIRED)
     set(CMAKE_CXX_COMPILER ${MPI_CXX_COMPILER})
     message ("MPI Compiler " ${MPI_CXX_COMPILER})
-else(PAR_VERSION)
-    #file(COPY ${PROJECT_SOURCE_DIR/src_seq/do_newton.cpp DESTINATION ${PROJECT_SOURCE_DIR/src/System_of_eqs/)
 endif(PAR_VERSION)
+
+if(ENABLE_GPU_USE)
+    find_package(CUDA REQUIRED)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_module(MAGMA magma)
+endif(ENABLE_GPU_USE)
 
 #Get all the src files
 file(GLOB_RECURSE KADATH_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp )
@@ -46,6 +51,12 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 
 if (DEFINED FFTW_INCLUDE_DIR)
     include_directories (${FFTW_INCLUDE_DIR})
+endif()
+if(DEFINED CUDA_INCLUDE_DIR)
+    include_directories (${CUDA_INCLUDE_DIRS})
+endif()
+if(DEFINED MAGMA_INCLUDE_DIRS)
+    include_directories(${MAGMA_INCLUDE_DIRS})
 endif()
 
 #need to use C++17

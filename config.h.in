@@ -3,4 +3,5 @@
 #cmakedefine LINUX
 #cmakedefine USE_MKL_FFTW3_INTERFACE
 #cmakedefine ARRAY_MOVE_SEMANTIC
+#cmakedefine ENABLE_GPU_USE
 #cmakedefine01 ENABLE_PROFILING
