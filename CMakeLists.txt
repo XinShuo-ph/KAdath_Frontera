@@ -36,7 +36,7 @@ endif(PAR_VERSION)
 if(ENABLE_GPU_USE)
     find_package(CUDA REQUIRED)
     find_package(PkgConfig REQUIRED)
-    pkg_check_module(MAGMA magma)
+    pkg_check_modules(MAGMA magma)
 endif(ENABLE_GPU_USE)
 
 #Get all the src files
