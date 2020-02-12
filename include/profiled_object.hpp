@@ -117,8 +117,8 @@ namespace Kadath {
         //! Read-only access to statistics.
         static std::map<hash_key,statistics> const & get_statistic_map() {return statistic_map;}
 
-        static constexpr char const * const get_unit() {return TimeUnitTraits<OutputDuration>::value;}
-        static constexpr char const * const get_complete_unit() {return TimeUnitTraits<OutputDuration>::complete_value;}
+        static constexpr char const * get_unit() {return TimeUnitTraits<OutputDuration>::value;}
+        static constexpr char const * get_complete_unit() {return TimeUnitTraits<OutputDuration>::complete_value;}
 
         /**
          * Sends the data into the passed output stream.
