@@ -68,7 +68,7 @@ if (EXISTS ${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
 endif()
 include (${PROJECT_SOURCE_DIR}/Cmake/CMakeExec.cmake)
 
-if(DEFINED CUDA_INCLUDE_DIR)
+if(DEFINED CUDA_INCLUDE_DIRS)
     include_directories (${CUDA_INCLUDE_DIRS})
 endif()
 if(DEFINED MAGMA_INCLUDE_DIRS)
