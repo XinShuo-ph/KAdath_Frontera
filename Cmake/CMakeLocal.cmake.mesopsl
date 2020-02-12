@@ -1,4 +1,5 @@
 #File specific to mesopsl 
 #set(SCALAPACK_LIBRARIES "-lmkl_blacs_openmpi_lp64 -lmkl_scalapack_lp64")
-set(FFTW_LIBRARIES "/shared/apps/fftw/3.3.8/intelmpi/19.0.0/intel/19.0.0/lib/libfftw3.a") 
+set(FFTW_LIBRARIES "/shared/apps/fftw/3.3.8/intelmpi/19.0.0/intel/19.0.0/lib/libfftw3.a")
+set(CUDA_LIBRARIES "-L/shared/apps/cuda/10.2/lib64 -lcublas -lcudart -lcusparse")
 set(SCALAPACK_LIBRARIES "-mkl=cluster") 
