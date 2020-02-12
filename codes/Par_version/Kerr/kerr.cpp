@@ -102,14 +102,13 @@ int main(int argc, char** argv) {
 	double conv ;
 	bool endloop = false ;
 	int ite = 1 ;
-	if (rank==0)
-	  cout << "Computation with omega =  0" << endl ;
+	if (rank==0) {
+        cout << "Computation with omega =  0" << endl;
+    }
 	while (!endloop) {
 		endloop = syst_init.do_newton(1e-6, conv) ;
-		if (rank==0)
-			cout << "Newton iteration " << ite << " " << conv << endl ;
 			ite++ ;
-	} 
+	}
     }
     syst_init.finalize();
       
@@ -245,11 +244,9 @@ int main(int argc, char** argv) {
 	int ite = 1 ;
 	char name[100] ;
 	sprintf(name, "kerr_%d_%f.dat", nbr, ome) ;
-	
+
 	while (!endloop) {
 		endloop = syst.do_newton(1e-8, conv) ;
-		if (rank==0)
-		    cout << "Newton iteration " << ite << " " << conv << endl ;
 		ite++ ;
 		// Save
 		if (rank==0) {

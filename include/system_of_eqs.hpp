@@ -120,6 +120,8 @@ class System_of_eqs : public ProfiledObject<System_of_eqs> {
 
 	Index** which_coef ; ///< Stores the "true" coefficients on some boundaries (probably deprecated).
 
+	unsigned niter{0u}; ///< Counter toward the number of times the \c do_newton method has been called.
+
     public:
 	/**
 	* Standard constructor nothing is done. The space is affected and the equations are to be solved in all space.
@@ -164,7 +166,11 @@ class System_of_eqs : public ProfiledObject<System_of_eqs> {
 	/**
 	* Returns the number of unknowns.
 	*/
-	int get_nbr_unknowns() const {return nbr_unknowns ;} ; 
+	int get_nbr_unknowns() const {return nbr_unknowns ;} ;
+	/**
+	 * Returns the current iteration number.
+	 */
+	unsigned get_niter() const {return niter;}
 
 	/**
 	* Returns a pointer on a \c Term_eq corresponding to an unknown number.
@@ -815,9 +821,10 @@ class System_of_eqs : public ProfiledObject<System_of_eqs> {
 	* Does one step of the Newton-Raphson iteration.
 	* @param prec : required precision.
 	* @param error : achieved precision.
+	* @param os : output stream for displaying messages.
 	* @return true if the required precision is achieved, false otherwise.
 	*/
-	bool do_newton (double, double&) ;
+	bool do_newton (double, double&,std::ostream & os = std::cout) ;
 
 	/**
 	* Updates the variations of the \c Term_eq that comes from the fact that some \c Domains are variable (i.e. their shape).
@@ -832,9 +839,11 @@ class System_of_eqs : public ProfiledObject<System_of_eqs> {
 	* @param error : achieved precision.
 	* @param ntrymax : first linesearch parameter.
 	* @param stepmax : second linesearch parameter.
+	* @param os : output stream for displaying messages.
 	* @return true if the required precision is achieved, false otherwise.
 	*/
-	bool do_newton_with_linesearch (double precision, double& error, int ntrymax = 10, double stepmax = 1.0); 
+	bool do_newton_with_linesearch (double precision, double& error, int ntrymax = 10, double stepmax = 1.0,
+	        std::ostream & os = std::cout);
   
 
 	// Parts for implementing gmres

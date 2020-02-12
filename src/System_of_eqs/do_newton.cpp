@@ -66,194 +66,212 @@ void split_two_d (int target, int& low, int& up) {
 }
 
 
-bool System_of_eqs::do_newton(double precision, double& error) {
+bool System_of_eqs::do_newton(double precision, double& error, std::ostream & os) {
 
-   clock_t begin, end;
 	bool res;
 	int bsize = 64;
+	niter++;
 
 	// rank and nproc from MPI :
 	int rank, nproc;
 	MPI_Comm_rank (MPI_COMM_WORLD, &rank);
 	MPI_Comm_size (MPI_COMM_WORLD, &nproc);
 
+    if(rank==0 && niter==1)
+    {
+        os <<
+         "============================================================================================================================\n"
+         "|      |            |       ||b||      |                              Computational Times                                  |\n"
+         "| Iter | Syst. Size |   Initial Error  |-----------------------------------------------------------------------------------|\n"
+         "|      |            | (tol=" << std::setw(10) << std::setprecision(9) << precision;
+        os << ") | Matrix Computation | Matrix Translation |      Linear Solver |      Newton Update |\n"
+         "|======|============|==================|====================|====================|====================|====================|\n";
+    }
 	vars_to_terms();
 	Array<double> second (sec_member());
 	error = max(fabs(second));
-	if (rank==0)
-		cout << "Error init = " << error << endl;
+
 	if (error<precision) {
 		res = true;
+		if(rank==0)
+        {
+            os << "===================================================================================================="
+                  "=======================\n";
+            os << "Success: tolerance reached with ||b|| = " << error << " / " << precision << endl << endl;
+        }
 	}
 	else {
-
-	int nn = second.get_size(0);
-	if (nn!=nbr_unknowns) {
-		cerr << "Number of unknowns is different from the number of equations" << endl;
-		cerr << "nbr equations = " << nn << endl;
-		cerr << "nbr unknowns  = " << nbr_unknowns << endl;
-		abort();
-	}
-
-	if (rank==0)
-		cout << "Size of the system " << nn << endl;
-
-	// Computation in a 1D distributed matrice
-	int zero = 0;
-	int ictxt_in;
-        int nprow_in = 1;
-        int npcol_in = nproc;
-        sl_init_ (&ictxt_in, &nprow_in, &npcol_in);
-
-	// Get my row and mycol
-        int myrow_in, mycol_in;
-        blacs_gridinfo_ (&ictxt_in, &nprow_in, &npcol_in, &myrow_in, &mycol_in);
-
-	while (bsize*nproc>nn) {
-		bsize = div(bsize,2).quot;
-	}
-	if (bsize<1) {
-		cerr << "Too many processrs in do_newton" << endl;
-		abort();
-	}
-
-	int nrowloc_in = numroc_ (&nn, &bsize, &myrow_in, &zero, &nprow_in);
-	int ncolloc_in = numroc_ (&nn, &bsize, &mycol_in, &zero, &npcol_in);
-
-	Array<double> matloc_in (ncolloc_in, nrowloc_in);
-	int start = bsize*rank;
-	bool done = false;
-	int current = 0;
-
-	hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-	        nn," | matrix computation ");
-
-	while (!done) {
-		for (int i=0 ; i<bsize ; i++)
-			if (start+i<nn) {
-			Array<double> column (do_col_J(start+i));
-			for (int j=0 ; j<nn ; j++)
-				matloc_in.set(current,j) = column(j);
-			current++;
-		}
-		start += nproc*bsize;
-		if (start>=nn)
-			done = true;
-	}
-
-	 // Descriptor of the matrix :
-        Array<int> descamat_in(9);
-        int info;
-        descinit_ (descamat_in.set_data(), &nn, &nn, &bsize, &bsize, &zero, &zero, &ictxt_in, &nrowloc_in, &info);
-
-	// Wait for everybody
-	MPI_Barrier(MPI_COMM_WORLD);
-
-    duration const t_load_matrix {this->stop_chrono(chrono_key)};
-
-    if (rank == 0) cout << "Loading the matrix : " << to_seconds(t_load_matrix) << " seconds" << endl;
-
-    chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-                                        nn," | matrix translation ");
-	// Now translate to a 2D cyclic decomposition
-	int npcol, nprow;
-	split_two_d (nproc, npcol, nprow);
-	int ictxt;
-	sl_init_ (&ictxt, &nprow, &npcol);
-
-        int myrow, mycol;
-        blacs_gridinfo_ (&ictxt, &nprow, &npcol, &myrow, &mycol);
-
-        int nrowloc = numroc_ (&nn, &bsize, &myrow, &zero, &nprow);
-        int ncolloc = numroc_ (&nn, &bsize, &mycol, &zero, &npcol);
-
-	Array<double> matloc (ncolloc, nrowloc);
-        Array<int> descamat(9);
-        descinit_ (descamat.set_data(), &nn, &nn, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
-
-        Cpdgemr2d (nn, nn, matloc_in.set_data(), 1, 1, descamat_in.set_data(), matloc.set_data(), 1, 1, descamat.set_data(), ictxt);
-
-	matloc_in.delete_data();
-
-	// Translate the second member :
-	Array<double> secloc (nrowloc);
-        for (int row=0 ; row<nn ; row++) {
-                int pi = div(row/bsize, nprow).rem;
-                int li = int(row/(nprow*bsize));
-                int xi = div(row, bsize).rem;
-                if ((pi==myrow) && (mycol==0))
-                        secloc.set(li*bsize+xi) = second(row);
+        int nn = second.get_size(0);
+        if (nn!=nbr_unknowns) {
+            cerr << "Number of unknowns is different from the number of equations" << endl;
+            cerr << "nbr equations = " << nn << endl;
+            cerr << "nbr unknowns  = " << nbr_unknowns << endl;
+            abort();
         }
 
-        // Descriptor of the second member
-        Array<int> descsec(9);
-        int one = 1;
-        descinit_ (descsec.set_data(), &nn, &one, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
-        duration const t_trans_matrix {this->stop_chrono(chrono_key)};
+        // Computation in a 1D distributed matrice
+        int zero = 0;
+        int ictxt_in;
+            int nprow_in = 1;
+            int npcol_in = nproc;
+            sl_init_ (&ictxt_in, &nprow_in, &npcol_in);
 
-        if (rank == 0) cout << "Translating the matrix : " << to_seconds(t_trans_matrix) << " seconds" << endl;
+        // Get my row and mycol
+            int myrow_in, mycol_in;
+            blacs_gridinfo_ (&ictxt_in, &nprow_in, &npcol_in, &myrow_in, &mycol_in);
 
-	// Inversion
-        Array<int> ipiv (nn);
+        while (bsize*nproc>nn) {
+            bsize = div(bsize,2).quot;
+        }
+        if (bsize<1) {
+            cerr << "Too many processors in do_newton" << endl;
+            abort();
+        }
+
+        int nrowloc_in = numroc_ (&nn, &bsize, &myrow_in, &zero, &nprow_in);
+        int ncolloc_in = numroc_ (&nn, &bsize, &mycol_in, &zero, &npcol_in);
+
+        Array<double> matloc_in (ncolloc_in, nrowloc_in);
+        int start = bsize*rank;
+        bool done = false;
+        int current = 0;
+
+        hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
+                nn," | matrix computation ");
+
+        while (!done) {
+            for (int i=0 ; i<bsize ; i++)
+                if (start+i<nn) {
+                Array<double> column (do_col_J(start+i));
+                for (int j=0 ; j<nn ; j++)
+                    matloc_in.set(current,j) = column(j);
+                current++;
+            }
+            start += nproc*bsize;
+            if (start>=nn)
+                done = true;
+        }
+
+         // Descriptor of the matrix :
+            Array<int> descamat_in(9);
+            int info;
+            descinit_ (descamat_in.set_data(), &nn, &nn, &bsize, &bsize, &zero, &zero, &ictxt_in, &nrowloc_in, &info);
+
+        // Wait for everybody
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        duration const t_load_matrix {this->stop_chrono(chrono_key)};
+
         chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-                                          nn," | matrix inversion ");
-        pdgesv_ (&nn, &one, matloc.set_data(), &one, &one, descamat.set_data(), ipiv.set_data(), secloc.set_data(), &one, &one, descsec.set_data(), &info);
-        duration const t_inv_matrix {this->stop_chrono(chrono_key)};
-        if (rank == 0) cout << "Inverting the matrix : " << to_seconds(t_inv_matrix) << " seconds" << endl;
+                                            nn," | matrix translation ");
+        // Now translate to a 2D cyclic decomposition
+        int npcol, nprow;
+        split_two_d (nproc, npcol, nprow);
+        int ictxt;
+        sl_init_ (&ictxt, &nprow, &npcol);
 
-        chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", nn, " | update ");
-	// Get the global solution
-        Array<double> auxi(nn);
-        auxi = 0.;
-        for (int row=0 ; row<nn ; row++) {
-                int pi = div(row/bsize, nprow).rem;
-                int li = int(row/(nprow*bsize));
-                int xi = div(row, bsize).rem;
-                if ((pi==myrow) && (mycol==0))
-                        auxi.set(row) = secloc(li*bsize+xi);
+            int myrow, mycol;
+            blacs_gridinfo_ (&ictxt, &nprow, &npcol, &myrow, &mycol);
+
+            int nrowloc = numroc_ (&nn, &bsize, &myrow, &zero, &nprow);
+            int ncolloc = numroc_ (&nn, &bsize, &mycol, &zero, &npcol);
+
+        Array<double> matloc (ncolloc, nrowloc);
+            Array<int> descamat(9);
+            descinit_ (descamat.set_data(), &nn, &nn, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
+
+            Cpdgemr2d (nn, nn, matloc_in.set_data(), 1, 1, descamat_in.set_data(), matloc.set_data(), 1, 1, descamat.set_data(), ictxt);
+
+        matloc_in.delete_data();
+
+        // Translate the second member :
+        Array<double> secloc (nrowloc);
+            for (int row=0 ; row<nn ; row++) {
+                    int pi = div(row/bsize, nprow).rem;
+                    int li = int(row/(nprow*bsize));
+                    int xi = div(row, bsize).rem;
+                    if ((pi==myrow) && (mycol==0))
+                            secloc.set(li*bsize+xi) = second(row);
+            }
+
+            // Descriptor of the second member
+            Array<int> descsec(9);
+            int one = 1;
+            descinit_ (descsec.set_data(), &nn, &one, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
+            duration const t_trans_matrix {this->stop_chrono(chrono_key)};
+
+        // Inversion
+            Array<int> ipiv (nn);
+            chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
+                                              nn," | matrix inversion ");
+            pdgesv_ (&nn, &one, matloc.set_data(), &one, &one, descamat.set_data(), ipiv.set_data(), secloc.set_data(), &one, &one, descsec.set_data(), &info);
+            duration const t_inv_matrix {this->stop_chrono(chrono_key)};
+
+            chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", nn, " | update ");
+        // Get the global solution
+            Array<double> auxi(nn);
+            auxi = 0.;
+            for (int row=0 ; row<nn ; row++) {
+                    int pi = div(row/bsize, nprow).rem;
+                    int li = int(row/(nprow*bsize));
+                    int xi = div(row, bsize).rem;
+                    if ((pi==myrow) && (mycol==0))
+                            auxi.set(row) = secloc(li*bsize+xi);
+            }
+
+            Array<double> xx (nn);
+            MPI_Allreduce (auxi.set_data(), xx.set_data(), nn, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+        blacs_gridexit_ (&ictxt);
+        blacs_gridexit_ (&ictxt_in);
+
+        int conte = 0;
+        espace.xx_to_vars_variable_domains (this, xx, conte);
+
+        double* old_var_double = (nvar_double==0) ? 0x0 :
+                        new double[nvar_double];
+        for (int i=0 ; i<nvar_double ; i++)
+            old_var_double[i] = *var_double[i];
+
+        Tensor** old_fields = new Tensor* [nvar];
+        for (int i=0 ; i<nvar ; i++)
+            old_fields[i] = new Tensor(*var[i]);
+
+        xx_to_vars(xx, conte);
+
+        for (int i=0 ; i<nvar ; i++)
+            *var[i] = *old_fields[i] - *var[i];
+
+        for (int i=0 ; i<nvar_double ; i++)
+            *var_double[i] = old_var_double[i] - *var_double[i];
+
+        if (old_var_double!=0x0)
+            delete [] old_var_double;
+        for (int i=0 ; i<nvar ; i++)
+            delete old_fields[i];
+
+        delete [] old_fields;
+        duration const t_newton_update {this->stop_chrono(chrono_key)};
+        if (rank == 0) {
+            constexpr int dds {16};
+            os << '|';
+            os << ' ' << std::setw(4)  << niter << " |";
+            os << ' ' << std::setw(10) << nn    << " |";
+            os << ' ' << std::setw(dds) << error << " |";
+            os << ' ' << std::setw(dds) << to_seconds(t_load_matrix) << " s |";
+            os << ' ' << std::setw(dds) << to_milliseconds(t_trans_matrix) << "ms |";
+            os << ' ' << std::setw(dds) << to_seconds(t_inv_matrix) << " s |";
+            os << ' ' << std::setw(dds) << to_milliseconds(t_newton_update) << "ms |";
+            os << "\n";
         }
-
-        Array<double> xx (nn);
-        MPI_Allreduce (auxi.set_data(), xx.set_data(), nn, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-
-	blacs_gridexit_ (&ictxt);
-	blacs_gridexit_ (&ictxt_in);
-
-	int conte = 0;
-	espace.xx_to_vars_variable_domains (this, xx, conte);
-
-	double* old_var_double = (nvar_double==0) ? 0x0 :
-					new double[nvar_double];
-	for (int i=0 ; i<nvar_double ; i++)
-		old_var_double[i] = *var_double[i];
-
-	Tensor** old_fields = new Tensor* [nvar];
-	for (int i=0 ; i<nvar ; i++)
-		old_fields[i] = new Tensor(*var[i]);
-
-	xx_to_vars(xx, conte);
-
-	for (int i=0 ; i<nvar ; i++)
-		*var[i] = *old_fields[i] - *var[i];
-
-	for (int i=0 ; i<nvar_double ; i++)
-		*var_double[i] = old_var_double[i] - *var_double[i];
-
-	if (old_var_double!=0x0)
-	    delete [] old_var_double;
-	for (int i=0 ; i<nvar ; i++)
-		delete old_fields[i];
-
-	delete [] old_fields;
-	duration const t_newton_update {this->stop_chrono(chrono_key)};
-    if (rank == 0) cout << "Newton update : " << to_seconds(t_newton_update) << " seconds" << endl << endl;
-	res = false;
-      }
+        res = false;
+    }
 	return res;
 }
 
 
-bool System_of_eqs::do_newton_with_linesearch(double precision, double& error, int ntrymax, double stepmax)
+bool System_of_eqs::do_newton_with_linesearch(double precision, double& error, int ntrymax, double stepmax,
+        std::ostream & os)
 {
    // Numerical recipes 2007, section 9.7.1
    bool res(false);
@@ -262,13 +280,13 @@ bool System_of_eqs::do_newton_with_linesearch(double precision, double& error, i
 
    Array<double> second(sec_member());  // rhs of J.x = F
    error = max(fabs(second));
-   if (rank == 0) cout << "Error init = " << error << endl;
+   if (rank == 0) os << "Error init = " << error << endl;
    if (error < precision) res = true;
    else
    {
       int nn(second.get_size(0));
       check_size_VS_unknowns(nn);
-      if (rank == 0) cout << "Size of the system " << nn << endl;
+      if (rank == 0) os << "Size of the system " << nn << endl;
 
       Array<double> p(nn);             // solution of J.x = F
       double fold, f, slope, f2(0.0);
@@ -281,7 +299,7 @@ bool System_of_eqs::do_newton_with_linesearch(double precision, double& error, i
       check_negative(slope);
       compute_p(p, second, nn);    // all the parallel inversion of the jacobian is crammed into this function
       double pmax(max(p));
-      if (rank == 0) cout << "max(newton step) = " << pmax << endl;
+      if (rank == 0) os << "max(newton step) = " << pmax << endl;
 
       if (pmax > stepmax) p *= stepmax/pmax;      // rescale in case p is too large
       vector<double> old_var_double, p_var_double;
@@ -294,7 +312,7 @@ bool System_of_eqs::do_newton_with_linesearch(double precision, double& error, i
          f = compute_f(second);
          if (f <= 5.0e-13) break; // in double precision, linesearch in spoiled by numerical error as soon as the error is close to 1.0e-7 (f \propto error^2)
          if (f <= fold + alpha*lambda*slope or lambda <= lambdamin) break;
-         if (rank == 0) cout << "line search " << itry << " ====> ";
+         if (rank == 0) os << "line search " << itry << " ====> ";
          if (lambda == 1.0) lambdatmp = -0.5*slope/(f - fold - slope);
          else
          {
@@ -311,7 +329,7 @@ bool System_of_eqs::do_newton_with_linesearch(double precision, double& error, i
          lambda2 = lambda;
          f2 = f;
          lambda = max(lambdatmp, 0.1*lambda);
-         if (rank == 0) cout << "lambda = " << lambda << endl;
+         if (rank == 0) os << "lambda = " << lambda << endl;
          if (itry == ntrymax) update_fields(lambda, old_var_double, old_var_fields, p_var_double, p_var_fields);
       }
    }

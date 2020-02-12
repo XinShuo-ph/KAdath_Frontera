@@ -126,8 +126,6 @@ int main(int argc, char** argv) {
       int ite = 1 ;
       while (!endloop) {
 	endloop = syst.do_newton(1e-6, conv) ;
-	if(rank==0)
-	        cout << "Newton iteration " << ite << " " << conv  << " " << omega << endl ;
 	ite++ ;
 	 }
 
@@ -213,8 +211,6 @@ int main(int argc, char** argv) {
       int ite = 1 ;
       while (!endloop) {
 	endloop = syst.do_newton(1e-8, conv) ;
-	if(rank==0)
-	        cout << "Newton iteration " << ite << " " << conv  << " " << omega << endl ;
 	ite++ ;
 	 }
       syst.finalize();
