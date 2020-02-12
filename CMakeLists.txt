@@ -89,6 +89,7 @@ if(ENABLE_GPU_USE)
     message("            # CUDA_cusparse_LIBRARY = ${CUDA_cusparse_LIBRARY}")
     message(" - MAGMA : }")
     message("            # MAGMA_INCLUDE_DIRS = ${MAGMA_INCLUDE_DIRS}")
+    message("            # MAGMA_LIBDIR = ${MAGMA_LIBDIR})")
     message("            # MAGMA_LIBRARIES = ${MAGMA_LIBRARIES}")
 endif()
 
