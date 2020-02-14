@@ -57,5 +57,30 @@ namespace Kadath {
   using std::cosh;
   using std::sinh;
 
+  /**
+   * Set of enumerators used to select the computational model to use for the matrix-related computations (matrix
+   * coefficient calculation, linear system solve, etc.).
+   */
+  enum class Computational_model
+  {
+      //! value for fully sequential computations.
+      sequential,
+      //! value for fully MPI parallel computations.
+      mpi_parallel,
+      //! value for hybrid MPI / GPU computations.
+      gpu_mpi_parallel
+  };
+
+  inline constexpr const char* computational_model_name(Computational_model c)
+  {
+      return c == Computational_model::sequential ? "sequential" :
+                (c == Computational_model::mpi_parallel ? "mpi_parallel" : "gpu_mpi_parallel");
+  }
+
+#ifdef PAR_VERSION
+  constexpr Computational_model default_computational_model = Computational_model::mpi_parallel;
+#else
+  constexpr Computational_model default_computational_model = Computational_model::sequential;
+#endif
 }
 #endif
