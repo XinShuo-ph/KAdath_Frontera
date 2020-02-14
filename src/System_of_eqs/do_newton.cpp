@@ -1,11 +1,6 @@
-//
-// Created by sauliac on 09/01/2020.
-//
-#include <config.h>
 
-#ifdef PAR_VERSION
 /*
-    Copyright 2017 Philippe Grandclement & Gregoire Martinon
+    Copyright 2017 Philippe Grandclement
 
     This file is part of Kadath.
 
@@ -22,6 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <config.h>
+
+#ifdef PAR_VERSION
 
 #include "mpi.h"
 #include "system_of_eqs.hpp"
@@ -140,7 +138,7 @@ bool System_of_eqs::do_newton(double precision, double& error, std::ostream & os
         bool done = false;
         int current = 0;
 
-        hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
+        Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                 nn," | matrix computation ");
 
         while (!done) {
@@ -164,7 +162,7 @@ bool System_of_eqs::do_newton(double precision, double& error, std::ostream & os
         // Wait for everybody
         MPI_Barrier(MPI_COMM_WORLD);
 
-        duration const t_load_matrix {this->stop_chrono(chrono_key)};
+        Duration const t_load_matrix {this->stop_chrono(chrono_key)};
 
         chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                             nn," | matrix translation ");
@@ -202,14 +200,14 @@ bool System_of_eqs::do_newton(double precision, double& error, std::ostream & os
             Array<int> descsec(9);
             int one = 1;
             descinit_ (descsec.set_data(), &nn, &one, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
-            duration const t_trans_matrix {this->stop_chrono(chrono_key)};
+            Duration const t_trans_matrix {this->stop_chrono(chrono_key)};
 
         // Inversion
             Array<int> ipiv (nn);
             chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                               nn," | matrix inversion ");
             pdgesv_ (&nn, &one, matloc.set_data(), &one, &one, descamat.set_data(), ipiv.set_data(), secloc.set_data(), &one, &one, descsec.set_data(), &info);
-            duration const t_inv_matrix {this->stop_chrono(chrono_key)};
+            Duration const t_inv_matrix {this->stop_chrono(chrono_key)};
 
             chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", nn, " | update ");
         // Get the global solution
@@ -255,7 +253,7 @@ bool System_of_eqs::do_newton(double precision, double& error, std::ostream & os
             delete old_fields[i];
 
         delete [] old_fields;
-        duration const t_newton_update {this->stop_chrono(chrono_key)};
+        Duration const t_newton_update {this->stop_chrono(chrono_key)};
         if (rank == 0) {
             constexpr int dds {16};
             os << '|';
@@ -525,25 +523,6 @@ void System_of_eqs::compute_p(Array<double>& xx, Array<double> const& second, in
 
 #else //ifdef PAR_VERSION
 
-/*
-    Copyright 2017 Philippe Grandclement
-
-    This file is part of Kadath.
-
-    Kadath is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Kadath is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #include "system_of_eqs.hpp"
 #include "matrice.hpp"
 #include "scalar.hpp"
@@ -552,13 +531,13 @@ void System_of_eqs::compute_p(Array<double>& xx, Array<double> const& second, in
 
 #include <ctime>
 namespace Kadath {
-    bool System_of_eqs::do_newton(double precision, double& error)
+    bool System_of_eqs::do_newton(double precision, double& error,std::ostream &os)
     {
         clock_t begin, end;
         vars_to_terms();
         Array<double> second(sec_member());
         error = max(fabs(second));
-        cout << "Error init = " << error << endl;
+        os << "Error init = " << error << endl;
         if (error<precision) return true;
         int nn(second.get_size(0));
         if (nbr_unknowns!=nn)
@@ -567,34 +546,34 @@ namespace Kadath {
             cerr << "N equations = " << nn << endl;
             abort();
         }
-        cout << "Size = " << nn << endl;
-        cout << "Progression computation : ";
+        os << "Size = " << nn << endl;
+        os << "Progression computation : ";
         cout.flush();
 
-        hash_key chrono_key = this->start_chrono("do_newton | problem size = ",nn," | matrix computation ");
+        Hash_key chrono_key = this->start_chrono("do_newton | problem size = ",nn," | matrix computation ");
         Array<double> jx(nn);
         Matrice ope(nn,nn);
         for (int col(nn-1) ; col >= 0 ; col--)
         {
             if ((col != 0) && (col%int(nn/10) == 0))
             {
-                cout << "*";
-                cout.flush();
+                os << "*";
+                os.flush();
             }
             jx = do_col_J(col);
             for (int line(0) ; line < nn ; line++) ope.set(line,col) = jx(line);
         }
-        cout << endl;
-        duration const
+        os << endl;
+        Duration const
             t_load_matrix {this->stop_chrono(chrono_key)};
-        cout << "Loading the matrix : " << to_seconds(t_load_matrix) << " seconds" << endl;
+        os << "Loading the matrix : " << to_seconds(t_load_matrix) << " seconds" << endl;
 
         chrono_key = this->start_chrono("do_newton | problem size = ",nn," | matrix inversion ");
         ope.set_lu();
         Array<double> xx(ope.solve(second));
-        duration const
+        Duration const
                 t_inv_matrix {this->stop_chrono(chrono_key)};
-        cout << "Inverting the matrix : " << to_seconds(t_inv_matrix) << " seconds" << endl;
+        os << "Inverting the matrix : " << to_seconds(t_inv_matrix) << " seconds" << endl;
         int conte(0);
 
         chrono_key = this->start_chrono("do_newton | problem size = ",nn," | Newton update ");
@@ -609,14 +588,14 @@ namespace Kadath {
         delete [] old_var_double;
         for (int i(0) ; i<nvar ; i++) delete old_fields[i];
         delete [] old_fields;
-        duration const t_newton_update
+        Duration const t_newton_update
             {this->stop_chrono(chrono_key)};
-        cout << "Newton update : " << to_seconds(t_newton_update) << " seconds" << endl;
+        os << "Newton update : " << to_seconds(t_newton_update) << " seconds" << endl;
         return false;
     }
 
 
-    bool System_of_eqs::do_newton_with_linesearch(double, double& , int, double )
+    bool System_of_eqs::do_newton_with_linesearch(double, double& , int, double,std::ostream & )
     {
         cerr << "Newton-Raphson with line-search Not implemented yet in the sequential version" << endl ;
         abort() ;

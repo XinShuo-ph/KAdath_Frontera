@@ -50,7 +50,7 @@ class Eq_int ;
  * \ingroup systems
  */
 
-class System_of_eqs : public ProfiledObject<System_of_eqs> {
+class System_of_eqs : public Profiled_object<System_of_eqs> {
     protected:
 	const Space& espace ; ///< Associated \c Space
 	int dom_min ; ///< Smallest domain number

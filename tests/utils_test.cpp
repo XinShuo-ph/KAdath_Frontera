@@ -28,7 +28,7 @@
 
 using namespace Kadath;
 
-class KadathProfiledObjectTest : public ProfiledObject<KadathProfiledObjectTest,std::chrono::duration<double>,true>
+class KadathProfiledObjectTest : public Profiled_object<KadathProfiledObjectTest,std::chrono::duration<double>,true>
         , public ::testing::Test
 {
 public:
@@ -44,10 +44,10 @@ TEST_F(KadathProfiledObjectTest,CheckTimeMeasurement)
 {
     constexpr unsigned short ncheck {10u};
     constexpr unsigned long small_sleep_duration {500}; // milliseconds
-    hash_key long_sleep_key = start_chrono("one_long_sleep"),short_sleeps_key{};
+    Hash_key long_sleep_key = start_chrono("one_long_sleep"),short_sleeps_key{};
     for(int i=0;i<ncheck;++i)
     {
-        hash_key new_short_sleeps_key = start_chrono("several_short_sleeps");
+        Hash_key new_short_sleeps_key = start_chrono("several_short_sleeps");
         if(i==0)
         {
             short_sleeps_key = new_short_sleeps_key;
@@ -65,14 +65,14 @@ TEST_F(KadathProfiledObjectTest,CheckTimeMeasurement)
 
     auto long_sleep_it = get_statistic_map().find(long_sleep_key);
     EXPECT_FALSE(long_sleep_it == get_statistic_map().end());
-    statistics const & long_sleep_duration_measure {long_sleep_it->second};
+    Statistics const & long_sleep_duration_measure {long_sleep_it->second};
     EXPECT_EQ(long_sleep_duration_measure.n_samples,1);
     EXPECT_GE(long_sleep_duration_measure.total_duration,(ncheck*small_sleep_duration/1000.));
     EXPECT_EQ(long_sleep_duration_measure.total_duration,long_sleep_duration_measure.average_duration);
     EXPECT_EQ(long_sleep_duration_measure.std_deviation,0.);
     auto short_sleeps_it = get_statistic_map().find(short_sleeps_key);
     EXPECT_FALSE(short_sleeps_it == get_statistic_map().end());
-    statistics const & short_sleeps_duration_measure {short_sleeps_it->second};
+    Statistics const & short_sleeps_duration_measure {short_sleeps_it->second};
     EXPECT_EQ(short_sleeps_duration_measure.n_samples,ncheck);
     EXPECT_GE(short_sleeps_duration_measure.total_duration,small_sleep_duration/1000.);
     EXPECT_NEAR(short_sleeps_duration_measure.average_duration,small_sleep_duration/1000.,tol);
