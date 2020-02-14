@@ -61,7 +61,7 @@ namespace Kadath {
    * Set of enumerators used to select the computational model to use for the matrix-related computations (matrix
    * coefficient calculation, linear system solve, etc.).
    */
-  enum class computational_model
+  enum class Computational_model
   {
       //! value for fully sequential computations.
       sequential,
