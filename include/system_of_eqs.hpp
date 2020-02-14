@@ -819,11 +819,13 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 
 	/**
 	* Does one step of the Newton-Raphson iteration.
+	* @tparam computational_model template parameter for the computational model (mpi/sequential/GPU) selection.
 	* @param prec : required precision.
 	* @param error : achieved precision.
 	* @param os : output stream for displaying messages.
 	* @return true if the required precision is achieved, false otherwise.
 	*/
+	template<Computational_model computational_model = default_computational_model>
 	bool do_newton (double, double&,std::ostream & os = std::cout) ;
 
 	/**
@@ -842,6 +844,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param os : output stream for displaying messages.
 	* @return true if the required precision is achieved, false otherwise.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	bool do_newton_with_linesearch (double precision, double& error, int ntrymax = 10, double stepmax = 1.0,
 	        std::ostream & os = std::cout);
   
@@ -855,56 +858,67 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* Tests the value of the number of unknowns.
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void check_size_VS_unknowns(int n);
 	/**
 	* Tests the not too many processors are used.
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void check_bsize(int bsize);
 	/**
 	* Computes the local part of the Jacobian
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void compute_matloc(Array<double>& matloc_in, int nn, int bsize);
 	/**
 	* Distributes the second member of Newton-Raphson accross the various processors.
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void translate_second_member(Array<double>& secloc, Array<double> const& second, int nn, int bsize, int nprow, int myrow, int mycol);
 	/**
 	* Solves the linear problem in Newton-Raphson.
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void get_global_solution(Array<double>& auxi, Array<double> const& secloc, int nn, int bsize, int nprow, int myrow, int mycol);
 	/**
 	* Update the fields after a Newton-Raphson iteration.
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void update_fields(double lambda, vector<double> const& old_var_double, vector<Tensor> const& old_var_fields, vector<double> const& p_var_double, vector<Tensor> const& p_var_fields);
 	/**
 	* Update the fields when some domains have been modified.
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void compute_old_and_var(Array<double> const& xx, vector<double>& old_var_double, vector<Tensor>& old_var_fields, vector<double>& p_var_double, vector<Tensor>& p_var_fields);
 	/**
 	* Inner routine for the linesearch algorithm
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	double compute_f(Array<double> const& second);
 	/**
 	* Inner routine for the linesearch algorithm
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void compute_p(Array<double>& xx, Array<double> const& second, int nn);
 	/**
 	* Tests the positivity of  \f$\delta\f$
 	* Used by do_newton_with_linesearch ; only implemented in parallel version.
 	*/
+    template<Computational_model computational_model = default_computational_model>
 	void check_positive(double delta);
     /**
     * Tests the positivity of  \f$\delta\f$
     * Used by do_newton_with_linesearch ; only implemented in parallel version.
     */
+    template<Computational_model computational_model = default_computational_model>
     void check_negative(double delta);
 
 	friend class Space_spheric ;
@@ -1507,5 +1521,119 @@ class Eq_first_integral : public Equation {
 		virtual bool take_into_account (int) const ;
 } ;
 
+
+    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &, std::ostream &);
+    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &, std::ostream &);
+    template<> bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double , double &, int , double , std::ostream &);
+
+// default : not implemented - the implemention is made through the specializations (see the seq_do_newton.cpp,
+// mpi_do_newton.cpp... files).
+    template<Computational_model computational_model>
+    bool System_of_eqs::do_newton(double, double &, std::ostream &os)
+    {
+        cerr << "Error: System_of_eq::do_newton is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+        return true;
+    }
+
+    template<Computational_model computational_model>
+    bool System_of_eqs::do_newton_with_linesearch(double precision, double &error, int ntrymax, double stepmax,
+            std::ostream &os)
+    {
+        cerr << "Error: System_of_eq::do_newton is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+        return true;
+    }
+
+    template<Computational_model computational_model>
+    void check_size_VS_unknowns(int n)
+    {
+        cerr << "Error: System_of_eq::check_size_VS_unknowns  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    void check_bsize(int bsize)
+    {
+        cerr << "Error: System_of_eq::check_bsize  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    void compute_matloc(Array<double>& matloc_in, int nn, int bsize)
+    {
+        cerr << "Error: System_of_eq::compute_matloc  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    void translate_second_member(Array<double>& secloc, Array<double> const& second, int nn, int bsize, int nprow, int myrow, int mycol)
+    {
+        cerr << "Error: System_of_eq::translate_second_member  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    void get_global_solution(Array<double>& auxi, Array<double> const& secloc, int nn, int bsize, int nprow, int myrow, int mycol)
+    {
+        cerr << "Error: System_of_eq::get_global_solution  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    void update_fields(double lambda, vector<double> const& old_var_double, vector<Tensor> const& old_var_fields, vector<double> const& p_var_double, vector<Tensor> const& p_var_fields)
+    {
+        cerr << "Error: System_of_eq::update_fields  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    void compute_old_and_var(Array<double> const& xx, vector<double>& old_var_double, vector<Tensor>& old_var_fields, vector<double>& p_var_double, vector<Tensor>& p_var_fields)
+    {
+        cerr << "Error: System_of_eq::compute_old_and_var  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    double compute_f(Array<double> const& second)
+    {
+        cerr << "Error: System_of_eq::compute_f  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+        return double{};
+    }
+
+    template<Computational_model computational_model>
+    void compute_p(Array<double>& xx, Array<double> const& second, int nn)
+    {
+        cerr << "Error: System_of_eq::compute_p  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    void check_positive(double delta)
+    {
+        cerr << "Error: System_of_eq::check_positive  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
+
+    template<Computational_model computational_model>
+    void check_negative(double delta)
+    {
+        cerr << "Error: System_of_eq::check_negative  is not implemented for the "
+             << computational_model_name(computational_model)
+             << " computational model." << endl;
+    }
 }
 #endif
