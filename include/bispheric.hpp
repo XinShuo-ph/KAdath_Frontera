@@ -1377,6 +1377,22 @@ class Space_bispheric : public Space {
      */
 	Space_bispheric (int ttype, double dist, double rhor1, double rshell1, double rhor2, double rshell2, double rext, int nr) ;
 
+/**
+     * Constructor without nucleus and one shell around each holes ; a compactified outer domain
+     * @param ttype [input] : the type of basis.
+     * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
+     * @param rhor1 [input] : radius  of the first horizon.
+     * @param rshell1 [input] : radius  of the first shell.
+     * @param rhor2 [input] : radius  of the second horizon.
+     * @param rshell2 [input] : radius  of the second shell.
+     * @param nshells [input] : number of outer shells.
+     * @param rr [input] : radiii of the outer shells.
+     * @param nr [input] : number of points in each dimension 
+     *(\f$ nr-1 \f$ for coordinates of the type \f$ \varphi \f$)
+     *
+     */
+	Space_bispheric (int ttype, double dist, double rhor1, double rshell1, double rhor2, double rshell2, int nshells,  const Array<double>& rshells, int nr) ;
+
 
 	/**
 	* Constructor from a file
