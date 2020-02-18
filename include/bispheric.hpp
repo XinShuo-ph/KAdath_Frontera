@@ -1469,6 +1469,14 @@ class Space_bispheric : public Space {
 	* Sets a matching condition accross all the bispheric domain (intended for a second order equation).
 	* @param syst : the \c System_of_eqs.
 	* @param rac : the string describing the boundary condition.
+	* @param list : list of the components to be considered.
+	*/
+	void add_matching (System_of_eqs& syst, const char* rac, const List_comp& list)  ;
+
+	/**
+	* Sets a matching condition accross all the bispheric domain (intended for a second order equation).
+	* @param syst : the \c System_of_eqs.
+	* @param rac : the string describing the boundary condition.
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
