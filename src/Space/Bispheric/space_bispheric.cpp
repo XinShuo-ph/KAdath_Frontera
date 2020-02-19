@@ -354,8 +354,8 @@ Space_bispheric::Space_bispheric (int ttype, double distance, double rhor1, doub
     
     // Bispheric :
     // Computation of aa
-    double r1 = rhor1 ;
-    double r2 = rhor2 ;
+    double r1 = rshell1 ;
+    double r2 = rshell2 ;
     
     Param par_a ;
     par_a.add_double(r1,0) ;
