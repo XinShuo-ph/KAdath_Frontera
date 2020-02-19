@@ -121,6 +121,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	Index** which_coef ; ///< Stores the "true" coefficients on some boundaries (probably deprecated).
 
 	unsigned niter{0u}; ///< Counter toward the number of times the \c do_newton method has been called.
+	bool display_newton_data{true};///< Boolean used to enable or disable the display of data during the Newton iterations.
 
     public:
 	/**
@@ -171,6 +172,8 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	 * Returns the current iteration number.
 	 */
 	unsigned get_niter() const {return niter;}
+	System_of_eqs & enable_data_display() {display_newton_data = true; return *this;}
+	System_of_eqs & disable_data_display() {display_newton_data = false; return *this;}
 
 	/**
 	* Returns a pointer on a \c Term_eq corresponding to an unknown number.
@@ -274,7 +277,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param pope : pointer on the function describing the action of the  operator.
 	* @param par : parameters of the operator.
 	*/
-	void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, const Term_eq&, Param*), Param* par) ; 
+	void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, const Term_eq&, Param*), Param* par) ;
 
 	/**
 	* Check if a string is an unknown (number).
@@ -458,7 +461,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;	
+	void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be second order).
@@ -467,7 +470,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered
 	*/
-	void add_eq_inside (int dom, const char* eq, const List_comp& list) ;	
+	void add_eq_inside (int dom, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (of arbitrary order).
@@ -734,7 +737,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;	
+	void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation representing a first integral.
@@ -743,7 +746,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param integ_part : name of the integral quantity
 	* @param const_part : equation fixing the value of the integral.
 	*/
-	void add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* const_part) ;	
+	void add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* const_part) ;
 
 	/**
 	* Addition of an equation prescribing the value of one coefficient of a scalar field, on a given boundary.
@@ -753,7 +756,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param pos_cf : which coefficient is used.
 	* @param val : the value the coefficient must have.
 	*/
-	void add_eq_mode (int dom, int bb, const char* eq, const Index& pos_cf, double val) ; 
+	void add_eq_mode (int dom, int bb, const char* eq, const Index& pos_cf, double val) ;
 	/**
 	* Addition of an equation prescribing the value of one coefficient of a scalar field.
 	* @param dom : number of the \c Domain.
@@ -775,7 +778,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the scalar field that must vanish.
 	* @param MM : which point is used.
 	*/
-	void add_eq_point (int dom, const char* eq, const Point& MM) ; 
+	void add_eq_point (int dom, const char* eq, const Point& MM) ;
 
 	// Various computational stuff :
 	/**
@@ -818,6 +821,17 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	Array<double> do_col_J (int i) ;
 
 	/**
+	 *
+	 * Build the jacobian of the equation for the current values of the parameters.
+	 * @param matrix the object storing the values.
+	 * @param n size of the matrix (square).
+	 * @param first_col index of the first column to compute (0 in a pure sequential mode)
+	 * @param n_col number of columns to compute by the local process.
+	 */
+    virtual void compute_matrix(Array<double> &matrix, int n, int first_col, int n_col, int nproc = 1,
+            bool transpose=false);
+
+	/**
 	* Does one step of the Newton-Raphson iteration.
 	* @tparam computational_model template parameter for the computational model (mpi/sequential/GPU) selection.
 	* @param prec : required precision.
@@ -827,6 +841,13 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	*/
 	template<Computational_model computational_model = default_computational_model>
 	bool do_newton (double, double&,std::ostream & os = std::cout) ;
+
+	/**
+	 * Update the values of \c var and \c var_double from the solution of the linear system of the last Newton
+	 * iteration.
+	 * @param xx array storing the solution of the linear system from the current Newton iteration.
+	 */
+	void newton_update_vars(Array<double> const & xx);
 
 	/**
 	* Updates the variations of the \c Term_eq that comes from the fact that some \c Domains are variable (i.e. their shape).
@@ -950,7 +971,31 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	friend class Metric_conf_factor ;
 	friend class Metric_conf_factor_const ;
 	friend class Metric_cfc ;
-} ;
+
+protected:
+    struct Newton_iteration_data{
+        unsigned n_iter; int problem_size; double current_error;
+        Duration t_load_matrix; Duration t_trans_matrix; Duration t_inv_matrix; Duration t_newton_update;
+    };
+    /**
+     * Sends the header lines for the Newton-Raphson iterations data.
+     * @param os stream to send the header to.
+     * @param precision is the tolerance stopping criterion for the algorithm.
+     */
+    static void display_do_newton_report_header(std::ostream & os,double precision);
+    /**
+     * Sends the last lines for the Newton-Raphson iterations data.
+     * @param os stream to send the end lines to.
+     * @param reached_precision value of the reached precision.
+     */
+    static void display_do_newton_ending_line(std::ostream &os, double precision, double reached_precision);
+    /**
+     * Format end sends the Newton-Raphson iteration data.
+     * @param os stream to send the data to.
+     * @param data data to display.
+     */
+    static void display_do_newton_iteration(std::ostream &os,const Newton_iteration_data & data);
+};
 
 /**
  * Class implementing an equation. This is a purely abstract class that can not be instanciated.

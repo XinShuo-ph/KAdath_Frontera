@@ -304,6 +304,39 @@ System_of_eqs::~System_of_eqs() {
 	}
 }
 
+void System_of_eqs::display_do_newton_report_header(std::ostream &os, double precision)
+{
+    os <<
+       "============================================================================================================================\n"
+       "|      |            |       ||b||      |                              Computational Times                                  |\n"
+       "| Iter | Syst. Size |   Initial Error  |-----------------------------------------------------------------------------------|\n"
+       "|      |            | (tol=" << std::setw(10) << std::setprecision(9) << precision;
+    os << ") | Matrix Computation | Matrix Translation |      Linear Solver |      Newton Update |\n"
+          "|======|============|==================|====================|====================|====================|====================|\n";
+}
+
+void System_of_eqs::display_do_newton_ending_line(std::ostream &os, double precision, double reached_precision)
+{
+    os << "===================================================================================================="
+          "=======================\n";
+    os << "Success: tolerance reached with ||b|| = " << reached_precision << " / " << precision << "\n" ;
+}
+
+void System_of_eqs::display_do_newton_iteration(std::ostream &os,const Newton_iteration_data &data)
+{
+    static constexpr int dds {16};
+    os << '|';
+    os << ' ' << std::setw(4) << data.n_iter << " |";
+    os << ' ' << std::setw(10) << data.problem_size << " |";
+    os << ' ' << std::setw(dds) << data.current_error << " |";
+    os << ' ' << std::setw(dds) << to_seconds(data.t_load_matrix) << " s |";
+    os << ' ' << std::setw(dds) << to_milliseconds(data.t_trans_matrix) << "ms |";
+    os << ' ' << std::setw(dds) << to_seconds(data.t_inv_matrix) << " s |";
+    os << ' ' << std::setw(dds) << to_milliseconds(data.t_newton_update) << "ms |";
+    os << "\n";
+
+}
+
 const Metric* System_of_eqs::get_met() const {
 	if (met==0x0) {
 		cerr << "Undefined metric in System_of_eqs" << endl ;
@@ -656,6 +689,47 @@ Tensor System_of_eqs::give_val_def (const char* so) const {
     }
 
   return res ; 
+}
+
+void System_of_eqs::compute_matrix(Array<double> &matrix, int n, int first_col, int n_col, int nproc,bool transpose)
+{
+    assert(matrix.get_ndim()==2);
+    bool done = false;
+    int current = 0;
+    while (!done)
+    {
+        for (int i=0 ; i<n_col ; i++) {
+            if (first_col + i < n) {
+                Array<double> column(do_col_J(first_col + i));
+                if(!transpose){
+                    for (int j = 0; j < n; j++) matrix.set(j, current) = column(j);
+                } else {
+                    for (int j = 0; j < n; j++) matrix.set(current, j) = column(j);
+                }
+                current++;
+            }
+        }
+        first_col += nproc*n_col;
+        if (first_col>=n)
+            done = true;
+    }
+}
+
+void System_of_eqs::newton_update_vars(Array<double> const &xx)
+{
+    int conte = 0;
+    espace.xx_to_vars_variable_domains (this, xx, conte);
+
+    double* old_var_double = (nvar_double==0) ? 0x0 :new double[nvar_double];
+    for (int i=0 ; i<nvar_double ; i++) old_var_double[i] = *var_double[i];
+    Tensor** old_fields = new Tensor* [nvar];
+    for (int i=0 ; i<nvar ; i++) old_fields[i] = new Tensor(*var[i]);
+    xx_to_vars(xx, conte);
+    for (int i=0 ; i<nvar ; i++) *var[i] = *old_fields[i] - *var[i];
+    for (int i=0 ; i<nvar_double ; i++) *var_double[i] = old_var_double[i] - *var_double[i];
+    if (old_var_double!=0x0) delete [] old_var_double;
+    for (int i=0 ; i<nvar ; i++) delete old_fields[i];
+    delete [] old_fields;
 }
 
 }

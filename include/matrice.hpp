@@ -112,6 +112,7 @@ class Matrice {
 	Array<int>* get_permute() {return permute ;} ;///< Returns a pointer  on the permutation array.
 
 	const Array<double>& get_array() const {return *std; } ; ///< Returns the array of matrix elements
+	Array<double>& get_array() {return *std;}
 	
     // affectation
     public:	
