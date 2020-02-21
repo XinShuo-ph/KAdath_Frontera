@@ -51,7 +51,15 @@ class Eq_int ;
  */
 
 class System_of_eqs : public Profiled_object<System_of_eqs> {
-    protected:
+public:
+    static constexpr std::size_t default_block_size {64};
+    //! Dummy variable for the purpose of better readability.
+    static constexpr int ALL_COLUMNS {-1};
+    //! Dummy names for the purpose of better readability.
+    enum : bool { DO_NOT_TRANSPOSE = false, TRANSPOSE = true};
+    enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
+
+protected:
 	const Space& espace ; ///< Associated \c Space
 	int dom_min ; ///< Smallest domain number
 	int dom_max ; ///< Highest domain number
@@ -222,62 +230,62 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	 * @param name : name of the variable (used afterwards by \c System_of_eqs)
 	 * @param var : variable.
 	 */
-	void add_var (const char* name, double& var) ;
+	virtual void add_var (const char* name, double& var) ;
 	/**
 	 * Addition of a variable (field case)
 	 * @param name : name of the variable (used afterwards by \c System_of_eqs)
 	 * @param var : variable.
 	 */
-	void add_var (const char* name, Tensor& var) ;
+	virtual void add_var (const char* name, Tensor& var) ;
 	/**
 	 * Addition of a constant (number case)
 	 * @param name : name of the constant (used afterwards by \c System_of_eqs)
 	 * @param cst : variable.
 	 */
-	void add_cst (const char* name, double cst) ;
+	virtual void add_cst (const char* name, double cst) ;
 	/**
 	 * Addition of a constant (field case)
 	 * @param name : name of the constant (used afterwards by \c System_of_eqs)
 	 * @param cst : constant.
 	 */
-	void add_cst (const char* name, const Tensor& cst) ;
+	virtual void add_cst (const char* name, const Tensor& cst) ;
 
 	/**
 	 * Addition of a definition 
 	 * @param name : string describing the definition (like "A=...")
 	 */
-	void add_def (const char* name) ;
+	virtual void add_def (const char* name) ;
 	/**
 	 * Addition of a definition in a single domain. 
 	 * @param dd : number of the \c Domain.
 	 * @param name : string describing the definition (like "A=...")
 	 */
-	void add_def (int dd, const char* name) ;
+	virtual void add_def (int dd, const char* name) ;
 	/**
 	 * Addition of a global definition 
 	 * @param name : string describing the definition (like "A=...")
 	 */
-	void add_def_global (const char* name) ;
+	virtual void add_def_global (const char* name) ;
 	/**
 	 * Addition of a global definition in a single domain. 
 	 * @param dd : number of the \c Domain.
 	 * @param name : string describing the definition (like "A=...")
 	 */
-	void add_def_global (int dd, const char* name) ;
+	virtual void add_def_global (int dd, const char* name) ;
 	/**
 	* Addition of a user defined operator (one argument version)
 	* @param name : name of the operator (used afterwards by \c System_of_eqs)
 	* @param pope : pointer on the function describing the action of the  operator.
 	* @param par : parameters of the operator.
 	*/
-	void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, Param*), Param* par) ;
+	virtual void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, Param*), Param* par) ;
 	/**
 	* Addition of a user defined operator (two arguments version)
 	* @param name : name of the operator (used afterwards by \c System_of_eqs)
 	* @param pope : pointer on the function describing the action of the  operator.
 	* @param par : parameters of the operator.
 	*/
-	void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, const Term_eq&, Param*), Param* par) ;
+	virtual void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, const Term_eq&, Param*), Param* par) ;
 
 	/**
 	* Check if a string is an unknown (number).
@@ -461,7 +469,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be second order).
@@ -470,7 +478,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered
 	*/
-	void add_eq_inside (int dom, const char* eq, const List_comp& list) ;
+	virtual void add_eq_inside (int dom, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (of arbitrary order).
@@ -480,7 +488,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_order (int dom, int order, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_order (int dom, int order, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (of arbitrary order).
@@ -489,7 +497,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_order (int dom, int order, const char* eq,  const List_comp& list) ;
+	virtual void add_eq_order (int dom, int order, const char* eq,  const List_comp& list) ;
 
 	/**
 	* Addition of an equation describing a boundary condition.
@@ -499,7 +507,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_bc (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_bc (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation describing a boundary condition.
@@ -508,7 +516,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_bc (int dom, int bb, const char* eq, const List_comp& list) ;
+	virtual void add_eq_bc (int dom, int bb, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation describing a matching condition between two domains (standard setting)
@@ -518,7 +526,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_matching (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_matching (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation describing a matching condition between two domains (standard setting)
@@ -527,7 +535,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_matching (int dom, int bb, const char* eq, const List_comp& list) ;
+	virtual void add_eq_matching (int dom, int bb, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation describing a matching condition between two domains (specialized function for time evolution).
@@ -537,7 +545,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_matching_one_side (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_matching_one_side (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation describing a matching condition between two domains (specialized function for time evolution).
@@ -546,7 +554,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_matching_one_side (int dom, int bb, const char* eq, const List_comp& list) ;
+	virtual void add_eq_matching_one_side (int dom, int bb, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation describing a matching condition between domains.
@@ -559,7 +567,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_matching_non_std (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_matching_non_std (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation describing a matching condition between domains.
@@ -571,7 +579,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_matching_non_std (int dom, int bb, const char* eq, const List_comp& list) ;
+	virtual void add_eq_matching_non_std (int dom, int bb, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation describing a matching condition between domains using the ("import" setting)
@@ -584,7 +592,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_matching_import (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_matching_import (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation describing a matching condition between domains using the ("import" setting)
@@ -596,7 +604,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_matching_import (int dom, int bb, const char* eq, const List_comp& list) ;
+	virtual void add_eq_matching_import (int dom, int bb, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be zeroth order i.e. with no derivatives).
@@ -605,7 +613,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_full (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_full (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be zeroth order i.e. with no derivatives).
@@ -613,7 +621,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_full (int dom, const char* eq, const List_comp& list) ;
+	virtual void add_eq_full (int dom, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be first order).
@@ -622,7 +630,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_one_side (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_one_side (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be first order).
@@ -630,7 +638,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_one_side (int dom, const char* eq, const List_comp& list) ;
+	virtual void add_eq_one_side (int dom, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of a matching condition, except for one coefficient where an alternative condition is enforced (highly specialized usage).
@@ -641,7 +649,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of a matching condition, except for one coefficient where an alternative condition is enforced (highly specialized usage).
@@ -651,7 +659,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq_exception : the excpetionnal equation used.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception, const List_comp& list) ;
+	virtual void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception, const List_comp& list) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain of arbitrary order.
@@ -662,7 +670,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_order (int dom, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_order (int dom, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain of arbitrary order.
@@ -672,7 +680,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_order (int dom, const Array<int>& orders, const char* eq, const List_comp& list) ;
+	virtual void add_eq_order (int dom, const Array<int>& orders, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation for the velocity potential of irrotational binaries.
@@ -681,7 +689,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param const_part : constant par 
 	*/
-	void add_eq_vel_pot (int dom, int order, const char* eq, const char* const_part) ;
+	virtual void add_eq_vel_pot (int dom, int order, const char* eq, const char* const_part) ;
 
 	/**
 	* Addition of an equation a boundary condition of arbitrary orders.
@@ -693,7 +701,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation a boundary condition of arbitrary orders.
@@ -704,7 +712,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) ;
+	virtual void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) ;
 
 
 	/**
@@ -717,7 +725,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+	virtual void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation a matching condition of arbitrary orders.
@@ -728,7 +736,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered.
 	*/
-	void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) ;
+	virtual void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation representing a first integral.
@@ -737,7 +745,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
+//	virtual void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation representing a first integral.
@@ -746,7 +754,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param integ_part : name of the integral quantity
 	* @param const_part : equation fixing the value of the integral.
 	*/
-	void add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* const_part) ;
+	virtual void add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* const_part) ;
 
 	/**
 	* Addition of an equation prescribing the value of one coefficient of a scalar field, on a given boundary.
@@ -756,7 +764,7 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param pos_cf : which coefficient is used.
 	* @param val : the value the coefficient must have.
 	*/
-	void add_eq_mode (int dom, int bb, const char* eq, const Index& pos_cf, double val) ;
+	virtual void add_eq_mode (int dom, int bb, const char* eq, const Index& pos_cf, double val) ;
 	/**
 	* Addition of an equation prescribing the value of one coefficient of a scalar field.
 	* @param dom : number of the \c Domain.
@@ -764,21 +772,21 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* @param pos_cf : which coefficient is used.
 	* @param val : the value the coefficient must have.
 	*/
-	void add_eq_val_mode (int dom, const char* eq, const Index& pos_cf, double val) ;
+	virtual void add_eq_val_mode (int dom, const char* eq, const Index& pos_cf, double val) ;
 	/**
 	* Addition of an equation saying that the value of a field must be zero at one collocation point.
 	* @param dom : number of the \c Domain.
 	* @param eq : string defining the scalar field that must vanish.
 	* @param pos : which collocation point is used.
 	*/
-	void add_eq_val (int dom, const char* eq, const Index& pos) ;
+	virtual void add_eq_val (int dom, const char* eq, const Index& pos) ;
 	/**
 	* Addition of an equation saying that the value of a field must be zero at one point (arbitrary).
 	* @param dom : number of the \c Domain.
 	* @param eq : string defining the scalar field that must vanish.
 	* @param MM : which point is used.
 	*/
-	void add_eq_point (int dom, const char* eq, const Point& MM) ;
+	virtual void add_eq_point (int dom, const char* eq, const Point& MM) ;
 
 	// Various computational stuff :
 	/**
@@ -791,6 +799,8 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	* Copies the various unknowns (doubles and \c Tensors) into their \c Term_eq counterparts.
 	*/
 	void vars_to_terms() ;
+
+	virtual void compute_nbr_of_conditions();
 	/**
 	* Computes the second member of the Newton-Raphson equations.
 	* It is essentially the coefficients of the residual of all the equations (plus some Galerking issues).
@@ -820,16 +830,18 @@ class System_of_eqs : public Profiled_object<System_of_eqs> {
 	*/
 	Array<double> do_col_J (int i) ;
 
-	/**
-	 *
-	 * Build the jacobian of the equation for the current values of the parameters.
-	 * @param matrix the object storing the values.
-	 * @param n size of the matrix (square).
-	 * @param first_col index of the first column to compute (0 in a pure sequential mode)
-	 * @param n_col number of columns to compute by the local process.
-	 */
-    virtual void compute_matrix(Array<double> &matrix, int n, int first_col, int n_col, int nproc = 1,
-            bool transpose=false);
+    /**
+     * Compute some columns of the jacobian of the system of equations. Default arguments are to be used in the case
+     * of a non-MPI version. For the MPI case, each process has to know which columns he has to compute.
+     * @param matrix 2D array storing the result (need to be allocated before being passed).
+     * @param n size of the matrix (which is square).
+     * @param first_col index of the first column to compute.
+     * @param n_col number of columns to compute.
+     * @param num_proc number of process.
+     * @param transpose does the result has to be transposed (this has to be the case for the scalapack linear solve).
+     */
+    virtual void compute_matrix(Array<double> &matrix, int n, int first_col= 0, int n_col= ALL_COLUMNS, int num_proc = 1,
+                                bool transpose = DO_NOT_TRANSPOSE);
 
 	/**
 	* Does one step of the Newton-Raphson iteration.

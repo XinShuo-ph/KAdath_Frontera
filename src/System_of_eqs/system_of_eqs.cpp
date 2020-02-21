@@ -691,25 +691,24 @@ Tensor System_of_eqs::give_val_def (const char* so) const {
   return res ; 
 }
 
-void System_of_eqs::compute_matrix(Array<double> &matrix, int n, int first_col, int n_col, int nproc,bool transpose)
+void System_of_eqs::compute_matrix(Array<double> &matrix, int n, int first_col, int n_col, int num_proc, bool transpose)
 {
     assert(matrix.get_ndim()==2);
+    n_col = (n_col == ALL_COLUMNS ? n : n_col);
     bool done = false;
     int current = 0;
     while (!done)
     {
-        for (int i=0 ; i<n_col ; i++) {
-            if (first_col + i < n) {
-                Array<double> column(do_col_J(first_col + i));
-                if(!transpose){
-                    for (int j = 0; j < n; j++) matrix.set(j, current) = column(j);
-                } else {
+        for (int i{0},k{first_col} ; i<n_col  && k < n; i++, k++) {
+                Array<double> column(do_col_J(k));
+                if(transpose){
                     for (int j = 0; j < n; j++) matrix.set(current, j) = column(j);
+                } else {
+                    for (int j = 0; j < n; j++) matrix.set(j, current) = column(j);
                 }
                 current++;
-            }
         }
-        first_col += nproc*n_col;
+        first_col += num_proc * n_col;
         if (first_col>=n)
             done = true;
     }

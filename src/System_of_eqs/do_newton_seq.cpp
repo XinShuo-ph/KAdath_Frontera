@@ -68,7 +68,7 @@ namespace Kadath {
 
                 Hash_key chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix computation ");
                 Matrice ope(nn, nn);
-                compute_matrix(ope.get_array(), nn, 0, nn);
+                compute_matrix(ope.get_array(), nn);
                 Duration const
                         t_load_matrix{this->stop_chrono(chrono_key)};
 

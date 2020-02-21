@@ -46,33 +46,38 @@ Array<double> System_of_eqs::check_equations() {
       return errors ;
 }
 
+void System_of_eqs::compute_nbr_of_conditions()
+{
+    vars_to_terms() ;
+
+    if (met!=0x0)
+        for (int d=dom_min ; d<=dom_max ; d++)
+            met->update(d) ;
+    for (int i=0 ; i<ndef ; i++)
+        def[i]->compute_res() ;
+
+    int conte = 0 ;
+    for (int i=0 ; i<neq ; i++)
+        eq[i]->apply(conte, results) ;
+
+    // Need to assert the size :
+    if (nbr_conditions==-1) {
+        nbr_conditions = 0 ;
+        for (int i=0 ; i<neq_int ; i++)
+            nbr_conditions ++ ;
+        for (int i=0 ; i<neq ; i++)
+            nbr_conditions += eq[i]->get_n_cond_tot() ;
+    }
+
+}
+
 Array<double> System_of_eqs::sec_member() {
 
-	vars_to_terms() ;
-
-	if (met!=0x0)
-	  for (int d=dom_min ; d<=dom_max ; d++)
-		met->update(d) ;
-	for (int i=0 ; i<ndef ; i++)
-		def[i]->compute_res() ;
-
-	int conte = 0 ;
-	for (int i=0 ; i<neq ; i++)
-	     eq[i]->apply(conte, results) ;
-
-	// Need to assert the size :
-	if (nbr_conditions==-1) {
-		nbr_conditions = 0 ;
-		for (int i=0 ; i<neq_int ; i++)
-			nbr_conditions ++ ;
-		for (int i=0 ; i<neq ; i++)
-		  nbr_conditions += eq[i]->get_n_cond_tot() ;
-	}
-
+    this->compute_nbr_of_conditions();
 	// Computation of the second member itself :
 	Array<double> res (nbr_conditions) ;
 	res = 0 ;
-	conte = 0 ;
+	int conte = 0 ;
 	int pos_res = 0 ;
 	for (int i=0 ; i<neq_int ; i++) {
 		res.set(pos_res) = eq_int[i]->get_val() ;

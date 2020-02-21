@@ -52,6 +52,9 @@ if (NOT DEFINED LAPACK_LIBRARIES)
     include(FindLAPACK) #FindLAPACK does exist
 endif()
 
+if(NOT DEFINED CMAKE_THREAD_LIBS_INIT)
+	find_package(Threads REQUIRED)
+endif()
 
 #include(FindSUNDIALS)
 
@@ -76,7 +79,7 @@ if(NOT PAR_VERSION)
     endif()
 endif(NOT PAR_VERSION)
 
-SET(KADATH_DEPENDENCIES ${GSL_LIBRARIES})
+SET(KADATH_DEPENDENCIES  Threads::Threads  ${GSL_LIBRARIES})
 if(PAR_VERSION)
 	if(MKL_VERSION)
 		if(USE_MKL_FFTW3_INTERFACE)

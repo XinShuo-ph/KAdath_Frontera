@@ -11,10 +11,10 @@ add_executable(${SCHWARZ} ${SOURCES_SCHWARZ} ${HEADERS})
 target_link_libraries(${SCHWARZ} kadath ${KADATH_DEPENDENCIES})
 
 #Executable for Stokes
-set (STOKES stokes)
-set (SOURCES_STOKES ${STOKES}.cpp)
-add_executable(${STOKES} ${SOURCES_STOKES} ${HEADERS})
-target_link_libraries(${STOKES} kadath ${KADATH_DEPENDENCIES})
+set (SCHWARZ_MULTI_THREAD schwarz-multi-thread)
+set (SOURCES_SCHWARZ_MULTI_THREAD ${SCHWARZ_MULTI_THREAD}.cpp)
+add_executable(${SCHWARZ_MULTI_THREAD} ${SOURCES_SCHWARZ_MULTI_THREAD} ${HEADERS})
+target_link_libraries(${SCHWARZ_MULTI_THREAD} kadath ${KADATH_DEPENDENCIES})
 
 
-set_target_properties(${MISNER} ${SCHWARZ} ${STOKES} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set_target_properties(${MISNER} ${SCHWARZ} ${SCHWARZ_MULTI_THREAD} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)

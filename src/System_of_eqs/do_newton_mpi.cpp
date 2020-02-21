@@ -68,7 +68,7 @@ namespace Kadath {
     bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error, std::ostream & os) {
         bool res;
 #ifdef PAR_VERSION
-        int bsize = 64;
+        int bsize  {static_cast<int>(default_block_size)};
         niter++;
 
         // rank and nproc from MPI :

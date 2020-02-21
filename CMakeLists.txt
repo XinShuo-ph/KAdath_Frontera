@@ -65,6 +65,7 @@ include (${PROJECT_SOURCE_DIR}/Cmake/CMakeExec.cmake)
 
 
 message("Libraries   (from CMakeLists.txt) :")
+message(" - threads   :  ${CMAKE_THREAD_LIBS_INIT}")
 message(" - GSL       :  ${GSL_LIBRARIES}")
 message(" - PGPLOT    :  ${PGPLOT_LIBRARIES}")
 message(" - FFTW      :  ${FFTW_LIBRARIES}")
