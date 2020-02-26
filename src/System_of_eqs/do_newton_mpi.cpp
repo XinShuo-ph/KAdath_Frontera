@@ -65,7 +65,8 @@ namespace Kadath {
     }
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error, std::ostream & os) {
+    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error, std::ostream & os,
+            Array<double> */*not used*/ ) {
         bool res;
 #ifdef PAR_VERSION
         int bsize  {static_cast<int>(default_block_size)};
@@ -80,7 +81,7 @@ namespace Kadath {
         {
             display_do_newton_report_header(os,precision);
         }
-        vars_to_terms();
+        //vars_to_terms();
         Array<double> second (sec_member());
         error = max(fabs(second));
 
@@ -129,7 +130,7 @@ namespace Kadath {
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
 
-            compute_matrix(matloc_in,nn,start,bsize,nproc,true);
+            compute_matrix_cyclic(matloc_in,nn,start,bsize,nproc,true);
 
             // Descriptor of the matrix :
             Array<int> descamat_in(9);

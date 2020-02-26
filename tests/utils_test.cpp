@@ -43,7 +43,7 @@ public:
 TEST_F(KadathProfiledObjectTest,CheckTimeMeasurement)
 {
     constexpr unsigned short ncheck {10u};
-    constexpr unsigned long small_sleep_duration {500}; // milliseconds
+    constexpr unsigned long small_sleep_duration {100}; // milliseconds
     Hash_key long_sleep_key = start_chrono("one_long_sleep"),short_sleeps_key{};
     for(int i=0;i<ncheck;++i)
     {

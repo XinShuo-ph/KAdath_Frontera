@@ -72,6 +72,7 @@ message(" - FFTW      :  ${FFTW_LIBRARIES}")
 message(" - LAPACK    :  ${LAPACK_LIBRARIES}")
 message(" - SCALAPACK :  ${SCALAPACK_LIBRARIES}")
 
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fPIE -pie -g")
 
 add_subdirectory(tutorials)
 

@@ -41,15 +41,19 @@ namespace Kadath
         container thread_specific_systems;
 
         /**
-         * Function that spread a call to some method of the base class \a System_od_eqs to each instance of the
-         * \a thread_specific_systems vector.
-         * @tparam Args types of the arguments of the method.
-         * @param method pointer to member function to be called.
-         * @param args arguments values.
+         * Forwards a a void-returning-functor to this and all the instances in the \c thread_specific_systems vector.
+         * @tparam F type of the functor to forward.
+         * @tparam R return type of the functor.
+         * @param method the functor itself.
          */
-        template<typename... Args> inline void call_base_method(void (System_of_eqs::*method)(Args...),Args... args);
+        template<typename F> void forward_base_method(F && method);
+
+        template<typename F> void threaded_forward_base_method(F && method);
 
     public:
+        container & get_thread_specific_systems() {return thread_specific_systems;}
+        container const & get_thread_specific_systems() const {return thread_specific_systems;}
+
         /**
          * Template constructor transfering all constructors from \a System_of_eqs to this class.
          * @tparam Args any template parameter pack with same types as any of one of \a System_of_eqs constructors.
@@ -69,129 +73,133 @@ namespace Kadath
          * the number of threads)
          * @param mcpp does the result has to be transposed (this has to be the case for the scalapack linear solve).
          */
-        void compute_matrix(Array<double> &matrix, int n, int first_col = 0, int n_col = ALL_COLUMNS, int n_mpi_proc = 1,
-                bool transpose = DO_NOT_TRANSPOSE) override;
+        void compute_matrix_cyclic(Array<double> &matrix, int n, int first_col = 0, int n_col = ALL_COLUMNS, int n_mpi_proc = 1,
+                                   bool transpose = DO_NOT_TRANSPOSE) override;
+
+        void compute_matrix_adjacent(Array<double> &matrix, int n, int first_col = 0, int n_col = ALL_COLUMNS, int n_mpi_proc = 1,
+                                     bool transpose = DO_NOT_TRANSPOSE,std::vector<std::vector<std::size_t>> * db=nullptr) override;
 
         void add_var (const char* name, double& var) override
-        {   this->call_base_method<const char*,double &>(&System_of_eqs::add_var,name,var); }
+        { this->forward_base_method([name,&var](auto & s){s.System_of_eqs::add_var(name,var);});}
         void add_var (const char* name, Tensor& var) override
-        {   this->call_base_method<const char*,Tensor &>(&System_of_eqs::add_var,name,var);}
+        { this->forward_base_method([name,&var](auto & s){s.System_of_eqs::add_var(name,var);});}
         void add_cst (const char* name, double cst) override
-        {   this->call_base_method<const char*,double>(&System_of_eqs::add_cst,name,cst);}
+        { this->forward_base_method([name,cst](auto & s){s.System_of_eqs::add_cst(name,cst);});}
         void add_cst (const char* name, const Tensor& cst) override
-        {   this->call_base_method<const char *,Tensor const &>(&System_of_eqs::add_cst,name,cst);}
+        { this->forward_base_method([name,&cst](auto & s){s.System_of_eqs::add_cst(name,cst);});}
         void add_def (const char* name) override
-        {   this->call_base_method<const char*>(&System_of_eqs::add_def,name);}
+        { this->forward_base_method([name](auto & s){s.System_of_eqs::add_def(name);});}
         void add_def (int dd, const char* name) override
-        {   this->call_base_method<int,const char *>(&System_of_eqs::add_def,dd,name);}
+        { this->forward_base_method([dd,name](auto & s){s.System_of_eqs::add_def(dd,name);});}
         void add_def_global (const char* name) override
-        {   this->call_base_method<const char*>(&System_of_eqs::add_def_global,name);}
+        { this->forward_base_method([name](auto & s){s.System_of_eqs::add_def_global(name);});}
         void add_def_global (int dd, const char* name) override
-        {   this->call_base_method<int,const char *>(&System_of_eqs::add_def_global,dd,name);}
+        { this->forward_base_method([dd,name](auto & s){s.System_of_eqs::add_def_global(dd,name);});}
         void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, Param*), Param* par) override
-        {   this->call_base_method<const char *,Term_eq (*)(const Term_eq&,Param *),Param *>(
-                &System_of_eqs::add_ope,name,pope,par);}
+        { this->forward_base_method([name,pope,par](auto & s){s.System_of_eqs::add_ope(name,pope,par);});}
         void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, const Term_eq&, Param*), Param* par) override
-        {   this->call_base_method<const char*,Term_eq (*)(const Term_eq&,const Term_eq&,Param*),Param*>(
-                &System_of_eqs::add_ope,name,pope,par);}
+        { this->forward_base_method([name,pope,par](auto & s){s.System_of_eqs::add_ope(name,pope,par);});}
         void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,const char *,int,Array<int>**>(
-                &System_of_eqs::add_eq_inside,dom,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_inside(dom,eq,n_cmp,p_cmp);});}
         void add_eq_inside (int dom, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,const char *,const List_comp&>(&System_of_eqs::add_eq_inside,dom,eq,list);}
+        { this->forward_base_method([dom,eq,&list](auto & s){s.System_of_eqs::add_eq_inside(dom,eq,list);});}
         void add_eq_order (int dom, int order, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const char *,int,Array<int>**>(
-                &System_of_eqs::add_eq_order,dom,order,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,order,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_order(dom,order,eq,n_cmp,p_cmp);});}
         void add_eq_order (int dom, int order, const char* eq,  const List_comp& list) override
-        {   this->call_base_method<int,int,const char *,const List_comp&>(
-                &System_of_eqs::add_eq_order,dom,order,eq,list);}
+        { this->forward_base_method([dom,order,eq,&list](auto & s){s.System_of_eqs::add_eq_order(dom,order,eq,list);});}
         void add_eq_bc (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const char*,int,Array<int>**>(
-                &System_of_eqs::add_eq_bc,dom,bb,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,bb,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_bc(dom,bb,eq,n_cmp,p_cmp);});}
         void add_eq_bc (int dom, int bb, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,int,const char*,const List_comp&>(&System_of_eqs::add_eq_bc,dom,bb,eq,list);}
+        { this->forward_base_method([dom,bb,eq,&list](auto & s){s.System_of_eqs::add_eq_bc(dom,bb,eq,list);});}
         void add_eq_matching (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const char*,int,Array<int>**>(
-                &System_of_eqs::add_eq_matching,dom,bb,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,bb,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_matching(dom,bb,eq,n_cmp,p_cmp);});}
         void add_eq_matching (int dom, int bb, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,int,const char*,const List_comp&>(
-                &System_of_eqs::add_eq_matching,dom,bb,eq,list);}
+        { this->forward_base_method([dom,bb,eq,&list](auto & s){s.System_of_eqs::add_eq_matching(dom,bb,eq,list);});}
         void add_eq_matching_one_side (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const char *,int,Array<int>**>(
-                &System_of_eqs::add_eq_matching_one_side,dom,bb,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,bb,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_matching_one_side(dom,bb,eq,n_cmp,p_cmp);});}
         void add_eq_matching_one_side (int dom, int bb, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,int,const char*,const List_comp&>(
-                &System_of_eqs::add_eq_matching_one_side,dom,bb,eq,list);}
+        { this->forward_base_method([dom,bb,eq,&list](auto & s)
+                                    {s.System_of_eqs::add_eq_matching_one_side(dom,bb,eq,list);});}
         void add_eq_matching_non_std (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const char*,int,Array<int>**>(
-                &System_of_eqs::add_eq_matching_non_std,dom,bb,eq,n_cmp,p_cmp);}
-        void add_eq_matching_non_std (int dom, int bb, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,int,const char *,const List_comp&>(
-                &System_of_eqs::add_eq_matching_non_std,dom,bb,eq,list);}
+        { this->forward_base_method([dom,bb,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_matching_non_std(dom,bb,eq,n_cmp,p_cmp);});}
+        void add_eq_matching_non_std(int dom, int bb, const char* eq, const List_comp& list) override
+        { this->forward_base_method([dom,bb,eq,&list](auto & s)
+                                    {s.System_of_eqs::add_eq_matching_non_std(dom,bb,eq,list);});}
         void add_eq_matching_import (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const char *,int,Array<int>**>(
-                &System_of_eqs::add_eq_matching_import,dom,bb,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,bb,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_matching_import(dom,bb,eq,n_cmp,p_cmp);});}
         void add_eq_matching_import (int dom, int bb, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,int,const char *,const List_comp&>(
-                &System_of_eqs::add_eq_matching_import,dom,bb,eq,list);}
+        { this->forward_base_method([dom,bb,eq,&list](auto & s)
+                                    {s.System_of_eqs::add_eq_matching_import(dom,bb,eq,list);});}
         void add_eq_full (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,const char*,int,Array<int>**>(&System_of_eqs::add_eq_full,dom,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_full(dom,eq,n_cmp,p_cmp);});}
         void add_eq_full (int dom, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,const char*,const List_comp&>(&System_of_eqs::add_eq_full,dom,eq,list);}
+        { this->forward_base_method([dom,eq,list](auto & s)
+                                    {s.System_of_eqs::add_eq_full(dom,eq,list);});}
         void add_eq_one_side (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,const char*,int,Array<int>**>(
-                &System_of_eqs::add_eq_one_side,dom,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_one_side(dom,eq,n_cmp,p_cmp);});}
         void add_eq_one_side (int dom, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,const char*,const List_comp&>(&System_of_eqs::add_eq_one_side,dom,eq,list);}
+        { this->forward_base_method([dom,eq,&list](auto & s){s.System_of_eqs::add_eq_one_side(dom,eq,list);});}
         void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception,
                 int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const char *,const Param &,const char *,int,Array<int>**>(
-                &System_of_eqs::add_eq_matching_exception,dom,bb,eq,par,eq_exception,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,bb,eq,&par,eq_exception,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_matching_exception(dom,bb,eq,par,eq_exception,n_cmp,p_cmp);});}
         void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception,
                 const List_comp& list) override
-        {   this->call_base_method<int,int,const char*,const Param &,const char *,const List_comp &>(
-                &System_of_eqs::add_eq_matching_exception,dom,bb,eq,par,eq_exception,list);}
+        { this->forward_base_method([dom,bb,eq,&par,eq_exception,&list](auto & s)
+                                    {s.System_of_eqs::add_eq_matching_exception(dom,bb,eq,par,eq_exception,list);});}
         void add_eq_order (int dom, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,const Array<int> &,const char*,int,Array<int>**>(
-                &System_of_eqs::add_eq_order,dom,orders,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,&orders,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_order(dom,orders,eq,n_cmp,p_cmp);});}
         void add_eq_order (int dom, const Array<int>& orders, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,const Array<int>&,const char*,const List_comp&>(
-                &System_of_eqs::add_eq_order,dom,orders,eq,list);}
+        { this->forward_base_method([dom,&orders,eq,&list](auto & s)
+                                    {s.System_of_eqs::add_eq_order(dom,orders,eq,list);});}
         void add_eq_vel_pot (int dom, int order, const char* eq, const char* const_part) override
-        {   this->call_base_method<int,int,const char*,const char*>(
-                &System_of_eqs::add_eq_vel_pot,dom,order,eq,const_part);}
+        { this->forward_base_method([dom,order,eq,const_part](auto & s)
+                                    {s.System_of_eqs::add_eq_vel_pot(dom,order,eq,const_part);});}
         void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const Array<int>&,const char*,int,Array<int>**>(
-                &System_of_eqs::add_eq_bc,dom,bb,orders,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,bb,&orders,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_bc(dom,bb,orders,eq,n_cmp,p_cmp);});}
         void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,int,const Array<int> &,const char*,const List_comp&>(
-                &System_of_eqs::add_eq_bc,dom,bb,orders,eq,list);}
+        { this->forward_base_method([dom,bb,&orders,eq,list](auto & s)
+                                    {s.System_of_eqs::add_eq_bc(dom,bb,orders,eq,list);});}
         void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1,
                 Array<int>** p_cmp=0x0) override
-        {   this->call_base_method<int,int,const Array<int>&,const char*,int,Array<int>**>(
-                &System_of_eqs::add_eq_matching,dom,bb,orders,eq,n_cmp,p_cmp);}
+        { this->forward_base_method([dom,bb,&orders,eq,n_cmp,p_cmp](auto & s)
+                                    {s.System_of_eqs::add_eq_matching(dom,bb,orders,eq,n_cmp,p_cmp);});}
         void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) override
-        {   this->call_base_method<int,int,const Array<int> &,const char*,const List_comp&>(
-                &System_of_eqs::add_eq_matching,dom,bb,orders,eq,list);}
+        { this->forward_base_method([dom,bb,&orders,eq,&list](auto & s)
+                                    {s.System_of_eqs::add_eq_matching(dom,bb,orders,eq,list);});}
 //        void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) override
-//        {   this->call_base_method<int,const char*,int,Array<int>**>(
-//                &System_of_eqs::add_eq_first_integral,dom,eq,n_cmp,p_cmp);}
+//
         void add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* const_part) override
-        {   this->call_base_method<int,int,const char*,const char*>(
-                &System_of_eqs::add_eq_first_integral,dom_min,dom_max,integ_part,const_part);}
+        { this->forward_base_method([dom_min,dom_max,integ_part,const_part](auto & s)
+                                    {s.System_of_eqs::add_eq_first_integral(dom_min,dom_max,integ_part,const_part);});}
         void add_eq_mode (int dom, int bb, const char* eq, const Index& pos_cf, double val) override
-        {   this->call_base_method<int,int,const char*,const Index &,double>(
-                &System_of_eqs::add_eq_mode,dom,bb,eq,pos_cf,val);}
+        { this->forward_base_method([dom,bb,eq,&pos_cf,val](auto & s)
+                                    {s.System_of_eqs::add_eq_mode(dom,bb,eq,pos_cf,val);});}
         void add_eq_val_mode (int dom, const char* eq, const Index& pos_cf, double val) override
-        {   this->call_base_method<int,const char*,const Index &,double>(
-                &System_of_eqs::add_eq_val_mode,dom,eq,pos_cf,val);}
+        { this->forward_base_method([dom,eq,&pos_cf,val](auto & s)
+                                    {s.System_of_eqs::add_eq_val_mode(dom,eq,pos_cf,val);});}
         void add_eq_val (int dom, const char* eq, const Index& pos) override
-        {   this->call_base_method<int,const char*,const Index&>(&System_of_eqs::add_eq_val,dom,eq,pos);}
+        { this->forward_base_method([dom,eq,&pos](auto & s){s.System_of_eqs::add_eq_val(dom,eq,pos);});}
         void add_eq_point (int dom, const char* eq, const Point& MM) override
-        {   this->call_base_method<int,const char*,const Point&>(&System_of_eqs::add_eq_point,dom,eq,MM);}
+        { this->forward_base_method([dom,eq,&MM](auto & s){s.System_of_eqs::add_eq_point(dom,eq,MM);});}
 
-//        Array<double> sec_member() override;
-        void compute_nbr_of_conditions() override;
+//        Array<double> sec_member() override
+        void compute_nbr_of_conditions() override
+        { this->forward_base_method([](auto & s){s.System_of_eqs::compute_nbr_of_conditions();});}
+
+        void vars_to_terms_impl() override
+        { this->forward_base_method([](auto & s){s.System_of_eqs::vars_to_terms_impl();});}
     };
 
     template<typename... Args>
@@ -206,14 +214,18 @@ namespace Kadath
         }
     }
 
-    template<typename... Args>
-    void System_of_eqs_threaded::call_base_method(void (System_of_eqs::*method)(Args...), Args... args)
+    template<typename F> void System_of_eqs_threaded::forward_base_method(F &&method)
     {
-        (static_cast<System_of_eqs*>(this)->*static_cast<void (System_of_eqs::*)(Args...)>(method))(args...);
-        for(auto & p_syst : thread_specific_systems)
-        {
-            (static_cast<System_of_eqs&>(*p_syst).*method)(std::forward<Args>(args)...);
-        }
+        std::forward<F>(method)(*this);
+        for(auto & p_syst : thread_specific_systems) std::forward<F>(method)(*p_syst);
+    }
+
+    template<typename F> void System_of_eqs_threaded::threaded_forward_base_method(F &&method)
+    {
+        std::deque<thread> threads;
+        threads.emplace_back(std::forward<F>(method),*this);
+        for(auto & s : thread_specific_systems) threads.emplace_back(std::forward<F>(method), *s);
+        for(auto & t : threads) t.join();
     }
 
 }

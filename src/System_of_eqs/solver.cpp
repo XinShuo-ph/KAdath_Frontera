@@ -48,7 +48,6 @@ Array<double> System_of_eqs::check_equations() {
 
 void System_of_eqs::compute_nbr_of_conditions()
 {
-    vars_to_terms() ;
 
     if (met!=0x0)
         for (int d=dom_min ; d<=dom_max ; d++)
@@ -73,6 +72,7 @@ void System_of_eqs::compute_nbr_of_conditions()
 
 Array<double> System_of_eqs::sec_member() {
 
+    this->vars_to_terms() ;
     this->compute_nbr_of_conditions();
 	// Computation of the second member itself :
 	Array<double> res (nbr_conditions) ;
@@ -184,7 +184,7 @@ Array<double> System_of_eqs::do_col_J (int cc) {
 	conte = 0 ;
 	for (int i=0 ; i<neq ; i++) {
 		if ((is_var_double) || (eq[i]->take_into_account(zedom)) || (eq[i]->take_into_account(zedoms(0))) || (eq[i]->take_into_account(zedoms(1)))) {
-			eq[i]->apply(conte, results) ;
+			eq[i]->apply(conte, results) ;//NOT THREAD SAFE (but both eq and results are own by System_of_eqs)
 		}
 		else
 			conte += eq[i]->n_ope ;

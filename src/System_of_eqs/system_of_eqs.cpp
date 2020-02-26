@@ -401,15 +401,19 @@ void System_of_eqs::vars_to_terms () {
 
 	for (int d=dom_min ; d<=dom_max ; d++)
 	  espace.get_domain(d)->vars_to_terms() ;
-  
-	for (int vv=0 ; vv<nvar_double ; vv++)
-		for (int dd=dom_min ; dd<=dom_max ; dd++)
-			give_term_double(vv, dd)->set_val_d (*var_double[vv]) ;
 
-	for (int vv=0 ; vv<nvar ; vv++)
-		for (int dd=dom_min ; dd<=dom_max ; dd++)
-			give_term(vv, dd)->set_val_t (*var[vv]) ;
-	
+	vars_to_terms_impl();
+}
+
+void System_of_eqs::vars_to_terms_impl()
+{
+    for (int vv=0 ; vv<nvar_double ; vv++)
+        for (int dd=dom_min ; dd<=dom_max ; dd++)
+            give_term_double(vv, dd)->set_val_d (*var_double[vv]) ;
+
+    for (int vv=0 ; vv<nvar ; vv++)
+        for (int dd=dom_min ; dd<=dom_max ; dd++)
+            give_term(vv, dd)->set_val_t (*var[vv]) ;
 }
 
 // Add an uknown
@@ -691,7 +695,8 @@ Tensor System_of_eqs::give_val_def (const char* so) const {
   return res ; 
 }
 
-void System_of_eqs::compute_matrix(Array<double> &matrix, int n, int first_col, int n_col, int num_proc, bool transpose)
+void System_of_eqs::compute_matrix_cyclic(Array<double> &matrix, int n, int first_col, int n_col, int num_proc,
+                                          bool transpose)
 {
     assert(matrix.get_ndim()==2);
     n_col = (n_col == ALL_COLUMNS ? n : n_col);
@@ -712,6 +717,25 @@ void System_of_eqs::compute_matrix(Array<double> &matrix, int n, int first_col, 
         if (first_col>=n)
             done = true;
     }
+}
+
+void System_of_eqs::compute_matrix_adjacent(Array<double> &matrix, int n, int first_col, int n_col, int num_proc,
+                                            bool transpose, std::vector<vector<std::size_t>> *dm)
+{
+    assert(matrix.get_ndim()==2);
+    n_col = (n_col == ALL_COLUMNS ? n : n_col);
+    for(int j{0};j<n_col;j++)
+    {
+        int const J{first_col+j};
+        Array<double> column(do_col_J(J));
+        if(transpose)
+        {
+            for(int i{0};i<n;i++) {matrix.set(J,i) = column(i); if(dm) (*dm)[i][J]++;}
+        } else {
+            for(int i{0};i<n;i++) {matrix.set(i,J) = column(i); if(dm) (*dm)[J][i]++;}
+        }
+    }
+
 }
 
 void System_of_eqs::newton_update_vars(Array<double> const &xx)

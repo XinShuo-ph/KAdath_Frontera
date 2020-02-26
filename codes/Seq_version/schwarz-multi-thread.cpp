@@ -36,7 +36,7 @@ int main() {
     conf.std_base() ;
 
     // Solve the equation in space outside the nucleus
-    System_of_eqs_threaded syst (3,space, 1, ndom-1) ;
+    System_of_eqs_threaded syst (2,space, 1, ndom-1) ;
     // Only one unknown
     syst.add_var ("P", conf) ;
     // One user defined constant
@@ -55,7 +55,6 @@ int main() {
     int ite = 1 ;
     while (!endloop) {
         endloop = syst.do_newton(1e-8, conv) ;
-        cout << "Newton iteration " << ite << " " << conv << endl ;
         ite++ ;
     }
 

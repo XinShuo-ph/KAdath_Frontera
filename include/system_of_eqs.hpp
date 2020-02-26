@@ -131,7 +131,7 @@ protected:
 	unsigned niter{0u}; ///< Counter toward the number of times the \c do_newton method has been called.
 	bool display_newton_data{true};///< Boolean used to enable or disable the display of data during the Newton iterations.
 
-    public:
+public:
 	/**
 	* Standard constructor nothing is done. The space is affected and the equations are to be solved in all space.
 	* @param so [input] : associated space.
@@ -799,6 +799,7 @@ protected:
 	* Copies the various unknowns (doubles and \c Tensors) into their \c Term_eq counterparts.
 	*/
 	void vars_to_terms() ;
+    virtual void vars_to_terms_impl();
 
 	virtual void compute_nbr_of_conditions();
 	/**
@@ -840,8 +841,12 @@ protected:
      * @param num_proc number of process.
      * @param transpose does the result has to be transposed (this has to be the case for the scalapack linear solve).
      */
-    virtual void compute_matrix(Array<double> &matrix, int n, int first_col= 0, int n_col= ALL_COLUMNS, int num_proc = 1,
-                                bool transpose = DO_NOT_TRANSPOSE);
+    virtual void compute_matrix_cyclic(Array<double> &matrix, int n, int first_col= 0, int n_col= ALL_COLUMNS, int num_proc = 1,
+                                       bool transpose = DO_NOT_TRANSPOSE);
+
+
+    virtual void compute_matrix_adjacent(Array<double> &matrix, int n, int first_col= 0, int n_col= ALL_COLUMNS, int num_proc = 1,
+                                         bool transpose = DO_NOT_TRANSPOSE, std::vector<std::vector<std::size_t>> *dm = nullptr);
 
 	/**
 	* Does one step of the Newton-Raphson iteration.
@@ -852,7 +857,7 @@ protected:
 	* @return true if the required precision is achieved, false otherwise.
 	*/
 	template<Computational_model computational_model = default_computational_model>
-	bool do_newton (double, double&,std::ostream & os = std::cout) ;
+	bool do_newton (double, double&,std::ostream & os = std::cout,Array<double> * copy_matrix = nullptr) ;
 
 	/**
 	 * Update the values of \c var and \c var_double from the solution of the linear system of the last Newton
@@ -1579,14 +1584,14 @@ class Eq_first_integral : public Equation {
 } ;
 
 
-    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &, std::ostream &);
-    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &, std::ostream &);
+    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &, std::ostream &,Array<double>*);
+    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &, std::ostream &,Array<double>*);
     template<> bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double , double &, int , double , std::ostream &);
 
 // default : not implemented - the implemention is made through the specializations (see the seq_do_newton.cpp,
 // mpi_do_newton.cpp... files).
     template<Computational_model computational_model>
-    bool System_of_eqs::do_newton(double, double &, std::ostream &os)
+    bool System_of_eqs::do_newton(double, double &, std::ostream &os,Array<double>*)
     {
         cerr << "Error: System_of_eq::do_newton is not implemented for the "
              << computational_model_name(computational_model)

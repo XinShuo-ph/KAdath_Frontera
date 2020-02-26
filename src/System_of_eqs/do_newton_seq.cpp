@@ -33,7 +33,8 @@
 
 namespace Kadath {
     template<>
-    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,std::ostream &os)
+    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,std::ostream &os,
+            Array<double> * copy_matrix)
     {
 #ifdef PAR_VERSION
         int rank;
@@ -45,8 +46,6 @@ namespace Kadath {
             {
                 display_do_newton_report_header(os,precision);
             }
-            clock_t begin, end;
-            vars_to_terms();
             Array<double> second(sec_member());
             error = max(fabs(second));
             if (error < precision)
@@ -64,11 +63,11 @@ namespace Kadath {
                     cerr << "N equations = " << nn << endl;
                     abort();
                 }
-                cout.flush();
 
                 Hash_key chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix computation ");
                 Matrice ope(nn, nn);
-                compute_matrix(ope.get_array(), nn);
+                compute_matrix_adjacent(ope.get_array(), nn);
+                if(copy_matrix && niter==1) *copy_matrix = ope.get_array();
                 Duration const
                         t_load_matrix{this->stop_chrono(chrono_key)};
 
@@ -83,6 +82,11 @@ namespace Kadath {
                 newton_update_vars(xx);
                 Duration const t_newton_update
                         {this->stop_chrono(chrono_key)};
+                if(display_newton_data)
+                {
+                    display_do_newton_iteration(os,
+                            {niter,nn,error,t_load_matrix,Duration{},t_inv_matrix,t_newton_update});
+                }
                 return false;
             }
 #ifdef PAR_VERSION

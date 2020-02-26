@@ -45,9 +45,9 @@ void Equation::apply(int& conte, Term_eq** res) {
 	int old_conte = conte ;
 	for (int i=0 ; i<n_ope ; i++) {
 		if (res[conte]!=0x0)
-			*res[conte] = parts[i]->action() ;
+			*res[conte] = parts[i]->action() ; //NOT THREAD SAFE
 		else
-			res[conte] = new Term_eq (parts[i]->action()) ;
+			res[conte] = new Term_eq (parts[i]->action()) ; //NOT THREAD SAFE
 		conte ++ ;
 	}
 
