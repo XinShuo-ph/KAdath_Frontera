@@ -65,10 +65,11 @@ namespace Kadath {
     }
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error, std::ostream & os) {
+    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error, std::ostream & os,
+            Array<double> */*not used*/ ) {
         bool res;
 #ifdef PAR_VERSION
-        int bsize = 64;
+        int bsize  {static_cast<int>(default_block_size)};
         niter++;
 
         // rank and nproc from MPI :
@@ -76,27 +77,20 @@ namespace Kadath {
         MPI_Comm_rank (MPI_COMM_WORLD, &rank);
         MPI_Comm_size (MPI_COMM_WORLD, &nproc);
 
-        if(rank==0 && niter==1)
+        if(rank==0 && niter==1 && display_newton_data)
         {
-            os <<
-               "============================================================================================================================\n"
-               "|      |            |       ||b||      |                              Computational Times                                  |\n"
-               "| Iter | Syst. Size |   Initial Error  |-----------------------------------------------------------------------------------|\n"
-               "|      |            | (tol=" << std::setw(10) << std::setprecision(9) << precision;
-            os << ") | Matrix Computation | Matrix Translation |      Linear Solver |      Newton Update |\n"
-                  "|======|============|==================|====================|====================|====================|====================|\n";
+            display_do_newton_report_header(os,precision);
         }
-        vars_to_terms();
+        //vars_to_terms();
         Array<double> second (sec_member());
         error = max(fabs(second));
 
         if (error<precision) {
             res = true;
-            if(rank==0)
+            if(rank==0 && display_newton_data)
             {
-                os << "===================================================================================================="
-                      "=======================\n";
-                os << "Success: tolerance reached with ||b|| = " << error << " / " << precision << endl << endl;
+                display_do_newton_ending_line(os,precision,error);
+                os  << endl;
             }
         }
         else {
@@ -132,24 +126,11 @@ namespace Kadath {
 
             Array<double> matloc_in (ncolloc_in, nrowloc_in);
             int start = bsize*rank;
-            bool done = false;
-            int current = 0;
 
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
 
-            while (!done) {
-                for (int i=0 ; i<bsize ; i++)
-                    if (start+i<nn) {
-                        Array<double> column (do_col_J(start+i));
-                        for (int j=0 ; j<nn ; j++)
-                            matloc_in.set(current,j) = column(j);
-                        current++;
-                    }
-                start += nproc*bsize;
-                if (start>=nn)
-                    done = true;
-            }
+            compute_matrix_cyclic(matloc_in,nn,start,bsize,nproc,true);
 
             // Descriptor of the matrix :
             Array<int> descamat_in(9);
@@ -224,44 +205,12 @@ namespace Kadath {
             blacs_gridexit_ (&ictxt);
             blacs_gridexit_ (&ictxt_in);
 
-            int conte = 0;
-            espace.xx_to_vars_variable_domains (this, xx, conte);
+            newton_update_vars(xx);
 
-            double* old_var_double = (nvar_double==0) ? 0x0 :
-                                     new double[nvar_double];
-            for (int i=0 ; i<nvar_double ; i++)
-                old_var_double[i] = *var_double[i];
-
-            Tensor** old_fields = new Tensor* [nvar];
-            for (int i=0 ; i<nvar ; i++)
-                old_fields[i] = new Tensor(*var[i]);
-
-            xx_to_vars(xx, conte);
-
-            for (int i=0 ; i<nvar ; i++)
-                *var[i] = *old_fields[i] - *var[i];
-
-            for (int i=0 ; i<nvar_double ; i++)
-                *var_double[i] = old_var_double[i] - *var_double[i];
-
-            if (old_var_double!=0x0)
-                delete [] old_var_double;
-            for (int i=0 ; i<nvar ; i++)
-                delete old_fields[i];
-
-            delete [] old_fields;
             Duration const t_newton_update {this->stop_chrono(chrono_key)};
-            if (rank == 0) {
-                constexpr int dds {16};
-                os << '|';
-                os << ' ' << std::setw(4)  << niter << " |";
-                os << ' ' << std::setw(10) << nn    << " |";
-                os << ' ' << std::setw(dds) << error << " |";
-                os << ' ' << std::setw(dds) << to_seconds(t_load_matrix) << " s |";
-                os << ' ' << std::setw(dds) << to_milliseconds(t_trans_matrix) << "ms |";
-                os << ' ' << std::setw(dds) << to_seconds(t_inv_matrix) << " s |";
-                os << ' ' << std::setw(dds) << to_milliseconds(t_newton_update) << "ms |";
-                os << "\n";
+            if (rank == 0 && display_newton_data) {
+                display_do_newton_iteration(os,
+                        {niter,nn,error,t_load_matrix,t_trans_matrix,t_inv_matrix,t_newton_update});
             }
             res = false;
         }

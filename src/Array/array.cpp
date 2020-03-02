@@ -89,7 +89,11 @@ template <typename T> void Array<T>::save (FILE* fd) const {
 
 // Assignement
 template <typename T> void Array<T>::operator= (const Array<T>& so) {
-	assert (dimensions == so.dimensions) ;
+//	assert (dimensions == so.dimensions) ;
+    if(!(dimensions==so.dimensions) ) delete_data();
+    dimensions = so.dimensions;
+    nbr = so.nbr;
+    data = new T[nbr];
 	for (int i=0 ; i<nbr ; i++)
 	    data[i] = so.data[i] ;
 }

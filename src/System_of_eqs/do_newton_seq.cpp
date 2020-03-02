@@ -33,72 +33,68 @@
 
 namespace Kadath {
     template<>
-    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,std::ostream &os)
+    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,std::ostream &os,
+            Array<double> * copy_matrix)
     {
 #ifdef PAR_VERSION
         int rank;
         MPI_Comm_rank (MPI_COMM_WORLD, &rank);
         if(rank==0) {
 #endif
-            clock_t begin, end;
-            vars_to_terms();
+            niter++;
+            if(niter==1 && display_newton_data)
+            {
+                display_do_newton_report_header(os,precision);
+            }
             Array<double> second(sec_member());
             error = max(fabs(second));
-            os << "Error init = " << error << endl;
-            if (error < precision) return true;
-            int nn(second.get_size(0));
-            if (nbr_unknowns != nn) {
-                cerr << "N unknowns  = " << nbr_unknowns << endl;
-                cerr << "N equations = " << nn << endl;
-                abort();
-            }
-            os << "Size = " << nn << endl;
-            os << "Progression computation : ";
-            cout.flush();
-
-            Hash_key chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix computation ");
-            Array<double> jx(nn);
-            Matrice ope(nn, nn);
-            for (int col(nn - 1); col >= 0; col--) {
-                if ((col != 0) && (col % int(nn / 10) == 0)) {
-                    os << "*";
-                    os.flush();
+            if (error < precision)
+            {
+                if(display_newton_data)
+                {
+                    display_do_newton_ending_line(os,precision,error);
+                    os  << endl;
                 }
-                jx = do_col_J(col);
-                for (int line(0); line < nn; line++) ope.set(line, col) = jx(line);
+                return true;
+            } else {
+                int nn(second.get_size(0));
+                if (nbr_unknowns != nn) {
+                    cerr << "N unknowns  = " << nbr_unknowns << endl;
+                    cerr << "N equations = " << nn << endl;
+                    abort();
+                }
+
+                Hash_key chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix computation ");
+                Matrice ope(nn, nn);
+                compute_matrix_adjacent(ope.get_array(), nn);
+                if(copy_matrix && niter==1) *copy_matrix = ope.get_array();
+                Duration const
+                        t_load_matrix{this->stop_chrono(chrono_key)};
+
+
+                chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix inversion ");
+                ope.set_lu();
+                Array<double> xx(ope.solve(second));
+                Duration const
+                        t_inv_matrix{this->stop_chrono(chrono_key)};
+
+                chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | Newton update ");
+                newton_update_vars(xx);
+                Duration const t_newton_update
+                        {this->stop_chrono(chrono_key)};
+                if(display_newton_data)
+                {
+                    display_do_newton_iteration(os,
+                            {niter,nn,error,t_load_matrix,Duration{},t_inv_matrix,t_newton_update});
+                }
+                return false;
             }
-            os << endl;
-            Duration const
-                    t_load_matrix{this->stop_chrono(chrono_key)};
-            os << "Loading the matrix : " << to_seconds(t_load_matrix) << " seconds" << endl;
-
-            chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix inversion ");
-            ope.set_lu();
-            Array<double> xx(ope.solve(second));
-            Duration const
-                    t_inv_matrix{this->stop_chrono(chrono_key)};
-            os << "Inverting the matrix : " << to_seconds(t_inv_matrix) << " seconds" << endl;
-            int conte(0);
-
-            chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | Newton update ");
-            espace.xx_to_vars_variable_domains(this, xx, conte);
-            double *old_var_double(new double[nvar_double]);
-            for (int i(0); i < nvar_double; ++i) old_var_double[i] = *var_double[i];
-            Tensor **old_fields(new Tensor *[nvar]);
-            for (int i(0); i < nvar; i++) old_fields[i] = new Tensor(*var[i]);
-            xx_to_vars(xx, conte);
-            for (int i(0); i < nvar_double; i++) *var_double[i] = old_var_double[i] - (*var_double[i]);
-            for (int i(0); i < nvar; i++) *var[i] = *old_fields[i] - (*var[i]);
-            delete[] old_var_double;
-            for (int i(0); i < nvar; i++) delete old_fields[i];
-            delete[] old_fields;
-            Duration const t_newton_update
-                    {this->stop_chrono(chrono_key)};
-            os << "Newton update : " << to_seconds(t_newton_update) << " seconds" << endl;
 #ifdef PAR_VERSION
         }
+        else {
+            return false;
+        }
 #endif
-        return false;
     }
 
 }

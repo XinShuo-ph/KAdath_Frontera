@@ -46,33 +46,38 @@ Array<double> System_of_eqs::check_equations() {
       return errors ;
 }
 
+void System_of_eqs::compute_nbr_of_conditions()
+{
+
+    if (met!=0x0)
+        for (int d=dom_min ; d<=dom_max ; d++)
+            met->update(d) ;
+    for (int i=0 ; i<ndef ; i++)
+        def[i]->compute_res() ;
+
+    int conte = 0 ;
+    for (int i=0 ; i<neq ; i++)
+        eq[i]->apply(conte, results) ;
+
+    // Need to assert the size :
+    if (nbr_conditions==-1) {
+        nbr_conditions = 0 ;
+        for (int i=0 ; i<neq_int ; i++)
+            nbr_conditions ++ ;
+        for (int i=0 ; i<neq ; i++)
+            nbr_conditions += eq[i]->get_n_cond_tot() ;
+    }
+
+}
+
 Array<double> System_of_eqs::sec_member() {
 
-	vars_to_terms() ;
-
-	if (met!=0x0)
-	  for (int d=dom_min ; d<=dom_max ; d++)
-		met->update(d) ;
-	for (int i=0 ; i<ndef ; i++)
-		def[i]->compute_res() ;
-
-	int conte = 0 ;
-	for (int i=0 ; i<neq ; i++)
-	     eq[i]->apply(conte, results) ;
-
-	// Need to assert the size :
-	if (nbr_conditions==-1) {
-		nbr_conditions = 0 ;
-		for (int i=0 ; i<neq_int ; i++)
-			nbr_conditions ++ ;
-		for (int i=0 ; i<neq ; i++)
-		  nbr_conditions += eq[i]->get_n_cond_tot() ;
-	}
-
+    this->vars_to_terms() ;
+    this->compute_nbr_of_conditions();
 	// Computation of the second member itself :
 	Array<double> res (nbr_conditions) ;
 	res = 0 ;
-	conte = 0 ;
+	int conte = 0 ;
 	int pos_res = 0 ;
 	for (int i=0 ; i<neq_int ; i++) {
 		res.set(pos_res) = eq_int[i]->get_val() ;
@@ -179,7 +184,7 @@ Array<double> System_of_eqs::do_col_J (int cc) {
 	conte = 0 ;
 	for (int i=0 ; i<neq ; i++) {
 		if ((is_var_double) || (eq[i]->take_into_account(zedom)) || (eq[i]->take_into_account(zedoms(0))) || (eq[i]->take_into_account(zedoms(1)))) {
-			eq[i]->apply(conte, results) ;
+			eq[i]->apply(conte, results) ;//NOT THREAD SAFE (but both eq and results are own by System_of_eqs)
 		}
 		else
 			conte += eq[i]->n_ope ;

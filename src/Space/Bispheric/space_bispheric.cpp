@@ -399,6 +399,75 @@ Space_bispheric::Space_bispheric (int ttype, double distance, double rhor1, doub
     domains[7] = new Domain_compact (7, ttype, rext, center, res) ;
 }
 
+Space_bispheric::Space_bispheric (int ttype, double distance, double rhor1, double rshell1, double rhor2, double rshell2, int nn, const Array<double>& rr, int nr) {
+
+    // Verif :
+    ndim = 3 ;
+    
+    ndom_minus = 1 ;
+    ndom_plus = 1 ;
+    nshells = nn ;
+    
+    nbr_domains =8+nn ;
+    type_base = ttype ;
+    domains = new Domain* [nbr_domains] ;
+  
+    Dim_array res (ndim) ;
+    res.set(0) = nr ; res.set(1) = nr ; res.set(2) = nr-1 ;
+    Dim_array res_bi(ndim) ;
+    res_bi.set(0) = nr ; res_bi.set(1) = nr ; res_bi.set(2) = nr ;
+    
+    // Bispheric :
+    // Computation of aa
+    double r1 = rhor1 ;
+    double r2 = rhor2 ;
+
+    double rext = rr(0) ;
+    
+    Param par_a ;
+    par_a.add_double(r1,0) ;
+    par_a.add_double(r2,1) ;
+    par_a.add_double(distance,2) ;
+    double a_min = 0 ;
+    double a_max = distance/2. ;
+    double precis = PRECISION ;
+    int nitermax = 500 ;
+    int niter ;
+    double aa = zerosec(func_a, par_a, a_min, a_max, precis, nitermax, niter) ;
+    double eta_plus = asinh(aa/r2) ;
+    double eta_minus = -asinh(aa/r1) ;
+
+    double chi_c = 2*atan(aa/rext) ;
+    double eta_c = log((1+rext/aa)/(rext/aa-1)) ;
+    double eta_lim = eta_c/2. ;
+    double chi_lim = chi_lim_eta (eta_lim, rext, aa, chi_c) ;
+   
+    // The spheres  
+    Point center_minus (ndim) ;
+    center_minus.set(1) = aa*cosh(eta_minus)/sinh(eta_minus) ;
+    a_minus = aa*cosh(eta_minus)/sinh(eta_minus) ;
+
+    Point center_plus (ndim) ;
+    center_plus.set(1) = aa*cosh(eta_plus)/sinh(eta_plus) ;
+    a_plus = aa*cosh(eta_plus)/sinh(eta_plus) ;
+
+    domains[0] = new Domain_shell(0, ttype, rhor1, rshell1, center_minus, res) ;
+    domains[1] = new Domain_shell(1, ttype, rhor2, rshell2, center_plus, res) ;
+   
+    // Bispherical domains antitrigo order: 
+    domains[2] = new Domain_bispheric_chi_first(2, ttype, aa, eta_minus, rext, chi_lim, res_bi) ;
+    domains[3] = new Domain_bispheric_rect(3, ttype, aa, rext, eta_minus, -eta_lim, chi_lim, res_bi) ;
+    domains[4] = new Domain_bispheric_eta_first(4, ttype, aa, rext, -eta_lim, eta_lim, res_bi) ;
+    domains[5] = new Domain_bispheric_rect(5,ttype, aa, rext, eta_plus, eta_lim, chi_lim, res_bi) ;
+    domains[6] = new Domain_bispheric_chi_first(6,ttype, aa, eta_plus, rext, chi_lim, res_bi) ;
+    
+    // Shells       
+    Point center(3) ;
+    for (int i=0 ; i<nn ; i++)
+	domains[7+i] = new Domain_shell (7+i, ttype, rr(i), rr(i+1), center, res) ;
+    domains[7+nn] = new Domain_compact (7+nn, ttype, rext, center, res) ;
+}
+
 Space_bispheric::Space_bispheric (FILE*fd, int type_shells, bool old) {
   
 	fread_be (&nbr_domains, sizeof(int), 1, fd) ;
@@ -417,7 +486,7 @@ Space_bispheric::Space_bispheric (FILE*fd, int type_shells, bool old) {
 	    ndom_plus = 1 ;
 	    nshells = nbr_domains-8 ;
 	}
-	
+
 	// Check whether one has nucleii or not
 	double nnuc = nbr_domains - 1 - nshells - ndom_minus - ndom_plus - 5;
 	bool nucleus = (nnuc>=2) ? true : false ;

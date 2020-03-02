@@ -76,6 +76,7 @@ if(DEFINED MAGMA_INCLUDE_DIRS)
 endif()
 
 message("Libraries   (from CMakeLists.txt) :")
+message(" - threads   :  ${CMAKE_THREAD_LIBS_INIT}")
 message(" - GSL       :  ${GSL_LIBRARIES}")
 message(" - PGPLOT    :  ${PGPLOT_LIBRARIES}")
 message(" - FFTW      :  ${FFTW_LIBRARIES}")
@@ -93,6 +94,7 @@ if(ENABLE_GPU_USE)
     message("            # MAGMA_LIBRARIES = ${MAGMA_LIBRARIES}")
 endif()
 
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fPIE -pie -g")
 
 add_subdirectory(tutorials)
 
