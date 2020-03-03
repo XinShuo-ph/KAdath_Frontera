@@ -342,35 +342,41 @@ Tensor::Tensor (const Space& sp, int dim, FILE* fd) :
     give_indices = std_indices ;
 }
 
-//#ifdef ARRAY_MOVE_SEMANTIC
-//Tensor::Tensor(Tensor&& so) : espace{so.espace}, ndom{so.ndom}, ndim{so.ndim}, valence{so.valence},
-//basis{std::move(so.basis)}, type_indice{std::move(so.type_indice)}, name_affected{so.name_affected},
-//name_indice{nullptr}, n_comp{so.n_comp}, cmp{nullptr}, parameters{nullptr}, give_place_array{so.give_place_array},
-//give_place_index{so.give_place_index}, give_indices{so.give_indices}
-//{
-//    std::swap(name_indice,so.name_indice);
-//    std::swap(cmp,so.cmp);
-//    std::swap(parameters,so.parameters);
-//}
-//Tensor & Tensor::operator=(Tensor && so)
-//{
-//    std::swap(ndom,so.ndom);
-//    ndim = so.ndim;
-//    valence = so.valence;
-//    basis = std::move(so.basis);
-//    type_indice = std::move(so.type_indice);
-//    name_affected = so.name_affected;
-//    std::swap(name_indice,so.name_indice);
-//    std::swap(n_comp,so.n_comp);
-//    std::swap(cmp,so.cmp);
-//    std::swap(parameters,so.parameters);
-//    give_place_array = so.give_place_array;
-//    give_place_index = so.give_place_index;
-//    give_indices = so.give_indices;
-//    return *this;
-//}
-//#endif
-//			//--------------//
+#ifdef ARRAY_MOVE_SEMANTIC
+Tensor::Tensor(Tensor&& so) : espace{so.espace}, ndom{so.ndom}, ndim{so.ndim}, valence{so.valence},
+basis{std::move(so.basis)}, type_indice{std::move(so.type_indice)}, name_affected{so.name_affected},
+name_indice{nullptr}, n_comp{so.n_comp}, cmp{nullptr}, parameters{nullptr}, give_place_array{so.give_place_array},
+give_place_index{so.give_place_index}, give_indices{so.give_indices}
+{
+    std::swap(name_indice,so.name_indice);
+    std::swap(cmp,so.cmp);
+    std::swap(parameters,so.parameters);
+}
+
+void Tensor::do_move(Tensor &&so, bool move_cmp)
+{
+    std::swap(ndom,so.ndom);
+    ndim = so.ndim;
+    valence = so.valence;
+    basis = std::move(so.basis);
+    type_indice = std::move(so.type_indice);
+    name_affected = so.name_affected;
+    std::swap(name_indice,so.name_indice);
+    std::swap(n_comp,so.n_comp);
+    if(move_cmp) std::swap(cmp,so.cmp);
+    std::swap(parameters,so.parameters);
+    give_place_array = so.give_place_array;
+    give_place_index = so.give_place_index;
+    give_indices = so.give_indices;
+}
+
+Tensor & Tensor::operator=(Tensor && so)
+{
+    this->do_move(std::forward<Tensor&&>(so),true);
+    return *this;
+}
+#endif
+			//--------------//
 			//  Destructor  //
 			//--------------//
 

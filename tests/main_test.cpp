@@ -166,12 +166,12 @@ public:
 };
 
 
-//TEST_F(KadathSchwarzTest,CheckErrorInLInfAndL2Norms)
-//{
-//    EXPECT_TRUE(converged);
-//    EXPECT_LE(error_l_infinity,TESTS_TOLERANCE);
-//    EXPECT_LE(error_l_2,TESTS_TOLERANCE);
-//}
+TEST_F(KadathSchwarzTest,CheckErrorInLInfAndL2Norms)
+{
+    EXPECT_TRUE(converged);
+    EXPECT_LE(error_l_infinity,TESTS_TOLERANCE);
+    EXPECT_LE(error_l_2,TESTS_TOLERANCE);
+}
 //
 //TEST_F(KadathSchwarzMultiThreadTest,CheckErrorInLInfAndL2Norms)
 //{
@@ -374,17 +374,17 @@ TEST_F(KadathMultiThreadTests,CheckSecondMemberSequential)
 {
     this->check_second_members_seq();
 }
-TEST_F(KadathMultiThreadTests,CheckSecondMemberParallel)
-{
-    this->check_second_members_par();
-}
+//TEST_F(KadathMultiThreadTests,CheckSecondMemberParallel)
+//{
+//    this->check_second_members_par();
+//}
 
 TEST_F(KadathMultiThreadTests,CheckDoColJSequential)
 {
     this->check_do_col_j_seq();
 }
 
-TEST_F(KadathMultiThreadTests,CheckDoColJParallel)
-{
-    this->check_do_col_j_par();
-}
+//TEST_F(KadathMultiThreadTests,CheckDoColJParallel)
+//{
+//    this->check_do_col_j_par();
+//}

@@ -57,7 +57,7 @@ class Vector : public Tensor {
 	 */
 	Vector(const Tensor& a) ;
 
-	virtual ~Vector() ;			///< Destructor
+	~Vector() override {}			///< Destructor
 
     // Mutators / assignment
     // ---------------------
@@ -67,6 +67,11 @@ class Vector : public Tensor {
 	virtual void operator=(const Tensor&) ;	
 	virtual void operator=(double) ;
 	virtual void annule_hard() ;
+
+#ifdef ARRAY_MOVE_SEMANTIC
+	Vector(Vector && so) : Tensor{std::forward<Vector&&>(so)} {}
+	Vector & operator=(Vector && so) {this->Tensor::operator=(std::forward<Vector&&>(so)); return *this;}
+#endif
 
     // Accessors
     // ---------

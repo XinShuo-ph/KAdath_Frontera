@@ -19,15 +19,6 @@
 
 #include "tensor.hpp"
 namespace Kadath {
-Param_tensor::Param_tensor() : m_order_affected(false), m_order(0), m_quant_affected(false), m_quant(0) {
-}
-
-Param_tensor::Param_tensor(const Param_tensor& so) : 
-	m_order_affected (so.m_order_affected), m_order(so.m_order), m_quant_affected(so.m_quant_affected), m_quant(so.m_quant) {
-}
-
-Param_tensor::~Param_tensor() {
-}
 
 int Param_tensor::get_m_order() const {
   if (!m_order_affected) {

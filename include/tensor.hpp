@@ -105,10 +105,6 @@ class Param_tensor {
     int m_order ; ///< The value of \f$m_{\rm order}\f$, if affected.
     bool m_quant_affected ; ///< States if the parameter \f$m_{\rm quant}\f$ is affected.
     int m_quant ; ///< The value of \f$m_{\rm quant}\f$, if affected.
-  public:
-    Param_tensor() ; ///< Constructor
-    Param_tensor(const Param_tensor&) ; ///< Copy constructor
-    ~Param_tensor() ;  ///< Destructor
 
   public:
     int get_m_order() const ; ///< Returns \f$m_{\rm order}\f$.
@@ -219,10 +215,11 @@ class Tensor {
 	Tensor (const Space& sp, FILE*) ; ///< Constructor from a file.
 	Tensor (const Space& sp, int dim, FILE*) ; ///< Constructor from a file with explicit passing of the dimension
 
-//#ifdef ARRAY_MOVE_SEMANTIC
-//    Tensor(Tensor&&);///< Move constructor.
-//    Tensor & operator=(Tensor &&);///<Move assignment.
-//#endif
+#ifdef ARRAY_MOVE_SEMANTIC
+    void do_move(Tensor && so,bool move_cmp);
+    Tensor(Tensor&& so);///< Move constructor.
+    virtual Tensor & operator=(Tensor &&);///<Move assignment.
+#endif
 
     protected:
 	/**
