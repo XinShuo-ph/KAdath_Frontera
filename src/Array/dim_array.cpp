@@ -33,7 +33,7 @@ Dim_array::Dim_array(const Dim_array& so) : ndim(so.ndim) {
 	   nbr[i] = so.nbr[i] ;
 }
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
 // Move constructor.
 Dim_array::Dim_array(Kadath::Dim_array && so) : ndim{so.ndim},nbr{so.nbr}
 {
@@ -56,7 +56,7 @@ Dim_array::Dim_array (FILE* fd) {
 
 // Destructor
 Dim_array::~Dim_array() {
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
     if(nbr)
 #endif
 	delete [] nbr ;

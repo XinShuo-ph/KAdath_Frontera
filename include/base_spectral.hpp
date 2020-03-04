@@ -83,7 +83,7 @@ class Base_spectral {
         explicit Base_spectral(int i) ;
 	Base_spectral(const Base_spectral &) ; ///< Copy constructor
 	Base_spectral (FILE*) ;	///< Constructor from a file
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
     Base_spectral(Base_spectral &&); ///< Move constructor.
     Base_spectral& operator=(Base_spectral &&);///<Move assignment operator.
 #endif

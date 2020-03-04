@@ -85,7 +85,7 @@ class Base_tensor {
 	int get_basis (int) const ; ///< Read only the basis in a given domain
 	void operator= (const Base_tensor&) ; ///< Affectation operator
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
     Base_tensor(Base_tensor&& so) : space{so.space}, basis{std::move(so.basis)} {}
     Base_tensor & operator=(Base_tensor&& so) {assert(&space == &so.space); basis = std::move(so.basis); return *this;}
 #endif

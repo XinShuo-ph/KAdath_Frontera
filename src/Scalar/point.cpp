@@ -45,7 +45,7 @@ Point::~Point() {
 	if(coord) delete [] coord ;
 }
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
 Point::Point(Point && so) : ndim{so.ndim}, coord{nullptr}
 {
     std::swap(coord,so.coord);

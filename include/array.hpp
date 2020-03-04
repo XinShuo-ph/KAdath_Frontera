@@ -106,7 +106,7 @@ template <typename T> class Array {
 	    */
 	    Array (FILE*) ;
 	    Array (const Array<T>&) ; ///< Copy constructor.
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
         Array (Array<T> &&) ; ///< Move constructor.
 #endif
 	    ~Array() ;	///<  Destuctor.
@@ -121,7 +121,7 @@ template <typename T> class Array {
 	    */
 	    void save (FILE*) const ; 
 	    void operator= (const Array<T>&) ; ///< Assignement to another \c Array
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
         Array & operator= (Array<T> &&) ; ///< Move assignment (transfer operator).
 #endif
 	    /**

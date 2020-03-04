@@ -62,7 +62,7 @@ template <typename T> Array<T>::Array (const Array<T>& so) : dimensions(so.dimen
 	    data[i] = so.data[i] ;
 }
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
 template <typename T> Array<T>::Array (Array<T> && so) : dimensions{std::move(so.dimensions)}, nbr{so.nbr},
         data{so.data}
 {
@@ -100,7 +100,7 @@ template <typename T> void Array<T>::operator= (const Array<T>& so) {
 	    data[i] = so.data[i] ;
 }
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
 template<typename T> Array<T> & Array<T>::operator=(Array<T> && so)
 {
     dimensions = std::move(so.dimensions);

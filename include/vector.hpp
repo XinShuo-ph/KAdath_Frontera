@@ -68,10 +68,12 @@ class Vector : public Tensor {
 	virtual void operator=(double) ;
 	virtual void annule_hard() ;
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
+#ifdef TENSOR_MOVE_SEMANTIC
 	Vector(Vector && so) : Tensor{std::forward<Vector&&>(so)} {}
 	Vector & operator=(Vector && so) {this->Tensor::operator=(std::forward<Vector&&>(so)); return *this;}
-#endif
+#endif //#ifdef TENSOR_MOVE_SEMANTIC
+#endif //#ifdef ENABLE_MOVE_SEMANTIC
 
     // Accessors
     // ---------

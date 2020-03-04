@@ -53,7 +53,8 @@ Scalar::Scalar (const Space& sp, FILE* fd) : Tensor(sp) {
 	cmp[0] = this ;
 }
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
+#ifdef TENSOR_MOVE_SEMANTIC
 Scalar::Scalar(Scalar && so) : Tensor{std::move(so)}, val_zones{nullptr}
 {
     std::swap(val_zones,so.val_zones);
@@ -78,7 +79,8 @@ Scalar & Scalar::operator=(Scalar && so)
     assert(cmp[0] == this && so.cmp[0] == &so);
     return *this;
 }
-#endif
+#endif //#ifdef TENSOR_MOVE_SEMANTIC
+#endif //#ifdef ENABLE_MOVE_SEMANTIC
 
 Scalar::~Scalar () {
     if(val_zones)

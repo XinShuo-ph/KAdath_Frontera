@@ -9,7 +9,8 @@ message("Root directory : ${PROJECT_SOURCE_DIR}")
 option(PAR_VERSION "Parallel version" ON)
 option(LINUX "Build for linux" ON)
 option(ENABLE_PROFILING "Enable auto-profiling functions." OFF)
-option(ARRAY_MOVE_SEMANTIC "Enable move semantic for the Array class" ON)
+option(ENABLE_MOVE_SEMANTIC "Enable move semantic for the Array class" ON)
+option(TENSOR_MOVE_SEMANTIC "Enables/disables move ctor and operators fot the Tensor class hierarchy." ON)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )
 
@@ -72,7 +73,10 @@ message(" - FFTW      :  ${FFTW_LIBRARIES}")
 message(" - LAPACK    :  ${LAPACK_LIBRARIES}")
 message(" - SCALAPACK :  ${SCALAPACK_LIBRARIES}")
 
+#option to compile with google thread-sanitizer
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fPIE -pie -g")
+#option to compile with google address-sanitizer
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -O1 -fno-omit-frame-pointer -g")
 
 add_subdirectory(tutorials)
 
