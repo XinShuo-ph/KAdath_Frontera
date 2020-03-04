@@ -70,8 +70,8 @@ class Vector : public Tensor {
 
 #ifdef ENABLE_MOVE_SEMANTIC
 #ifdef TENSOR_MOVE_SEMANTIC
-	Vector(Vector && so) : Tensor{std::forward<Vector&&>(so)} {}
-	Vector & operator=(Vector && so) {this->Tensor::operator=(std::forward<Vector&&>(so)); return *this;}
+	Vector(Vector && so) : Tensor{std::move(so)} {}
+	Vector & operator=(Vector && so) {this->Tensor::operator=(std::move(so)); return *this;}
 #endif //#ifdef TENSOR_MOVE_SEMANTIC
 #endif //#ifdef ENABLE_MOVE_SEMANTIC
 

@@ -373,7 +373,7 @@ void Tensor::do_move(Tensor &&so, bool move_cmp)
 
 Tensor & Tensor::operator=(Tensor && so)
 {
-    this->do_move(std::forward<Tensor&&>(so),true);
+    this->do_move(std::move(so),true);
     return *this;
 }
 #endif //#ifdef TENSOR_MOVE_SEMANTIC
