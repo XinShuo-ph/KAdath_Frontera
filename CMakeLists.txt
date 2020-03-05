@@ -89,5 +89,5 @@ endif()
 #add the tests directory
 if(NOT(PAR_VERSION))
     enable_testing()
-    add_subdirectory(tests)
 endif()
+add_subdirectory(tests)
