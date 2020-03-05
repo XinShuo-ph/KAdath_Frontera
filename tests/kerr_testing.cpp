@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
 
     // Loop for omega :
     double step = 0.005 ;
-    int nbr_ome = argc>1 ? std:atoi(argv[1]) : 1 ;
+    int nbr_ome = argc>1 ? std::atoi(argv[1]) : 1 ;
 
     // Associated metric
     Metric_tensor gmet(gfixed) ;
