@@ -100,18 +100,20 @@ int main(int argc, char** argv) {
 	espace.add_outer_bc (syst_init, "bet^i=0") ;
 
 	{
-	double conv ;
-	bool endloop = false ;
-	int ite = 1 ;
-	if (rank==0) {
-        cout << "Computation with omega =  0" << endl;
-    }
-	while (!endloop) {
-		endloop = syst_init.do_newton(1e-6, conv) ;
-			ite++ ;
-	}
+        double conv ;
+        bool endloop = false ;
+        int ite = 1 ;
+        if (rank==0) {
+            cout << "Computation with omega =  0" << endl;
+        }
+        while (!endloop) {
+            endloop = syst_init.do_newton(1e-6, conv) ;
+                ite++ ;
+        }
     }
     syst_init.finalize_profiling();
+    fftw_precomp_map_finalize_profiling();
+    profiling_report(syst_init,std::cout);
       
     Metric_tensor gfixed (espace, CON, basis) ;
 	for (int i=1 ; i<=3 ; i++)
@@ -175,108 +177,106 @@ int main(int argc, char** argv) {
 		p_dirac[i] = new Array<int>(1) ;
 	p_dirac[0]->set(0) = 2 ;
 
-	for (int conte=0 ; conte<nbr_ome ; conte ++) {
+	for (int conte=0 ; conte<nbr_ome ; conte ++)
+	{
 
 	    ome += step ;
          if (rank==0)
 		cout << "Computation with omega = " << ome << endl ;
 
-	// Solve the equation in space outside the nucleus
-	System_of_eqs syst (espace, 1, ndom-1) ;
-	// Unknowns
-	syst.add_var ("P", conf) ;
-	syst.add_var ("N", lapse) ;
-	syst.add_var ("bet", shift) ;
-	met.set_system (syst, "g") ;
+        // Solve the equation in space outside the nucleus
+        System_of_eqs syst (espace, 1, ndom-1) ;
+        // Unknowns
+        syst.add_var ("P", conf) ;
+        syst.add_var ("N", lapse) ;
+        syst.add_var ("bet", shift) ;
+        met.set_system (syst, "g") ;
 
-	// User defined constants
-	syst.add_cst ("a", aa) ;
-	syst.add_cst ("m", mm) ;
-	syst.add_cst ("s", scov) ;	
-	syst.add_cst ("n0", n0) ;
-	syst.add_cst ("Ome", ome) ;
-	syst.add_cst ("gf", gfixed) ;
+        // User defined constants
+        syst.add_cst ("a", aa) ;
+        syst.add_cst ("m", mm) ;
+        syst.add_cst ("s", scov) ;
+        syst.add_cst ("n0", n0) ;
+        syst.add_cst ("Ome", ome) ;
+        syst.add_cst ("gf", gfixed) ;
 
-	// definitions
-	// For speed one stores derivatives of the CF fields :
-	syst.add_def ("DN_i = D_i N") ;
-	syst.add_def ("DP_i = D_i P") ;
-	syst.add_def ("Dbet^ij = D^i bet^j") ;
+        // definitions
+        // For speed one stores derivatives of the CF fields :
+        syst.add_def ("DN_i = D_i N") ;
+        syst.add_def ("DP_i = D_i P") ;
+        syst.add_def ("Dbet^ij = D^i bet^j") ;
 
-	syst.add_def ("st^i = s^i / sqrt(s_i * s^i)") ;
-	syst.add_def ("A^ij = (Dbet^ij + Dbet^ji - 2. / 3.* Dbet_k^k * g^ij)/2. / N ") ;
-	syst.add_def ("LieK_ij = 4 * A_ij * bet^k * DP_k / P + bet^k * D_k A_ij + A_ik * Dbet_j^k + A_jk * Dbet_i^k") ;
-	syst.add_def ("DDN_ij = D_i DN_j - 2 * DN_i * DP_j / P - 2 * DN_j * DP_i / P + 2 * g_ij * DN_k * DP^k / P") ;
-        syst.add_def ("PartR_ij = R_ij + 6 * DP_i * DP_j / P^2 - 2 * D_i DP_j / P - 2 * g_ij * D_k DP^k / P - 2 * g_ij * DP_k * DP^k / P^2 - P^4 * 2 * A_ik * A_j^k") ;
-	syst.add_def ("evol_ij = DDN_ij - N * PartR_ij - P^4 * LieK_ij") ;
-	syst.add_def ("Pfourhor = N^2 / ( s_i * bet^i ) / ( s_i * bet^i )") ; 
+        syst.add_def ("st^i = s^i / sqrt(s_i * s^i)") ;
+        syst.add_def ("A^ij = (Dbet^ij + Dbet^ji - 2. / 3.* Dbet_k^k * g^ij)/2. / N ") ;
+        syst.add_def ("LieK_ij = 4 * A_ij * bet^k * DP_k / P + bet^k * D_k A_ij + A_ik * Dbet_j^k + A_jk * Dbet_i^k") ;
+        syst.add_def ("DDN_ij = D_i DN_j - 2 * DN_i * DP_j / P - 2 * DN_j * DP_i / P + 2 * g_ij * DN_k * DP^k / P") ;
+            syst.add_def ("PartR_ij = R_ij + 6 * DP_i * DP_j / P^2 - 2 * D_i DP_j / P - 2 * g_ij * D_k DP^k / P - 2 * g_ij * DP_k * DP^k / P^2 - P^4 * 2 * A_ik * A_j^k") ;
+        syst.add_def ("evol_ij = DDN_ij - N * PartR_ij - P^4 * LieK_ij") ;
+        syst.add_def ("Pfourhor = N^2 / ( s_i * bet^i ) / ( s_i * bet^i )") ;
 
-	espace.add_inner_bc (syst, "N=n0") ; 
-	espace.add_inner_bc (syst, "bet^i = n0 / P^2 * st^i + Ome * m^i * a") ;
-	espace.add_inner_bc (syst, "4 * st^i * D_i P / P + D_i st^i + P^2 * A_ij * st^i * st^j = 0") ;
-	espace.add_inner_bc (syst, "DDN_ij - N * PartR_ij - Pfourhor * LieK_ij=0", n_evol_inner, p_evol_inner) ;
-	espace.add_inner_bc (syst, "dirac^i =0", n_dirac, p_dirac) ;
+        espace.add_inner_bc (syst, "N=n0") ;
+        espace.add_inner_bc (syst, "bet^i = n0 / P^2 * st^i + Ome * m^i * a") ;
+        espace.add_inner_bc (syst, "4 * st^i * D_i P / P + D_i st^i + P^2 * A_ij * st^i * st^j = 0") ;
+        espace.add_inner_bc (syst, "DDN_ij - N * PartR_ij - Pfourhor * LieK_ij=0", n_evol_inner, p_evol_inner) ;
+        espace.add_inner_bc (syst, "dirac^i =0", n_dirac, p_dirac) ;
 
-	// CFC Equations :
-	espace.add_eq (syst, " D_i DN^i + 2 * DP_i * DN^i / P - N * P^4 * A_ij * A^ij = 0", "N", "dn(N)") ; 
-	espace.add_eq (syst, "R - 8 * D_i DP^i / P - P^4 * A_ij * A^ij = 0", "P", "dn(P)") ;
-	espace.add_eq (syst, "D^j A_ij + 6 * A_ij * DP^j / P =0", "bet^i", "dn(bet^i)") ;
+        // CFC Equations :
+        espace.add_eq (syst, " D_i DN^i + 2 * DP_i * DN^i / P - N * P^4 * A_ij * A^ij = 0", "N", "dn(N)") ;
+        espace.add_eq (syst, "R - 8 * D_i DP^i / P - P^4 * A_ij * A^ij = 0", "P", "dn(P)") ;
+        espace.add_eq (syst, "D^j A_ij + 6 * A_ij * DP^j / P =0", "bet^i", "dn(bet^i)") ;
 
-	// Evolution
-	syst.add_eq_inside (1, "evol_ij =0", n_evol, p_evol) ;
-	for (int d=2 ; d<ndom ; d++) {
-		syst.add_eq_matching (d-1, OUTER_BC, "g^ij", n_evol, p_evol) ;
-		syst.add_eq_matching (d-1, OUTER_BC, "dn(g^ij)", n_evol, p_evol) ; 
-		 syst.add_eq_inside (d, "evol_ij=0", n_evol, p_evol) ;
-	}
-	
+        // Evolution
+        syst.add_eq_inside (1, "evol_ij =0", n_evol, p_evol) ;
+        for (int d=2 ; d<ndom ; d++) {
+            syst.add_eq_matching (d-1, OUTER_BC, "g^ij", n_evol, p_evol) ;
+            syst.add_eq_matching (d-1, OUTER_BC, "dn(g^ij)", n_evol, p_evol) ;
+             syst.add_eq_inside (d, "evol_ij=0", n_evol, p_evol) ;
+        }
 
-	espace.add_eq_full (syst, "determinant(g^ij) = 1") ;
 
-	// Outer BC
-	espace.add_outer_bc (syst, "N=1") ;
-	espace.add_outer_bc (syst, "P=1") ;
-	espace.add_outer_bc (syst, "bet^i=0") ;
-	espace.add_outer_bc (syst, "g^ij=gf^ij", n_evol, p_evol) ;
+        espace.add_eq_full (syst, "determinant(g^ij) = 1") ;
 
-	// Newton-Raphson
-	double conv ;
-	bool endloop = false ;
-	int ite = 1 ;
-	char name[100] ;
-	sprintf(name, "kerr_%d_%f.dat", nbr, ome) ;
+        // Outer BC
+        espace.add_outer_bc (syst, "N=1") ;
+        espace.add_outer_bc (syst, "P=1") ;
+        espace.add_outer_bc (syst, "bet^i=0") ;
+        espace.add_outer_bc (syst, "g^ij=gf^ij", n_evol, p_evol) ;
 
-	while (!endloop) {
-		endloop = syst.do_newton(1e-8, conv) ;
-		ite++ ;
-		// Save
-		if (rank==0) {
-		FILE* ff = fopen(name, "w") ;
-		espace.save(ff) ;
-		fwrite_be (&n0, sizeof(double), 1, ff) ;	
-		fwrite_be (&ome, sizeof(double), 1, ff) ;	
-		fwrite_be (&aa, sizeof(double), 1, ff) ;
-		conf.save(ff) ;
-		lapse.save(ff) ;
-		shift.save(ff) ;
-		gmet.save(ff) ;
-		fclose(ff) ;
-		}
-		}
+        // Newton-Raphson
+        double conv ;
+        bool endloop = false ;
+        int ite = 1 ;
+        char name[100] ;
+        sprintf(name, "kerr_%d_%f.dat", nbr, ome) ;
+
+        while (!endloop) {
+            endloop = syst.do_newton(1e-8, conv) ;
+            ite++ ;
+            // Save
+            if (rank==0) {
+                FILE* ff = fopen(name, "w") ;
+                espace.save(ff) ;
+                fwrite_be (&n0, sizeof(double), 1, ff) ;
+                fwrite_be (&ome, sizeof(double), 1, ff) ;
+                fwrite_be (&aa, sizeof(double), 1, ff) ;
+                conf.save(ff) ;
+                lapse.save(ff) ;
+                shift.save(ff) ;
+                gmet.save(ff) ;
+                fclose(ff) ;
+            }
+        }
         syst.finalize_profiling();
-  }
-	for (int i=0 ; i<n_evol_inner ; i++)
-	  delete p_evol_inner[i] ;
+        fftw_precomp_map_finalize_profiling();
+        profiling_report(syst_init,std::cout);
+    }
+	for (int i=0 ; i<n_evol_inner ; i++) delete p_evol_inner[i] ;
 	delete [] p_evol_inner ;
-	for (int i=0 ; i<n_evol ; i++)
-	  delete p_evol[i] ;
+	for (int i=0 ; i<n_evol ; i++) delete p_evol[i] ;
 	delete [] p_evol ;
-	for (int i=0 ; i<n_dirac ; i++)
-		delete p_dirac[i] ;
+	for (int i=0 ; i<n_dirac ; i++) delete p_dirac[i] ;
 	delete [] p_dirac ;
 
-    fftw_precomp_map_finalize_profiling();
-	profiling_report(syst_init,std::cout);
 	MPI_Finalize() ;
 	return EXIT_SUCCESS ;
 }
