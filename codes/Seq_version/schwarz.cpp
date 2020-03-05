@@ -1,3 +1,4 @@
+#include "base_fftw.hpp"
 #include "kadath_spheric.hpp"
 
 using namespace Kadath ;
@@ -88,8 +89,9 @@ int main() {
 
 	cout << "Error max " << error_max << endl ;
 
-	profiling_report(syst,std::cout);
-
-        return EXIT_SUCCESS ;
+    fftw_precomp_map_finalize_profiling();
+    syst.finalize_profiling();
+    profiling_report(syst,std::cout);
+    return EXIT_SUCCESS ;
 }
 

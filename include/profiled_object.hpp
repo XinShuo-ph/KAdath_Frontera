@@ -32,6 +32,7 @@
 #include <cassert>
 #include <type_traits>
 #include <functional>
+#include <cmath>
 #include "config.h"
 
 
@@ -230,7 +231,7 @@ namespace Kadath {
         inline Duration stop_chrono(Hash_key) const {return Clock::now() - start;}
         template<typename... T> inline Duration stop_chrono(T... ) const {return Duration{};};
         void reset() const {}
-        void finalize() const {}
+        void finalize_profiling() const {}
     };
 
     //! Specialization for the enabled profiling case.
@@ -281,7 +282,7 @@ namespace Kadath {
         Profiled_object(char const * _name = typeid(Derived).name()) : hash{}, profiling_map{},
                                                                        user_keys{}, current_measures{}, name{_name} {}
         //! Destructor.
-        virtual ~Profiled_object() { this->finalize();}
+        virtual ~Profiled_object() { this->finalize_profiling();}
 
         /**
          * Method to call at the begining of a code block to time. The argument are cast into strings and then
@@ -338,10 +339,10 @@ namespace Kadath {
 
          /**
           * Computes statistical data and erase measure-related maps. Another set of measure can be made, and if so,
-          * another call to \c finalize() will update the Statistics according to the new data.
+          * another call to \c finalize_profiling() will update the Statistics according to the new data.
           * @return a reference toward the current object.
           */
-         void finalize() const;
+         void finalize_profiling() const;
 
     private:
         //! Implementation of \c start_chrono (see the interface without the underscore prefix for informations).
@@ -415,7 +416,7 @@ namespace Kadath {
         current_measures.clear();
     }
 
-    template<class Derived,typename OD> void Profiled_object<Derived,OD,true>::finalize() const
+    template<class Derived,typename OD> void Profiled_object<Derived,OD,true>::finalize_profiling() const
     {
         assert(current_measures.empty());
         assert(profiling_map.size() == user_keys.size());
@@ -502,10 +503,6 @@ namespace Kadath {
     {
 #if ENABLE_PROFILING==1
         os << "=======================================================================" << std::endl;
-        if(c.get_statistic_map().empty())
-        {
-            c.finalize();
-        }
         os << "Profiling report : " << std::endl;
         os << "=======================================================================" << std::endl << std::endl;
         os << "                            id                              " << " | ";
@@ -515,6 +512,7 @@ namespace Kadath {
 #endif
         c.display(std::cout);
     }
+
 
 }
 

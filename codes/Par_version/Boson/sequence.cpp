@@ -1,3 +1,4 @@
+#include "base_fftw.hpp"
 #include "kadath_polar.hpp"
 #include "mpi.h"
 
@@ -127,7 +128,8 @@ int main(int argc, char** argv) {
 	endloop = syst.do_newton(1e-8, conv) ;
 	ite++ ;
 	 }
-      syst.finalize();
+        syst.finalize_profiling();
+      fftw_precomp_map_finalize_profiling();
       if(rank==0)
           profiling_report(syst,std::cout);
 

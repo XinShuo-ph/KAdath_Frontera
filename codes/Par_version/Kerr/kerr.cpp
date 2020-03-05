@@ -1,3 +1,4 @@
+#include "base_fftw.hpp"
 #include "kadath_spheric.hpp"
 #include "mpi.h"
 
@@ -110,7 +111,7 @@ int main(int argc, char** argv) {
 			ite++ ;
 	}
     }
-    syst_init.finalize();
+    syst_init.finalize_profiling();
       
     Metric_tensor gfixed (espace, CON, basis) ;
 	for (int i=1 ; i<=3 ; i++)
@@ -262,7 +263,7 @@ int main(int argc, char** argv) {
 		fclose(ff) ;
 		}
 		}
-	syst.finalize();
+        syst.finalize_profiling();
   }
 	for (int i=0 ; i<n_evol_inner ; i++)
 	  delete p_evol_inner[i] ;
@@ -274,6 +275,7 @@ int main(int argc, char** argv) {
 		delete p_dirac[i] ;
 	delete [] p_dirac ;
 
+    fftw_precomp_map_finalize_profiling();
 	profiling_report(syst_init,std::cout);
 	MPI_Finalize() ;
 	return EXIT_SUCCESS ;
