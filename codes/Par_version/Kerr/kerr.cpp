@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
     }
     syst_init.finalize_profiling();
     fftw_precomp_map_finalize_profiling();
-    profiling_report(syst_init,std::cout);
+    if(rank==0) profiling_report(syst_init,std::cout);
       
     Metric_tensor gfixed (espace, CON, basis) ;
 	for (int i=1 ; i<=3 ; i++)
@@ -268,7 +268,7 @@ int main(int argc, char** argv) {
         }
         syst.finalize_profiling();
         fftw_precomp_map_finalize_profiling();
-        profiling_report(syst_init,std::cout);
+        if(rank==0) profiling_report(syst_init,std::cout);
     }
 	for (int i=0 ; i<n_evol_inner ; i++) delete p_evol_inner[i] ;
 	delete [] p_evol_inner ;
