@@ -74,7 +74,7 @@ void coef_i_1d_cheb (Array<double>& tab) {
 		tab_auxi[i] = 0.5*tab(2*i) ;
 	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
@@ -116,7 +116,7 @@ void coef_i_1d_cheb_even (Array<double>& tab) {
 		tab_auxi[i] = 0.5*tab(2*i) ;
 	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
@@ -163,7 +163,7 @@ void coef_i_1d_cheb_odd (Array<double>& tab) {
 		tab_auxi[i] = 0.5*ti[2*i] ;
 	tab_auxi[(nbr-1)/2]=ti[nbr-1] ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
@@ -235,7 +235,7 @@ void coef_i_1d_cossin (Array<double>& tab) {
 	     cf[np-i] = -0.5*tab(2*i+1) ;
 	     }
 	cf[np/2] = tab(np) ;
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=0 ; i<np ; i++)
 		tab.set(i) = cf[i] ;
@@ -268,7 +268,7 @@ void coef_i_1d_cos (Array<double>& tab) {
 		tab_auxi[i] = 0.5*tab(2*i) ;
 	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
@@ -299,7 +299,7 @@ void coef_i_1d_sin (Array<double>& tab) {
 		tab_auxi[i/2] = 0.25*(tab(i)-tab(i-2)) ;
 	tab_auxi[(nbr-1)/2] = -0.5*tab(nbr-2) ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
@@ -338,7 +338,7 @@ void coef_i_1d_cos_even (Array<double>& tab) {
 		tab_auxi[i] = 0.5*tab(2*i) ;
 	tab_auxi[(nbr-1)/2] = tab(nbr-1) ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
@@ -386,7 +386,7 @@ void coef_i_1d_cos_odd (Array<double>& tab) {
 		tab_auxi[i] = 0.5*ti[2*i] ;
 	tab_auxi[(nbr-1)/2] = ti[nbr-1] ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;
@@ -420,7 +420,7 @@ void coef_i_1d_sin_even (Array<double>& tab) {
 		tab_auxi[i] = 0.25*(tab(2*i+1)-tab(2*i-1)) ;
 	tab_auxi[(nbr-1)/2] = -0.5*tab(nbr-2) ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i])/sin(M_PI*i/(nbr-1)) ;
@@ -466,7 +466,7 @@ void coef_i_1d_sin_odd (Array<double>& tab) {
 		tab_auxi[i] = 0.5*ti[2*i] ;
 	tab_auxi[(nbr-1)/2] = ti[nbr-1] ;
 
-	fftw_execute(p) ;
+	fftw_data.execute() ;
 
 	for (int i=1 ; i<(nbr-1)/2 ; i++) {
 		double fp = 0.5*(tab_auxi[i]+tab_auxi[nbr-1-i]) ;

@@ -112,6 +112,31 @@ Term_eq::Term_eq (const Term_eq& so) : dom(so.dom), val_d(0x0), der_d(0x0), val_
 	}
 }
 
+#ifdef ENABLE_MOVE_SEMANTIC
+Term_eq::Term_eq(Kadath::Term_eq &&so) :
+    dom{so.dom},
+    val_d{so.val_d},
+    der_d{so.der_d},
+    val_t{so.val_t},
+    der_t{so.der_t},
+    type_data{so.type_data}
+{
+    so.val_d = nullptr;
+    so.der_d = nullptr;
+    so.val_t = nullptr;
+    so.der_t = nullptr;
+}
+Term_eq& Term_eq::operator=(Term_eq && so)
+{
+    assert(dom == so.dom && type_data == so.type_data);
+    std::swap(val_d,so.val_d);
+    std::swap(der_d,so.der_d);
+    std::swap(val_t,so.val_t);
+    std::swap(der_t,so.der_t);
+    return *this;
+}
+#endif //#ifdef ENABLE_MOVE_SEMANTIC
+
 Term_eq::~Term_eq() {
 
 	if (val_d!=0x0)

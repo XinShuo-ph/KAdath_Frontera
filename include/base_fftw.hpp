@@ -21,21 +21,51 @@
 #define __BASE_FFTW_HPP_
 
 #include <fftw3.h>
+#include "profiled_object.hpp"
 #include <unordered_map>
 
 namespace Kadath {
 // buffer and plan, keep them to save time
-struct fftw_precomp_t {
-  double* buffer;
-  fftw_plan plan;
+struct fftw_precomp_t : public Profiled_object<fftw_precomp_t>
+{
+    int size;
+    double* buffer;
+    fftw_plan plan;
 
-  fftw_precomp_t(int const n, fftw_r2r_kind FFTW_TRANSFORM) : buffer(fftw_alloc_real(n)),
+  fftw_precomp_t(int const n, fftw_r2r_kind FFTW_TRANSFORM) :
+                                                              size{n},
+                                                            buffer(fftw_alloc_real(n)),
                                                               plan(fftw_plan_r2r_1d(n, buffer, buffer, FFTW_TRANSFORM, FFTW_MEASURE)) {}
   ~fftw_precomp_t() {
     fftw_destroy_plan(plan);
     fftw_free(buffer);
   }
+
+    void execute()
+    {
+        auto const key = this->start_chrono("fftw execute with size ",size);
+        fftw_execute(plan);
+        auto const T = this->stop_chrono(key);
+//        std::cout << "fftw execute : T =" << this->to_milliseconds(T) << "ms." << std::endl;
+    }
 };
+
+
+    extern std::unordered_map<int, fftw_precomp_t> fftw_precomp_map;
+    extern std::unordered_map<int, fftw_precomp_t> fftw_precomp_map_i;
+
+
+    inline void fftw_precomp_map_finalize_profiling()
+    {
+#ifdef ENABLE_PROFILING
+        for (auto const &p : fftw_precomp_map) {
+            p.second.finalize_profiling();
+        }
+        for (auto const &p : fftw_precomp_map_i) {
+            p.second.finalize_profiling();
+        }
+#endif
+    }
 
 
 

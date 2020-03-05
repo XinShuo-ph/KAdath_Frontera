@@ -51,7 +51,7 @@ Index::~Index() {
 	if(coord) delete [] coord ;
 }
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
     Index::Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr}
     {
         std::swap(coord,so.coord);

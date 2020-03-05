@@ -109,6 +109,11 @@ class Term_eq {
 	Term_eq (const Term_eq&) ; ///< Copy constructor.
 	~Term_eq() ; ///< Destructor
 
+#ifdef ENABLE_MOVE_SEMANTIC
+    Term_eq(Term_eq&&); ///< Move constructor.
+    Term_eq & operator=(Term_eq &&); ///< Move assignment operator.
+#endif //#ifdef ENABLE_MOVE_SEMANTIC
+
         double get_val_d() const ; ///< @return the double value.
         double get_der_d() const ; ///< @return the double variation.
         Tensor get_val_t() const ; ///< @return the tensorial value.

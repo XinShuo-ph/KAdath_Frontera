@@ -42,7 +42,7 @@ class Point {
 	Point (const Point&) ; ///< Constructor by copy.
 	~Point() ; ///< Destuctor
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
     Point(Point &&);///< Move constructor.
     Point & operator=(Point &&);///<Move assignment.
 #endif

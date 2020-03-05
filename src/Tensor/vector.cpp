@@ -50,11 +50,6 @@ Vector::Vector (const Space& sp, FILE* ff) :
 	assert (valence==1) ;
 }
 
-			//--------------//
-			//  Destructor  //
-			//--------------//
-Vector::~Vector () {
-}
 
 
 void Vector::operator=(const Vector& t) {

@@ -748,7 +748,10 @@ void System_of_eqs::newton_update_vars(Array<double> const &xx)
     Tensor** old_fields = new Tensor* [nvar];
     for (int i=0 ; i<nvar ; i++) old_fields[i] = new Tensor(*var[i]);
     xx_to_vars(xx, conte);
-    for (int i=0 ; i<nvar ; i++) *var[i] = *old_fields[i] - *var[i];
+    for (int i=0 ; i<nvar ; i++)
+    {
+        *var[i] = *old_fields[i] - *var[i];
+    }
     for (int i=0 ; i<nvar_double ; i++) *var_double[i] = old_var_double[i] - *var_double[i];
     if (old_var_double!=0x0) delete [] old_var_double;
     for (int i=0 ; i<nvar ; i++) delete old_fields[i];

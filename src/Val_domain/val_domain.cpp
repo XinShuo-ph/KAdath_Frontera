@@ -47,7 +47,7 @@ Val_domain::Val_domain (const Val_domain& so, bool copie) : zone(so.zone), base(
 	     }
 }
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
 Val_domain::Val_domain(Val_domain && so) : zone{so.zone}, base{std::move(so.base)}, is_zero{so.is_zero}, c{so.c},
     cf{so.cf}, in_conf{so.in_conf},  in_coef{so.in_coef}, p_der_var{so.p_der_var}, p_der_abs{so.p_der_abs}
 {

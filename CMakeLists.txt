@@ -9,8 +9,13 @@ message("Root directory : ${PROJECT_SOURCE_DIR}")
 option(PAR_VERSION "Parallel version" ON)
 option(LINUX "Build for linux" ON)
 option(ENABLE_PROFILING "Enable auto-profiling functions." OFF)
+<<<<<<< HEAD
 option(ENABLE_GPU_USE "Enables the use of GPU(s) if available." OFF)
 option(ARRAY_MOVE_SEMANTIC "Enable move semantic for the Array class" ON)
+=======
+option(ENABLE_MOVE_SEMANTIC "Enable move semantic for the Array class" ON)
+option(TENSOR_MOVE_SEMANTIC "Enables/disables move ctor and operators fot the Tensor class hierarchy." ON)
+>>>>>>> optimize
 
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )
 
@@ -94,7 +99,10 @@ if(ENABLE_GPU_USE)
     message("            # MAGMA_LIBRARIES = ${MAGMA_LIBRARIES}")
 endif()
 
+#option to compile with google thread-sanitizer
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fPIE -pie -g")
+#option to compile with google address-sanitizer
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -O1 -fno-omit-frame-pointer -g")
 
 add_subdirectory(tutorials)
 
@@ -107,5 +115,5 @@ endif()
 #add the tests directory
 if(NOT(PAR_VERSION))
     enable_testing()
-    add_subdirectory(tests)
-endif()
+endif(NOT(PAR_VERSION))
+add_subdirectory(tests)

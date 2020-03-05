@@ -61,7 +61,7 @@ TEST_F(KadathProfiledObjectTest,CheckTimeMeasurement)
     }
     stop_chrono(long_sleep_key);
 
-    this->finalize();
+    this->finalize_profiling();
 
     auto long_sleep_it = get_statistic_map().find(long_sleep_key);
     EXPECT_FALSE(long_sleep_it == get_statistic_map().end());

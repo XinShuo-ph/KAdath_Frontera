@@ -48,7 +48,7 @@ Base_spectral::Base_spectral (FILE* fd) {
 	    	bases_1d[i] = 0x0 ;
 }
 
-#ifdef ARRAY_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
     Base_spectral::Base_spectral(Base_spectral && so) : def{so.def}, ndim{0}, bases_1d{nullptr}
     {
         std::swap(ndim,so.ndim);

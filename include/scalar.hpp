@@ -97,12 +97,15 @@ class Scalar : public Tensor {
 	*/
       Scalar (const Space& sp, FILE* fd) ;
 
-//#ifdef ARRAY_MOVE_SEMANTIC
-//    Scalar(Scalar &&); ///<Move constructor.
-//    Scalar & operator=(Scalar &&); ///<Move assignment.
-//#endif
+#ifdef ENABLE_MOVE_SEMANTIC
+#ifdef TENSOR_MOVE_SEMANTIC
+    Scalar(Scalar &&); ///<Move constructor.
+    Scalar & operator=(Tensor &&) override; ///< Move assignment from a \c Scalar typed as  a \c Tensor.
+    Scalar & operator=(Scalar &&); ///<Move assignment.
+#endif //#ifdef TENSOR_MOVE_SEMANTIC
+#endif //#ifdef ENABLE_MOVE_SEMANTIC
 
-      virtual ~Scalar () ; ///< Destructor.
+    ~Scalar () override ; ///< Destructor.
       
       virtual void save (FILE*) const ; ///< Saving function
     public:
