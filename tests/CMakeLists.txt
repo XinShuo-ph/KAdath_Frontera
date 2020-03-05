@@ -3,3 +3,11 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 add_executable(kadath_tests_run utils_test.cpp main_test.cpp ${HEADERS})
 target_link_libraries(kadath_tests_run gtest_main kadath ${KADATH_DEPENDENCIES})
 set_target_properties(kadath_tests_run  PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+
+#Executable kerr_testing
+if(PAR_VERSION)
+    set (KERR_TESTING kerr_testing)
+    set (SOURCES_KERR_TESTING ${KERR_TESTING}.cpp)
+    add_executable(${KERR_TESTING} ${SOURCES_KERR_TESTING} ${HEADERS})
+    target_link_libraries(${KERR_TESTING} kadath ${KADATH_DEPENDENCIES})
+endif(PAR_VERSION)
