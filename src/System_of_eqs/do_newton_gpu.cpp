@@ -89,12 +89,13 @@ namespace Kadath {
             }
 
             MPI_Barrier(MPI_COMM_WORLD);
-
+            if(rank==0) std::cout << "passed matrix computation" <<std::endl;
             MPI_Gather(matrix.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? matrix.set_data() : nullptr),
                     nn * local_nb_cols,MPI_DOUBLE,0,MPI_COMM_WORLD);
 
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
 
+            if(rank==0) std::cout << "passed matrix gathering" <<std::endl;
             Array<double> xx(nn);
             Duration  t_trans_matrix,t_inv_matrix;
             if(rank==0) {
@@ -111,10 +112,12 @@ namespace Kadath {
                 t_inv_matrix = this->stop_chrono(chrono_key);
                 for (int i = 0; i < nn; i++) xx.set_data()[i] = second_member[i];
             }
+            if(rank==0) std::cout << "passed matrix inversion" <<std::endl;
 
             chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", nn, " | update ");
             MPI_Bcast(xx.set_data(),nn,MPI_DOUBLE,0,MPI_COMM_WORLD);
 
+            if(rank==0) std::cout << "passed second member broadcast" <<std::endl;
             newton_update_vars(xx);
 
             Duration const t_newton_update{this->stop_chrono(chrono_key)};
