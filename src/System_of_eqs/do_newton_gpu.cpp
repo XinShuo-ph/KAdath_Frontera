@@ -79,18 +79,21 @@ namespace Kadath {
 
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
-
-            Array<double> matrix (nn, rank == 0 ? nn : local_nb_cols);
+	    if(rank==0) std::cout << "starting to fill matrix slices..." << std::endl;
+            Array<double> local_matrix_slice (nn,local_nb_cols);
+	    if(rank==0) std::cout << "slices allocated." << std::endl;
             for(int j{0};j<local_nb_cols;j++)
             {
                 int const jj {j+local_col_start_idx};
                 Array<double> const colj {do_col_J(jj)};
-                for(int i{0};i<nn;i++) matrix.set(i, j) = colj(i);
+                for(int i{0};i<nn;i++) local_matrix_slice.set(i, j) = colj(i);
             }
-
+	
+	    std::unique_ptr<Array<double>> full_matrix{nullptr};
+	    if(rank==0) full_matrix.reset(new Array<double>(nn,nn));
             MPI_Barrier(MPI_COMM_WORLD);
             if(rank==0) std::cout << "passed matrix computation" <<std::endl;
-            MPI_Gather(matrix.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? matrix.set_data() : nullptr),
+            MPI_Gather(local_matrix_slice.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? full_matrix->set_data() : nullptr),
                     nn * local_nb_cols,MPI_DOUBLE,0,MPI_COMM_WORLD);
 
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
@@ -101,7 +104,8 @@ namespace Kadath {
             if(rank==0) {
                 chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                 nn, " | matrix translation ");
-                Magma_matrix magma_mat{matrix,nn};
+                Magma_matrix magma_mat{*full_matrix,nn};
+		full_matrix.reset(nullptr);
                 // Translate the second member :
                 Magma_array second_member{second};
                 t_trans_matrix = this->stop_chrono(chrono_key);
