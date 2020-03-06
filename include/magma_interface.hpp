@@ -144,10 +144,10 @@ namespace Kadath {
 
         Magma_matrix & set_column(std::size_t col,Array<double> const & source)
         {
-            assert(source.get_nbr() == matrix.get_order());
+            assert(source.get_nbr() == order);
             for(std::size_t i{0};i<source.get_nbr();i++)
             {
-                (*matrix)(i,column) = source.get_data()[i];
+                (*this)(i,column) = source.get_data()[i];
             }
             return *this;
         }
