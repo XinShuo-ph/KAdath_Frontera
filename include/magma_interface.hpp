@@ -59,7 +59,7 @@ namespace Kadath {
         Magma_allocator() = default;
         template<class U> constexpr Magma_allocator(Magma_allocator<U> const &) noexcept {};
 
-        double * allocate(std::size_t n);
+        pointer allocate(std::size_t n);
 
         void deallocate(double * data,std::size_t) noexcept {
             magma_free_cpu(data);
