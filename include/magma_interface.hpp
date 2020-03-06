@@ -147,7 +147,7 @@ namespace Kadath {
             assert(source.get_nbr() == order);
             for(std::size_t i{0};i<source.get_nbr();i++)
             {
-                (*this)(i,column) = source.get_data()[i];
+                (*this)(i,col) = source.get_data()[i];
             }
             return *this;
         }
