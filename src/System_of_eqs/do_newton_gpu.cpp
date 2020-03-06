@@ -71,80 +71,36 @@ namespace Kadath {
                 cerr << "nbr unknowns  = " << nbr_unknowns << endl;
                 abort();
             }
+            int const nb_cols_per_proc {nn / nproc};
+            int const remaining_cols {nn % nproc};
+            int const local_nb_cols {rank < remaining_cols ? nb_cols_per_proc : nb_cols_per_proc + 1};
+            int const local_col_start_idx {rank * nb_cols_per_proc + rank < remaining_cols ? rank : remaining_cols};
 
-            // Computation in a 1D distributed matrice
-            int zero = 0;
-            int ictxt_in;
-            int nprow_in = 1;
-            int npcol_in = nproc;
-            sl_init_ (&ictxt_in, &nprow_in, &npcol_in);
-
-            // Get my row and mycol
-            int myrow_in, mycol_in;
-            blacs_gridinfo_ (&ictxt_in, &nprow_in, &npcol_in, &myrow_in, &mycol_in);
-
-            while (bsize*nproc>nn) {
-                bsize = div(bsize,2).quot;
-            }
-            if (bsize<1) {
-                cerr << "Too many processors in do_newton" << endl;
-                abort();
-            }
-
-            int nrowloc_in = numroc_ (&nn, &bsize, &myrow_in, &zero, &nprow_in);
-            int ncolloc_in = numroc_ (&nn, &bsize, &mycol_in, &zero, &npcol_in);
-
-            Array<double> matloc_in (ncolloc_in, nrowloc_in);
-            int start = bsize*rank;
 
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
 
-            compute_matrix_cyclic(matloc_in,nn,start,bsize,nproc,true);
+            Array<double> matrix (nn, rank == 0 ? nn : local_nb_cols);
+            for(int j{0};j<local_nb_cols;j++)
+            {
+                int const jj {j+local_col_start_idx};
+                Array<double> const colj {do_col_J(jj)};
+                for(int i{0};i<nn;i++) matrix.set(i, j) = colj(i);
+            }
 
-            // Descriptor of the matrix :
-            Array<int> descamat_in(9);
-            int info;
-            descinit_ (descamat_in.set_data(), &nn, &nn, &bsize, &bsize, &zero, &zero, &ictxt_in, &nrowloc_in, &info);
-
-            // Wait for everybody
             MPI_Barrier(MPI_COMM_WORLD);
 
+            MPI_Gather(matrix.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? matrix.set_data() : nullptr),
+                    nn * local_nb_cols,MPI_DOUBLE,0,MPI_COMM_WORLD);
+
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
-
-            // Now translate the matrix back to the master process
-            int npcol{1}, nprow{1};
-            int ictxt;
-            sl_init_ (&ictxt, &nprow, &npcol);
-
-            int myrow, mycol;
-            blacs_gridinfo_ (&ictxt, &nprow, &npcol, &myrow, &mycol);
-
-            int nrowloc = numroc_ (&nn, &bsize, &myrow, &zero, &nprow);
-            int ncolloc = numroc_ (&nn, &bsize, &mycol, &zero, &npcol);
-            if(rank == 0)
-            {
-                assert(nrowloc == nn && ncolloc == nn);
-            } else{
-                assert(nrowloc==0 && ncolloc==0);
-            }
 
             Array<double> xx(nn);
             Duration  t_trans_matrix,t_inv_matrix;
             if(rank==0) {
                 chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                 nn, " | matrix translation ");
-                Magma_matrix magma_mat{nn};
-                {
-                    Array<double> matloc(ncolloc, nrowloc);
-                    Array<int> descamat(9);
-                    descinit_(descamat.set_data(), &nn, &nn, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
-
-                    Cpdgemr2d(nn, nn, matloc_in.set_data(), 1, 1, descamat_in.set_data(), matloc.set_data(), 1, 1,
-                              descamat.set_data(), ictxt);
-                    magma_mat = matloc;
-                    matloc_in.delete_data();
-                }
+                Magma_matrix magma_mat{matrix,nn};
                 // Translate the second member :
                 Magma_array second_member{second};
                 t_trans_matrix = this->stop_chrono(chrono_key);
