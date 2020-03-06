@@ -42,7 +42,7 @@ namespace Kadath{
         return *this;
     }
 
-    Magma_array & Magma_matrix::solve(Kadath::Magma_array &second_member) const
+    Magma_array & Magma_matrix::solve(Kadath::Magma_array &second_member)
     {
         pivot.reset(new std::vector<magma_int_t,Magma_allocator<magma_int_t>>(order));
         magma_int_t info;

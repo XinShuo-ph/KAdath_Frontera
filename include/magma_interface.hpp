@@ -62,7 +62,7 @@ namespace Kadath {
 
         pointer allocate(std::size_t n);
 
-        void deallocate(double * data,std::size_t) noexcept {
+        void deallocate(pointer data,std::size_t) noexcept {
             magma_free_cpu(data);
         }
     };
@@ -155,8 +155,8 @@ namespace Kadath {
         magma_int_t get_order() const {return order;}
         magma_int_t get_lda() const {return lda;}
 
-        Magma_array & solve(Magma_array & second_member) const;
-
+        Magma_array & solve(Magma_array & second_member);
+	using Magma_array::operator=;
     };
 
 #endif

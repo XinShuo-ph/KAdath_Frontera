@@ -1,6 +1,7 @@
 #include "base_fftw.hpp"
 #include "kadath_spheric.hpp"
 #include "mpi.h"
+#include "magma_interface.hpp"
 
 using namespace Kadath ;
 
@@ -9,7 +10,13 @@ int main(int argc, char** argv) {
 	int rc = MPI_Init (&argc, &argv) ;
 	int rank = 0 ;
 	MPI_Comm_rank (MPI_COMM_WORLD, &rank) ;
-
+#ifdef ENABLE_GPU_USE
+	if(rank==0)
+	{
+		TESTING_CHECK(magma_init());
+		magma_print_environment();
+	}	
+#endif
 	// 3D :
 	int dim = 3 ;
 
@@ -276,7 +283,12 @@ int main(int argc, char** argv) {
 	delete [] p_evol ;
 	for (int i=0 ; i<n_dirac ; i++) delete p_dirac[i] ;
 	delete [] p_dirac ;
-
+#ifdef ENABLE_GPU_USE
+	if(rank==0)
+	{
+		TESTING_CHECK(magma_finalize());
+	}
+#endif
 	MPI_Finalize() ;
 	return EXIT_SUCCESS ;
 }
