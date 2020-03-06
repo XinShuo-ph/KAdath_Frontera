@@ -96,7 +96,7 @@ namespace Kadath {
         using Base = std::vector<double,Magma_allocator<double>>;
         magma_int_t dim;
     public:
-        Magma_array(std::size_t _dim) :  Base(__dim),dim{static_cast<magma_int_t>(_dim)} {}
+        Magma_array(std::size_t _dim) :  Base(_dim),dim{static_cast<magma_int_t>(_dim)} {}
         Magma_array(Array<double> const & source) ;
         magma_int_t get_dim() const {return dim;}
         //! Copy the source array to \c this without reallocation so the sizes must match.
@@ -124,12 +124,20 @@ namespace Kadath {
         //! Allocate data and initializes it using the values of the source array (must be a column major index matrix).
         Magma_matrix(Array<double> const & source,std::size_t n) : Magma_array{source},
                                                                    order{static_cast<magma_int_t>(n)},
-                                                                   lda{static_cast<magma_int_t>(n)},
+                                                                   lda{static_cast<magma_int_t>(n)} {}
 
         bool is_factorized() const {return false;}
-        double operator()(std::size_t i,std::size_t j) const {assert(0<=i && i<dim && 0<=j && j<lda); return data[i+lda*j];}
+        double operator()(std::size_t i,std::size_t j) const
+        {
+            assert(0<=i && i<dim && 0<=j && j<lda);
+            return (*this)[i+lda*j];
+        }
         //! Writable row/col access to data.
-        double & operator()(std::size_t i,std::size_t j)  {assert(0<=i && i<dim && 0<=j && j<lda); return data[i+lda*j];}
+        double & operator()(std::size_t i,std::size_t j)
+        {
+            assert(0<=i && i<dim && 0<=j && j<lda);
+            return (*this)[i+lda*j];
+        }
 
         magma_int_t get_order() const {return order;}
         magma_int_t get_lda() const {return lda;}
