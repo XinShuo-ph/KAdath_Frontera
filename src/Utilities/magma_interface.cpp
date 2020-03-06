@@ -46,7 +46,7 @@ namespace Kadath{
     {
         pivot.reset(new std::vector<magma_int_t,Magma_allocator<magma_int_t>>(order));
         magma_int_t info;
-        magma_dgesv( order, 1, this->data(), lda, pivot->data(), second_member.data(), second_member.get_dim(), &info );
+        TESTING_CHECK(magma_dgesv( order, 1, this->data(), lda, pivot->data(), second_member.data(), second_member.get_dim(), &info ));
         return second_member;
     }
 

@@ -156,7 +156,7 @@ namespace Kadath {
         magma_int_t get_lda() const {return lda;}
 
         Magma_array & solve(Magma_array & second_member);
-	using Magma_array::operator=;
+	    using Magma_array::operator=;
     };
 
 #endif
