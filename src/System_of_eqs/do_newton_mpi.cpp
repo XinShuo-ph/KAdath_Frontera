@@ -29,40 +29,6 @@
 #include "array_math.cpp"
 
 namespace Kadath {
-#ifdef PAR_VERSION
-    extern "C" {
-        void sl_init_ (int*, int*, int*);
-        void blacs_gridexit_ (int*);
-        void blacs_gridinfo_ (int*, int*, int*, int*, int*);
-        int numroc_ (int*, int*, int*, int*, int*);
-        void descinit_ (int*, int*, int*, int*, int* , int*, int*, int*, int*, int*);
-        void pdgesv_ (int*, int*, double*, int*, int*, int*, int*, double*, int*, int*, int*, int*);
-        int blacs_pnum_ (int*, int*, int*);
-        void Cpdgemr2d (int, int, double*, int, int, int*, double*, int, int, int*, int);
-    }
-#endif
-
-    void split_two_d (int target, int& low, int& up) {
-        int start = int(sqrt(target));
-        low = start;
-        up = start;
-
-        bool endloop = (low*up==target) ? true : false;
-
-        bool first = true;
-        while (!endloop) {
-            if (!first)
-                low--;
-            else
-                first= false;
-
-            up = int(target/low);
-
-            if (low*up==target)
-                endloop = true;
-        }
-
-    }
 
     template<>
     bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error, std::ostream & os,
