@@ -115,9 +115,6 @@ namespace Kadath {
             chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", nn, " | update ");
             MPI_Bcast(xx.set_data(),nn,MPI_DOUBLE,0,MPI_COMM_WORLD);
 
-            blacs_gridexit_(&ictxt);
-            blacs_gridexit_(&ictxt_in);
-
             newton_update_vars(xx);
 
             Duration const t_newton_update{this->stop_chrono(chrono_key)};
