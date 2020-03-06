@@ -20,6 +20,7 @@
 #define __MAGMA_INTERFACE_HPP_
 
 #include <vector>
+#include <memory>
 #include "config.h"
 #include "array.hpp"
 
