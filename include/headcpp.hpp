@@ -65,6 +65,8 @@ namespace Kadath {
   {
       //! value for fully sequential computations.
       sequential,
+      //! Value for sequantial matrix comptuation with gpu accelerated linear solver.
+      gpu_sequential,
       //! value for fully MPI parallel computations.
       mpi_parallel,
       //! value for hybrid MPI / GPU computations.

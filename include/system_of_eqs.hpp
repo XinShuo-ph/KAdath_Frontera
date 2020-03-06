@@ -1586,6 +1586,7 @@ class Eq_first_integral : public Equation {
 
     template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &, std::ostream &,Array<double>*);
     template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &, std::ostream &,Array<double>*);
+    template<> bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &, std::ostream &,Array<double>*);
     template<> bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double , double &, int , double , std::ostream &);
 
 // default : not implemented - the implemention is made through the specializations (see the seq_do_newton.cpp,
