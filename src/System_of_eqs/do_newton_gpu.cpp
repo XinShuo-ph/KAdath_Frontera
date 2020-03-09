@@ -75,13 +75,13 @@ namespace Kadath {
             int const remaining_cols {nn % nproc};
             int const local_nb_cols {rank < remaining_cols ? nb_cols_per_proc + 1 : nb_cols_per_proc};
             int const local_col_start_idx {rank * nb_cols_per_proc + (rank < remaining_cols ? rank : remaining_cols)};
-	    if(rank==0)
-            {
-                std::cout << "Computing " << nn << 'x' << nn << " matrix with " << nproc << " process." << std::endl;
-                if(remaining_cols==0) std::cout << "Process 0 to " << nproc-1 << " computes " << nb_cols_per_proc << " each." << std::endl;
-	        else std::cout << "- process 0 to " << remaining_cols-1 << " : " << nb_cols_per_proc+1 << " columns " << std::endl 
-		    << "- process " << remaining_cols << " to " << nproc-1 << " : " << nb_cols_per_proc << " columns " << std::endl;
-            }
+//	    if(rank==0)
+//            {
+//                std::cout << "Computing " << nn << 'x' << nn << " matrix with " << nproc << " process." << std::endl;
+//                if(remaining_cols==0) std::cout << "Process 0 to " << nproc-1 << " computes " << nb_cols_per_proc << " each." << std::endl;
+//	        else std::cout << "- process 0 to " << remaining_cols-1 << " : " << nb_cols_per_proc+1 << " columns " << std::endl
+//		    << "- process " << remaining_cols << " to " << nproc-1 << " : " << nb_cols_per_proc << " columns " << std::endl;
+//            }
             
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
