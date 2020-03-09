@@ -39,6 +39,7 @@ namespace Kadath {
     {
         bool res;
 #ifdef PAR_VERSION
+#ifdef ENABLE_GPU_USE
         int bsize  {static_cast<int>(default_block_size)};
         niter++;
 
@@ -137,9 +138,11 @@ namespace Kadath {
             }
             res = false;
         }
+#endif //#ifdef ENABLE_GPU_USE
 #else
         cerr << "Error : cannot call System_of_eqs::do_newton<mpi_parallel> without MPI. " << endl;
 #endif
+
         return res;
 
     }
