@@ -95,22 +95,14 @@ namespace Kadath {
 	
     	    std::unique_ptr<Array<double>> full_matrix{nullptr};
 	        if(rank==0) full_matrix.reset(new Array<double>(nn,nn));
+
+            std::vector<int> recvcount(nproc,nb_cols_per_proc*nn),displs(nproc,0);
+            assert(recvcount.at(rank) == nn*local_nb_cols);
+            for(auto i = recvcount.begin();i!=recvcount.begin()+remaining_cols;i++) (*i) += nn;
+            for(int i=1;i<nproc;i++) displs.at(i) = displs.at(i-1) + recvcount.at(i-1);
             MPI_Barrier(MPI_COMM_WORLD);
-            int const mpi_gather_error = 
-                MPI_Gather(local_matrix_slice.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? full_matrix->set_data() : nullptr),
-                    nn * local_nb_cols,MPI_DOUBLE,0,MPI_COMM_WORLD);
-            if(mpi_gather_error != MPI_SUCCESS)
-            {
-		if(rank==0)
-                switch(mpi_gather_error)
-		{
-		    case MPI_ERR_COMM : std::cerr << "MPI ERR COMM" << std::endl; break;
- 		    case MPI_ERR_COUNT : std::cerr << "MPI ERR COUNT" << std::endl; break;
-		    case MPI_ERR_TYPE : std::cerr << "MPI ERR TYPE " << std::endl; break;
-		    case MPI_ERR_BUFFER :  std::cerr << "MPI ERR BUFFER " << std::endl; break;
-                }
-		throw std::runtime_error{"MPI error"};
-            }
+            MPI_Gatherv(local_matrix_slice.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? full_matrix->set_data() : nullptr),
+                recvcount.data(),displs.data(),MPI_DOUBLE,0,MPI_COMM_WORLD);
             
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
 
