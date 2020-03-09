@@ -73,8 +73,8 @@ namespace Kadath {
             }
             int const nb_cols_per_proc {nn / nproc};
             int const remaining_cols {nn % nproc};
-            int const local_nb_cols {rank < remaining_cols ? nb_cols_per_proc : nb_cols_per_proc + 1};
-            int const local_col_start_idx {rank * nb_cols_per_proc + rank < remaining_cols ? rank : remaining_cols};
+            int const local_nb_cols {rank < remaining_cols ? nb_cols_per_proc + 1 : nb_cols_per_proc};
+            int const local_col_start_idx {rank * nb_cols_per_proc + (rank < remaining_cols ? rank : remaining_cols)};
 
 
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",

@@ -22,7 +22,7 @@
 #include "magma_interface.hpp"
 
 using namespace Kadath ;
-int main() {
+int main(int argc,char** argv) {
     int rc = MPI_Init (&argc, &argv) ;
     int rank = 0 ;
     MPI_Comm_rank (MPI_COMM_WORLD, &rank) ;
@@ -120,7 +120,7 @@ int main() {
 
     fftw_precomp_map_finalize_profiling();
     syst.finalize_profiling();
-    profiling_report(syst,std::cout);
+    if(rank==0) profiling_report(syst,std::cout);
 #ifdef ENABLE_GPU_USE
     if(rank==0)
 	{
