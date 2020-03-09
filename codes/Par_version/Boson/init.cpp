@@ -1,6 +1,7 @@
 #include "kadath_polar.hpp"
 #include "base_fftw.hpp"
 #include "mpi.h"
+#include "magma_interface.hpp"
 
 using namespace Kadath ;
 
@@ -9,6 +10,14 @@ int main(int argc, char** argv) {
 	int rc = MPI_Init(&argc, &argv) ;
 	int rank = 0 ;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
+
+#ifdef ENABLE_GPU_USE
+	if(rank==0)
+	{
+		TESTING_CHECK(magma_init());
+		magma_print_environment();
+	}	
+#endif
 
     // The new config :
     int dim = 2 ;
@@ -239,7 +248,12 @@ int main(int argc, char** argv) {
         phi.save(fiche);
         fclose(fiche);
     }
-
+#ifdef ENABLE_GPU_USE
+	if(rank==0)
+	{
+		TESTING_CHECK(magma_finalize());
+	}
+#endif
 
     MPI_Finalize();
 	

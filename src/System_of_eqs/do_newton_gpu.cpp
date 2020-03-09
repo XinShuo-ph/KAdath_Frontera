@@ -75,8 +75,14 @@ namespace Kadath {
             int const remaining_cols {nn % nproc};
             int const local_nb_cols {rank < remaining_cols ? nb_cols_per_proc + 1 : nb_cols_per_proc};
             int const local_col_start_idx {rank * nb_cols_per_proc + (rank < remaining_cols ? rank : remaining_cols)};
-
-
+	    if(rank==0)
+            {
+                std::cout << "Computing " << nn << 'x' << nn << " matrix with " << nproc << " process." << std::endl;
+                if(remaining_cols==0) std::cout << "Process 0 to " << nproc-1 << " computes " << nb_cols_per_proc << " each." << std::endl;
+	        else std::cout << "- process 0 to " << remaining_cols-1 << " : " << nb_cols_per_proc+1 << " columns " << std::endl 
+		    << "- process " << remaining_cols << " to " << nproc-1 << " : " << nb_cols_per_proc << " columns " << std::endl;
+            }
+            
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
             Array<double> local_matrix_slice (local_nb_cols,nn);
@@ -90,9 +96,22 @@ namespace Kadath {
     	    std::unique_ptr<Array<double>> full_matrix{nullptr};
 	        if(rank==0) full_matrix.reset(new Array<double>(nn,nn));
             MPI_Barrier(MPI_COMM_WORLD);
-            MPI_Gather(local_matrix_slice.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? full_matrix->set_data() : nullptr),
+            int const mpi_gather_error = 
+                MPI_Gather(local_matrix_slice.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? full_matrix->set_data() : nullptr),
                     nn * local_nb_cols,MPI_DOUBLE,0,MPI_COMM_WORLD);
-
+            if(mpi_gather_error != MPI_SUCCESS)
+            {
+		if(rank==0)
+                switch(mpi_gather_error)
+		{
+		    case MPI_ERR_COMM : std::cerr << "MPI ERR COMM" << std::endl; break;
+ 		    case MPI_ERR_COUNT : std::cerr << "MPI ERR COUNT" << std::endl; break;
+		    case MPI_ERR_TYPE : std::cerr << "MPI ERR TYPE " << std::endl; break;
+		    case MPI_ERR_BUFFER :  std::cerr << "MPI ERR BUFFER " << std::endl; break;
+                }
+		throw std::runtime_error{"MPI error"};
+            }
+            
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
 
             Array<double> xx(nn);
