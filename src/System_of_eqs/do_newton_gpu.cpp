@@ -79,12 +79,12 @@ namespace Kadath {
 
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
-            Array<double> local_matrix_slice (nn,local_nb_cols);
+            Array<double> local_matrix_slice (local_nb_cols,nn);
             for(int j{0};j<local_nb_cols;j++)
             {
                 int const jj {j+local_col_start_idx};
                 Array<double> const colj {do_col_J(jj)};
-                for(int i{0};i<nn;i++) local_matrix_slice.set(i, j) = colj(i);
+                for(int i{0};i<nn;i++) local_matrix_slice.set(j, i) = colj(i);
             }
 	
     	    std::unique_ptr<Array<double>> full_matrix{nullptr};

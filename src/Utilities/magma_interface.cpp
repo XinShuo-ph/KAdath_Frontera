@@ -34,6 +34,7 @@ namespace Kadath{
 
     Magma_array & Magma_array::operator=(const Array<double> &source)
     {
+	assert(this->size()==source.get_nbr());
         for(std::size_t i{0};i<this->size();i++)
         {
             std::size_t const k{i};
@@ -46,6 +47,7 @@ namespace Kadath{
     {
         pivot.reset(new std::vector<magma_int_t,Magma_allocator<magma_int_t>>(order));
         magma_int_t info;
+	std::cout << "callgin magma : magma_dgesv(order=" << order << ",nrhs=1,data=" << this->data() << ",lda=" << lda << ",pivot=" << pivot->data() << ",b=" << second_member.data() << "ldb=" << second_member.get_dim() << ",info)" << std::endl;
         TESTING_CHECK(magma_dgesv( order, 1, this->data(), lda, pivot->data(), second_member.data(), second_member.get_dim(), &info ));
         return second_member;
     }
