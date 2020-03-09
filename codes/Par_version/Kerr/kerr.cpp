@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 	int dim = 3 ;
 
 	// Number of points
-	int nbr  = 11 ;
+	int nbr  = 15 ;
 	int type_coloc = CHEB_TYPE ;
 	Dim_array res (dim) ;
 	res.set(0) = nbr ; res.set(1) = nbr ; res.set(2) = 1 ;
