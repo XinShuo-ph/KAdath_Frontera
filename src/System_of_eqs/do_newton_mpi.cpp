@@ -78,9 +78,17 @@ namespace Kadath {
             // Get my row and mycol
             int myrow_in, mycol_in;
             blacs_gridinfo_ (&ictxt_in, &nprow_in, &npcol_in, &myrow_in, &mycol_in);
+            int nblock_per_proc {(nn/bsize)/nproc};
+            int remain_block {(nn/bsize) % nproc};
 
-            while (bsize*nproc>nn) {
+            while (bsize*nproc>nn || (remain_block <= (nproc/2) && nblock_per_proc<25))
+            {
                 bsize = div(bsize,2).quot;
+                remain_block = (nn/bsize) % nproc;
+            }
+            if(bsize != default_block_size && rank==0)
+            {
+                std::cout << "block size adjusted from " << default_block_size << " down to " << bsize << '.' << std::endl;
             }
             if (bsize<1) {
                 cerr << "Too many processors in do_newton" << endl;
