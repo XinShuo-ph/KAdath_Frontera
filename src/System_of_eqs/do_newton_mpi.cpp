@@ -81,14 +81,11 @@ namespace Kadath {
             int nblock_per_proc {(nn/bsize)/nproc};
             int remain_block {(nn/bsize) % nproc};
 
-            while (bsize*nproc>nn || (remain_block <= (nproc/2) && nblock_per_proc<25))
+            while (bsize*nproc>nn || (remain_block <= (nproc/2) && nblock_per_proc<12))
             {
                 bsize = div(bsize,2).quot;
                 remain_block = (nn/bsize) % nproc;
-            }
-            if(bsize != default_block_size && rank==0)
-            {
-                std::cout << "block size adjusted from " << default_block_size << " down to " << bsize << '.' << std::endl;
+                nblock_per_proc = (nn/bsize)/nproc;
             }
             if (bsize<1) {
                 cerr << "Too many processors in do_newton" << endl;
