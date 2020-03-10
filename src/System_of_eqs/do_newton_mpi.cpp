@@ -81,16 +81,30 @@ namespace Kadath {
             int nblock_per_proc {(nn/bsize)/nproc};
             int remain_block {(nn/bsize) % nproc};
 
-            while (bsize*nproc>nn || (remain_block <= (nproc/2) && nblock_per_proc<12))
+            while (bsize*nproc>nn)
             {
-                bsize = div(bsize,2).quot;
-                remain_block = (nn/bsize) % nproc;
-                nblock_per_proc = (nn/bsize)/nproc;
             }
             if (bsize<1) {
                 cerr << "Too many processors in do_newton" << endl;
                 abort();
             }
+            //adjust block size to avoid idle process when the remaining workload is still significant
+            int best_bsize {bsize};
+            int best_remain_workload {remain_block};
+            while((remain_block <= (nproc/2) && nblock_per_proc<12))
+            {
+                bsize = div(bsize,2).quot;
+                if(bsize != 0) {
+                    remain_block = (nn / bsize) % nproc;
+                    nblock_per_proc = (nn / bsize) / nproc;
+                    if (remain_block > best_remain_workload) {
+                        best_remain_workload = remain_block;
+                        best_bsize = bsize;
+                    }
+                }
+            }
+            //if no suitable block size has been found, the best found is chosen.
+            if(bsize<1) bsize = best_bsize;
 
             int nrowloc_in = numroc_ (&nn, &bsize, &myrow_in, &zero, &nprow_in);
             int ncolloc_in = numroc_ (&nn, &bsize, &mycol_in, &zero, &npcol_in);
