@@ -105,7 +105,7 @@ namespace Kadath {
             }
             //if no suitable block size has been found, the best found is chosen.
             if(bsize<1) bsize = best_bsize;
-
+	    //if(rank==0 && default_block_size != bsize) std::cout << "block size adjusted down to " << bsize << std::endl;
             int nrowloc_in = numroc_ (&nn, &bsize, &myrow_in, &zero, &nprow_in);
             int ncolloc_in = numroc_ (&nn, &bsize, &mycol_in, &zero, &npcol_in);
 
