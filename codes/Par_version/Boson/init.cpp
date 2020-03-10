@@ -1,5 +1,4 @@
 #include "kadath_polar.hpp"
-#include "base_fftw.hpp"
 #include "mpi.h"
 #include "magma_interface.hpp"
 
@@ -140,7 +139,6 @@ int main(int argc, char** argv) {
         }
 
         syst.finalize_profiling();
-        fftw_precomp_map_finalize_profiling();
         if (rank == 0)
             profiling_report(syst, std::cout);
     }
@@ -227,7 +225,6 @@ int main(int argc, char** argv) {
             ite++;
         }
         syst.finalize_profiling();
-        fftw_precomp_map_finalize_profiling();
         if (rank == 0)
             profiling_report(syst, std::cout);
     }

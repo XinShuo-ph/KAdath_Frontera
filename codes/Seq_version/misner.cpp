@@ -1,5 +1,4 @@
 #include "kadath_bispheric.hpp"
-#include "base_fftw.hpp"
 
 using namespace Kadath ;
 int main() {
@@ -58,7 +57,6 @@ int main() {
 		ite++ ;
 	}
 
-    fftw_precomp_map_finalize_profiling();
     syst.finalize_profiling();
     profiling_report(syst,std::cout);
 	return EXIT_SUCCESS ;

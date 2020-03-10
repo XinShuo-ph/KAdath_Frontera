@@ -1,4 +1,3 @@
-#include "base_fftw.hpp"
 #include "kadath_spheric.hpp"
 #include "mpi.h"
 #include "magma_interface.hpp"
@@ -119,7 +118,7 @@ int main(int argc, char** argv) {
         }
     }
     syst_init.finalize_profiling();
-    fftw_precomp_map_finalize_profiling();
+
     if(rank==0) profiling_report(syst_init,std::cout);
       
     Metric_tensor gfixed (espace, CON, basis) ;
@@ -274,7 +273,7 @@ int main(int argc, char** argv) {
             }
         }
         syst.finalize_profiling();
-        fftw_precomp_map_finalize_profiling();
+
         if(rank==0) profiling_report(syst_init,std::cout);
     }
 	for (int i=0 ; i<n_evol_inner ; i++) delete p_evol_inner[i] ;

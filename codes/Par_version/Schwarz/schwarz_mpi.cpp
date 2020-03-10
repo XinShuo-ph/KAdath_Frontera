@@ -16,7 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "base_fftw.hpp"
 #include "kadath_spheric.hpp"
 #include "mpi.h"
 #include "magma_interface.hpp"
@@ -118,7 +117,7 @@ int main(int argc,char** argv) {
 
     if(rank==0) cout << "Error max " << error_max << endl ;
 
-    fftw_precomp_map_finalize_profiling();
+
     syst.finalize_profiling();
     if(rank==0) profiling_report(syst,std::cout);
 #ifdef ENABLE_GPU_USE
