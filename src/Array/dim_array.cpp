@@ -17,36 +17,9 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "assert.h"
 #include "utilities.hpp"
 #include "dim_array.hpp"
 namespace Kadath {
-// Standard onsructor
-Dim_array::Dim_array(int dim) : ndim(dim) {
-	nbr = new int[ndim] ;
-} 
-
-// Constructor by copy
-Dim_array::Dim_array(const Dim_array& so) : ndim(so.ndim) {
-	nbr = new int[ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-	   nbr[i] = so.nbr[i] ;
-}
-
-#ifdef ENABLE_MOVE_SEMANTIC
-// Move constructor.
-Dim_array::Dim_array(Kadath::Dim_array && so) : ndim{so.ndim},nbr{so.nbr}
-{
-   so.nbr = nullptr;
-}
-
-Dim_array & Dim_array::operator=(Dim_array && so)
-{
-    ndim = so.ndim;
-    std::swap(nbr,so.nbr);
-    return *this;
-}
-#endif
 
 Dim_array::Dim_array (FILE* fd) {
 	fread_be(&ndim, sizeof(int), 1, fd) ;
@@ -54,34 +27,14 @@ Dim_array::Dim_array (FILE* fd) {
 	fread_be(nbr, sizeof(int), ndim, fd) ;
 }
 
-// Destructor
-Dim_array::~Dim_array() {
-#ifdef ENABLE_MOVE_SEMANTIC
-    if(nbr)
-#endif
-	delete [] nbr ;
-}
-
-// Read/write
-int& Dim_array::set(int i) {
-	assert(i>=0) ;
-	assert(i<ndim) ;
-	return nbr[i] ;
-}
 
 // Assignement
 void Dim_array::operator= (const Dim_array& so) {
-	assert (ndim==so.ndim) ;
+//	assert (ndim==so.ndim) ;
 	for (int i=0 ; i<ndim ; i++)
 		nbr[i] = so.nbr[i] ;
 }
 
-// Read only
-int Dim_array::operator() (int i) const {
-	assert(i>=0) ;
-	assert(i<ndim) ;
-	return nbr[i] ;
-}
 
 void Dim_array::save (FILE* fd) const  {
 	fwrite_be(&ndim, sizeof(int), 1, fd) ;
@@ -101,16 +54,10 @@ ostream& operator<< (ostream& o, const Dim_array& so) {
 bool operator== (const Dim_array& a, const Dim_array& b) {
 	bool res = (a.ndim==b.ndim) ? true : false ;
 	if (res)
-	    for (int i=0 ; i<a.ndim ; i++)
-	         if (a.nbr[i] != b.nbr[i])
-		      res = false ;
+	    for (int i=0 ; i<a.ndim && res ; i++)
+	         res = (a.nbr[i] == b.nbr[i]);
 	return res ;
 }
 
-// Anti-comparison operator
-bool operator!= (const Dim_array& a, const Dim_array& b) {
-
-	return !(a==b) ;
-}
 
 }

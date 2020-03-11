@@ -78,9 +78,8 @@ bool Index::inc (int increm, int var) {
 bool Index::operator== (const Index& xx) const {
 	bool res = (get_ndim()==xx.get_ndim()) ? true : false ;
 	if (res) 
-		for (int i=0 ; i<get_ndim() ; i++)
-			if (xx.coord[i] != coord[i])
-				res = false ;
+		for (int i=0 ; i<get_ndim() && res; i++)
+			res = (xx.coord[i] == coord[i]);
 	return res ;
 }
 

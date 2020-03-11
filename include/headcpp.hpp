@@ -25,6 +25,7 @@
 #include <fstream>
 #include <typeinfo>
 #include <cmath>
+#include <cassert>
 #include "stdlib.h"
 #include "config.h"
 #define PRECISION 1e-14
