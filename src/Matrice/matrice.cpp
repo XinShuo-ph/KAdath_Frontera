@@ -158,7 +158,7 @@ ostream& operator<< (ostream& flux, const Matrice & source) {
 		flux << endl ;	
 	    }
     flux << endl ;
-return flux ;
+    return flux ;
 }
 
 // Computes the banded representation : LAPACK storage
@@ -191,28 +191,28 @@ void Matrice::set_band (int u, int l) const {
 //LU decomposition : LAPACK storage
 void Matrice::set_lu() const {
     if (lu != 0x0) {
-	assert (permute != 0x0) ;
-	return ;
+        assert (permute != 0x0) ;
+        return ;
     }
     else {
-	// LU decomposition
-	int n = sizes(0) ;
-	int ldab, info ;
-	permute = new Array<int>(n) ;
+        // LU decomposition
+        int n = sizes(0) ;
+        int ldab, info ;
+        permute = new Array<int>(n) ;
 
-	// Case of a banded matrix
-	if (band != 0x0) {
-	    ldab = 2*kl+ku+1 ;
-	    lu = new Array<double>(*band) ;
-	    
-	    F77_dgbtrf(&n, &n, &kl, &ku, lu->data, &ldab, permute->data, &info) ;
-	}
-	else { // General matrix
-	    ldab = n ;
-	    lu = new Array<double>(*std) ;
-	    
-	    F77_dgetrf(&n, &n, lu->data, &ldab, permute->data, &info) ;
-	}
+        // Case of a banded matrix
+        if (band != 0x0) {
+            ldab = 2*kl+ku+1 ;
+            lu = new Array<double>(*band) ;
+
+            F77_dgbtrf(&n, &n, &kl, &ku, lu->set_data(), &ldab, permute->set_data(), &info) ;
+        }
+        else { // General matrix
+            ldab = n ;
+            lu = new Array<double>(*std) ;
+
+            F77_dgetrf(&n, &n, lu->set_data(), &ldab, permute->set_data(), &info) ;
+        }
     }
     return ;
 }
@@ -233,16 +233,16 @@ Array<double> Matrice::solve (const Array<double>& source) const {
     Array<double> res(source) ;
     
     if (band != 0x0) { //Banded matrix
-	ldab = 2*kl+ku+1 ;
-	trans = 'N' ;
-	F77_dgbtrs(&trans, &n, &kl, &ku, &nrhs, lu->data,
-		   &ldab, permute->data, res.data, &ldb, &info);
+        ldab = 2*kl+ku+1 ;
+        trans = 'N' ;
+        F77_dgbtrs(&trans, &n, &kl, &ku, &nrhs, lu->set_data(),
+               &ldab, permute->set_data(), res.set_data(), &ldb, &info);
     }
     else { // General case
-	ldab = n ;
-	trans = 'T' ;
-	F77_dgetrs(&trans, &n, &nrhs, lu->data, &ldab, permute->data,
-		   res.data, &ldb, &info) ;
+        ldab = n ;
+        trans = 'T' ;
+        F77_dgetrs(&trans, &n, &nrhs, lu->set_data(), &ldab, permute->set_data(),
+               res.set_data(), &ldb, &info) ;
     }
     
     return res ;

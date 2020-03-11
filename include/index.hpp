@@ -20,6 +20,8 @@
 #ifndef __INDEX_HPP_
 #define __INDEX_HPP_
 
+#include <vector>
+#include <cassert>
 #include "headcpp.hpp"
 #include "dim_array.hpp"
 
@@ -43,7 +45,7 @@ class Index {
 	* When used with a \c Tensor, it is the dimension, for each tensorial index.
 	*/
 	Dim_array sizes ;
-	int* coord ; ///< Value of each index.
+	std::vector<int> coord ; ///< Value of each index.
 
 
     public:
@@ -51,26 +53,26 @@ class Index {
 	* All the positions are set to zero.
 	* @param dim [input] Sizes in each dimensions.
 	**/
-        explicit Index (const Dim_array& dim) ;
-	Index (const Index&) ; ///< Constructor by copy
+    explicit Index (const Dim_array& dim) : sizes(dim),coord(dim.get_ndim(),0) {}
+//	Index (const Index&) ; ///< Constructor by copy
 	Index (const Tensor&) ; ///< Constructor for looping on components of a tensor
-	~Index() ; ///<Destructor.
+//	~Index() ; ///<Destructor.
 
-#ifdef ENABLE_MOVE_SEMANTIC
-    Index(Index &&); ///< Move constructor.
-    Index& operator=(Index&&); ///< Move assigment.
-#endif
+//#ifdef ENABLE_MOVE_SEMANTIC
+//    Index(Index &&); ///< Move constructor.
+//    Index& operator=(Index&&); ///< Move assigment.
+//#endif
 	
 	/**
 	* Read/write of the position in a given dimension.
 	* @param i [input] dimension.
 	*/
-	int& set(int) ;
+	int& set(int i) {assert(i>=0); assert(i<get_ndim()); return coord[i] ;}
 	/**
 	* Read/write of the position in a given dimension.
 	* @param i [input] dimension.
 	*/
-	int operator() (int i) const ;
+	int operator() (int i) const {assert(i>=0); assert(i<get_ndim()); return coord[i]; }
 	/**
 	* Returns the number of dimensions.
 	*/
@@ -80,7 +82,10 @@ class Index {
 	*/
 	Dim_array const& get_sizes() const {return sizes ;} ;
 	
-	void set_start() ; ///< Sets the position to zero in all dimensions
+	void set_start()  ///< Sets the position to zero in all dimensions
+    {
+        for (int i=0 ; i<get_ndim() ; i++) coord[i] = 0 ;
+    }
 	/**
 	* Increments the position of the \c Index.
 	* If one reaches the last point of a dimension, then the next one is increased.
@@ -90,7 +95,7 @@ class Index {
 	*/
 	bool inc (int increm=1, int var=0) ;
 
-	void operator= (const Index&) ; ///< Assignement to annother \c Index.
+//	void operator= (const Index&) ; ///< Assignement to annother \c Index.
 	
 	bool operator== (const Index&) const ; ///< Comparison operator
 

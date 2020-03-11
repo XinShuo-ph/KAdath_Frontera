@@ -18,7 +18,6 @@
 */
 
 #include "point.hpp"
-#include "index.hpp"
 #include "base_spectral.hpp"
 #include "array.cpp"
 namespace Kadath {

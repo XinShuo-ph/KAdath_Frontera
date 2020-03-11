@@ -24,91 +24,83 @@
 #include "dim_array.hpp"
 namespace Kadath {
 // Constructor from a Dim_array
-template <typename T> Array<T>::Array (const Dim_array& res) : dimensions(res){
-
-	nbr = 1 ;
+template <typename T> Array<T>::Array (const Dim_array& res) : dimensions{res}, nbr{1}, data() {
 	for (int i=0 ; i<res.ndim ; i++)
 	    nbr *= res(i) ;
- 	data = new T [nbr] ;
+ 	data.resize(nbr) ;
 }
 
 // Constructor for a 1d-array
-template <typename T> Array<T>::Array (int i) : dimensions(1){
+template <typename T> Array<T>::Array (int i) : dimensions{1}, nbr{i}, data(nbr) {
 	dimensions.set(0) = i ;
-	nbr = i ;
- 	data = new T [nbr] ;
 }
 
-template <typename T> Array<T>::Array (int i, int j) : dimensions(2){
+template <typename T> Array<T>::Array (int i, int j) : dimensions{2}, nbr{i*j}, data(nbr) {
 	dimensions.set(0) = i ;
 	dimensions.set(1) = j ;
-	nbr = i*j ;
- 	data = new T [nbr] ;
 }
 
-template <typename T> Array<T>::Array (int i, int j, int k) : dimensions(3){
+template <typename T> Array<T>::Array (int i, int j, int k) : dimensions{3},nbr{i*j*k},data(nbr) {
 	dimensions.set(0) = i ;
 	dimensions.set(1) = j ;
 	dimensions.set(2) = k ;
-	nbr = i*j*k ;
- 	data = new T [nbr] ;
 }
 
-// Copy constructor
-template <typename T> Array<T>::Array (const Array<T>& so) : dimensions(so.dimensions){
-	nbr = so.nbr ;
- 	data = new T [nbr] ;
-	for (int i=0 ; i<nbr ; i++)
-	    data[i] = so.data[i] ;
-}
+//// Copy constructor
+//template <typename T> Array<T>::Array (const Array<T>& so) : dimensions(so.dimensions){
+//	nbr = so.nbr ;
+// 	data = new T [nbr] ;
+//	for (int i=0 ; i<nbr ; i++)
+//	    data[i] = so.data[i] ;
+//}
 
-#ifdef ENABLE_MOVE_SEMANTIC
-template <typename T> Array<T>::Array (Array<T> && so) : dimensions{std::move(so.dimensions)}, nbr{so.nbr},
-        data{so.data}
-{
-    so.data = nullptr;
-}
-#endif
+//#ifdef ENABLE_MOVE_SEMANTIC
+//template <typename T> Array<T>::Array (Array<T> && so) : dimensions{std::move(so.dimensions)}, nbr{so.nbr},
+//        data{so.data}
+//{
+//    so.data = nullptr;
+//}
+//#endif
 
-template <typename T> Array<T>::Array (FILE* fd) : dimensions(fd) {
+template <typename T> Array<T>::Array (FILE* fd) : dimensions(fd),nbr{},data() {
 	fread_be(&nbr, sizeof(int), 1, fd) ;
-	data = new T [nbr] ;
-	fread_be(data, sizeof(T), nbr, fd) ;
+	data.resize(nbr) ;
+	fread_be(data.data(), sizeof(T), nbr, fd) ;
 }
 
 // Destructor
-template <typename T> Array<T>::~Array() {
-	delete_data() ;
-}
+//template <typename T> Array<T>::~Array() {
+//	delete_data() ;
+//}
 
 template <typename T> void Array<T>::save (FILE* fd) const {
 	dimensions.save(fd) ;
 	fwrite_be(&nbr, sizeof(int), 1, fd) ;
-	fwrite_be(data, sizeof(T), nbr, fd) ;
+	fwrite_be(data.data(), sizeof(T), nbr, fd) ;
 }
 
 // Assignement
-template <typename T> void Array<T>::operator= (const Array<T>& so) {
-//	assert (dimensions == so.dimensions) ;
-    if(!(dimensions==so.dimensions) ) {
-        delete_data();
-        dimensions = so.dimensions;
-        nbr = so.nbr;
-        data = new T[nbr];
-    }
-	for (int i=0 ; i<nbr ; i++)
-	    data[i] = so.data[i] ;
-}
+//template <typename T> void Array<T>::operator= (const Array<T>& so) {
+////	assert (dimensions == so.dimensions) ;
+//    if(!(dimensions==so.dimensions) ) {
+//        delete_data();
+//        dimensions = so.dimensions;
+//        nbr = so.nbr;
+//        data = new T[nbr];
+//    }
+//	for (int i=0 ; i<nbr ; i++)
+//	    data[i] = so.data[i] ;
+//}
 
-#ifdef ENABLE_MOVE_SEMANTIC
-template<typename T> Array<T> & Array<T>::operator=(Array<T> && so)
-{
-    dimensions = std::move(so.dimensions);
-    nbr = so.nbr;
-    std::swap(data,so.data);
-    return *this;
-}
-#endif
+//#ifdef ENABLE_MOVE_SEMANTIC
+//template<typename T> Array<T> & Array<T>::operator=(Array<T> && so)
+//{
+//    dimensions = std::move(so.dimensions);
+//    nbr = so.nbr;
+//    std::swap(data,so.data);
+//    return *this;
+//}
+//#endif
 
 
 // Assignement to a given value
@@ -118,7 +110,7 @@ template <typename T> void Array<T>::operator= (T xx) {
 }
 
 // Read/write
-template <typename T> T& Array<T>::set(const Index& point) {
+template <typename T> typename Array<T>::reference Array<T>::set(const Index& point) {
 	assert (point.sizes == dimensions) ;
 	int index = point(0) ;
 	for (int i=1 ; i<dimensions.ndim ; i++) {
@@ -129,29 +121,7 @@ template <typename T> T& Array<T>::set(const Index& point) {
 	return data[index] ;
 }
 
-// Read/write for a 1d-array
-template <typename T> T& Array<T>::set(int i) {
-	assert (dimensions.ndim == 1) ;
-	assert ((i >=0) && (i<dimensions(0))) ;
-	return data[i] ;
-}
 
-// Read/write for a 2d-array
-template <typename T> T& Array<T>::set(int i, int j) {
-	assert (dimensions.ndim == 2) ;
-	assert ((i >=0) && (i<dimensions(0))) ;	
-	assert ((j >=0) && (j<dimensions(1))) ;
-	return data[i*dimensions(1)+j] ;
-}
-
-// Read/write for a 3d-array
-template <typename T> T& Array<T>::set(int i, int j, int k) {
-	assert (dimensions.ndim == 3) ;
-	assert ((i >=0) && (i<dimensions(0))) ;	
-	assert ((j >=0) && (j<dimensions(1))) ;
-	assert ((k >=0) && (k<dimensions(2))) ;
-	return data[i*dimensions(1)*dimensions(2)+j*dimensions(2)+k] ;
-}
 
 // Read only 
 template <typename T>  T Array<T>::operator() (const Index& point) const {
@@ -164,36 +134,6 @@ template <typename T>  T Array<T>::operator() (const Index& point) const {
 		}
 		
 	return data[index] ;
-}
-
-// Read only for a 1d-array.
-template <typename T> T Array<T>::operator() (int i) const {
-	assert (dimensions.ndim ==1) ;
-	assert ((i >=0) && (i<dimensions(0))) ;
-		
-	return data[i] ;
-}
-// Read only for a 2d-array.
-template <typename T> T Array<T>::operator() (int i, int j) const {
-	assert (dimensions.ndim ==2) ;
-	assert ((i >=0) && (i<dimensions(0))) ;
-	assert ((j >=0) && (j<dimensions(1))) ;
-	return data[i*dimensions(1)+j] ;
-}
-
-// Read only for a 3d-array.
-template <typename T> T Array<T>::operator() (int i, int j, int k) const {
-	assert (dimensions.ndim ==3) ;
-	assert ((i >=0) && (i<dimensions(0))) ;
-	assert ((j >=0) && (j<dimensions(1))) ;
-	assert ((k >=0) && (k<dimensions(2))) ;
-	return data[i*dimensions(1)*dimensions(2)+j*dimensions(2)+k] ;
-}
-
-template <typename T> void Array<T>::delete_data() {
-  if (data!= 0x0)
-      delete [] data ;
-  data=0x0 ;
 }
 
 // Display

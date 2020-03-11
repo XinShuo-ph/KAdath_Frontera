@@ -22,73 +22,48 @@
 #include "dim_array.hpp"
 #include "tensor.hpp"
 namespace Kadath {
-// Constructor
-Index::Index(const Dim_array& res) : sizes(res) {
-	coord = new int[get_ndim()] ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	    coord[i] = 0 ;
-} 
 
 // Copy constructor
-Index::Index(const Index& so) : sizes(so.sizes) {
-
-	coord = new int[get_ndim()] ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	   coord[i] = so.coord[i] ;
-} 
+//Index::Index(const Index& so) : sizes(so.sizes) {
+//
+//	coord = new int[get_ndim()] ;
+//	for (int i=0 ; i<get_ndim() ; i++)
+//	   coord[i] = so.coord[i] ;
+//}
 
 // Constructor fro a tensor :
-Index::Index (const Tensor& t) : sizes(t.valence) {
+Index::Index (const Tensor& t) : sizes{t.valence}, coord(sizes.get_ndim(),0) {
 	for (int i=0 ; i<get_ndim() ; i++)
 		sizes.set(i) = t.get_ndim() ;
-	coord = new int[get_ndim()] ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	    coord[i] = 0 ;
 }
 
 // Destructor
-Index::~Index() {
-	if(coord) delete [] coord ;
-}
+//Index::~Index() {
+//	if(coord) delete [] coord ;
+//}
 
-#ifdef ENABLE_MOVE_SEMANTIC
-    Index::Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr}
-    {
-        std::swap(coord,so.coord);
-    }
-    Index& Index::operator=(Index&& so)
-    {
-        sizes = std::move(so.sizes);
-        std::swap(coord,so.coord);
-        return *this;
-    }
-#endif
-
-// Read/write
-int& Index::set(int i) {
-	assert(i>=0) ;
-	assert(i<get_ndim()) ;
-	return coord[i] ;
-}
-
-// Read only
-int Index::operator() (int i) const {
-	assert(i>=0) ;
-	assert(i<get_ndim()) ;
-	return coord[i] ;
-}
+//#ifdef ENABLE_MOVE_SEMANTIC
+//    Index::Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr}
+//    {
+//        std::swap(coord,so.coord);
+//    }
+//    Index& Index::operator=(Index&& so)
+//    {
+//        sizes = std::move(so.sizes);
+//        std::swap(coord,so.coord);
+//        return *this;
+//    }
+//#endif
 
 // Assignement
-void Index::operator= (const Index& so) {
-	assert (sizes == so.sizes) ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	    coord[i] = so.coord[i] ;
-}
-
-void Index::set_start() {
-	for (int i=0 ; i<get_ndim() ; i++)
-	     coord[i] = 0 ;
-}
+//void Index::operator= (const Index& so) {
+//	assert (sizes == so.sizes) ;
+//	for (int i=0 ; i<get_ndim() ; i++)
+//	    coord[i] = so.coord[i] ;
+//}
+//
+//void Index::set_start() {
+//}
 
 // Increment
 bool Index::inc (int increm, int var) {
