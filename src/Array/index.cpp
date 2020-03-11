@@ -24,46 +24,41 @@
 namespace Kadath {
 
 // Copy constructor
-//Index::Index(const Index& so) : sizes(so.sizes) {
-//
-//	coord = new int[get_ndim()] ;
-//	for (int i=0 ; i<get_ndim() ; i++)
-//	   coord[i] = so.coord[i] ;
-//}
+Index::Index(const Index& so) : sizes(so.sizes) {
 
-// Constructor fro a tensor :
-Index::Index (const Tensor& t) : sizes{t.valence}, coord(sizes.get_ndim(),0) {
+	coord = new int[get_ndim()] ;
 	for (int i=0 ; i<get_ndim() ; i++)
-		sizes.set(i) = t.get_ndim() ;
+	   coord[i] = so.coord[i] ;
 }
 
-// Destructor
-//Index::~Index() {
-//	if(coord) delete [] coord ;
-//}
+// Constructor fro a tensor :
+Index::Index (const Tensor& t) : sizes{t.valence}, coord{new int[get_ndim()]} {
+	for (int i=0 ; i<get_ndim() ; i++) {
+	    coord[i] = 0;
+        sizes.set(i) = t.get_ndim();
+    }
+}
 
-//#ifdef ENABLE_MOVE_SEMANTIC
-//    Index::Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr}
-//    {
-//        std::swap(coord,so.coord);
-//    }
-//    Index& Index::operator=(Index&& so)
-//    {
-//        sizes = std::move(so.sizes);
-//        std::swap(coord,so.coord);
-//        return *this;
-//    }
-//#endif
+
+#ifdef ENABLE_MOVE_SEMANTIC
+    Index::Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr}
+    {
+        std::swap(coord,so.coord);
+    }
+    Index& Index::operator=(Index&& so)
+    {
+        sizes = std::move(so.sizes);
+        std::swap(coord,so.coord);
+        return *this;
+    }
+#endif
 
 // Assignement
-//void Index::operator= (const Index& so) {
-//	assert (sizes == so.sizes) ;
-//	for (int i=0 ; i<get_ndim() ; i++)
-//	    coord[i] = so.coord[i] ;
-//}
-//
-//void Index::set_start() {
-//}
+void Index::operator= (const Index& so) {
+	assert (sizes == so.sizes) ;
+	for (int i=0 ; i<get_ndim() ; i++)
+	    coord[i] = so.coord[i] ;
+}
 
 // Increment
 bool Index::inc (int increm, int var) {

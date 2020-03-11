@@ -24,83 +24,82 @@
 #include "dim_array.hpp"
 namespace Kadath {
 // Constructor from a Dim_array
-template <typename T> Array<T>::Array (const Dim_array& res) : dimensions{res}, nbr{1}, data() {
+template <typename T> Array<T>::Array (const Dim_array& res) : dimensions{res}, nbr{1}, data{nullptr} {
 	for (int i=0 ; i<res.ndim ; i++)
 	    nbr *= res(i) ;
- 	data.resize(nbr) ;
+ 	data = new T[nbr] ;
 }
 
 // Constructor for a 1d-array
-template <typename T> Array<T>::Array (int i) : dimensions{1}, nbr{i}, data(nbr) {
+template <typename T> Array<T>::Array (int i) : dimensions{1}, nbr{i}, data{new T[nbr]} {
 	dimensions.set(0) = i ;
 }
 
-template <typename T> Array<T>::Array (int i, int j) : dimensions{2}, nbr{i*j}, data(nbr) {
+template <typename T> Array<T>::Array (int i, int j) : dimensions{2}, nbr{i*j}, data{new T[nbr]} {
 	dimensions.set(0) = i ;
 	dimensions.set(1) = j ;
 }
 
-template <typename T> Array<T>::Array (int i, int j, int k) : dimensions{3},nbr{i*j*k},data(nbr) {
+template <typename T> Array<T>::Array (int i, int j, int k) : dimensions{3},nbr{i*j*k},data{new T[nbr]} {
 	dimensions.set(0) = i ;
 	dimensions.set(1) = j ;
 	dimensions.set(2) = k ;
 }
 
 //// Copy constructor
-//template <typename T> Array<T>::Array (const Array<T>& so) : dimensions(so.dimensions){
-//	nbr = so.nbr ;
-// 	data = new T [nbr] ;
-//	for (int i=0 ; i<nbr ; i++)
-//	    data[i] = so.data[i] ;
-//}
+template <typename T> Array<T>::Array (const Array<T>& so) : dimensions{so.dimensions}, nbr{so.nbr}, data{new T[nbr]}
+{
+	for (int i=0 ; i<nbr ; i++)
+	    data[i] = so.data[i] ;
+}
 
-//#ifdef ENABLE_MOVE_SEMANTIC
-//template <typename T> Array<T>::Array (Array<T> && so) : dimensions{std::move(so.dimensions)}, nbr{so.nbr},
-//        data{so.data}
-//{
-//    so.data = nullptr;
-//}
-//#endif
+#ifdef ENABLE_MOVE_SEMANTIC
+template <typename T> Array<T>::Array (Array<T> && so) : dimensions{std::move(so.dimensions)}, nbr{so.nbr},
+        data{so.data}
+{
+    so.data = nullptr;
+}
+#endif
 
-template <typename T> Array<T>::Array (FILE* fd) : dimensions(fd),nbr{},data() {
+template <typename T> Array<T>::Array (FILE* fd) : dimensions{fd},nbr{},data{nullptr} {
 	fread_be(&nbr, sizeof(int), 1, fd) ;
-	data.resize(nbr) ;
-	fread_be(data.data(), sizeof(T), nbr, fd) ;
+	data = new T[nbr] ;
+	fread_be(data, sizeof(T), nbr, fd) ;
 }
 
 // Destructor
-//template <typename T> Array<T>::~Array() {
-//	delete_data() ;
-//}
+template <typename T> Array<T>::~Array() {
+	delete_data() ;
+}
 
 template <typename T> void Array<T>::save (FILE* fd) const {
 	dimensions.save(fd) ;
 	fwrite_be(&nbr, sizeof(int), 1, fd) ;
-	fwrite_be(data.data(), sizeof(T), nbr, fd) ;
+	fwrite_be(data, sizeof(T), nbr, fd) ;
 }
 
 // Assignement
-//template <typename T> void Array<T>::operator= (const Array<T>& so) {
-////	assert (dimensions == so.dimensions) ;
-//    if(!(dimensions==so.dimensions) ) {
-//        delete_data();
-//        dimensions = so.dimensions;
-//        nbr = so.nbr;
-//        data = new T[nbr];
-//    }
-//	for (int i=0 ; i<nbr ; i++)
-//	    data[i] = so.data[i] ;
-//}
+template <typename T> void Array<T>::operator= (const Array<T>& so) {
+//	assert (dimensions == so.dimensions) ;
+    if(!(dimensions==so.dimensions) ) {
+        delete_data();
+        dimensions = so.dimensions;
+        nbr = so.nbr;
+        data = new T[nbr];
+    }
+	for (int i=0 ; i<nbr ; i++)
+	    data[i] = so.data[i] ;
+}
 
-//#ifdef ENABLE_MOVE_SEMANTIC
-//template<typename T> Array<T> & Array<T>::operator=(Array<T> && so)
-//{
-//    dimensions = std::move(so.dimensions);
-//    nbr = so.nbr;
-//    std::swap(data,so.data);
-//    return *this;
-//}
-//#endif
+#ifdef ENABLE_MOVE_SEMANTIC
+template<typename T> Array<T> & Array<T>::operator=(Array<T> && so)
+{
+    dimensions = std::move(so.dimensions);
+    nbr = so.nbr;
+    std::swap(data,so.data);
+    return *this;
+}
+#endif
 
 
 // Assignement to a given value
@@ -111,11 +110,11 @@ template <typename T> void Array<T>::operator= (T xx) {
 
 // Read/write
 template <typename T> typename Array<T>::reference Array<T>::set(const Index& point) {
-	assert (point.sizes == dimensions) ;
+//	assert (point.sizes == dimensions) ;
 	int index = point(0) ;
 	for (int i=1 ; i<dimensions.ndim ; i++) {
 	        index *= dimensions(i) ;
-		assert ((point(i) >=0) && (point(i)<dimensions(i))) ;
+//		assert ((point(i) >=0) && (point(i)<dimensions(i))) ;
 		index += point(i) ;
 		}
 	return data[index] ;
@@ -125,11 +124,11 @@ template <typename T> typename Array<T>::reference Array<T>::set(const Index& po
 
 // Read only 
 template <typename T>  T Array<T>::operator() (const Index& point) const {
-	assert (point.sizes == dimensions) ;
+//	assert (point.sizes == dimensions) ;
 	int index = point(0) ;
 	for (int i=1 ; i<dimensions.ndim ; i++) {
 	        index *= dimensions(i) ;
-		assert ((point(i) >=0) && (point(i)<dimensions(i))) ;
+//		assert ((point(i) >=0) && (point(i)<dimensions(i))) ;
 		index += point(i) ;
 		}
 		
