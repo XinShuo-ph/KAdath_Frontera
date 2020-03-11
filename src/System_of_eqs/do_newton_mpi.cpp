@@ -83,6 +83,7 @@ namespace Kadath {
 
             while (bsize*nproc>nn)
             {
+                bsize = div(bsize,2).quot;
             }
             if (bsize<1) {
                 cerr << "Too many processors in do_newton" << endl;
