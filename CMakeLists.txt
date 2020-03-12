@@ -48,7 +48,6 @@ message ("Source files" : ${KADATH_SOURCES})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include/Kadath_point_h)
 #for templates in Array
-include_directories(${PROJECT_SOURCE_DIR}/src/Array)
 include_directories(${PROJECT_BINARY_DIR}/include)
 
 if (DEFINED FFTW_INCLUDE_DIR)

@@ -19,7 +19,7 @@
 
 #include "point.hpp"
 #include "base_spectral.hpp"
-#include "array.cpp"
+#include "array.hpp"
 namespace Kadath {
 double integral_1d_pasprevu ( const Array<double>&) {
 	cout << "Integral_1d not implemented." << endl ;

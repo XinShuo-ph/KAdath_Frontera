@@ -21,265 +21,190 @@
 #include "array.hpp"
 
 namespace Kadath {
-template <typename T> bool Array<T>::is_increasing() const {
-	assert(get_ndim()==1) ;
-	for (int i = 1 ; i < nbr ; i++){
-		if (data[i]-data[i-1] <= 0){
-			return false ;
-		}
-	}
-	return true ;
-}
 
-template <typename T> void Array<T>::operator+= (const Array<T>& so) {
-	*this = *this + so ;
-}
-
-template <typename T> void Array<T>::operator-= (const Array<T>& so)  {
-	*this = *this - so ;
-}
-
-template <typename T> void Array<T>::operator*= (const Array<T>& so) {
-	*this = *this * so ;
-}
-
-template <typename T> void Array<T>::operator/= (const Array<T>& so) {
-	*this = *this / so ;
-}
-
-template <typename T> void Array<T>::operator+= (const T& xx) {
-	*this = *this + xx ;
-}
-
-template <typename T> void Array<T>::operator-= (const T& xx) {
-	*this = *this - xx ;
-}
-
-template <typename T> void Array<T>::operator*= (const T& xx) {
-	*this = *this * xx ;
-}
-
-template <typename T> void Array<T>::operator/= (const T& xx) {
-	*this = *this/xx ;
-}
-	    
-template <typename T> Array<T> sin (const Array<T>& so) {
-
-	Array<T> res(so.dimensions) ;
+template <typename T> inline Array<T> sin (const Array<T>& so) {
+    Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = sin(so.data[i]) ;
-
 	return res ;
 }
 
-template <typename T> Array<T> cos (const Array<T>& so) {
-
-	Array<T> res(so.dimensions) ;
+template <typename T> inline Array<T> cos (const Array<T>& so) {
+    Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = cos(so.data[i]) ;
-
 	return res ;
 }
 
-template <typename T> Array<T> sinh (const Array<T>& so) {
-
-	Array<T> res(so.dimensions) ;
+template <typename T> inline Array<T> sinh (const Array<T>& so) {
+    Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = sinh(so.data[i]) ;
-
 	return res ;
 }
 
-template <typename T> Array<T> cosh (const Array<T>& so) {
-
-	Array<T> res(so.dimensions) ;
+template <typename T> inline Array<T> cosh (const Array<T>& so) {
+    Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = cosh(so.data[i]) ;
-
 	return res ;
 }
 
-template <typename T>  Array<T> operator+ (const Array<T>& so) {
-	Array<T> res(so.dimensions) ;
-	for (int i=0 ; i<so.nbr ; i++)
-	    res.data[i] = so.data[i] ;
-
-	return res ;
-}
+template <typename T> inline  Array<T> operator+ (const Array<T>& so) {return Array<T>{so};}
 
 
-template <typename T>  Array<T> operator- (const Array<T>& so) {
+template <typename T> inline  Array<T> operator- (const Array<T>& so) {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = -so.data[i] ;
-
 	return res ;
 }
 
 
-template <typename T>  Array<T> operator+ (const Array<T>& a, const Array<T>& b) {
-	assert (a.dimensions==b.dimensions) ; 
+template <typename T> inline  Array<T> operator+ (const Array<T>& a, const Array<T>& b) {
+	assert (a.nbr==b.nbr) ;
 	Array<T> res(a.dimensions) ;
 	for (int i=0 ; i<a.nbr ; i++)
 	    res.data[i] = a.data[i] + b.data[i] ;
-
 	return res ;
 }
 	
 
-template <typename T>  Array<T> operator+ (const Array<T>& so , T xx) {
+template <typename T> inline  Array<T> operator+ (const Array<T>& so , T xx) {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = so.data[i] + xx;
-
 	return res ;
 }
 
-template <typename T>  Array<T> operator+ (T xx, const Array<T>& so)  {
+template <typename T> inline  Array<T> operator+ (T xx, const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = xx + so.data[i] ;
-
 	return res ;
 }
 
 
 
-template <typename T>  Array<T> operator- (const Array<T>& a, const Array<T>& b) {
-	assert (a.dimensions==b.dimensions) ; 
+template <typename T> inline  Array<T> operator- (const Array<T>& a, const Array<T>& b) {
+	assert (a.nbr==b.nbr) ;
 	Array<T> res(a.dimensions) ;
 	for (int i=0 ; i<a.nbr ; i++)
 	    res.data[i] = a.data[i] - b.data[i] ;
-
 	return res ;
 }
 
 
-template <typename T>  Array<T> operator- (const Array<T>& so, T xx) {
+template <typename T> inline  Array<T> operator- (const Array<T>& so, T xx) {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = so.data[i] - xx;
-
 	return res ;
 }
 
 
-template <typename T>  Array<T> operator- (T xx, const Array<T>& so) {
+template <typename T> inline  Array<T> operator- (T xx, const Array<T>& so) {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = xx - so.data[i] ;
-
 	return res ;
 }
 
-template <typename T>  Array<T> operator* (const Array<T>& a, const Array<T>& b) {
-	assert (a.dimensions==b.dimensions) ; 
+template <typename T> inline  Array<T> operator* (const Array<T>& a, const Array<T>& b) {
+	assert (a.nbr==b.nbr) ;
 	Array<T> res(a.dimensions) ;
 	for (int i=0 ; i<a.nbr ; i++)
 	    res.data[i] = a.data[i] * b.data[i] ;
-
 	return res ;
 }
 
 
-template <typename T>  Array<T> operator* (const Array<T>& so, T xx) {
+template <typename T> inline  Array<T> operator* (const Array<T>& so, T xx) {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = so.data[i] * xx;
-
 	return res ;
 }
 
-template <typename T>  Array<T> operator* (T xx, const Array<T>& so) {
+template <typename T> inline  Array<T> operator* (T xx, const Array<T>& so) {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = xx * so.data[i] ;
-
 	return res ;
 }
 
-template <typename T>  Array<T> operator/ (const Array<T>& a, const Array<T>& b ){
-	assert (a.dimensions==b.dimensions) ; 
+template <typename T> inline  Array<T> operator/ (const Array<T>& a, const Array<T>& b ){
+	assert (a.nbr==b.nbr) ;
 	Array<T> res(a.dimensions) ;
 	for (int i=0 ; i<a.nbr ; i++)
 	    res.data[i] = a.data[i] / b.data[i] ;
-
 	return res ;
 }
 
-template <typename T>  Array<T> operator/ (const Array<T>& so, T xx)  {	
+template <typename T> inline  Array<T> operator/ (const Array<T>& so, T xx)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = so.data[i] / xx;
-
 	return res ;
 }
 
-template <typename T>  Array<T> operator/ (T xx, const Array<T>& so)  {
+template <typename T> inline  Array<T> operator/ (T xx, const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = xx / so.data[i] ;
-
 	return res;
 }
 
-template <typename T>  Array<T> pow (const Array<T>& so, int n) {
+template <typename T> inline  Array<T> pow (const Array<T>& so, int n) {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = pow(so.data[i],n) ;
-
 	return res;
 }
 
-template <typename T>  Array<T> pow (const Array<T>& so, double nn)  {
+template <typename T> inline  Array<T> pow (const Array<T>& so, double nn)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = pow(so.data[i],nn) ;
-
 	return res;
 }
 
-template <typename T>  Array<T> sqrt (const Array<T>& so)  {
+template <typename T> inline  Array<T> sqrt (const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = sqrt(so.data[i]) ;
-
 	return res;
 }
 
-template <typename T>  Array<T> exp (const Array<T>& so)  {
+template <typename T> inline  Array<T> exp (const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = exp(so.data[i]) ;
-
 	return res;
 }
 
-template <typename T>  Array<T> log (const Array<T>& so)  {
+template <typename T> inline  Array<T> log (const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = log(so.data[i]) ;
-
 	return res;
 }
 
-template <typename T>  Array<T> atanh (const Array<T>& so)  {
+template <typename T> inline  Array<T> atanh (const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = atanh(so.data[i]) ;
-
 	return res;
 }
 
-template <typename T>  Array<T> fabs (const Array<T>& so)  {
+template <typename T> inline  Array<T> fabs (const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = fabs(so.data[i]) ;
-
 	return res;
 }
 
-template <typename T> T scal (const Array<T>& a, const Array<T>& b) {
+template <typename T> inline T scal (const Array<T>& a, const Array<T>& b) {
 	T res = a.data[0] * b.data[0] ;
 	for (int i=1 ; i<a.get_size(0) ; i++)
 		res += a.data[i] * b.data[i] ;
@@ -287,8 +212,8 @@ template <typename T> T scal (const Array<T>& a, const Array<T>& b) {
 }
 
 
-template <typename T> T diffmax (const Array<T>& a, const Array<T>& b) {
-	assert (a.dimensions==b.dimensions) ;
+template <typename T> inline T diffmax (const Array<T>& a, const Array<T>& b) {
+	assert (a.nbr==b.nbr) ;
 	T res = 0 ;
 	T diff ;
 	for (int i=0 ; i<a.nbr ; i++) {
@@ -299,7 +224,7 @@ template <typename T> T diffmax (const Array<T>& a, const Array<T>& b) {
 	return res ;
 }
 
-template <typename T>  T max (const Array<T>& so)  {
+template <typename T> inline  T max (const Array<T>& so)  {
 	T res = so.data[0] ;
 	for (int i=0 ; i<so.nbr ; i++)
 		if (so.data[i]>res)
@@ -307,7 +232,7 @@ template <typename T>  T max (const Array<T>& so)  {
 	return res;
 }
 
-template <typename T>  T min (const Array<T>& so)  {
+template <typename T> inline  T min (const Array<T>& so)  {
 	T res = so.data[0] ;
 	for (int i=0 ; i<so.nbr ; i++)
 		if (so.data[i]<res)
@@ -315,18 +240,17 @@ template <typename T>  T min (const Array<T>& so)  {
 	return res;
 }
 
-template <typename T>  T sum (const Array<T>& so)  {
+template <typename T> inline  T sum (const Array<T>& so)  {
 	T res = 0 ;
 	for (int i=0 ; i<so.nbr ; i++)
 		res += so.data[i] ;
 	return res;
 }
 
-template <typename T>  Array<T> atan (const Array<T>& so)  {
+template <typename T> inline  Array<T> atan (const Array<T>& so)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = atan(so.data[i]) ;
-
 	return res;
 }
 }

@@ -25,7 +25,7 @@
 #include "magma_interface.hpp"
 #include "system_of_eqs.hpp"
 #include "matrice.hpp"
-#include "array_math.cpp"
+#include "array_math.hpp"
 
 
 

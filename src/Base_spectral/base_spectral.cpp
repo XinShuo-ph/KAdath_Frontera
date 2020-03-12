@@ -19,7 +19,7 @@
 
 #include "headcpp.hpp"
 #include "base_spectral.hpp"
-#include "array.cpp"
+#include "array.hpp"
 
 namespace Kadath{
 Base_spectral::Base_spectral (int dimensions) :  def(false), ndim(dimensions) {
@@ -119,15 +119,13 @@ void Base_spectral::allocate(const Dim_array& nbr_coef) {
 }	
 
 bool operator== (const Base_spectral& a, const Base_spectral& b) {
-	bool res = true ;
-	if ((!a.def) || (!b.def) || (a.ndim!= b.ndim))
-		res = false ;
+	bool res {(a.def) && (b.def) && (a.ndim == b.ndim)} ;
 	for (int i=0 ; i<a.ndim ; i++) {
 		Index index (a.bases_1d[i]->get_dimensions()) ;
-		do if ((*a.bases_1d[i])(index) != (*b.bases_1d[i])(index))
-			res = false ;
-		while (index.inc()) ;
-		}
+		do
+			res = ((*a.bases_1d[i])(index) == (*b.bases_1d[i])(index)) ;
+		while (index.inc() && res) ;
+	}
 	return res ;
 } 
 

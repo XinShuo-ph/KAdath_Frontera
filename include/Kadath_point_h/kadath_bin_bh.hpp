@@ -22,7 +22,7 @@
 
 #include "headcpp.hpp"
 #include "array.hpp"
-#include "array_math.cpp"
+#include "array_math.hpp"
 #include "base_tensor.hpp"
 #include "base_spectral.hpp"
 #include "matrice.hpp"

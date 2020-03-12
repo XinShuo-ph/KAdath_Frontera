@@ -21,7 +21,7 @@
 #include "array.hpp"
 #include "spheric_symphi.hpp"
 #include "val_domain.hpp"
-#include "array_math.cpp"
+#include "array_math.hpp"
 namespace Kadath {
 int mult_cos_1d (int, Array<double>&) ;
 int mult_sin_1d (int, Array<double>&) ;

@@ -60,7 +60,10 @@ class Dim_array {
         * Returns the number of dimensions.
         */
         int get_ndim() const {return ndim ;} ;
-        void operator= (const Dim_array&) ; ///< Assignement to annother \c Dim_array.
+        /**
+         * Assignement to annother \c Dim_array.
+         */
+        void operator= (const Dim_array& so) {/*assert (ndim==so.ndim);*/for (int i=0 ;i<ndim;i++) nbr[i] = so.nbr[i];}
 
         void save (FILE*) const ; ///< Save function
 
@@ -76,7 +79,13 @@ class Dim_array {
 } ;
 
 ostream& operator<< (ostream&, const Dim_array&) ;
-bool operator== (const Dim_array&, const Dim_array&) ;
+inline bool operator== (const Dim_array& a, const Dim_array& b) {
+    bool res = (a.ndim==b.ndim) ? true : false ;
+    if (res)
+        for (int i=0 ; i<a.ndim && res ; i++)
+            res = (a.nbr[i] == b.nbr[i]);
+    return res ;
+}
 // Anti-comparison operator
 inline  bool operator!= (const Dim_array& a, const Dim_array& b) {return !(a==b) ;}
 }

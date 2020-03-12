@@ -21,7 +21,7 @@
 #include "utilities.hpp"
 #include "fourD_periodic.hpp"
 #include "point.hpp"
-#include "array_math.cpp"
+#include "array_math.hpp"
 #include "val_domain.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"

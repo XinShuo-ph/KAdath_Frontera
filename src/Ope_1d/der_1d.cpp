@@ -19,8 +19,8 @@
 
 #include "base_spectral.hpp"
 #include "headcpp.hpp"
-#include "array.cpp"
-#include "array_math.cpp"
+#include "array.hpp"
+#include "array_math.hpp"
 namespace Kadath {
 int der_1d_pasprevu (Array<double>&) {
 	cout << "Der_1d not implemented." << endl ;

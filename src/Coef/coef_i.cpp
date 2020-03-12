@@ -19,8 +19,8 @@
 
 #include "base_spectral.hpp"
 #include "array.hpp"
-#include "array.cpp"
-#include "array_math.cpp"
+#include "array.hpp"
+#include "array_math.hpp"
 
 namespace Kadath {
 void coef_i_1d (int, Array<double>&) ;

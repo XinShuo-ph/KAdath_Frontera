@@ -20,7 +20,7 @@
 #include "point.hpp"
 #include "index.hpp"
 #include "base_spectral.hpp"
-#include "array.cpp"
+#include "array.hpp"
 namespace Kadath {
 double summation_1d_pasprevu (double, const Array<double>&) {
 	cout << "Summation_1d not implemented." << endl ;

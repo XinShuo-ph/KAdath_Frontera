@@ -28,14 +28,6 @@ Dim_array::Dim_array (FILE* fd) {
 }
 
 
-// Assignement
-void Dim_array::operator= (const Dim_array& so) {
-//	assert (ndim==so.ndim) ;
-	for (int i=0 ; i<ndim ; i++)
-		nbr[i] = so.nbr[i] ;
-}
-
-
 void Dim_array::save (FILE* fd) const  {
 	fwrite_be(&ndim, sizeof(int), 1, fd) ;
 	fwrite_be(nbr, sizeof(int), ndim, fd) ;
@@ -49,15 +41,5 @@ ostream& operator<< (ostream& o, const Dim_array& so) {
 	o << so.nbr[so.ndim-1] << ")" ;
         return o ;
 }
-
-// Comparison operator
-bool operator== (const Dim_array& a, const Dim_array& b) {
-	bool res = (a.ndim==b.ndim) ? true : false ;
-	if (res)
-	    for (int i=0 ; i<a.ndim && res ; i++)
-	         res = (a.nbr[i] == b.nbr[i]);
-	return res ;
-}
-
 
 }

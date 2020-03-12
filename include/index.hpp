@@ -27,7 +27,7 @@
 
 namespace Kadath {
 
-class Tensor ;
+class Tensor;
 
 /**
 * Class that gives the position inside a multi-dimensional \c Array.
@@ -36,8 +36,6 @@ class Tensor ;
 * It simply consists of a list of integers.
 * \ingroup util
 **/
-
-
 class Index {
 protected:
 	/**
@@ -55,15 +53,21 @@ public:
 	**/
     explicit Index (const Dim_array& dim) : sizes{dim},coord{new int[dim.get_ndim()]}
     {for(unsigned i{0u};i<dim.get_ndim();i++) coord[i]=0;}
-	Index (const Index&) ; ///< Constructor by copy
+    /**
+     * Copy constructor.
+     * @param so source to be copied.
+     */
+    Index(const Index& so) : sizes{so.sizes},coord{new int[get_ndim()]} {
+        for (int i=0; i<get_ndim(); i++) coord[i] = so.coord[i] ;
+    }
 	Index (const Tensor&) ; ///< Constructor for looping on components of a tensor
 	~Index() {if(coord) {delete [] coord; coord=nullptr;}} ///<Destructor.
 
 #ifdef ENABLE_MOVE_SEMANTIC
-    Index(Index &&); ///< Move constructor.
-    Index& operator=(Index&&); ///< Move assigment.
+    Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr} {std::swap(coord,so.coord);}
+    Index& operator=(Index&&so) {sizes = std::move(so.sizes);std::swap(coord,so.coord);return *this;}
 #endif
-	
+
 	/**
 	* Read/write of the position in a given dimension.
 	* @param i [input] dimension.
@@ -94,11 +98,33 @@ public:
 	* @param var [input] dimension to be incremented.
 	* @return \c false if the result is outside the \c Array and \c true otherwise.
 	*/
-	bool inc (int increm=1, int var=0) ;
+	bool inc (int increm=1, int var=0) {
+        bool res = ((var >=0) && (var<get_ndim()));
+        if (res) {
+            coord[var] += increm ;
+            for (int i=var ; i<get_ndim()-1 ; i++) {
+                div_t division = div(coord[i], sizes(i)) ;
+                coord[i] = division.rem ;
+                coord[i+1] += division.quot ;
+            }
+            res = (coord[get_ndim()-1] < sizes(get_ndim()-1));
+        }
+        return res ;
+    }
 
-	void operator= (const Index&) ; ///< Assignement to annother \c Index.
+	/**
+	 * Assignment operator.
+	 * @param so source to copy from.
+	 */
+	void operator=(const Index& so) {/*assert(sizes==so.sizes);*/for(int i=0 ;i<get_ndim();i++)coord[i] = so.coord[i];}
 	
-	bool operator== (const Index&) const ; ///< Comparison operator
+	bool operator== (const Index& xx) const {
+        bool res = (get_ndim()==xx.get_ndim()) ;
+        if (res)
+            for (int i=0 ; i<get_ndim() && res; i++)
+                res = (xx.coord[i] == coord[i]);
+        return res ;
+    }
 
 	template <class> friend class Array ;
 	friend ostream& operator<< (ostream&, const Index&) ;

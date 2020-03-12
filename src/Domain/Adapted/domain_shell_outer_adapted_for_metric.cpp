@@ -21,7 +21,7 @@
 #include "utilities.hpp"
 #include "adapted.hpp"
 #include "point.hpp"
-#include "array_math.cpp"
+#include "array_math.hpp"
 #include "term_eq.hpp"
 #include "metric.hpp"
 #include "scalar.hpp"

@@ -19,7 +19,7 @@
 
 #include <math.h>
 #include "headcpp.hpp"
-#include "array.cpp"
+#include "array.hpp"
 #define NBR_LEG_MAX 20
 
 namespace Kadath {

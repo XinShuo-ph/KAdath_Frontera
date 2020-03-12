@@ -16,20 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#include "assert.h"
 #include "index.hpp"
-#include "dim_array.hpp"
 #include "tensor.hpp"
+
 namespace Kadath {
 
-// Copy constructor
-Index::Index(const Index& so) : sizes(so.sizes) {
-
-	coord = new int[get_ndim()] ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	   coord[i] = so.coord[i] ;
-}
 
 // Constructor fro a tensor :
 Index::Index (const Tensor& t) : sizes{t.valence}, coord{new int[get_ndim()]} {
@@ -39,49 +30,8 @@ Index::Index (const Tensor& t) : sizes{t.valence}, coord{new int[get_ndim()]} {
     }
 }
 
-
-#ifdef ENABLE_MOVE_SEMANTIC
-    Index::Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr}
-    {
-        std::swap(coord,so.coord);
-    }
-    Index& Index::operator=(Index&& so)
-    {
-        sizes = std::move(so.sizes);
-        std::swap(coord,so.coord);
-        return *this;
-    }
-#endif
-
-// Assignement
-void Index::operator= (const Index& so) {
-	assert (sizes == so.sizes) ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	    coord[i] = so.coord[i] ;
-}
-
 // Increment
-bool Index::inc (int increm, int var) {
-	bool res = ((var >=0) && (var<get_ndim())) ? true : false ;
-	if (res) {
-	coord[var] += increm ;
-	for (int i=var ; i<get_ndim()-1 ; i++) {
-		div_t division = div(coord[i], sizes(i)) ;
-		coord[i] = division.rem ;
-		coord[i+1] += division.quot ;
-	}
-        res = (coord[get_ndim()-1] >= sizes(get_ndim()-1)) ? false : true ;
-	}
-	return res ;
-}
 
-bool Index::operator== (const Index& xx) const {
-	bool res = (get_ndim()==xx.get_ndim()) ? true : false ;
-	if (res) 
-		for (int i=0 ; i<get_ndim() && res; i++)
-			res = (xx.coord[i] == coord[i]);
-	return res ;
-}
 
 ostream& operator<< (ostream& o, const Index& so) {
 

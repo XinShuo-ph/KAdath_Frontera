@@ -22,7 +22,7 @@
 #include "term_eq.hpp"
 #include "scalar.hpp"
 #include "tensor.hpp"
-#include "array_math.cpp"
+#include "array_math.hpp"
 namespace Kadath {
 // Val_domain versions
 Val_domain Domain_shell::fitschwarz (const Val_domain& so,  int dim) const {

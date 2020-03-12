@@ -21,7 +21,7 @@
 #include "base_spectral.hpp"
 #include "base_fftw.hpp"
 #include "headcpp.hpp"
-#include "array.cpp"
+#include "array.hpp"
 #include <fftw3.h>
 #include "math.h"
 #include <unordered_map>

@@ -21,7 +21,7 @@
 #include "utilities.hpp"
 
 #include "bispheric.hpp"
-#include "array_math.cpp"
+#include "array_math.hpp"
 #include "param.hpp"
 #include "val_domain.hpp"
 namespace Kadath {

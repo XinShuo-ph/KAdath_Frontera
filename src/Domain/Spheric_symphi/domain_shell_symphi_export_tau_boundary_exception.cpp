@@ -19,7 +19,7 @@
 
 #include "headcpp.hpp"
 #include "spheric_symphi.hpp"
-#include "array_math.cpp"
+#include "array_math.hpp"
 #include "scalar.hpp"
 #include "tensor.hpp"
 #include "param.hpp"

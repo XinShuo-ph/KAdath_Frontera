@@ -20,7 +20,7 @@
 #include "base_spectral.hpp"
 #include "headcpp.hpp"
 #include "matrice.hpp"
-#include "array.cpp"
+#include "array.hpp"
 namespace Kadath {
 int div_xm1_1d_pasprevu (Array<double>&) {
 	cout << "div_xm1_1d not implemented." << endl ;

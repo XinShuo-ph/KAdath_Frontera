@@ -27,7 +27,6 @@ file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.hpp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/src/Array)
 include_directories(${PROJECT_SOURCE_DIR}/include/Kadath_point_h)
 
 #If parallel need to use the PMI wrapper

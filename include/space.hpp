@@ -22,7 +22,7 @@
 
 #include "headcpp.hpp"
 #include "base_spectral.hpp"
-#include "array.cpp"
+#include "array.hpp"
 #include "param.hpp"
 
 #define CHEB_TYPE 1
