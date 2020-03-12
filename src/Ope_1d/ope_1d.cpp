@@ -75,7 +75,7 @@ Array<double> Base_spectral::ope_1d (int (*func) (int, Array<double>&),
 		demarre.inc() ;
         	}
 		index_base.inc() ;
-		loop_before.inc(1, var+1) ;
+		loop_before.inc1( var+1) ;
 	}
 
 	return res ;

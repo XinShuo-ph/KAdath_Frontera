@@ -667,7 +667,7 @@ void Domain_compact::set_val_inf (Val_domain& so, double x) const {
 	inf.set(0) = nbr_points(0)-1 ;
 	do 
 		so.set(inf) = x ;
-	while (inf.inc(1,1)) ;
+	while (inf.inc1(1)) ;
 }
 
 // Computes the derivatives with respect to XYZ as function of the numerical ones.

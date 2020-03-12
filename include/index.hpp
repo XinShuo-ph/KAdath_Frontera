@@ -98,19 +98,35 @@ public:
 	* @param var [input] dimension to be incremented.
 	* @return \c false if the result is outside the \c Array and \c true otherwise.
 	*/
-	bool inc (int increm=1, int var=0) {
-        bool res = ((var >=0) && (var<get_ndim()));
-        if (res) {
+	bool inc (int increm, int var=0) {
+        int const ndimm1{get_ndim()-1};
+        if((var >=0) && (var<=ndimm1)) {
             coord[var] += increm ;
-            for (int i=var ; i<get_ndim()-1 ; i++) {
-                div_t division = div(coord[i], sizes(i)) ;
+            div_t division {div(coord[var],sizes(var))};
+            for (int i=var ; i<ndimm1 && division.quot>0; i++) {
+                division = div(coord[i], sizes(i)) ;
                 coord[i] = division.rem ;
                 coord[i+1] += division.quot ;
             }
-            res = (coord[get_ndim()-1] < sizes(get_ndim()-1));
+            return (coord[ndimm1] < sizes(ndimm1));
         }
-        return res ;
+        else return false;
     }
+    bool inc1(int var)  {
+        int const ndimm1{get_ndim()-1};
+        int i{var};
+        while(coord[i]==(sizes(i)-1) && i<= ndimm1 )
+        {
+            coord[i] = 0;
+            i++;
+        }
+        if(i>=(ndimm1+1)) { return false;}
+        else {
+            coord[i]++;
+            return true;
+        }
+	}
+	bool inc() {return inc1(0);}
 
 	/**
 	 * Assignment operator.

@@ -85,8 +85,8 @@ void Base_spectral::coef_i_dim (int dim, int nbr_conf, Array<double> *& inout) c
 		demarre_coef.inc() ;
         	}
 		index_base.inc() ;
-		loop_before_coef.inc(1, dim+1) ;
-		loop_before_out.inc(1, dim+1) ;
+		loop_before_coef.inc1( dim+1) ;
+		loop_before_out.inc1( dim+1) ;
 	}
 	
 	delete inout ;

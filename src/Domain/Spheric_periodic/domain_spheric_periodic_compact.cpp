@@ -348,7 +348,7 @@ void Domain_spheric_periodic_compact::set_val_inf (Val_domain& so, double x) con
 	inf.set(0) = nbr_points(0)-1 ;
 	do 
 		so.set(inf) = x ;
-	while (inf.inc(1,1)) ;
+	while (inf.inc1(1)) ;
 }
 
 
