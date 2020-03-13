@@ -42,16 +42,16 @@ void Base_spectral::coef_i_dim (int dim, int nbr_conf, Array<double> *& inout) c
 	int nbr_coef = inout->get_size(dim) ;
 	int nbr = (nbr_coef > nbr_conf) ? nbr_coef : nbr_conf ;
 
-	Index index_base (bases_1d[dim]->get_dimensions()) ;
+	Array_index index_base (bases_1d[dim]->get_dimensions()) ;
 	
-	Index demarre_coef (inout->get_dimensions()) ;
-	Index demarre_conf (res_out) ;
+	Array_index demarre_coef (inout->get_dimensions()) ;
+	Array_index demarre_conf (res_out) ;
 
-	Index loop_before_coef (inout->get_dimensions()) ;
-	Index loop_before_out (res_out) ;
+	Array_index loop_before_coef (inout->get_dimensions()) ;
+	Array_index loop_before_out (res_out) ;
 
-	Index lit_in (inout->get_dimensions()) ;
-	Index put_out (res_out) ;
+	Array_index lit_in (inout->get_dimensions()) ;
+	Array_index put_out (res_out) ;
 	
 	Array<double> tab_1d (nbr) ;
 	

@@ -182,6 +182,7 @@ template <typename T> class Array {
             }
             return data[index] ;
         }
+        reference set(const Array_index &pos) {return data[pos.value];}
 	    /**
 	    * Read/write of an element for a 1d-array.
 	    * @param i [input] : position of the element.
@@ -226,9 +227,10 @@ template <typename T> class Array {
                 index *= dimensions(i) ;
 //		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
                 index += pos(i) ;
-        }
-
-            return data[index] ;}
+            }
+            return data[index] ;
+	    }
+	    T operator()(Array_index const &pos) const {return data[pos.value];}
 	    /**
 	    * Read only of an element for a 1d-array.
 	    * @param i [input] : position of the element.

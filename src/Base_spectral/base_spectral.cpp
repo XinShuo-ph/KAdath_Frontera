@@ -121,7 +121,7 @@ void Base_spectral::allocate(const Dim_array& nbr_coef) {
 bool operator== (const Base_spectral& a, const Base_spectral& b) {
 	bool res {(a.def) && (b.def) && (a.ndim == b.ndim)} ;
 	for (int i=0 ; i<a.ndim ; i++) {
-		Index index (a.bases_1d[i]->get_dimensions()) ;
+		Array_index index (a.bases_1d[i]->get_dimensions()) ;
 		do
 			res = ((*a.bases_1d[i])(index) == (*b.bases_1d[i])(index)) ;
 		while (index.inc() && res) ;
@@ -152,13 +152,15 @@ void Base_spectral::set(Dim_array const& nbr_coefs, int BASEPHI, int BASETHETA, 
    allocate(nbr_coefs);
    def = true;
    bases_1d[2]->set(0) = BASEPHI;
-   Index index(bases_1d[0]->get_dimensions());
+//   Array_index index(bases_1d[0]->get_dimensions());
+    Index index(bases_1d[0]->get_dimensions());
    for (int k(0) ; k < nbr_coefs(2) ; ++k) 
    {
       bases_1d[1]->set(k) = BASETHETA;
       for (int j(0) ; j < nbr_coefs(1) ; ++j) 
       {
           index.set(0) = j ; index.set(1) = k;
+//          index.inc();
           bases_1d[0]->set(index) = BASER;
        }
    }

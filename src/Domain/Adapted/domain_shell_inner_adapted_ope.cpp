@@ -38,7 +38,7 @@ Val_domain Domain_shell_inner_adapted::mult_cos_phi (const Val_domain& so) const
 	res.base.allocate (nbr_coefs) ;	
 	*res.base.bases_1d[2] = *so.base.bases_1d[2] ;
 	
-	Index index_t (res.base.bases_1d[1]->get_dimensions()) ;
+	Array_index index_t (res.base.bases_1d[1]->get_dimensions()) ;
 	// Inversion in theta :
 	do {
 		switch ((*so.base.bases_1d[1])(index_t)) {
