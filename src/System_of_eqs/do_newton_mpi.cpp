@@ -110,13 +110,14 @@ namespace Kadath {
             int nrowloc_in = numroc_ (&nn, &bsize, &myrow_in, &zero, &nprow_in);
             int ncolloc_in = numroc_ (&nn, &bsize, &mycol_in, &zero, &npcol_in);
 
-            Array<double> matloc_in (ncolloc_in, nrowloc_in);
+//            Array<double> matloc_in (ncolloc_in, nrowloc_in);
+            Array<double> matloc_in (nrowloc_in, ncolloc_in);
             int start = bsize*rank;
 
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
 
-            compute_matrix_cyclic(matloc_in,nn,start,bsize,nproc,TRANSPOSE);
+            compute_matrix_cyclic(matloc_in,nn,start,bsize,nproc,DO_NOT_TRANSPOSE);
 
             // Descriptor of the matrix :
             Array<int> descamat_in(9);
