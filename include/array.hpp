@@ -172,16 +172,27 @@ template <typename T> class Array {
 	    * Read/write of an element.
 	    * @param pos [input] : position of the element.
 	    */
-	    reference set(const Index& pos) {
+
+        reference set(const Index& pos) {
 //	assert (pos.sizes == dimensions) ;
-            int index = pos(0) ;
-            for (int i=1 ; i<dimensions.ndim ; i++) {
+            int index = pos(dimensions.ndim-1) ;
+            for (int i=dimensions.ndim-2 ; i>=0 ; i--) {
                 index *= dimensions(i) ;
 //		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
                 index += pos(i) ;
             }
             return data[index] ;
         }
+//	    reference set(const Index& pos) {
+////	assert (pos.sizes == dimensions) ;
+//            int index = pos(0) ;
+//            for (int i=1 ; i<dimensions.ndim ; i++) {
+//                index *= dimensions(i) ;
+////		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
+//                index += pos(i) ;
+//            }
+//            return data[index] ;
+//        }
         reference set(const Array_index &pos) {return data[pos.value];}
 	    /**
 	    * Read/write of an element for a 1d-array.
@@ -201,7 +212,8 @@ template <typename T> class Array {
             /*assert (dimensions.ndim == 2) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;*/
-            return data[i*dimensions(1)+j] ;
+            return data[i+j*dimensions(0)] ;
+//            return data[i*dimensions(1)+j] ;
         }
 	    /**
 	    * Read/write of an element for a 3d-array.
@@ -214,22 +226,33 @@ template <typename T> class Array {
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;
             assert ((k >=0) && (k<dimensions(2))) ;*/
-            return data[i*dimensions(1)*dimensions(2)+j*dimensions(2)+k] ;
+            return data[i+dimensions(0)*(j+k*dimensions(1))] ;
+//            return data[(i*dimensions(1)+j)*dimensions(2)+k] ;
         }
 	    /**
 	    * Read only of an element.
 	    * @param pos [input] : position of the element.
 	    */
-	    T operator() (const Index& pos) const {
+        T operator() (const Index& pos) const {
 //	assert (pos.sizes == dimensions) ;
-            int index = pos(0) ;
-            for (int i=1 ; i<dimensions.ndim ; i++) {
+            int index = pos(dimensions.ndim-1) ;
+            for (int i=dimensions.ndim-2 ; i>=0 ; i--) {
                 index *= dimensions(i) ;
 //		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
                 index += pos(i) ;
             }
             return data[index] ;
-	    }
+        }
+//	    T operator() (const Index& pos) const {
+////	assert (pos.sizes == dimensions) ;
+//            int index = pos(0) ;
+//            for (int i=1 ; i<dimensions.ndim ; i++) {
+//                index *= dimensions(i) ;
+////		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
+//                index += pos(i) ;
+//            }
+//            return data[index] ;
+//	    }
 	    T operator()(Array_index const &pos) const {return data[pos.value];}
 	    /**
 	    * Read only of an element for a 1d-array.
@@ -249,7 +272,8 @@ template <typename T> class Array {
             /*assert (dimensions.ndim ==2) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;*/
-            return data[i*dimensions(1)+j] ;
+             return data[i+j*dimensions(0)] ;
+//            return data[i*dimensions(1)+j] ;
         }
 		/**
 	    * Read only of an element for a 3d-array.
@@ -262,7 +286,8 @@ template <typename T> class Array {
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;
             assert ((k >=0) && (k<dimensions(2))) ;*/
-            return data[i*dimensions(1)*dimensions(2)+j*dimensions(2)+k] ;
+            return data[i+dimensions(0)*(j+k*dimensions(1))] ;
+//            return data[i*dimensions(1)*dimensions(2)+j*dimensions(2)+k] ;
         }
 	     /**
 	   * Direct accessor to the data, read only version

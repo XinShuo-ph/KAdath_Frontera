@@ -240,7 +240,7 @@ Array<double> Matrice::solve (const Array<double>& source) const {
     }
     else { // General case
         ldab = n ;
-        trans = 'T' ;
+        trans = 'N' ; //index optimization
         F77_dgetrs(&trans, &n, &nrhs, lu->set_data(), &ldab, permute->set_data(),
                res.set_data(), &ldb, &info) ;
     }

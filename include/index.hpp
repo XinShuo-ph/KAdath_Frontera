@@ -182,7 +182,23 @@ public:
 	}
 	bool inc() {return inc1(0);}
 
-	/**
+
+	// Increment
+    bool inc_vanilla (int increm, int var) {
+        bool res = ((var >=0) && (var<get_ndim())) ? true : false ;
+        if (res) {
+            coord[var] += increm ;
+            for (int i=var ; i<get_ndim()-1 ; i++) {
+                div_t division = div(coord[i], sizes(i)) ;
+                coord[i] = division.rem ;
+                coord[i+1] += division.quot ;
+            }
+            res = (coord[get_ndim()-1] >= sizes(get_ndim()-1)) ? false : true ;
+        }
+        return res ;
+    }
+
+        /**
 	 * Assignment operator.
 	 * @param so source to copy from.
 	 */
