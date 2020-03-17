@@ -116,7 +116,7 @@ namespace Kadath {
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
                                                      nn," | matrix computation ");
 
-            compute_matrix_cyclic(matloc_in,nn,start,bsize,nproc,true);
+            compute_matrix_cyclic(matloc_in,nn,start,bsize,nproc);
 
             // Descriptor of the matrix :
             Array<int> descamat_in(9);
