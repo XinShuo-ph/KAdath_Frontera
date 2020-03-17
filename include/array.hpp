@@ -174,11 +174,11 @@ template <typename T> class Array {
 	    */
 
         reference set(const Index& pos) {
-//	assert (pos.sizes == dimensions) ;
+	        assert (pos.sizes == dimensions) ;
             int index = pos(dimensions.ndim-1) ;
             for (int i=dimensions.ndim-2 ; i>=0 ; i--) {
                 index *= dimensions(i) ;
-//		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
+		        assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
                 index += pos(i) ;
             }
             return data[index] ;
@@ -199,8 +199,8 @@ template <typename T> class Array {
 	    * @param i [input] : position of the element.
 	    */
 	    reference set(int i) {
-            /*assert (dimensions.ndim == 1) ;
-            assert ((i >=0) && (i<dimensions(0))) ;*/
+            assert (dimensions.ndim == 1) ;
+            assert ((i >=0) && (i<dimensions(0))) ;
             return data[i] ;
         }
 	    /**
@@ -209,9 +209,9 @@ template <typename T> class Array {
 	    * @param j [input] : second index of the element.
 	    */
 	    reference set(int i, int j)  {
-            /*assert (dimensions.ndim == 2) ;
+            assert (dimensions.ndim == 2) ;
             assert ((i >=0) && (i<dimensions(0))) ;
-            assert ((j >=0) && (j<dimensions(1))) ;*/
+            assert ((j >=0) && (j<dimensions(1))) ;
             return data[i+j*dimensions(0)] ;
 //            return data[i*dimensions(1)+j] ;
         }
@@ -222,10 +222,10 @@ template <typename T> class Array {
             * @param k [input] : third index of the element.
 	    */
 	    reference set(int i, int j, int k) {
-            /*assert (dimensions.ndim == 3) ;
+            assert (dimensions.ndim == 3) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;
-            assert ((k >=0) && (k<dimensions(2))) ;*/
+            assert ((k >=0) && (k<dimensions(2))) ;
             return data[i+dimensions(0)*(j+k*dimensions(1))] ;
 //            return data[(i*dimensions(1)+j)*dimensions(2)+k] ;
         }
@@ -234,11 +234,11 @@ template <typename T> class Array {
 	    * @param pos [input] : position of the element.
 	    */
         T operator() (const Index& pos) const {
-//	assert (pos.sizes == dimensions) ;
+            assert (pos.sizes == dimensions) ;
             int index = pos(dimensions.ndim-1) ;
             for (int i=dimensions.ndim-2 ; i>=0 ; i--) {
                 index *= dimensions(i) ;
-//		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
+		        assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
                 index += pos(i) ;
             }
             return data[index] ;
@@ -259,8 +259,8 @@ template <typename T> class Array {
 	    * @param i [input] : position of the element.
 	    */
 	    T operator() (int i) const {
-            /*assert (dimensions.ndim ==1) ;
-            assert ((i >=0) && (i<dimensions(0))) ;*/
+            assert (dimensions.ndim ==1) ;
+            assert ((i >=0) && (i<dimensions(0))) ;
             return data[i] ;
         }
 	     /**
@@ -269,9 +269,9 @@ template <typename T> class Array {
 	    * @param j [input] : second index of the element.
 	    */
 	    T operator() (int i,int j) const {
-            /*assert (dimensions.ndim ==2) ;
+            assert (dimensions.ndim ==2) ;
             assert ((i >=0) && (i<dimensions(0))) ;
-            assert ((j >=0) && (j<dimensions(1))) ;*/
+            assert ((j >=0) && (j<dimensions(1))) ;
              return data[i+j*dimensions(0)] ;
 //            return data[i*dimensions(1)+j] ;
         }
@@ -282,10 +282,10 @@ template <typename T> class Array {
             * @param k [input] : third index of the element.
 	    */
 	    T operator() (int i,int j, int k) const {
-            /*assert (dimensions.ndim ==3) ;
+            assert (dimensions.ndim ==3) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;
-            assert ((k >=0) && (k<dimensions(2))) ;*/
+            assert ((k >=0) && (k<dimensions(2))) ;
             return data[i+dimensions(0)*(j+k*dimensions(1))] ;
 //            return data[i*dimensions(1)*dimensions(2)+j*dimensions(2)+k] ;
         }

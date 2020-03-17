@@ -126,12 +126,12 @@ public:
 	* Read/write of the position in a given dimension.
 	* @param i [input] dimension.
 	*/
-	int& set(int i) {/*assert(i>=0); assert(i<get_ndim());*/ return coord[i] ;}
+	int& set(int i) {assert(i>=0); assert(i<get_ndim()); return coord[i] ;}
 	/**
 	* Read/write of the position in a given dimension.
 	* @param i [input] dimension.
 	*/
-	int operator() (int i) const {/*assert(i>=0); assert(i<get_ndim());*/ return coord[i]; }
+	int operator() (int i) const {assert(i>=0); assert(i<get_ndim()); return coord[i]; }
 	/**
 	* Returns the number of dimensions.
 	*/
@@ -202,7 +202,7 @@ public:
 	 * Assignment operator.
 	 * @param so source to copy from.
 	 */
-	void operator=(const Index& so) {/*assert(sizes==so.sizes);*/for(int i=0 ;i<get_ndim();i++)coord[i] = so.coord[i];}
+	void operator=(const Index& so) {assert(sizes==so.sizes);for(int i=0 ;i<get_ndim();i++)coord[i] = so.coord[i];}
 	
 	bool operator== (const Index& xx) const {
         bool res = (get_ndim()==xx.get_ndim()) ;
