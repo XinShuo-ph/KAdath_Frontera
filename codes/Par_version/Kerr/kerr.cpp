@@ -18,9 +18,13 @@ int main(int argc, char** argv) {
 #endif
 	// 3D :
 	int dim = 3 ;
-
+	int nbr{17};
+	if(argc>1)
+	{
+		nbr = std::atoi(argv[1]);
+	}
 	// Number of points
-	int nbr  = 15 ;
+	//int nbr  = 17 ;
 	int type_coloc = CHEB_TYPE ;
 	Dim_array res (dim) ;
 	res.set(0) = nbr ; res.set(1) = nbr ; res.set(2) = 1 ;

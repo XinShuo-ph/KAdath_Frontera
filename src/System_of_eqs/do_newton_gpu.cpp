@@ -28,8 +28,6 @@
 #include "array_math.hpp"
 
 
-#define ENABLE_GPU_USE 1
-
 namespace Kadath {
 
 

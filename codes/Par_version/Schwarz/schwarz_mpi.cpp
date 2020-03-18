@@ -37,6 +37,11 @@ int main(int argc,char** argv) {
 
     // Number of points
     int nbr  = 13 ;
+    if(argc>1)
+    {
+        nbr = std::atoi(argv[1]);
+    }
+
     Dim_array res (dim) ;
     res.set(0) = nbr ; res.set(1) = 5 ; res.set(2) = 4 ;
 
