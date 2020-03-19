@@ -50,12 +50,12 @@ class Dim_array {
         * Read/write of the size of a given dimension.
         * @param i [input] dimension.
         */
-        int& set(int i) {/*assert(i>=0); assert(i<ndim);*/ return nbr[i];}
+        int& set(int i) {assert(i>=0); assert(i<ndim); return nbr[i];}
         /**
         * Read only of the size of a given dimension.
         * @param i [input] dimension.
         */
-        int operator() (int i) const {/*assert(i>=0); assert(i<ndim);*/ return nbr[i];}
+        int operator() (int i) const {assert(i>=0); assert(i<ndim); return nbr[i];}
         /**
         * Returns the number of dimensions.
         */
@@ -63,7 +63,7 @@ class Dim_array {
         /**
          * Assignement to annother \c Dim_array.
          */
-        void operator= (const Dim_array& so) {/*assert (ndim==so.ndim);*/for (int i=0 ;i<ndim;i++) nbr[i] = so.nbr[i];}
+        void operator= (const Dim_array& so) {assert (ndim==so.ndim);for (int i=0 ;i<ndim;i++) nbr[i] = so.nbr[i];}
 
         void save (FILE*) const ; ///< Save function
 

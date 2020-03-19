@@ -169,7 +169,7 @@ public:
     bool inc1(int var)  {
         int const ndimm1{get_ndim()-1};
         int i{var};
-        while(coord[i]==(sizes(i)-1) && i<= ndimm1 )
+        while(i<= ndimm1 && coord[i]==(sizes(i)-1))
         {
             coord[i] = 0;
             i++;
