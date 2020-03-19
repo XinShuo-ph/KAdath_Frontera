@@ -23,22 +23,24 @@
 #include "dim_array.hpp"
 #include "array.hpp"
 
-#define NBR_MAX_BASE    30
-#define CHEB         1
-#define CHEB_EVEN    2
-#define CHEB_ODD     3
-#define COSSIN       4
-#define COS          5
-#define COS_EVEN     6
-#define COS_ODD      7
-#define SIN          8
-#define SIN_EVEN     9
-#define SIN_ODD     10
-#define LEG         11
-#define LEG_EVEN    12
-#define LEG_ODD     13
-#define COSSIN_EVEN 14
-#define COSSIN_ODD  15
+enum : int {
+    NBR_MAX_BASE    = 30,
+    CHEB         = 1,
+    CHEB_EVEN    = 2,
+    CHEB_ODD     = 3,
+    COSSIN       = 4,
+    COS          = 5,
+    COS_EVEN     = 6,
+    COS_ODD      = 7,
+    SIN          = 8,
+    SIN_EVEN     = 9,
+    SIN_ODD     = 10,
+    LEG         = 11,
+    LEG_EVEN    = 12,
+    LEG_ODD     = 13,
+    COSSIN_EVEN = 14,
+    COSSIN_ODD  = 15
+};
 
 namespace Kadath {
 class Point ;
@@ -66,7 +68,7 @@ class Point ;
 **/
 
 class Base_spectral {
-     protected:
+ protected:
         bool def ; ///< \c true if the \c Base_spectral is defined and \c false otherwise.
         int ndim ; ///< Number of dimensions.
 	/**
@@ -75,25 +77,25 @@ class Base_spectral {
 	*/
 	Array<int>** bases_1d ;
 	
-     public:
+ public:
 	/**
 	* Standard constructor, the \c Base_spectral is not defined.
         * @param i [input] : number of dimensions.
 	*/
-        explicit Base_spectral(int i) ;
+    explicit Base_spectral(int i) ;
 	Base_spectral(const Base_spectral &) ; ///< Copy constructor
 	Base_spectral (FILE*) ;	///< Constructor from a file
 #ifdef ENABLE_MOVE_SEMANTIC
     Base_spectral(Base_spectral &&); ///< Move constructor.
     Base_spectral& operator=(Base_spectral &&);///<Move assignment operator.
 #endif
-     public:
+public:
 	~Base_spectral() ; ///< Destructor
 	void save(FILE*) const ; ///< Saving function
-     public:
+public:
 	/**
-	* @returns : \c true if the basis is defined, \c false otherwise.
-	*/
+	 * @returns : \c true if the basis is defined, \c false otherwise.
+	 */
 	bool is_def () const {return def;} ;
 
 	/**
@@ -118,7 +120,7 @@ class Base_spectral {
 	* @param basetheta : basis for \f$\varphi\f$
 	* @param baser : basis for \f$\varphi\f$
 	*/
-        void set(Dim_array const& nbr_coefs, int basephi, int basetheta, int baser);
+    void set(Dim_array const& nbr_coefs, int basephi, int basetheta, int baser);
 	
 	/**
         * performs the coefficient transformation for one particular variable.
@@ -126,7 +128,7 @@ class Base_spectral {
 	* @param nbr [input] : number of coefficients for \c var.
 	* @param tab [input/output] : values of the field, before and after the computation of the coefficients.
 	*/
-        void coef_dim (int var, int nbr, Array<double> *& tab) const ;
+    void coef_dim (int var, int nbr, Array<double> *& tab) const ;
 	/**
         * Computes the coefficients for all the variables.
 	* @param nbr_coefs [input] : number of coefficients.
@@ -134,8 +136,8 @@ class Base_spectral {
 	* @returns the coefficients of the field.
 	*/
  	Array<double> coef (const Dim_array& nbr_coefs, const Array<double> & so) const ;
-       /**
-        * Performs the inverse coefficient transformation for one particular variable.
+   /**
+    * Performs the inverse coefficient transformation for one particular variable.
 	* @param var [input] : the variable for which the coefficients are to be computed.
 	* @param nbr [input] : number of points in the configuration space for \c var.
 	* @param tab [input/output] : values of the field, before and after the computation of the coefficients.

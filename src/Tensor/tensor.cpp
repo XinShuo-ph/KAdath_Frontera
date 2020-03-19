@@ -416,27 +416,6 @@ void Tensor::annule_hard() {
 		// Accessors 
 		//-------------
 
-
-int Tensor::position (const Array<int>& idx) const {
-    return (give_place_array(idx, ndim));
-}
-
-int Tensor::position (const Index& idx) const {
-    
-    return (give_place_index(idx, ndim)) ;
-}
-
-Array<int> Tensor::indices (int place) const {
-    return (give_indices(place, valence, ndim)) ;
-}
-
-Scalar& Tensor::set() {
-    
-    assert (valence == 0) ;
-    return *cmp[0] ;
-}
-
-
 // Affectation d'un tenseur d'ordre 1 :
 Scalar& Tensor::set(int i) {
     

@@ -281,7 +281,7 @@ double Base_spectral::summation (const Point& num, const Array<double>& cf) cons
 		for (int k=0 ; k<dim_output ; k++)
 			nbr_output.set(k) = nbr_coefs(k+d+1) ;
 		Array<double> output (nbr_output) ;
-		
+
 		Index inout (nbr_output) ;
 		Array<double> tab_1d (cf.get_size(d)) ;
 		Index incourant (courant->get_dimensions()) ;
@@ -299,7 +299,7 @@ double Base_spectral::summation (const Point& num, const Array<double>& cf) cons
 			}
 			output.set(inout) = summation_1d (base, num(d+1), tab_1d) ;
 			loop = inout.inc() ;
-			}
+        }
 		delete courant ;
 		courant = new Array<double> (output) ;
 	}

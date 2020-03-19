@@ -37,13 +37,13 @@ Array<double> Base_spectral::ope_1d (int (*func) (int, Array<double>&),
 
 	int nbr = in.get_size(var) ;
 	    
-	Index index_base (bases_1d[var]->get_dimensions()) ;
+	Array_index index_base (bases_1d[var]->get_dimensions()) ;
 
-	Index demarre(in.get_dimensions()) ;
-	Index loop_before (in.get_dimensions()) ;
+	Array_index demarre(in.get_dimensions()) ;
+	Array_index loop_before (in.get_dimensions()) ;
 	
-	Index lit (in.get_dimensions()) ;
-	Index put (in.get_dimensions()) ;
+	Array_index lit (in.get_dimensions()) ;
+	Array_index put (in.get_dimensions()) ;
 	
 	Array<double> tab_1d (nbr) ;
 
@@ -60,20 +60,20 @@ Array<double> Base_spectral::ope_1d (int (*func) (int, Array<double>&),
 	    	lit = demarre ;
 	    	for (int k=0 ; k<nbr ; k++) {
 	        	tab_1d.set(k) = in(lit) ;
-			lit.inc(after) ;
-			}
-		// Transformation
-		base_out.bases_1d[var]->set(index_base) = func(base, tab_1d) ;
+			    lit.inc(after) ;
+            }
+            // Transformation
+            base_out.bases_1d[var]->set(index_base) = func(base, tab_1d) ;
 
-		// On range :
-		put = demarre ;
-		for (int k=0 ; k<nbr ; k++) {
-		    res.set(put) = tab_1d(k) ;
-		    put.inc(after) ;
-		}
+            // On range :
+            put = demarre ;
+            for (int k=0 ; k<nbr ; k++) {
+                res.set(put) = tab_1d(k) ;
+                put.inc(after) ;
+            }
 
-		demarre.inc() ;
-        	}
+            demarre.inc() ;
+        }
 		index_base.inc() ;
 		loop_before.inc1( var+1) ;
 	}

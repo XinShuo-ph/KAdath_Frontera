@@ -21,8 +21,8 @@
 #define __TENSOR_HPP_
 
 
-#define COV -1
-#define CON +1
+constexpr short COV{-1};
+constexpr short CON{+1};
 
 #include <vector>
 #include "base_tensor.hpp"
@@ -320,7 +320,7 @@ class Tensor {
 	 *
 	 */
 	Scalar& set(const Index& ind) ;
-	Scalar& set() ; ///< Read/write for a \c Scalar.
+	Scalar& set() {assert (valence == 0); return *cmp[0];} ///< Read/write for a \c Scalar.
 	/** Returns the value of a component for a tensor of valence 1
 	 *  (read/write version).
 	 *
@@ -419,19 +419,19 @@ class Tensor {
 	* @param ind : values of the indices.
 	* @returns : the storage location.
 	*/
-	virtual int position(const Array<int>& ind) const ;
+	virtual int position(const Array<int>& idx) const {return (give_place_array(idx, ndim));}
 	/**
 	* Gives the location of a given component in the array used for storage (\C Index version).
 	* @param ind : values of the indices.
 	* @returns : the storage location.
 	*/
-	virtual int position(const Index& ind) const ;
+	virtual int position(const Index& idx) const {return (give_place_index(idx, ndim)) ;}
 	/**
 	* Gives the values of the indices corresponding to a location in the array used for storage of the components.
 	* @param pos : the storage location.
 	* @returns : the values of all the indices.
 	*/
-	virtual Array<int> indices(int pos) const ;
+	virtual Array<int> indices(int pos) const  {return (give_indices(pos, valence, ndim)) ;}
 
    private:
 	/**
