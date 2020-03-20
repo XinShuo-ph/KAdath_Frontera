@@ -42,48 +42,48 @@ void Base_spectral::coef_i_dim (int dim, int nbr_conf, Array<double> *& inout) c
 	int nbr_coef = inout->get_size(dim) ;
 	int nbr = (nbr_coef > nbr_conf) ? nbr_coef : nbr_conf ;
 
-	Array_index index_base (bases_1d[dim]->get_dimensions()) ;
+	Array_iterator index_base (bases_1d[dim]->get_dimensions()) ;
 	
-	Array_index demarre_coef (inout->get_dimensions()) ;
-	Array_index demarre_conf (res_out) ;
+	Array_iterator demarre_coef (inout->get_dimensions()) ;
+	Array_iterator demarre_conf (res_out) ;
 
-	Array_index loop_before_coef (inout->get_dimensions()) ;
-	Array_index loop_before_out (res_out) ;
+	Array_iterator loop_before_coef (inout->get_dimensions()) ;
+	Array_iterator loop_before_out (res_out) ;
 
-	Array_index lit_in (inout->get_dimensions()) ;
-	Array_index put_out (res_out) ;
+	Array_iterator lit_in (inout->get_dimensions()) ;
+	Array_iterator put_out (res_out) ;
 	
 	Array<double> tab_1d (nbr) ;
 	
 	// Loop on dimensions before 
 	for (int i=0 ; i<before ; i++) {
 	    
-	     demarre_coef = loop_before_coef ;
-	     demarre_conf = loop_before_out ;
+	     demarre_coef.set(loop_before_coef) ;
+	     demarre_conf.set(loop_before_out) ;
 	    // On get la base
 	    
 	    int base = (*bases_1d[dim])(index_base) ;
-	// Loop on dimensions after :
+	    // Loop on dimensions after :
 	    for (int j=0 ; j<after ; j++) {
 	    
 	    	lit_in = demarre_coef ;
 	    	for (int k=0 ; k<nbr_coef ; k++) {
 	        	tab_1d.set(k) = (*inout)(lit_in) ;
-			lit_in.inc(after) ;
+			    lit_in.inc(after) ;
 			}
 			
-		// Transformation
-		coef_i_1d(base, tab_1d) ;
+            // Transformation
+            coef_i_1d(base, tab_1d) ;
 
-		// On range :
-		put_out = demarre_conf ;
-		for (int k=0 ; k<nbr_conf ; k++) {
-		    res.set(put_out) = tab_1d(k) ;
-		    put_out.inc(after) ;
-		}
-		demarre_conf.inc() ;
-		demarre_coef.inc() ;
-        	}
+            // On range :
+            put_out.set(demarre_conf) ;
+            for (int k=0 ; k<nbr_conf ; k++) {
+                res.set(put_out) = tab_1d(k) ;
+                put_out.inc(after) ;
+            }
+            demarre_conf.inc() ;
+            demarre_coef.inc() ;
+        }
 		index_base.inc() ;
 		loop_before_coef.inc1( dim+1) ;
 		loop_before_out.inc1( dim+1) ;

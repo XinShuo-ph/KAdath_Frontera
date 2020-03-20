@@ -37,27 +37,27 @@ Array<double> Base_spectral::ope_1d (int (*func) (int, Array<double>&),
 
 	int nbr = in.get_size(var) ;
 	    
-	Array_index index_base (bases_1d[var]->get_dimensions()) ;
+	Array_iterator index_base (bases_1d[var]->get_dimensions()) ;
 
-	Array_index demarre(in.get_dimensions()) ;
-	Array_index loop_before (in.get_dimensions()) ;
+	Array_iterator demarre(in.get_dimensions()) ;
+	Array_iterator loop_before (in.get_dimensions()) ;
 	
-	Array_index lit (in.get_dimensions()) ;
-	Array_index put (in.get_dimensions()) ;
+	Array_iterator lit (in.get_dimensions()) ;
+	Array_iterator put (in.get_dimensions()) ;
 	
 	Array<double> tab_1d (nbr) ;
 
 	// Loop on dimensions before 
 	for (int i=0 ; i<before ; i++) {
 	    
-	     demarre = loop_before ;
+	     demarre.set(loop_before) ;
 	    // On get la base
 	    
 	    int base = (*bases_1d[var])(index_base) ;
 	    // Loop on dimensions after :
 	    for (int j=0 ; j<after ; j++) {
 	    
-	    	lit = demarre ;
+	    	lit.set(demarre) ;
 	    	for (int k=0 ; k<nbr ; k++) {
 	        	tab_1d.set(k) = in(lit) ;
 			    lit.inc(after) ;
@@ -66,7 +66,7 @@ Array<double> Base_spectral::ope_1d (int (*func) (int, Array<double>&),
             base_out.bases_1d[var]->set(index_base) = func(base, tab_1d) ;
 
             // On range :
-            put = demarre ;
+            put.set(demarre) ;
             for (int k=0 ; k<nbr ; k++) {
                 res.set(put) = tab_1d(k) ;
                 put.inc(after) ;

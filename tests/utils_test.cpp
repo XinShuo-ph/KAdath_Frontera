@@ -44,7 +44,7 @@ TEST(KAdathTestIndex,CheckArrayIndex)
     Array<int> test_array{dimensions};
     for(int i=0;i<nbr;i++) test_array.set_data()[i] = i;
     Index index{dimensions};
-    Array_index array_index{dimensions};
+    Array_iterator array_index{dimensions};
     {
         bool inc_ok{true};
         bool inc_i{true};

@@ -58,7 +58,7 @@ endif()
 add_definitions(-std=c++17)
 
 
-add_library(kadath ${KADATH_SOURCES})
+add_library(kadath ${KADATH_SOURCES} include/array_iterator.hpp)
 set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib COMPILE_FLAGS "-fPIC" $
         <$<CONFIG:Debug>:-O0>)
 

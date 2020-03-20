@@ -25,6 +25,7 @@
 #include "utilities.hpp"
 #include "dim_array.hpp"
 #include "index.hpp"
+#include "array_iterator.hpp"
 
 namespace Kadath {
 template <typename T> class Array ; 
@@ -193,7 +194,7 @@ template <typename T> class Array {
 //            }
 //            return data[index] ;
 //        }
-        reference set(const Array_index &pos) {return data[pos.value];}
+        reference set(const Array_iterator &pos) {return data[pos.position];}
 	    /**
 	    * Read/write of an element for a 1d-array.
 	    * @param i [input] : position of the element.
@@ -253,7 +254,7 @@ template <typename T> class Array {
 //            }
 //            return data[index] ;
 //	    }
-	    T operator()(Array_index const &pos) const {return data[pos.value];}
+	    T operator()(Array_iterator const &pos) const {return data[pos.position];}
 	    /**
 	    * Read only of an element for a 1d-array.
 	    * @param i [input] : position of the element.
