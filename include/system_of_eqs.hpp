@@ -674,6 +674,15 @@ class System_of_eqs {
 	void add_eq_vel_pot (int dom, int order, const char* eq, const char* const_part) ;
 
 	/**
+	* Addition of an boundary equation with an exception for \f$l=m=0\f$
+	* @param dom : number of the \c Domain.
+	* @param bound : boundary index.
+	* @param eq : string defining the equation.
+	* @param const_part : constant par 
+	*/
+	void add_eq_bc_exception (int dom, int bound, const char* eq, const char* const_part) ;
+
+	/**
 	* Addition of an equation a boundary condition of arbitrary orders.
 	* The order can be different for each variable. It is irrelevant for the variable corresponding to the boundary.
 	* @param dom : number of the \c Domain.
@@ -1055,6 +1064,33 @@ class Eq_vel_pot : public Equation {
 	*/
 		Eq_vel_pot(const Domain* dom, int nd, int ord, Ope_eq* op, Ope_eq* op_constant) ;
 		virtual ~Eq_vel_pot() ; ///< Destructor.
+
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;	
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;		    
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	  
+		virtual bool take_into_account (int) const ;
+} ;
+
+/**
+ * Class for enforcing boundary condition.
+ * It is solved for all harmonics byt l=m=0 for which an exceptionnal condition is enforced.
+ * \ingroup systems
+ */
+class Eq_bc_exception : public Equation {
+
+	public:
+		int bound ; ///< Order of the equation.
+
+	/**
+	* Constructor
+	* @param dom : Pointer on the \d Domain
+	* @param nd : number of the \d Domain (consistence is not checked).	
+	* @param bound : boundary where the condition is enforced
+	* @param ope : pointer on the operator describing the equation.
+	* @param ope_constant : condition for the constant part
+	*/
+		Eq_bc_exception (const Domain* dom, int nd, int bound, Ope_eq* op, Ope_eq* op_constant) ;
+		virtual ~Eq_bc_exception() ; ///< Destructor.
 
 		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;	
 		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;		    
