@@ -25,6 +25,12 @@
 #include "base_spectral.hpp"
 namespace Kadath {
 
+
+struct CHECKED_ACCESS_TYPE {};
+struct FAST_ACCESS_TYPE {};
+constexpr CHECKED_ACCESS_TYPE CHECKED_ACCESS{};
+constexpr FAST_ACCESS_TYPE FAST_ACCESS{};
+
 Val_domain sin(const Val_domain& ) ;
 Val_domain cos(const Val_domain& ) ;
 Val_domain operator+ (const Val_domain&) ;
@@ -67,6 +73,7 @@ double maxval (const Val_domain&) ;
 **/
 
 class Val_domain {
+public:
 
     protected:
 	const Domain* zone ; ///< Pointer to the associated \c Domain
@@ -118,12 +125,13 @@ class Val_domain {
     Val_domain & operator=(Val_domain &&); ///< Move assignment operator.
 #endif
 	void operator= (double) ; ///< Assignement to a \c double , in the configuration space.
-	void annule_hard() ; ///< Sets all the arrays to zero (the logical state is NOT set to zero).
+	void annule_hard() ///< Sets all the arrays to zero (the logical state is NOT set to zero).
+    {allocate_conf(); del_deriv(); *c = 0. ;}
 	/**
 	* Returns the basis of decomposition.
 	*/	
 	const Base_spectral& get_base() const {return base ;} ;
-        /**
+    /**
 	* Sets the basis of decomposition.
 	*/
 	Base_spectral& set_base() {return base ;} ;
@@ -148,11 +156,11 @@ class Val_domain {
 	/**
 	* Destroys the values in the coefficient space.
 	*/
-        void set_in_conf() ;
+    void set_in_conf() {if (cf != nullptr) {delete cf ;cf = nullptr ;} in_conf = true; in_coef = false;}
 	/**
 	* Destroys the values in the configuration space.
 	*/
-	void set_in_coef() ;
+	void set_in_coef() {if(c!=nullptr) {delete c; c = nullptr;} in_conf = false; in_coef = true;}
 	/**
 	* Allocates the values in the configuration space and destroys the values in the coefficients space.
 	*/
@@ -194,24 +202,38 @@ class Val_domain {
 	* Read/write the value of the field in the configuration space. The coefficients are destroyed.
 	* @param pos [input] : point concerned.
 	*/
-	double& set(const Index& pos) ;
+	double& set(const Index& pos) {set_in_conf(); return c->set(pos);}
+	double& set(const Array_iterator & pos) {set_in_conf(); return c->set(pos);}
+	/**
+	 * Unchecked fast read/write access to the field in the configuration space.
+	 * @param pos [input] : point concerned.
+	 * @return value
+	 */
+	double& operator[](const Array_iterator & pos) {return c->set(pos);}
+	double operator[](const Array_iterator & pos) const {return c->set(pos);}
 	/**
 	* Read/write the value of the field in the coefficient space. The values at collocation points are destroyed.
 	* @param pos [input] : coefficient concerned.
 	*/
-	double& set_coef(const Index& pos) ;
+	double& set_coef(const Index& pos) {set_in_coef(); return cf->set(pos);}
+	double& set_coef(const Array_iterator & pos) {set_in_coef(); return cf->set(pos);}
+	double& set_coef(const Array_iterator & pos,FAST_ACCESS_TYPE const) {return cf->set(pos);}
 	/**
 	* Read only value of the field in the coefficient space.
 	* @param pos [input] : coefficient concerned.
 	*/
-	double get_coef (const Index& pos) const ;
-
+	double get_coef (const Index& pos) const {if(is_zero) return 0.; else {assert(in_coef); return cf->operator()(pos);}}
+	double get_coef (const Array_iterator & pos) const {if(is_zero) return 0.; else {assert(in_coef); return cf->operator()(pos);}}
+    double get_coef(const Array_iterator & pos,FAST_ACCESS_TYPE const) const {return cf->operator()(pos);}
 	/**
 	* Read only value of the field in the configuration space.
 	* @param pos [input] : point concerned.
 	*/
-	double operator()(const Index& pos) const ;
-	void coef() const ; ///< Computes the coefficients.
+	double operator()(const Index& pos) const {coef_i(); return (*c)(pos);}
+	double operator()(const Array_iterator &pos) const {coef_i(); return c->operator()(pos);}
+	double operator()(const Array_iterator &pos,FAST_ACCESS_TYPE const) const {return c->operator()(pos);}
+
+    void coef() const ; ///< Computes the coefficients.
 	void coef_i() const ; ///< Computes the values in the configuration space.
 
 	/**
@@ -232,31 +254,31 @@ class Val_domain {
 	* @returns : the result, in the coefficient space.
 	*/
 	Val_domain der_spher (int i) const ;
-	Val_domain der_r () const ; ///< @returns the radial derivative
-	Val_domain der_t () const ; ///< @returns the derivative wrt \f$\theta\f$.
-	Val_domain der_p () const ; ///< @returns the derivative wrt \f$\varphi\f$.
-	Val_domain mult_sin_theta () const ; ///< Multiplication by \f$ \sin \theta \f$
-	Val_domain mult_cos_theta () const ;///< Multiplication by \f$ \cos \theta \f$
-	Val_domain mult_sin_phi () const ; ///< Multiplication by \f$ \sin \varphi \f$
-	Val_domain mult_cos_phi () const ; ///< Multiplication by \f$ \cos \varphi \f$
-	Val_domain div_sin_theta () const ; ///< Division by \f$ \sin \theta \f$
-	Val_domain div_cos_theta () const ; ///< Division by \f$ \cos \theta \f$
-	Val_domain div_x () const ; ///< Division by \f$ x \f$
-	Val_domain div_xm1 () const ; ///< Division by \f$ x-1 \f$
-	Val_domain div_xp1 () const ; ///< Division by \f$ x-1 \f$
-	Val_domain mult_xm1 () const ; ///< Multiplication by \f$ x-1 \f$
-	Val_domain div_1mx2 () const ; ///< Division by \f$ 1-x^2 \f$
-	Val_domain div_1mrsL () const ; ///< Division by \f$ 1-x^2 \f$
-	Val_domain div_sin_chi () const ;///< Division by \f$ \sin \chi \f$
-	Val_domain div_chi () const ; ///< Division by \f$ \chi^\star \f$
-	Val_domain div_r () const ;  ///< Division by the radius.
-	Val_domain mult_r () const ;  ///< Multiplication by the radius.
-	Val_domain der_r_rtwo () const ; ///< @returns the radial derivative multiplied by \f$r^2\f$ (defined in a compactified domain).
-	Val_domain mult_cos_time() const ; ///< @returns the multiplication by \f$\cos \omega t\f$.
-	Val_domain mult_sin_time() const ; ///< @returns the multiplication by \f$\sin \omega t\f$.
+	Val_domain der_r () const {return zone->der_r (*this) ;} ///< @returns the radial derivative
+	Val_domain der_t () const {return zone->der_t (*this) ;} ///< @returns the derivative wrt \f$\theta\f$.
+	Val_domain der_p () const {return zone->der_p (*this) ;} ///< @returns the derivative wrt \f$\varphi\f$.
+	Val_domain der_r_rtwo () const {return zone->der_r_rtwo (*this) ;} ///< @returns the radial derivative multiplied by \f$r^2\f$ (defined in a compactified domain).
+    Val_domain div_r() const { if(is_zero) return *this; else return zone->div_r(*this);} ///< Division by the radius.
+    Val_domain mult_r() const { if(is_zero) return *this; else return zone->mult_r(*this);} ///< Multiplication by the radius.
+    double integrale() const {if(is_zero) return 0.; else return zone->integrale(*this);} ///< @returns integral in the whole domain.
+    double integ_volume() const {if(is_zero) return 0.; else return zone->integ_volume(*this);} ///< @returns integral in the whole domain.
 
-	double integrale() const ; ///< @returns integral in the whole domain.
-	double integ_volume() const ;  ///< @returns integral in the whole domain.
+    Val_domain mult_cos_phi() const {if(is_zero) return *this; else return (zone->mult_cos_phi(*this));} ///< Multiplication by \f$ \cos \varphi \f$
+    Val_domain mult_sin_phi() const {if(is_zero) return *this; else return (zone->mult_sin_phi (*this));} ///< Multiplication by \f$ \sin \varphi \f$
+    Val_domain mult_cos_theta() const {if(is_zero) return *this; else return (zone->mult_cos_theta(*this));} ///< Multiplication by \f$ \cos \theta \f$
+    Val_domain mult_sin_theta() const {if(is_zero) return *this; else return (zone->mult_sin_theta(*this));} ///< Multiplication by \f$ \sin \theta \f$
+    Val_domain div_sin_theta() const {if(is_zero) return *this; else return (zone->div_sin_theta(*this));} ///< Division by \f$ \sin \theta \f$
+    Val_domain div_cos_theta() const {if(is_zero) return *this; else return (zone->div_cos_theta(*this));} ///< Division by \f$ \cos \theta \f$
+    Val_domain div_x() const {if(is_zero) return *this; else return (zone->div_x(*this));} ///< Division by \f$ x \f$
+    Val_domain div_chi() const {if(is_zero) return *this; else return (zone->div_chi(*this));} ///< Division by \f$ \chi^\star \f$
+    Val_domain div_xm1() const {if(is_zero) return *this; else return (zone->div_xm1(*this));} ///< Division by \f$ x-1 \f$
+    Val_domain div_1mx2() const {if(is_zero) return *this; else return (zone->div_1mx2(*this));} ///< Division by \f$ 1-x^2 \f$
+    Val_domain div_1mrsL() const {if(is_zero) return *this; else return (zone->div_1mrsL(*this));} ///< Division by \f$ 1-x^2 \f$
+    Val_domain div_xp1() const {if(is_zero) return *this; else return (zone->div_xp1(*this));} ///< Division by \f$ x-1 \f$
+    Val_domain mult_xm1() const {if(is_zero) return *this; else return (zone->mult_xm1(*this));} ///< Multiplication by \f$ x-1 \f$
+    Val_domain div_sin_chi() const {if(is_zero) return *this; else return (zone->div_sin_chi(*this));} ///< Division by \f$ \sin \chi \f$
+    Val_domain mult_cos_time() const {if(is_zero) return *this; else return (zone->mult_cos_time(*this));} ///< @returns the multiplication by \f$\cos \omega t\f$.
+    Val_domain mult_sin_time() const {if(is_zero) return *this; else return (zone->mult_sin_time(*this));} ///< @returns the multiplication by \f$\sin \omega t\f$.
 
 	void operator+= (const Val_domain&) ; ///< Operator +=
 	void operator-= (const Val_domain&) ; ///< Operator -=
