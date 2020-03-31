@@ -33,37 +33,37 @@ namespace internal {
 }
 template <typename T> class Array ; 
 template <typename T> ostream& operator<< (ostream&, const Array<T>& ) ;
-template <typename T> Array<T> sin(const Array<T>& ) ;
-template <typename T> Array<T> cos(const Array<T>& ) ;
-template <typename T> Array<T> sinh(const Array<T>& ) ;
-template <typename T> Array<T> cosh(const Array<T>& ) ;
-template <typename T>  Array<T> operator+ (const Array<T>&) ;
-template <typename T>  Array<T> operator- (const Array<T>&) ;
-template <typename T>  Array<T> operator+ (const Array<T>&, const Array<T>&) ;
-template <typename T>  Array<T> operator+ (const Array<T>&, T) ;
-template <typename T>  Array<T> operator+ (T, const Array<T>&) ;
-template <typename T>  Array<T> operator- (const Array<T>&, const Array<T>&) ;
-template <typename T>  Array<T> operator- (const Array<T>&, T) ;
-template <typename T>  Array<T> operator- (T, const Array<T>&) ;
-template <typename T>  Array<T> operator* (const Array<T>&, const Array<T>&) ;
-template <typename T>  Array<T> operator* (const Array<T>&, T) ;
-template <typename T>  Array<T> operator* (T, const Array<T>&) ;
-template <typename T>  Array<T> operator/ (const Array<T>&, const Array<T>&) ;
-template <typename T>  Array<T> operator/ (const Array<T>&, T) ;
-template <typename T>  Array<T> operator/ (T, const Array<T>&) ;
-template <typename T>  Array<T> pow (const Array<T>&, int) ;
-template <typename T>  Array<T> pow (const Array<T>&, double) ;
-template <typename T>  Array<T> sqrt (const Array<T>&) ;
-template <typename T>  Array<T> exp (const Array<T>&) ;
-template <typename T>  Array<T> log (const Array<T>&) ;
-template <typename T>  Array<T> atanh (const Array<T>&) ;
-template <typename T>  Array<T> fabs (const Array<T>&) ;
+//template <typename T> Array<T> sin(const Array<T>& ) ;
+//template <typename T> Array<T> cos(const Array<T>& ) ;
+//template <typename T> Array<T> sinh(const Array<T>& ) ;
+//template <typename T> Array<T> cosh(const Array<T>& ) ;
+//template <typename T>  Array<T> operator+ (const Array<T>&) ;
+//template <typename T>  Array<T> operator- (const Array<T>&) ;
+//template <typename T>  Array<T> operator+ (const Array<T>&, const Array<T>&) ;
+//template <typename T>  Array<T> operator+ (const Array<T>&, T) ;
+//template <typename T>  Array<T> operator+ (T, const Array<T>&) ;
+//template <typename T>  Array<T> operator- (const Array<T>&, const Array<T>&) ;
+//template <typename T>  Array<T> operator- (const Array<T>&, T) ;
+//template <typename T>  Array<T> operator- (T, const Array<T>&) ;
+//template <typename T>  Array<T> operator* (const Array<T>&, const Array<T>&) ;
+//template <typename T>  Array<T> operator* (const Array<T>&, T) ;
+//template <typename T>  Array<T> operator* (T, const Array<T>&) ;
+//template <typename T>  Array<T> operator/ (const Array<T>&, const Array<T>&) ;
+//template <typename T>  Array<T> operator/ (const Array<T>&, T) ;
+//template <typename T>  Array<T> operator/ (T, const Array<T>&) ;
+//template <typename T>  Array<T> pow (const Array<T>&, int) ;
+//template <typename T>  Array<T> pow (const Array<T>&, double) ;
+//template <typename T>  Array<T> sqrt (const Array<T>&) ;
+//template <typename T>  Array<T> exp (const Array<T>&) ;
+//template <typename T>  Array<T> log (const Array<T>&) ;
+//template <typename T>  Array<T> atanh (const Array<T>&) ;
+//template <typename T>  Array<T> fabs (const Array<T>&) ;
 template <typename T>  T scal (const Array<T>&, const Array<T>&) ;
 template <typename T> T diffmax (const Array<T>&, const Array<T>&) ;
 template <typename T>  T max (const Array<T>&) ;
 template <typename T>  T min (const Array<T>&) ;
 template <typename T>  T sum (const Array<T>&) ;
-template <typename T>  Array<T> atan (const Array<T>&) ;
+//template <typename T>  Array<T> atan (const Array<T>&) ;
 
 /**
 * Template class for arrays.
@@ -330,6 +330,10 @@ template <typename T> class Array {
 	    */
 	    bool is_increasing() const ;
 
+	    template<typename Expr> Array<T> & operator+=(internal::Expression<Expr> const &);
+        template<typename Expr> Array<T> & operator-=(internal::Expression<Expr> const &);
+        template<typename Expr> Array<T> & operator*=(internal::Expression<Expr> const &);
+        template<typename Expr> Array<T> & operator/=(internal::Expression<Expr> const &);
 	    Array<T> & operator+= (const Array<T>& so)///< Operator +
         {assert(nbr == so.nbr); for(int i{0};i<nbr;i++) data[i] += so.data[i]; return *this;}
 	    Array<T> & operator-= (const Array<T>& so)///< Operator -=
@@ -346,39 +350,39 @@ template <typename T> class Array {
 	friend class Matrice ;
 
 	friend  ostream& operator<< <> (ostream&, const Array<T>& ) ;
-	friend  Array<T> sin<> (const Array<T>&) ;
-	friend  Array<T> cos<> (const Array<T>&) ;
-	friend  Array<T> sinh<> (const Array<T>&) ;
-	friend  Array<T> cosh<> (const Array<T>&) ;
-	friend  Array<T> operator+ <>(const Array<T>&) ;
-	friend  Array<T> operator- <> (const Array<T>&) ;
-	friend  Array<T> operator+ <> (const Array<T>&, const Array<T>&) ;
-	friend  Array<T> operator+ <>(const Array<T>&, T) ;
-	friend  Array<T> operator+ <>(T, const Array<T>&) ;
-	friend  Array<T> operator- <>(const Array<T>&, const Array<T>&) ;
-	friend  Array<T> operator- <>(const Array<T>&, T) ;
-	friend  Array<T> operator- <>(T, const Array<T>&) ;
-	friend  Array<T> operator* <>(const Array<T>&, const Array<T>&) ;
-	friend  Array<T> operator* <>(const Array<T>&, T) ;
-	friend  Array<T> operator* <>(T, const Array<T>&) ;
-	friend  Array<T> operator/ <>(const Array<T>&, const Array<T>&) ;
-	friend  Array<T> operator/ <>(const Array<T>&, T) ;
-	friend  Array<T> operator/ <>(T, const Array<T>&) ;
-	friend  Array<T> pow <>(const Array<T>&, int) ;
-	friend  Array<T> pow <>(const Array<T>&, double) ;
-	friend  Array<T> sqrt <>(const Array<T>&) ;
-	friend  Array<T> exp <>(const Array<T>&) ;	
-	friend  Array<T> log <>(const Array<T>&) ;
-	friend  Array<T> atanh <>(const Array<T>&) ;
-	friend  Array<T> cos <>(const Array<T>&) ;
-	friend  Array<T> sin <>(const Array<T>&) ;
-	friend  Array<T> fabs <>(const Array<T>&) ;
+//	friend  Array<T> sin<> (const Array<T>&) ;
+//	friend  Array<T> cos<> (const Array<T>&) ;
+//	friend  Array<T> sinh<> (const Array<T>&) ;
+//	friend  Array<T> cosh<> (const Array<T>&) ;
+//	friend  Array<T> operator+ <>(const Array<T>&) ;
+//	friend  Array<T> operator- <> (const Array<T>&) ;
+//	friend  Array<T> operator+ <> (const Array<T>&, const Array<T>&) ;
+//	friend  Array<T> operator+ <>(const Array<T>&, T) ;
+//	friend  Array<T> operator+ <>(T, const Array<T>&) ;
+//	friend  Array<T> operator- <>(const Array<T>&, const Array<T>&) ;
+//	friend  Array<T> operator- <>(const Array<T>&, T) ;
+//	friend  Array<T> operator- <>(T, const Array<T>&) ;
+//	friend  Array<T> operator* <>(const Array<T>&, const Array<T>&) ;
+//	friend  Array<T> operator* <>(const Array<T>&, T) ;
+//	friend  Array<T> operator* <>(T, const Array<T>&) ;
+//	friend  Array<T> operator/ <>(const Array<T>&, const Array<T>&) ;
+//	friend  Array<T> operator/ <>(const Array<T>&, T) ;
+//	friend  Array<T> operator/ <>(T, const Array<T>&) ;
+//	friend  Array<T> pow <>(const Array<T>&, int) ;
+//	friend  Array<T> pow <>(const Array<T>&, double) ;
+//	friend  Array<T> sqrt <>(const Array<T>&) ;
+//	friend  Array<T> exp <>(const Array<T>&) ;
+//	friend  Array<T> log <>(const Array<T>&) ;
+//	friend  Array<T> atanh <>(const Array<T>&) ;
+//	friend  Array<T> cos <>(const Array<T>&) ;
+//	friend  Array<T> sin <>(const Array<T>&) ;
+//	friend  Array<T> fabs <>(const Array<T>&) ;
 	friend T scal<>(const Array<T>&, const Array<T>&) ;	
 	friend T diffmax<>(const Array<T>&, const Array<T>&) ;
 	friend T max<> (const Array<T>&) ;
 	friend T min<> (const Array<T>&) ;
 	friend T sum<> (const Array<T>&) ;
-	friend  Array<T> atan <>(const Array<T>&) ;	
+//	friend  Array<T> atan <>(const Array<T>&) ;
 } ;
 
 template <typename T> bool Array<T>::is_increasing() const {

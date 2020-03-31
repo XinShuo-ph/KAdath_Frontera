@@ -68,7 +68,7 @@ Val_domain Domain_polar_shell::mult_r (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = new Array<double> (so.base.ope_1d(mult_x_1d, 0, *so.cf, res.base)*alpha + (*so.cf)*beta) ;
+	res.cf = new Array<double> ((*so.cf)*beta + (so.base.ope_1d(mult_x_1d, 0, *so.cf, res.base))*alpha ) ;
 	res.in_coef = true ;
 	return res ;
 }

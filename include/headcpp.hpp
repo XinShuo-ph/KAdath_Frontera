@@ -57,6 +57,7 @@ namespace Kadath {
   using std::atanh ; 
   using std::cosh;
   using std::sinh;
+  using std::atan2;
 
   /**
    * Set of enumerators used to select the computational model to use for the matrix-related computations (matrix
