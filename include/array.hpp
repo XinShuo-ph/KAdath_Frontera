@@ -28,9 +28,6 @@
 #include "array_iterator.hpp"
 
 namespace Kadath {
-namespace internal {
-    template<typename E,typename T = typename E::Value_type> struct Expression;
-}
 template <typename T> class Array ; 
 template <typename T> ostream& operator<< (ostream&, const Array<T>& ) ;
 template <typename T> Array<T> sin(const Array<T>& ) ;
@@ -135,10 +132,6 @@ template <typename T> class Array {
             for (int i=0 ; i<nbr ; i++)
                 data[i] = so.data[i] ;
         }
-        //! Constructor from expression template.
-        template<typename Expr> Array(internal::Expression<Expr> const &);
-	    //! Assignment operator from expression template.
-	    template<typename Expr> Array & operator=(internal::Expression<Expr> const &);
 #ifdef ENABLE_MOVE_SEMANTIC
         //! Move constructor.
         Array (Array<T> && so) : dimensions{std::move(so.dimensions)}, nbr{so.nbr},
