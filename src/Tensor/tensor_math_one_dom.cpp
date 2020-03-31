@@ -34,17 +34,18 @@ void affecte_one_dom (int dd, Tensor* res, const Tensor* so) {
       }
     }
     else {
-      for (int i=0 ; i<res->get_n_comp() ; i++) {
-	  Array<int> ind (res->indices(i)) ;
-	  Array<int> perm (so->valence) ;
-	  bool same_ind = res->find_indices(*so, perm) ;
+ 	Array<int> perm (so->valence) ;
+	bool same_ind = res->find_indices(*so, perm) ;
 	if (!same_ind) {
 		cerr << "Indices do not match in affecte_one_dom" << endl ;
 		abort() ;
 		}
 	Array<int> ind_so (so->valence) ;
-	for (int j=0 ; j<so->valence ; j++)
-		ind_so.set(perm(j)) = ind(j) ;
+	
+      for (int i=0 ; i<res->get_n_comp() ; i++) {
+	  Array<int> ind (res->indices(i)) ;
+		for (int j=0 ; j<so->valence ; j++)
+			ind_so.set(perm(j)) = ind(j) ;
 	res->set(ind).set_domain(dd) = (*so)(ind_so)(dd) ;
       }
     }  
