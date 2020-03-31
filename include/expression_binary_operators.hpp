@@ -173,7 +173,7 @@ namespace Kadath {
 #define EXPRESSION_TEMPLATE_BINARY_OPERATOR_OVERLOADS(op_name,op_symbol) \
 template<typename L,typename R=L> struct Binary_##op_name : Binary_operator_helper_base<L,R> {\
     using Base = Binary_operator_helper_base<L,R>; \
-    static constexpr typename Base::Return_type evaluate(L const l,R const r) {return l op_symbol r;} \
+    static inline constexpr typename Base::Return_type evaluate(L const l,R const r) {return l op_symbol r;} \
 }; \
 template<typename L_expr,typename R_expr> using Binary_operator_##op_name##_expr_expr = \
     Binary_operator<\
@@ -240,7 +240,7 @@ operator op_symbol (Array<L> const & left_vector,R const right_scalar) {\
 #define EXPRESSION_TEMPLATE_BINARY_FUNCTION_OVERLOADS(function) \
 template<typename L,typename R=L> struct Binary_##function : Binary_operator_helper_base<L,R> {\
     using Base = Binary_operator_helper_base<L,R>; \
-    static constexpr typename Base::Return_type evaluate(L const l,R const r) {return std:: function (l,r);} \
+    static inline constexpr typename Base::Return_type evaluate(L const l,R const r) {return std:: function (l,r);} \
 }; \
 template<typename L_expr,typename R_expr> using Binary_operator_##function##_expr_expr = \
     Binary_operator<\

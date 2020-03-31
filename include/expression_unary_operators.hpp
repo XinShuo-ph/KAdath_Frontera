@@ -64,7 +64,7 @@ namespace Kadath {
          * @tparam A argument type
          */
         template<typename T> struct Unary_add : Unary_operator_helper_base<T> {
-            static constexpr T evaluate(T const x) {return + x;}
+            static inline constexpr T evaluate(T const x) {return + x;}
         };
 
         /**
@@ -72,7 +72,7 @@ namespace Kadath {
          * @tparam T argument type
          */
         template<typename T> struct Unary_sub : Unary_operator_helper_base<T> {
-            static constexpr T evaluate(T const x) {return - x;}
+            static inline constexpr T evaluate(T const x) {return - x;}
         };
 
         /**
@@ -93,41 +93,41 @@ namespace Kadath {
         template<typename T> struct Func_##function : Unary_operator_helper_base<T> { \
             static inline T evaluate(T const x) {return std:: function (x);} \
         }; \
-        template<typename T> Unary_operator<Func_##function <T>,Vector_expression<T>> function (Array<T> const & vector) { \
+        template<typename T> inline Unary_operator<Func_##function <T>,Vector_expression<T>> function (Array<T> const & vector) { \
             return Unary_operator<Func_##function <T>,Vector_expression<T>>{Vector_expression<T>{vector}}; \
         } \
-        template<typename Expr> Unary_operator<Func_##function <typename Expr::Value_type>,Expression<Expr>> \
+        template<typename Expr> inline Unary_operator<Func_##function <typename Expr::Value_type>,Expression<Expr>> \
         function(Expression<Expr> const & argument) { \
             return Unary_operator<Func_##function <typename Expr::Value_type>,Expression<Expr>>{argument}; \
         }
 
         namespace operators{
             //! Unary operator + overload for the \c Array class.
-            template<typename T> Unary_operator<Unary_add<T>,Vector_expression<T>> operator+(Array<T> const & vector) {
+            template<typename T> inline Unary_operator<Unary_add<T>,Vector_expression<T>> operator+(Array<T> const & vector) {
                 return Unary_operator<Unary_add<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
             }
             //! Unary operator + overload for all possible expression types.
-            template<typename Expr> Unary_operator<Unary_add<typename Expr::Value_type>,Expression<Expr>>
+            template<typename Expr> inline  Unary_operator<Unary_add<typename Expr::Value_type>,Expression<Expr>>
             operator+(Expression<Expr> const & argument) {
                 return Unary_operator<Unary_add<typename Expr::Value_type>,Expression<Expr>>{argument};
             }
 
             //! Unary operator - overload for the \c Array class.
-            template<typename T> Unary_operator<Unary_sub<T>,Vector_expression<T>> operator-(Array<T> const & vector) {
+            template<typename T> inline Unary_operator<Unary_sub<T>,Vector_expression<T>> operator-(Array<T> const & vector) {
                 return Unary_operator<Unary_sub<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
             }
             //! Unary operator - overload for all possible expression types.
-            template<typename Expr> Unary_operator<Unary_sub<typename Expr::Value_type>,Expression<Expr>>
+            template<typename Expr> inline Unary_operator<Unary_sub<typename Expr::Value_type>,Expression<Expr>>
             operator-(Expression<Expr> const & argument) {
                 return Unary_operator<Unary_sub<typename Expr::Value_type>,Expression<Expr>>{argument};
             }
 
             //! exp function overload for the \c Array class.
-            template<typename T> Unary_operator<Func_exp<T>,Vector_expression<T>> exp(Array<T> const & vector) {
+            template<typename T> inline Unary_operator<Func_exp<T>,Vector_expression<T>> exp(Array<T> const & vector) {
                 return Unary_operator<Func_exp<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
             }
             //! exp function overload for all possible expression types.
-            template<typename Expr> Unary_operator<Func_exp<typename Expr::Value_type>,Expression<Expr>>
+            template<typename Expr> inline Unary_operator<Func_exp<typename Expr::Value_type>,Expression<Expr>>
             exp(Expression<Expr> const & argument) {
                 return Unary_operator<Func_exp<typename Expr::Value_type>,Expression<Expr>>{argument};
             }
