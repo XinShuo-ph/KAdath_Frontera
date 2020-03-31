@@ -78,6 +78,10 @@ void Space_bispheric::add_matching (System_of_eqs& sys, const char* name, int nu
 	sys.add_eq_matching (ndom_minus+ndom_plus+3, CHI_ONE_BC, name, nused, pused) ;
 }
 
+void Space_bispheric::add_matching (System_of_eqs& sys, const char* name, const List_comp& list)  {
+	add_matching (sys, name, list.get_ncomp(), list.get_pcomp()) ;
+}
+
 void Space_bispheric::add_matching_one_side (System_of_eqs& sys, const char* name, int nused, Array<int>** pused)  {
 	sys.add_eq_matching_one_side (ndom_minus+ndom_plus, CHI_ONE_BC, name, nused, pused) ;
 	sys.add_eq_matching_one_side (ndom_minus+ndom_plus+1, ETA_PLUS_BC, name, nused, pused) ;
