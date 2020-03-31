@@ -36,7 +36,7 @@ namespace Kadath {
             using Value_type = T;
 
             //! Casts the expression to its true type.
-            Expression_type const & cast() const {return static_cast<Expression_type const &>(*this);}
+            Expression_type const & cast() const {return static_cast<Expression const &>(*this);}
             /**
              * Evaluate the expression for the \c i-th component.
              * @param i index of the component to evaluate.
@@ -65,7 +65,7 @@ namespace Kadath {
             Value_type const value;
 
             //! Constructor.
-            explicit Scalar_expression(Value_type const _value) : value{_value} {}
+            Scalar_expression(Value_type const _value) : value{_value} {}
 
             //! Implementation of the \c evaluate method. Returns the constant's value whatever the index value is.
             Value_type evaluate_(int) const {return value;}
@@ -109,6 +109,22 @@ namespace Kadath {
 
     }
 
+    template<typename T> template<typename E> Array<T>::Array(internal::Expression<E> const & expression) :
+        dimensions{expression.get_dimensions()}, nbr{expression.get_size()}, data{new T[nbr]}
+    {
+        static_assert(std::is_convertible<typename E::Value_type,T>::value,"Expression value type must be convertible"
+                                                                           " to the target underlying type.");
+        assert(expression.check_dimensions() && dimensions == expression.get_dimensions());
+        for(int i{0};i<nbr;i++) data[i] = expression.evaluate(i);
+    }
+
+    template<typename T> template<typename E> Array<T>& Array<T>::operator=(internal::Expression<E> const & expression)
+    {
+        static_assert(std::is_convertible<typename E::Value_type,T>::value,"Expression value type must be convertible"
+                                                                           " to the target underlying type.");
+        assert(expression.check_dimensions() && dimensions == expression.get_dimensions());
+        for(int i{0};i<nbr;i++) data[i] = expression.evaluate(i);
+    }
 }
 
 #endif //__EXPRESSION_HPP_

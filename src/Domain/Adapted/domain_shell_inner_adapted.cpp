@@ -576,7 +576,7 @@ const Point Domain_shell_inner_adapted::absol_to_num(const Point& abs) const {
  	else {
 	    num.set(2) = atan(rho/z_loc) ;
 	    num.set(3) = atan2 (y_loc, x_loc) ;
-    }
+        }	
 	
 	if (num(2) <0)
 	    num.set(2) = M_PI + num(2) ;

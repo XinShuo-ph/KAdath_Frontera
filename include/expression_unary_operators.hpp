@@ -32,7 +32,7 @@ namespace Kadath {
             //! Constructor.
             explicit Unary_operator(Argument_expression const & _argument) : argument{_argument.cast()} {}
             //! Evaluation of the \c i-th component.
-            Value_type evaluate_(int i) const {return Operator::evaluate(argument.evaluate(i));}
+            Value_type evaluate_(int i) const {return Operator::evaluate(argument(i));}
 
             //! Implementation of the \c check_dimensions method, checks the dimensions in the argument.
             bool check_dimensions_() const {return argument.check_dimensions();}
@@ -84,6 +84,35 @@ namespace Kadath {
             static inline T evaluate(T const x) {return std::exp(x);}
         };
 
+        //! Unary operator + overload for the \c Array class.
+        template<typename T> Unary_operator<Unary_add<T>,Vector_expression<T>> operator+(Array<T> const & vector) {
+            return Unary_operator<Unary_add<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
+        }
+        //! Unary operator + overload for all possible expression types.
+        template<typename Expr> Unary_operator<Unary_add<typename Expr::Value_type>,Expression<Expr>>
+        operator+(Expression<Expr> const & argument) {
+            return Unary_operator<Unary_add<typename Expr::Value_type>,Expression<Expr>>{argument};
+        }
+
+        //! Unary operator - overload for the \c Array class.
+        template<typename T> Unary_operator<Unary_sub<T>,Vector_expression<T>> operator-(Array<T> const & vector) {
+            return Unary_operator<Unary_sub<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
+        }
+        //! Unary operator - overload for all possible expression types.
+        template<typename Expr> Unary_operator<Unary_sub<typename Expr::Value_type>,Expression<Expr>>
+        operator-(Expression<Expr> const & argument) {
+            return Unary_operator<Unary_sub<typename Expr::Value_type>,Expression<Expr>>{argument};
+        }
+
+        //! exp function overload for the \c Array class.
+        template<typename T> Unary_operator<Func_exp<T>,Vector_expression<T>> exp(Array<T> const & vector) {
+            return Unary_operator<Func_exp<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
+        }
+        //! exp function overload for all possible expression types.
+        template<typename Expr> Unary_operator<Func_exp<typename Expr::Value_type>,Expression<Expr>>
+        exp(Expression<Expr> const & argument) {
+            return Unary_operator<Func_exp<typename Expr::Value_type>,Expression<Expr>>{argument};
+        }
 
 /**
  * This macro declares and defines, for a given function, the overloads necessary for its use within
@@ -102,35 +131,6 @@ namespace Kadath {
         }
 
         namespace operators{
-            //! Unary operator + overload for the \c Array class.
-            template<typename T> Unary_operator<Unary_add<T>,Vector_expression<T>> operator+(Array<T> const & vector) {
-                return Unary_operator<Unary_add<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
-            }
-            //! Unary operator + overload for all possible expression types.
-            template<typename Expr> Unary_operator<Unary_add<typename Expr::Value_type>,Expression<Expr>>
-            operator+(Expression<Expr> const & argument) {
-                return Unary_operator<Unary_add<typename Expr::Value_type>,Expression<Expr>>{argument};
-            }
-
-            //! Unary operator - overload for the \c Array class.
-            template<typename T> Unary_operator<Unary_sub<T>,Vector_expression<T>> operator-(Array<T> const & vector) {
-                return Unary_operator<Unary_sub<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
-            }
-            //! Unary operator - overload for all possible expression types.
-            template<typename Expr> Unary_operator<Unary_sub<typename Expr::Value_type>,Expression<Expr>>
-            operator-(Expression<Expr> const & argument) {
-                return Unary_operator<Unary_sub<typename Expr::Value_type>,Expression<Expr>>{argument};
-            }
-
-            //! exp function overload for the \c Array class.
-            template<typename T> Unary_operator<Func_exp<T>,Vector_expression<T>> exp(Array<T> const & vector) {
-                return Unary_operator<Func_exp<T>,Vector_expression<T>>{Vector_expression<T>{vector}};
-            }
-            //! exp function overload for all possible expression types.
-            template<typename Expr> Unary_operator<Func_exp<typename Expr::Value_type>,Expression<Expr>>
-            exp(Expression<Expr> const & argument) {
-                return Unary_operator<Func_exp<typename Expr::Value_type>,Expression<Expr>>{argument};
-            }
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(sqrt);
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(cbrt);
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(cos);
@@ -151,7 +151,6 @@ namespace Kadath {
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(asinh);
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(atanh);
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(abs);
-            EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(fabs);
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(erf);
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(erfc);
             EXPRESSION_TEMPLATE_FUNCTION_OVERLOADS(tgamma);
