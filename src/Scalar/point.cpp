@@ -25,7 +25,7 @@ namespace Kadath {
 
 Point::Point (FILE* fd) {
 	fread_be (&ndim, sizeof(int), 1, fd) ;
-//	coord = new double[ndim] ;
+	coord = new double[ndim] ;
 	fread_be (coord, sizeof(double), ndim, fd) ;
 }
 

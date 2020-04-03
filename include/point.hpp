@@ -30,24 +30,24 @@ namespace Kadath {
 class Point {
     protected:
         int ndim ; ///< Number of dimensions.
-	double coord[3] ; ///< Array on the coordinates (mainly designed for absolute Cartesian coordinates).
+	double *coord ; ///< Array on the coordinates (mainly designed for absolute Cartesian coordinates).
 
     public:
 	/**
 	* Standard constructor (the coordinates are not affected).
 	* @param n [input] : number of dimensions.
 	*/
-    explicit Point (int n) : ndim{n}, coord{/*new double[ndim]*/} {
+    explicit Point (int n) : ndim{n}, coord{new double[ndim]} {
         for (int i=0 ; i<ndim ; i++) coord[i] = 0 ;
     }
     Point (FILE*) ; ///< Constructor from a file
-//	Point (const Point & so) : ndim{so.ndim}, coord{/*new double[ndim]*/} {
-//        for (int i=0 ; i<ndim ; i++) coord[i] = so.coord[i] ;
-//    }
+	Point (const Point & so) : ndim{so.ndim}, coord{new double[ndim]} {
+        for (int i=0 ; i<ndim ; i++) coord[i] = so.coord[i] ;
+    }
     //! Destructor.
-//	~Point() {if(coord) delete [] coord ;}
+	~Point() {if(coord) delete [] coord ;}
 
-/*#ifdef ENABLE_MOVE_SEMANTIC
+#ifdef ENABLE_MOVE_SEMANTIC
     //! Move constructor.
     Point(Point && so) : ndim{so.ndim}, coord{nullptr} {
         std::swap(coord,so.coord);
@@ -58,7 +58,7 @@ class Point {
         std::swap(coord,so.coord);
         return *this;
     }
-#endif*/
+#endif
 	
 	void save (FILE*) const ; ///< Saving function
     //! Assignment operator.
