@@ -22,63 +22,17 @@
 #include "point.hpp"
 #include "utilities.hpp"
 namespace Kadath {
-Point::Point(int dim) : ndim(dim) {
-	coord = new double[ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		coord[i] = 0 ;
-} 
-
-Point::Point(const Point& so) : ndim(so.ndim) {
-
-	coord = new double[ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-	   coord[i] = so.coord[i] ;
-} 
 
 Point::Point (FILE* fd) {
 	fread_be (&ndim, sizeof(int), 1, fd) ;
-	coord = new double[ndim] ;
+//	coord = new double[ndim] ;
 	fread_be (coord, sizeof(double), ndim, fd) ;
 }
 
-Point::~Point() {
-	if(coord) delete [] coord ;
-}
-
-#ifdef ENABLE_MOVE_SEMANTIC
-Point::Point(Point && so) : ndim{so.ndim}, coord{nullptr}
-{
-    std::swap(coord,so.coord);
-}
-Point & Point::operator=(Point && so)
-{
-    ndim = so.ndim;
-    std::swap(coord,so.coord);
-    return *this;
-}
-#endif
 
 void Point::save (FILE* fd) const {
 	fwrite_be (&ndim, sizeof(int), 1, fd) ;
 	fwrite_be (coord, sizeof(double), ndim, fd) ;
-}
-
-void Point::operator= (const Point& so) {
-	assert (ndim==so.ndim) ;
-	for (int i=0 ; i<ndim ; i++)
-	    coord[i] = so.coord[i] ;
-}
-
-double& Point::set(int i) {
-	assert(i>0) ;
-	assert(i<=ndim) ;
-	return coord[i-1] ;
-}
-
-double Point::operator() (int i) const {
-	assert(i>0) ;
-	assert(i<=ndim) ;
-	return coord[i-1] ;
 }
 
 ostream& operator<< (ostream& o, const Point& so) {

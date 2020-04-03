@@ -30,27 +30,46 @@ namespace Kadath {
 class Point {
     protected:
         int ndim ; ///< Number of dimensions.
-	double* coord ; ///< Array on the coordinates (mainly designed for absolute Cartesian coordinates).
+	double coord[3] ; ///< Array on the coordinates (mainly designed for absolute Cartesian coordinates).
 
     public:
 	/**
 	* Standard constructor (the coordinates are not affected).
 	* @param n [input] : number of dimensions.
 	*/
-        explicit Point (int n) ;
-        Point (FILE*) ; ///< Constructor from a file
-	Point (const Point&) ; ///< Constructor by copy.
-	~Point() ; ///< Destuctor
+    explicit Point (int n) : ndim{n}, coord{/*new double[ndim]*/} {
+        for (int i=0 ; i<ndim ; i++) coord[i] = 0 ;
+    }
+    Point (FILE*) ; ///< Constructor from a file
+//	Point (const Point & so) : ndim{so.ndim}, coord{/*new double[ndim]*/} {
+//        for (int i=0 ; i<ndim ; i++) coord[i] = so.coord[i] ;
+//    }
+    //! Destructor.
+//	~Point() {if(coord) delete [] coord ;}
 
-#ifdef ENABLE_MOVE_SEMANTIC
-    Point(Point &&);///< Move constructor.
-    Point & operator=(Point &&);///<Move assignment.
-#endif
+/*#ifdef ENABLE_MOVE_SEMANTIC
+    //! Move constructor.
+    Point(Point && so) : ndim{so.ndim}, coord{nullptr} {
+        std::swap(coord,so.coord);
+    }
+    //! Move assignment operator.
+    Point & operator=(Point && so) {
+        ndim = so.ndim;
+        std::swap(coord,so.coord);
+        return *this;
+    }
+#endif*/
 	
 	void save (FILE*) const ; ///< Saving function
-	void operator= (const Point&) ; ///< Assignement to another \c Point
-	double& set(int) ; ///< Read/write of a coordinate
-	double operator() (int) const ; ///< Read only of a coordinate.
+    //! Assignment operator.
+	void operator= (const Point& so) {
+        assert (ndim==so.ndim) ;
+        for (int i=0 ; i<ndim ; i++) coord[i] = so.coord[i] ;
+    }
+	//! Read/write of a coordinate
+    double& set(int i) {assert(i>0); assert(i<=ndim); return coord[i-1] ;}
+    //! Read only of a coordinate.
+	double operator() (int i) const {assert(i>0); assert(i<=ndim); return coord[i-1] ;}
 	/**
 	* @returns the number of dimensions.
 	*/
