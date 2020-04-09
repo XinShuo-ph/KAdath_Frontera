@@ -465,7 +465,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, double rhor1, doub
     Point center(3) ;
     for (int i=0 ; i<nn ; i++)
 	domains[7+i] = new Domain_shell (7+i, ttype, rr(i), rr(i+1), center, res) ;
-    domains[7+nn] = new Domain_compact (7+nn, ttype, rext, center, res) ;
+    domains[7+nn] = new Domain_compact (7+nn, ttype, rr(nn), center, res) ;
 }
 
 Space_bispheric::Space_bispheric (FILE*fd, int type_shells, bool old) {
