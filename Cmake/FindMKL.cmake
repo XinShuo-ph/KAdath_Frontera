@@ -55,7 +55,7 @@ endif()
 
 
 # MKL is composed by four layers: Interface, Threading, Computational and RTL
-if(LINUX)
+if(HAVE_LINUX)
     set(MKL_SEARCH_PATH ${MKL_ROOT}/lib/intel64_lin)
 else()
     set(MKL_SEARCH_PATH ${MKL_ROOT}/lib/intel64)
@@ -105,7 +105,7 @@ else()
     else()
         set(MKL_RTL_LIBNAME iomp5)
     endif()
-    if(LINUX)
+    if(HAVE_LINUX)
         set(INTEL_RTL_SEARCH_PATH ${INTEL_ROOT}/lib/intel64_lin)
     else()
         set(INTEL_RTL_SEARCH_PATH ${INTEL_ROOT}/lib/intel64)

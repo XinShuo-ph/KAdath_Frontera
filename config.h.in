@@ -1,9 +1,93 @@
+/*
+ *  Copyright 2017 Sylvain AULIAC
+ *
+ *  This file is an automaticaly generated configuration header build by
+ *  for Kadath.
+ *
+ *  Kadath is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Kadath is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+// Kadath library major version number
+
+#define KADATH_VERSION_MAJOR @Kadath_VERSION_MAJOR@
+
+
+// Kadath library minor version number
+
+#define KADATH_VERSION_MINOR @Kadath_VERSION_MINOR@
+
+
+// Kadath library patch version number
+
+#define KADATH_VERSION_PATCH @Kadath_VERSION_PATCH@
+
+
+// Kadath library tweak version number
+
+#define KADATH_VERSION_TWEAK @Kadath_VERSION_TWEAK@
+
+
+// Enables the MPI version of Kadath
+
 #cmakedefine PAR_VERSION
+
+
+// Code defining which container is used to manage array data
+// 0 : STL vector   1 : STL valarray    2 : raw pointer
+
+#define ARRAY_CONTAINER_TYPE @ARRAY_CONTAINER_INDEX@
+
+
+// Enables the build and compilation of unit and functional tests using google-tests
+// Warning : google test as to be included manually within the tests directory.
+
 #cmakedefine ENABLE_GTEST
+
+
+// Declares that the cmake build is for the use of the MKL versions of the scalapack library.
+
 #cmakedefine MKL_VERSION
-#cmakedefine LINUX
+
+
+// To handle some linux specific code.
+
+#cmakedefine HAVE_LINUX
+
+
+// Enables the call to the MKL functions for FFT instead of those of the FFTW3 library (DOES NOT WORK)
+
 #cmakedefine USE_MKL_FFTW3_INTERFACE
+
+
+// Enables the use of move constructors and assignment operators for the class that can't use the compiler
+// default generated versions of these methods.
+
 #cmakedefine ENABLE_MOVE_SEMANTIC
+
+
+// Enables the move constructors and assignment operators for tensorial objects (DOES NOT WORK at the moment, so this
+// has to be kept undefined)
+
 #cmakedefine TENSOR_MOVE_SEMANTIC
+
+
+// Enables the use of the cuda-based magma GPGPU library for the linear solvers.
+
 #cmakedefine ENABLE_GPU_USE
+
+
+// Enables some light-weigth in-code profiling capabilities (developper only).
+
 #cmakedefine01 ENABLE_PROFILING

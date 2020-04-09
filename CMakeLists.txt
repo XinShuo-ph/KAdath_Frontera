@@ -1,19 +1,30 @@
 cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0048 NEW)
-project(Kadath)
+project(Kadath VERSION 2.3.0.0)
 
 message("Root directory : ${PROJECT_SOURCE_DIR}")
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
-#Parallel or sequential
+#User options :
 option(PAR_VERSION "Parallel version" ON)
 option(ENABLE_GTEST "Enable unit/functional tests using google-test." OFF)
-option(LINUX "Build for linux" ON)
+option(HAVE_LINUX "Build for linux" ON)
 option(ENABLE_PROFILING "Enable auto-profiling functions." OFF)
 option(ENABLE_GPU_USE "Enables the use of GPU(s) if available." OFF)
 option(ENABLE_MOVE_SEMANTIC "Enable move semantic for the Array class" ON)
 option(TENSOR_MOVE_SEMANTIC "Enables/disables move ctor and operators fot the Tensor class hierarchy." ON)
+set(POSSIBLE_ARRAY_CONTAINERS vector valarray raw_pointer)
+set(ARRAY_CONTAINER raw_pointer CACHE STRING "Container type to use to store arrays (possible values are ${POSSIBLE_ARRAY_CONTAINERS})")
+set_property(CACHE ARRAY_CONTAINER PROPERTY STRINGS ${POSSIBLE_ARRAY_CONTAINERS})
+list(FIND POSSIBLE_ARRAY_CONTAINERS ${ARRAY_CONTAINER} ARRAY_CONTAINER_INDEX)
+if(ARRAY_CONTAINER_INDEX EQUAL -1)
+    message(FATAL_ERROR "ARRAY_CONTAINER option must be one of ${POSSIBLE_ARRAY_CONTAINERS}")
+#else()
+#    set(ARRAY_CONTAINER_CODE ARRAY_CONTAINER_INDEX)
+endif()
+message("Array container type : ${ARRAY_CONTAINER} (code ${ARRAY_CONTAINER_INDEX})")
+
 
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )
 
