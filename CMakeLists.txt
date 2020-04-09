@@ -1,5 +1,6 @@
-project(Kadath)
 cmake_minimum_required(VERSION 2.8)
+cmake_policy(SET CMP0048 NEW)
+project(Kadath)
 
 message("Root directory : ${PROJECT_SOURCE_DIR}")
 
