@@ -7,6 +7,7 @@ message("Root directory : ${PROJECT_SOURCE_DIR}")
 
 #Parallel or sequential
 option(PAR_VERSION "Parallel version" ON)
+option(ENABLE_GTEST "Enable unit/functional tests using google-test." OFF)
 option(LINUX "Build for linux" ON)
 option(ENABLE_PROFILING "Enable auto-profiling functions." OFF)
 option(ENABLE_GPU_USE "Enables the use of GPU(s) if available." OFF)
@@ -109,7 +110,7 @@ else()
 endif()
 
 #add the tests directory
-if(NOT(PAR_VERSION))
+if(NOT(PAR_VERSION) AND ENABLE_GTEST)
     enable_testing()
-endif(NOT(PAR_VERSION))
+endif(NOT(PAR_VERSION) AND ENABLE_GTEST)
 add_subdirectory(tests)

@@ -1,4 +1,5 @@
 #cmakedefine PAR_VERSION
+#cmakedefine ENABLE_GTEST
 #cmakedefine MKL_VERSION
 #cmakedefine LINUX
 #cmakedefine USE_MKL_FFTW3_INTERFACE
