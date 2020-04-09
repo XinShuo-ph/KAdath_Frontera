@@ -1,0 +1,9 @@
+*.o
+*.a
+*.so
+*.dylib
+cmake-build*
+build*
+.idea/workspace.xml
+tests/googletest
+Cmake/CMakeLocal.cmake
