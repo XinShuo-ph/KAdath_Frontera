@@ -69,7 +69,7 @@ namespace Kadath {
         * @return \c false if the result is outside the \c Array and \c true otherwise.
         */
         bool inc (int increm, int var=0) { position += increm * steps[var]; return check_value();}
-        bool inc1(int var)  { position += steps[var]; check_value();}
+        bool inc1(int var)  { position += steps[var]; return check_value();}
         bool inc() {position++; return check_value(); }
         template <class> friend class Array ;
     };

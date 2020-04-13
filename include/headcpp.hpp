@@ -30,6 +30,21 @@
 #include "config.h"
 #define PRECISION 1e-14
 
+#if ARRAY_CONTAINER_TYPE == 0
+#define CONTAINER_USES_ALLOCATOR 1
+#define NO_EXPLICIT_ARRAY_DEALLOCATION 1
+template<typename T,typename A = std::allocator<T>> using Container = std::vector<T,A>;
+#elif ARRAY_CONTAINER_TYPE == 1
+#define CONTAINER_DOES_NOT_USE_ALLOCATOR 1
+#define NO_EXPLICIT_ARRAY_DEALLOCATION 1
+template<typename T> using Container = std::valarray<T>;
+#elif ARRAY_CONTAINER_TYPE == 2
+#define CONTAINER_DOES_NOT_USE_ALLOCATOR 1
+#define EXPLICIT_ARRAY_DEALLOCATION 1
+template<typename T> using Container = T*;
+#endif
+
+
 using namespace std ;
 
 namespace Kadath {
@@ -79,6 +94,8 @@ namespace Kadath {
       return c == Computational_model::sequential ? "sequential" :
                 (c == Computational_model::mpi_parallel ? "mpi_parallel" : "gpu_mpi_parallel");
   }
+
+
 
 #ifdef PAR_VERSION
 #ifdef ENABLE_GPU_USE
