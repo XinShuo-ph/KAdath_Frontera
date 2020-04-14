@@ -43,6 +43,9 @@
 
 #cmakedefine PAR_VERSION
 
+//Enables a custom memory mapper to lighten the cost of the delete operator.
+
+#cmakedefine ENABLE_CUSTOM_MEMORY_MAPPING
 
 // Code defining which container is used to handle the memory map
 // 0 : STL vector   1 : STL unordered map   2 : STL map     3 : flat map

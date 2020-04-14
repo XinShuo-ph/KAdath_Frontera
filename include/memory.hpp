@@ -2,12 +2,15 @@
 // Created by sauliac on 14/04/2020.
 //
 
+#include "config.h"
+
+#ifdef ENABLE_CUSTOM_MEMORY_MAPPING
+
 #include <array>
 #include <memory>
 #include <vector>
-#include <algorithm>
 
-#include "config.h"
+#include <algorithm>
 
 #if MEMORY_MAP_TYPE == 1
 #include <unordered_map>
@@ -154,3 +157,5 @@ void* operator new[](std::size_t sz) {return Kadath::Memory_mapper::get_memory(s
 void operator delete[](void* mem_ptr, std::size_t const sz) {Kadath::Memory_mapper::release_memory(mem_ptr, sz);}
 
 #endif //__MEMORY_HPP_
+
+#endif // ifdef ENABLE_CUSTOM_MEMORY_MAPPING
