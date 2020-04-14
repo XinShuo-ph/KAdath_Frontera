@@ -47,7 +47,7 @@
 // Code defining which container is used to manage array data
 // 0 : STL vector   1 : STL valarray    2 : raw pointer
 
-#define ARRAY_CONTAINER_TYPE @ARRAY_CONTAINER_INDEX@
+#define MEMORY_MAP_TYPE @MEMORY_MAP_TYPE_INDEX@
 
 
 // Enables the build and compilation of unit and functional tests using google-tests
