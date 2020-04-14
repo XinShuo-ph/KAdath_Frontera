@@ -14,7 +14,7 @@
 #elif MEMORY_MAP_TYPE == 2
 #include <map>
 #elif MEMORY_MAP_TYPE == 3
-#include "implementation/flat_hash_map.hpp"
+#include "flat_hash_map.hpp"
 #endif
 
 #if MEMORY_MAP_TYPE == 0
@@ -125,7 +125,7 @@ namespace Kadath {
         }
     };
 
-    struct MemoryMappable {
+    struct Memory_mapped {
         void* operator new(std::size_t sz) {
             return Memory_mapper::get_memory(sz);
         }
@@ -144,5 +144,13 @@ namespace Kadath {
     };
 
 }
+
+void* operator new(std::size_t sz) {return Kadath::Memory_mapper::get_memory(sz);}
+
+void operator delete(void* mem_ptr, std::size_t const sz) {Kadath::Memory_mapper::release_memory(mem_ptr, sz);}
+
+void* operator new[](std::size_t sz) {return Kadath::Memory_mapper::get_memory(sz);}
+
+void operator delete[](void* mem_ptr, std::size_t const sz) {Kadath::Memory_mapper::release_memory(mem_ptr, sz);}
 
 #endif //__MEMORY_HPP_

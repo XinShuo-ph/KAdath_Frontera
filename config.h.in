@@ -44,8 +44,8 @@
 #cmakedefine PAR_VERSION
 
 
-// Code defining which container is used to manage array data
-// 0 : STL vector   1 : STL valarray    2 : raw pointer
+// Code defining which container is used to handle the memory map
+// 0 : STL vector   1 : STL unordered map   2 : STL map     3 : flat map
 
 #define MEMORY_MAP_TYPE @MEMORY_MAP_TYPE_INDEX@
 

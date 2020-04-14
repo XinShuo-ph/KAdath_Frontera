@@ -21,6 +21,7 @@
 #define __DIM_ARRAY_HPP_
 
 #include "headcpp.hpp"
+#include "memory.hpp"
 
 namespace Kadath {
 /**
@@ -31,7 +32,7 @@ namespace Kadath {
 * \ingroup util
 **/
 
-class Dim_array {
+class Dim_array  {
     protected:
         int ndim ; ///< Number of dimensions.
 	    int* nbr ; ///< Size of the \c Array in each dimension.
