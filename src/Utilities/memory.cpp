@@ -1,9 +1,11 @@
 //
 // Created by sauliac on 14/04/2020.
 //
-#include "memory.hpp"
+#include "config.h"
 
 #ifdef ENABLE_CUSTOM_MEMORY_MAPPING
+
+#include "memory.hpp"
 
 
 namespace Kadath {

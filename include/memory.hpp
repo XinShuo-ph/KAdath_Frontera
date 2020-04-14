@@ -148,13 +148,13 @@ namespace Kadath {
 
 }
 
-void* operator new(std::size_t sz) {return Kadath::Memory_mapper::get_memory(sz);}
+inline void* operator new(std::size_t sz) {return Kadath::Memory_mapper::get_memory(sz);}
 
-void operator delete(void* mem_ptr, std::size_t const sz) {Kadath::Memory_mapper::release_memory(mem_ptr, sz);}
+inline void operator delete(void* mem_ptr, std::size_t const sz) {Kadath::Memory_mapper::release_memory(mem_ptr, sz);}
 
-void* operator new[](std::size_t sz) {return Kadath::Memory_mapper::get_memory(sz);}
+inline void* operator new[](std::size_t sz) {return Kadath::Memory_mapper::get_memory(sz);}
 
-void operator delete[](void* mem_ptr, std::size_t const sz) {Kadath::Memory_mapper::release_memory(mem_ptr, sz);}
+inline void operator delete[](void* mem_ptr, std::size_t const sz) {Kadath::Memory_mapper::release_memory(mem_ptr, sz);}
 
 #endif //__MEMORY_HPP_
 
