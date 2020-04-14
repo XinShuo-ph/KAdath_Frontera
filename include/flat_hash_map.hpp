@@ -786,41 +786,8 @@ namespace ska {
             }
 
             template<typename Key, typename... Args>
-            SKA_NOINLINE(std::pair<iterator, bool>)
-            emplace_new_key(int8_t distance_from_desired, EntryPointer current_entry, Key &&key, Args &&... args) {
-                using std::swap;
-                if (num_slots_minus_one == 0 || distance_from_desired == max_lookups ||
-                    num_elements + 1 > (num_slots_minus_one + 1) * static_cast<double>(_max_load_factor)) {
-                    grow();
-                    return emplace(std::forward<Key>(key), std::forward<Args>(args)...);
-                } else if (current_entry->is_empty()) {
-                    current_entry->emplace(distance_from_desired, std::forward<Key>(key), std::forward<Args>(args)...);
-                    ++num_elements;
-                    return {{current_entry}, true};
-                }
-                value_type to_insert(std::forward<Key>(key), std::forward<Args>(args)...);
-                swap(distance_from_desired, current_entry->distance_from_desired);
-                swap(to_insert, current_entry->value);
-                iterator result = {current_entry};
-                for (++distance_from_desired, ++current_entry;; ++current_entry) {
-                    if (current_entry->is_empty()) {
-                        current_entry->emplace(distance_from_desired, std::move(to_insert));
-                        ++num_elements;
-                        return {result, true};
-                    } else if (current_entry->distance_from_desired < distance_from_desired) {
-                        swap(distance_from_desired, current_entry->distance_from_desired);
-                        swap(to_insert, current_entry->value);
-                        ++distance_from_desired;
-                    } else {
-                        ++distance_from_desired;
-                        if (distance_from_desired == max_lookups) {
-                            swap(to_insert, result.current->value);
-                            grow();
-                            return emplace(std::move(to_insert));
-                        }
-                    }
-                }
-            }
+            std::pair<iterator, bool>
+            emplace_new_key(int8_t distance_from_desired, EntryPointer current_entry, Key &&key, Args &&... args);
 
             void grow() {
                 rehash(std::max(size_t(4), 2 * bucket_count()));
@@ -874,6 +841,47 @@ namespace ska {
             };
 
         };
+
+        template<typename T, typename FindKey, typename ArgumentHash, typename Hasher, typename ArgumentEqual,
+                 typename Equal, typename ArgumentAlloc, typename EntryAlloc>
+        template<typename Key, typename... Args>
+        std::pair<typename sherwood_v3_table<T, FindKey, ArgumentHash, Hasher, ArgumentEqual, Equal, ArgumentAlloc,
+                                             EntryAlloc>::iterator, bool>
+        sherwood_v3_table<T, FindKey, ArgumentHash, Hasher, ArgumentEqual, Equal, ArgumentAlloc, EntryAlloc>::
+        emplace_new_key(int8_t distance_from_desired, EntryPointer current_entry, Key &&key, Args &&... args) {
+            using std::swap;
+            if (num_slots_minus_one == 0 || distance_from_desired == max_lookups ||
+                num_elements + 1 > (num_slots_minus_one + 1) * static_cast<double>(_max_load_factor)) {
+                grow();
+                return emplace(std::forward<Key>(key), std::forward<Args>(args)...);
+            } else if (current_entry->is_empty()) {
+                current_entry->emplace(distance_from_desired, std::forward<Key>(key), std::forward<Args>(args)...);
+                ++num_elements;
+                return {{current_entry}, true};
+            }
+            value_type to_insert(std::forward<Key>(key), std::forward<Args>(args)...);
+            swap(distance_from_desired, current_entry->distance_from_desired);
+            swap(to_insert, current_entry->value);
+            iterator result = {current_entry};
+            for (++distance_from_desired, ++current_entry;; ++current_entry) {
+                if (current_entry->is_empty()) {
+                    current_entry->emplace(distance_from_desired, std::move(to_insert));
+                    ++num_elements;
+                    return {result, true};
+                } else if (current_entry->distance_from_desired < distance_from_desired) {
+                    swap(distance_from_desired, current_entry->distance_from_desired);
+                    swap(to_insert, current_entry->value);
+                    ++distance_from_desired;
+                } else {
+                    ++distance_from_desired;
+                    if (distance_from_desired == max_lookups) {
+                        swap(to_insert, result.current->value);
+                        grow();
+                        return emplace(std::move(to_insert));
+                    }
+                }
+            }
+        }
     }
 
     struct prime_number_hash_policy {
