@@ -35,14 +35,14 @@ class Tensor;
 * It simply consists of a list of integers.
 * \ingroup util
 **/
-class Index {
+class Index : public Memory_mapped {
 protected:
 	/**
 	* Sizes of the associated \c Array.
 	* When used with a \c Tensor, it is the dimension, for each tensorial index.
 	*/
 	Dim_array sizes ;
-	int * coord ; ///< Value of each index.
+	Memory_mapped_array<int> coord ; ///< Value of each index.
 
 
 public:
@@ -50,22 +50,15 @@ public:
 	* All the positions are set to zero.
 	* @param dim [input] Sizes in each dimensions.
 	**/
-    explicit Index (const Dim_array& dim) : sizes{dim},coord{new int[dim.get_ndim()]}
+    explicit Index (const Dim_array& dim) : sizes{dim}, coord{dim.get_ndim()}
     {for(unsigned i{0u};i<dim.get_ndim();i++) coord[i]=0;}
     /**
      * Copy constructor.
      * @param so source to be copied.
      */
-    Index(const Index& so) : sizes{so.sizes},coord{new int[get_ndim()]} {
-        for (int i=0; i<get_ndim(); i++) coord[i] = so.coord[i] ;
-    }
 	Index (const Tensor&) ; ///< Constructor for looping on components of a tensor
-	~Index() {if(coord) {delete [] coord; coord=nullptr;}} ///<Destructor.
 
-#ifdef ENABLE_MOVE_SEMANTIC
-    Index(Index && so) : sizes{std::move(so.sizes)}, coord{nullptr} {std::swap(coord,so.coord);}
-    Index& operator=(Index&&so) {sizes = std::move(so.sizes);std::swap(coord,so.coord);return *this;}
-#endif
+	void swap(Index & so) {sizes.swap(so.sizes); coord.swap(so.coord);}
 
 	/**
 	* Read/write of the position in a given dimension.

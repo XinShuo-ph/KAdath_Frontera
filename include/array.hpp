@@ -87,7 +87,7 @@ template <typename T> class Array {
 	    * The elements are not initialized.
 	    */
 	    explicit Array (const Dim_array& res) : dimensions{res}, nbr{1}, data{nullptr} {
-            for (int i=0 ; i<res.ndim ; i++) nbr *= res(i) ;
+            for (int i=0 ; i<res.get_ndim() ; i++) nbr *= res(i) ;
             data = new T[nbr] ;
         }
 	     /**
@@ -176,8 +176,8 @@ template <typename T> class Array {
 
         reference set(const Index& pos) {
 	        assert (pos.sizes == dimensions) ;
-            int index = pos(dimensions.ndim-1) ;
-            for (int i=dimensions.ndim-2 ; i>=0 ; i--) {
+            int index = pos(dimensions.get_ndim()-1) ;
+            for (int i=dimensions.get_ndim()-2 ; i>=0 ; i--) {
                 index *= dimensions(i) ;
 		        assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
                 index += pos(i) ;
@@ -187,7 +187,7 @@ template <typename T> class Array {
 //	    reference set(const Index& pos) {
 ////	assert (pos.sizes == dimensions) ;
 //            int index = pos(0) ;
-//            for (int i=1 ; i<dimensions.ndim ; i++) {
+//            for (int i=1 ; i<dimensions.get_ndim() ; i++) {
 //                index *= dimensions(i) ;
 ////		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
 //                index += pos(i) ;
@@ -200,7 +200,7 @@ template <typename T> class Array {
 	    * @param i [input] : position of the element.
 	    */
 	    reference set(int i) {
-            assert (dimensions.ndim == 1) ;
+            assert (dimensions.get_ndim() == 1) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             return data[i] ;
         }
@@ -210,7 +210,7 @@ template <typename T> class Array {
 	    * @param j [input] : second index of the element.
 	    */
 	    reference set(int i, int j)  {
-            assert (dimensions.ndim == 2) ;
+            assert (dimensions.get_ndim() == 2) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;
             return data[i+j*dimensions(0)] ;
@@ -223,7 +223,7 @@ template <typename T> class Array {
             * @param k [input] : third index of the element.
 	    */
 	    reference set(int i, int j, int k) {
-            assert (dimensions.ndim == 3) ;
+            assert (dimensions.get_ndim() == 3) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;
             assert ((k >=0) && (k<dimensions(2))) ;
@@ -236,8 +236,8 @@ template <typename T> class Array {
 	    */
         T operator() (const Index& pos) const {
             assert (pos.sizes == dimensions) ;
-            int index = pos(dimensions.ndim-1) ;
-            for (int i=dimensions.ndim-2 ; i>=0 ; i--) {
+            int index = pos(dimensions.get_ndim()-1) ;
+            for (int i=dimensions.get_ndim()-2 ; i>=0 ; i--) {
                 index *= dimensions(i) ;
 		        assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
                 index += pos(i) ;
@@ -247,7 +247,7 @@ template <typename T> class Array {
 //	    T operator() (const Index& pos) const {
 ////	assert (pos.sizes == dimensions) ;
 //            int index = pos(0) ;
-//            for (int i=1 ; i<dimensions.ndim ; i++) {
+//            for (int i=1 ; i<dimensions.get_ndim() ; i++) {
 //                index *= dimensions(i) ;
 ////		assert ((pos(i) >=0) && (pos(i)<dimensions(i))) ;
 //                index += pos(i) ;
@@ -260,7 +260,7 @@ template <typename T> class Array {
 	    * @param i [input] : position of the element.
 	    */
 	    T operator() (int i) const {
-            assert (dimensions.ndim ==1) ;
+            assert (dimensions.get_ndim() ==1) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             return data[i] ;
         }
@@ -270,7 +270,7 @@ template <typename T> class Array {
 	    * @param j [input] : second index of the element.
 	    */
 	    T operator() (int i,int j) const {
-            assert (dimensions.ndim ==2) ;
+            assert (dimensions.get_ndim() ==2) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;
              return data[i+j*dimensions(0)] ;
@@ -283,7 +283,7 @@ template <typename T> class Array {
             * @param k [input] : third index of the element.
 	    */
 	    T operator() (int i,int j, int k) const {
-            assert (dimensions.ndim ==3) ;
+            assert (dimensions.get_ndim() ==3) ;
             assert ((i >=0) && (i<dimensions(0))) ;
             assert ((j >=0) && (j<dimensions(1))) ;
             assert ((k >=0) && (k<dimensions(2))) ;

@@ -21,24 +21,24 @@
 #include "dim_array.hpp"
 namespace Kadath {
 
-Dim_array::Dim_array (FILE* fd) {
-	fread_be(&ndim, sizeof(int), 1, fd) ;
-	nbr = new int[ndim] ;
-	fread_be(nbr, sizeof(int), ndim, fd) ;
+Dim_array::Dim_array (FILE* fd) : Memory_mapped_array<int>{}{
+	fread_be(&size, sizeof(int), 1, fd) ;
+	this->resize(size) ;
+	fread_be(this->get_data(), sizeof(int), size, fd) ;
 }
 
 
 void Dim_array::save (FILE* fd) const  {
-	fwrite_be(&ndim, sizeof(int), 1, fd) ;
-	fwrite_be(nbr, sizeof(int), ndim, fd) ;
+	fwrite_be(&size, sizeof(int), 1, fd) ;
+	fwrite_be(data, sizeof(int), size, fd) ;
 }
 
 // Output
 ostream& operator<< (ostream& o, const Dim_array& so) {
 	o << "(" ;
-	for (int i=0 ; i<so.ndim-1 ; i++)
-	    o << so.nbr[i] << ", " ;
-	o << so.nbr[so.ndim-1] << ")" ;
+	for (int i=0 ; i<so.get_ndim()-1 ; i++)
+	    o << so(i) << ", " ;
+	o << so.back() << ")" ;
         return o ;
 }
 

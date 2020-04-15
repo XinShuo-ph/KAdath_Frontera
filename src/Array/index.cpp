@@ -23,7 +23,7 @@ namespace Kadath {
 
 
 // Constructor fro a tensor :
-Index::Index (const Tensor& t) : sizes{t.valence}, coord{new int[get_ndim()]} {
+Index::Index (const Tensor& t) : sizes{t.valence}, coord{sizes.get_ndim()} {
 	for (int i=0 ; i<get_ndim() ; i++) {
 	    coord[i] = 0;
         sizes.set(i) = t.get_ndim();
