@@ -68,7 +68,9 @@ namespace Kadath {
     **/
     class Base_spectral : public Memory_mapped {
     public:
-        using Bases_container = Memory_mapped_vector<Array<int>*,int>;
+//        using Bases_container = Memory_mapped_vector<Array<int>*,int>;
+        using Bases_container = Memory_mapped_array<Array<int>*,int>;
+
     protected:
         bool def; ///< \c true if the \c Base_spectral is defined and \c false otherwise.
         int ndim; ///< Number of dimensions.
@@ -84,7 +86,7 @@ namespace Kadath {
         * Standard constructor, the \c Base_spectral is not defined.
         * @param i [input] : number of dimensions.
         */
-        explicit Base_spectral(int dimensions) : def{false}, ndim{dimensions}, bases_1d(ndim) {
+        explicit Base_spectral(int dimensions) : def{false}, ndim{dimensions}, bases_1d{ndim} {
             for (int i = 0; i < ndim; i++) bases_1d[i] = nullptr;
         }
 
@@ -215,7 +217,7 @@ namespace Kadath {
          friend class Domain_fourD_periodic_shell ;
     } ;
 
-    inline Base_spectral::Base_spectral(const Base_spectral &so) : def{so.def}, ndim{so.ndim}, bases_1d(ndim) {
+    inline Base_spectral::Base_spectral(const Base_spectral &so) : def{so.def}, ndim{so.ndim}, bases_1d{ndim} {
         for (int l = 0; l < ndim; l++)
             bases_1d[l] = (so.bases_1d[l] == nullptr) ? nullptr : new Array<int>(*so.bases_1d[l]);
     }
