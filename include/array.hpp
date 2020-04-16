@@ -128,6 +128,9 @@ template <typename T> class Array : public Memory_mapped {
 	    Array (FILE*) ;
 
 	public:
+
+	    void delete_data() {data.clear()} ///< Logical destructor (kills the data)
+
 		/**
 	    * Save in a file.
 	    * The file can then been used by the constructor from a file.
