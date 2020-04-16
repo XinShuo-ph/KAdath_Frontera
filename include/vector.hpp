@@ -68,12 +68,10 @@ class Vector : public Tensor {
 	virtual void operator=(double) ;
 	virtual void annule_hard() ;
 
-#ifdef ENABLE_MOVE_SEMANTIC
 #ifdef TENSOR_MOVE_SEMANTIC
 	Vector(Vector && so) : Tensor{std::move(so)} {}
 	Vector & operator=(Vector && so) {this->Tensor::operator=(std::move(so)); return *this;}
 #endif //#ifdef TENSOR_MOVE_SEMANTIC
-#endif //#ifdef ENABLE_MOVE_SEMANTIC
 
     // Accessors
     // ---------

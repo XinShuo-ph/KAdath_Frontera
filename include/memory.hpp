@@ -175,15 +175,11 @@ namespace Kadath {
         Memory_mapped_array(size_type const,Do_not_initialize const init = do_not_initialize);
         Memory_mapped_array(size_type const,Initialize const);
         Memory_mapped_array(Memory_mapped_array const &);
-#ifdef ENABLE_MOVE_SEMANTIC
         Memory_mapped_array(Memory_mapped_array &&);
-#endif
         virtual ~Memory_mapped_array() {this->clear();}
 
         Memory_mapped_array & operator=(Memory_mapped_array const &) = delete;
-#ifdef ENABLE_MOVE_SEMANTIC
         Memory_mapped_array & operator=(Memory_mapped_array &&);
-#endif
         void swap(Memory_mapped_array<T> &so) noexcept {std::swap(size,so.size); std::swap(data,so.data);}
         void resize(size_type const new_size);
         void clear() {Memory_mapper::release_memory<T>(data,static_cast<std::size_t>(size)); data=nullptr; size=0;}
@@ -216,13 +212,11 @@ namespace Kadath {
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array const & source)
             : size{source.size}, data{source.duplicate_data()} {}
-#ifdef ENABLE_MOVE_SEMANTIC
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array && source)
             : size{source.size}, data{source.data} {source.size = 0; source.data = nullptr;}
 
     template<typename T,typename S> inline Memory_mapped_array<T,S> &
             Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> && source) {this->swap(source);}
-#endif
 
     template<typename T,typename S> void Memory_mapped_array<T,S>::range_check(const size_type i) const {
         if (i >= this->size()) {

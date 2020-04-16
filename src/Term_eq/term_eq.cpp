@@ -112,7 +112,6 @@ Term_eq::Term_eq (const Term_eq& so) : dom(so.dom), val_d(0x0), der_d(0x0), val_
 	}
 }
 
-#ifdef ENABLE_MOVE_SEMANTIC
 Term_eq::Term_eq(Kadath::Term_eq &&so) :
     dom{so.dom},
     val_d{so.val_d},
@@ -135,7 +134,6 @@ Term_eq& Term_eq::operator=(Term_eq && so)
     std::swap(der_t,so.der_t);
     return *this;
 }
-#endif //#ifdef ENABLE_MOVE_SEMANTIC
 
 Term_eq::~Term_eq() {
 

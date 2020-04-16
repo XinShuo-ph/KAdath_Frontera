@@ -132,11 +132,9 @@ template <typename T> class Array {
             for (int i=0 ; i<nbr ; i++)
                 data[i] = so.data[i] ;
         }
-#ifdef ENABLE_MOVE_SEMANTIC
         //! Move constructor.
         Array (Array<T> && so) : dimensions{std::move(so.dimensions)}, nbr{so.nbr},
                               data{so.data} {so.data = nullptr;}
-#endif
         //! Destructor.
 	    ~Array() {delete_data();}
 
@@ -154,7 +152,6 @@ template <typename T> class Array {
             for (int i=0 ; i<nbr ; i++)
             data[i] = so.data[i] ;
         }
-#ifdef ENABLE_MOVE_SEMANTIC
         //! Move assignment operator.
         Array & operator= (Array<T> && so)
         {
@@ -163,7 +160,6 @@ template <typename T> class Array {
             std::swap(data,so.data);
             return *this;
         }
-#endif
 	    /**
 	    * Assigns the same value to all the elements.
 	    * @param xx [input] : value to be assigned.

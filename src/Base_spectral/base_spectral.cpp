@@ -48,7 +48,6 @@ Base_spectral::Base_spectral (FILE* fd) {
 	    	bases_1d[i] = 0x0 ;
 }
 
-#ifdef ENABLE_MOVE_SEMANTIC
     Base_spectral::Base_spectral(Base_spectral && so) : def{so.def}, ndim{0}, bases_1d{nullptr}
     {
         std::swap(ndim,so.ndim);
@@ -62,7 +61,6 @@ Base_spectral::Base_spectral (FILE* fd) {
         std::swap(bases_1d,so.bases_1d);
         return *this;
     }
-#endif
 
 Base_spectral::~Base_spectral() {
     if(bases_1d)

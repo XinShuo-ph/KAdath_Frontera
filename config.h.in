@@ -69,17 +69,6 @@
 #cmakedefine HAVE_LINUX
 
 
-// Enables the call to the MKL functions for FFT instead of those of the FFTW3 library (DOES NOT WORK)
-
-#cmakedefine USE_MKL_FFTW3_INTERFACE
-
-
-// Enables the use of move constructors and assignment operators for the class that can't use the compiler
-// default generated versions of these methods.
-
-#cmakedefine ENABLE_MOVE_SEMANTIC
-
-
 // Enables the move constructors and assignment operators for tensorial objects (DOES NOT WORK at the moment, so this
 // has to be kept undefined)
 

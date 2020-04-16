@@ -64,10 +64,8 @@ class Dim_array  : public Memory_mapped_array<int> {
 
         void save (FILE*) const ; ///< Save function
 
-#ifdef ENABLE_MOVE_SEMANTIC
         Dim_array(Dim_array &&so) : Memory_mapped_array<int>{std::forward<Dim_array&&>(so)} {}///< Move constructor.
         Dim_array & operator=(Dim_array && so) {Memory_mapped_array<int>::operator=(std::forward<Dim_array&&>(so)); return *this;}
-#endif
 } ;
 
 ostream& operator<< (ostream&, const Dim_array&) ;

@@ -35,7 +35,7 @@ class Tensor;
 * It simply consists of a list of integers.
 * \ingroup util
 **/
-class Index : public Memory_mapped {
+class Index MEMORY_ALLOCATION_POLICY {
 protected:
 	/**
 	* Sizes of the associated \c Array.

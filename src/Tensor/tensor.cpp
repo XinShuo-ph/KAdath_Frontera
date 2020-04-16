@@ -342,7 +342,6 @@ Tensor::Tensor (const Space& sp, int dim, FILE* fd) :
     give_indices = std_indices ;
 }
 
-#ifdef ENABLE_MOVE_SEMANTIC
 #ifdef TENSOR_MOVE_SEMANTIC
 Tensor::Tensor(Tensor&& so) : espace{so.espace}, ndom{so.ndom}, ndim{so.ndim}, valence{so.valence},
 basis{std::move(so.basis)}, type_indice{std::move(so.type_indice)}, name_affected{so.name_affected},
@@ -377,7 +376,6 @@ Tensor & Tensor::operator=(Tensor && so)
     return *this;
 }
 #endif //#ifdef TENSOR_MOVE_SEMANTIC
-#endif //#ifdef ENABLE_MOVE_SEMANTIC
 			//--------------//
 			//  Destructor  //
 			//--------------//

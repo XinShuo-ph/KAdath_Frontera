@@ -215,12 +215,10 @@ class Tensor {
 	Tensor (const Space& sp, FILE*) ; ///< Constructor from a file.
 	Tensor (const Space& sp, int dim, FILE*) ; ///< Constructor from a file with explicit passing of the dimension
 
-#ifdef ENABLE_MOVE_SEMANTIC
 #ifdef TENSOR_MOVE_SEMANTIC
     void do_move(Tensor && so,bool move_cmp);
     Tensor(Tensor&& so);///< Move constructor.
     virtual Tensor & operator=(Tensor &&);///<Move assignment.
-#endif
 #endif
 
     protected:

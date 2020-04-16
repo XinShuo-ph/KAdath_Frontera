@@ -47,7 +47,6 @@ class Point {
     //! Destructor.
 	~Point() {if(coord) delete [] coord ;}
 
-#ifdef ENABLE_MOVE_SEMANTIC
     //! Move constructor.
     Point(Point && so) : ndim{so.ndim}, coord{nullptr} {
         std::swap(coord,so.coord);
@@ -58,8 +57,7 @@ class Point {
         std::swap(coord,so.coord);
         return *this;
     }
-#endif
-	
+
 	void save (FILE*) const ; ///< Saving function
     //! Assignment operator.
 	void operator= (const Point& so) {
