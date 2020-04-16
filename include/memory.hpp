@@ -253,6 +253,37 @@ namespace Kadath {
         return data_copy;
     }
 
+
+    template <typename T,typename S=std::size_t> struct Memory_mapped_allocator
+    {
+        using value_type = T;
+        using size_type = S;
+        using pointer = T*;
+        using const_pointer = T const *;
+        using reference = T&;
+        using const_reference = T const &;
+        using difference_type = std::ptrdiff_t ;
+        using propagate_on_container_move_assignment = std::true_type;
+        using is_always_equal = std::true_type;
+
+
+        Memory_mapped_allocator () = default;
+        template <typename U> constexpr Memory_mapped_allocator (const Memory_mapped_allocator <U>&) noexcept {}
+
+        pointer address(reference x) const noexcept {return &x;}
+        const_pointer address(const_reference x) const noexcept {return &x;}
+
+        pointer allocate(size_type sz) {return Memory_mapper::get_memory<T>(static_cast<std::size_t>(sz));}
+        void deallocate(T* p, size_type sz) noexcept { Memory_mapper::release_memory<T>(p,static_cast<std::size_t>(sz)); }
+
+    };
+
+    template <class T, class U>
+    bool operator==(const Memory_mapped_allocator <T>&, const Memory_mapped_allocator <U>&) noexcept { return true; }
+    template <class T, class U>
+    bool operator!=(const Memory_mapped_allocator <T>&, const Memory_mapped_allocator <U>&) noexcept { return false; }
+
+    template<typename T,typename S> using Memory_mapped_vector = std::vector<T,Memory_mapped_allocator<T,S>>;
 }
 
 
