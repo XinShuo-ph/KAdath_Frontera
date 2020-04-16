@@ -21,16 +21,18 @@
 #include "dim_array.hpp"
 namespace Kadath {
 
-Dim_array::Dim_array (FILE* fd) : Memory_mapped_array<int>{}{
-	fread_be(&size, sizeof(int), 1, fd) ;
-	this->resize(size) ;
-	fread_be(this->get_data(), sizeof(int), size, fd) ;
+Dim_array::Dim_array (FILE* fd) : Alloc_policy() {
+    int read_size;
+	fread_be(&read_size, sizeof(int), 1, fd) ;
+	this->resize(read_size) ;
+	fread_be(this->data(), sizeof(int), read_size, fd) ;
 }
 
 
 void Dim_array::save (FILE* fd) const  {
+    int const size{static_cast<int>(this->size())};
 	fwrite_be(&size, sizeof(int), 1, fd) ;
-	fwrite_be(data, sizeof(int), size, fd) ;
+	fwrite_be(this->data(), sizeof(int), size, fd) ;
 }
 
 // Output

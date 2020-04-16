@@ -30,9 +30,9 @@
 #include "config.h"
 #include "memory.h"
 
-#define PRECISION 1e-14
-
 using namespace std ;
+
+constexpr double PRECISION = 1e-14;
 
 namespace Kadath {
 
@@ -82,11 +82,6 @@ namespace Kadath {
                 (c == Computational_model::mpi_parallel ? "mpi_parallel" : "gpu_mpi_parallel");
   }
 
-#ifdef ENABLE_CUSTOM_MEMORY_MAPPING
-#define MEMORY_ALLOCATION_POLICY : public Memory_mapped
-#else
-#define MEMORY_ALLOCATION_POLICY
-#endif
 
 
 #ifdef PAR_VERSION

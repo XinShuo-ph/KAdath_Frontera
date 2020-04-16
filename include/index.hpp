@@ -36,13 +36,16 @@ class Tensor;
 * \ingroup util
 **/
 class Index MEMORY_ALLOCATION_POLICY {
+public:
+    using Data_type = ARRAY_ALLOCATION_POLICY(int);
+
 protected:
 	/**
 	* Sizes of the associated \c Array.
 	* When used with a \c Tensor, it is the dimension, for each tensorial index.
 	*/
 	Dim_array sizes ;
-	Memory_mapped_array<int> coord ; ///< Value of each index.
+	Data_type coord ; ///< Value of each index.
 
 
 public:
