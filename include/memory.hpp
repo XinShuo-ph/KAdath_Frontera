@@ -165,10 +165,10 @@ namespace Kadath {
         void range_check(size_type const i) const;
         T* duplicate_data() const;
         size_type & get_size() {return size;}
-        T*& get_data() noexcept {return data;}
 
     public:
         Memory_mapped_array() : size{0}, data{nullptr} {}
+        Memory_mapped_array(std::nullptr_t ) : size{0}, data{nullptr} {}
         Memory_mapped_array(Initialize const) : size{0}, data{nullptr} {for(auto & x : (*this)) x = T{};}
         Memory_mapped_array(size_type const,Do_not_initialize const init = do_not_initialize);
         Memory_mapped_array(size_type const,Initialize const);
@@ -195,10 +195,14 @@ namespace Kadath {
 
         size_type get_size() const noexcept {return size;}
         T const * get_data() const noexcept {return data;}
+        T*& get_data() noexcept {return data;}
         value_read_only_type operator[](size_type const i) const noexcept {return data[i];}
         T& operator[](size_type const i) noexcept {return data[i];}
         value_read_only_type at(size_type const i) const {this->range_check(i); return data[i];}
         T& at(size_type const i) {this->range_check(i); return data[i];}
+
+//        operator T const * () const {return data;}
+//        operator T * () {return data;}
     };
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size,
