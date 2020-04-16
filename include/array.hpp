@@ -265,7 +265,7 @@ template <typename T> class Array : public Memory_mapped {
 	     /**
 	   * Direct accessor to the data, read only version
 	   */
-	    const_pointer get_data() const {return data.set_data() ;} ;
+	    const_pointer get_data() const {return data.get_data() ;} ;
 	
 	   /**
 	   * Direct accessor to the data, read/write version
@@ -367,7 +367,7 @@ template <typename T> bool Array<T>::is_increasing() const {
     template <typename T> void Array<T>::save (FILE* fd) const {
         dimensions.save(fd) ;
         fwrite_be(&nbr, sizeof(int), 1, fd) ;
-        fwrite_be(data.set_data(), sizeof(T), nbr, fd) ;
+        fwrite_be(data.get_data(), sizeof(T), nbr, fd) ;
     }
 
 // Display
