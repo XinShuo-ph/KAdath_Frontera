@@ -201,6 +201,8 @@ namespace Kadath {
         value_read_only_type at(size_type const i) const {this->range_check(i); return data[i];}
         T& at(size_type const i) {this->range_check(i); return data[i];}
 
+        bool empty() const noexcept {return size==0;}
+
 //        operator T const * () const {return data;}
 //        operator T * () {return data;}
     };
