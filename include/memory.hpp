@@ -157,19 +157,19 @@ namespace Kadath {
         using size_type = S;
 
     protected:
-        size_type m_size;
-        T* m_data;
+        size_type size;
+        T* data;
 
     protected:
         /// Safety check used only from at().
         void range_check(size_type const i) const;
         T* duplicate_data() const;
-        size_type & size() {return m_size;}
-        T*& data() noexcept {return m_data;}
+        size_type & get_size() {return size;}
+        T*& get_data() noexcept {return data;}
 
     public:
-        Memory_mapped_array() : m_size{0}, m_data{nullptr} {}
-        Memory_mapped_array(Initialize const) : m_size{0}, m_data{nullptr} {for(auto & x : (*this)) x = T{};}
+        Memory_mapped_array() : size{0}, data{nullptr} {}
+        Memory_mapped_array(Initialize const) : size{0}, data{nullptr} {for(auto & x : (*this)) x = T{};}
         Memory_mapped_array(size_type const,Do_not_initialize const init = do_not_initialize);
         Memory_mapped_array(size_type const,Initialize const);
         Memory_mapped_array(Memory_mapped_array const &);
@@ -178,73 +178,66 @@ namespace Kadath {
 
         Memory_mapped_array & operator=(Memory_mapped_array const &) = delete;
         Memory_mapped_array & operator=(Memory_mapped_array &&);
-        void swap(Memory_mapped_array<T> &so) noexcept {std::swap(m_size,so.m_size); std::swap(m_data,so.m_data);}
+        void swap(Memory_mapped_array<T> &so) noexcept {std::swap(size,so.size); std::swap(data,so.data);}
         void resize(size_type const new_size);
-        void clear() {Memory_mapper::release_memory<T>(m_data,static_cast<std::size_t>(m_size)); m_data=nullptr; m_size=0;}
+        void clear() {Memory_mapper::release_memory<T>(data,static_cast<std::size_t>(size)); data=nullptr; size=0;}
 
         T const * begin() const noexcept {return data;};
         T const * cbegin() const noexcept {return data;};
         T * begin() noexcept {return data;}
-        T const * end() const noexcept {return m_data + m_size;}
-        T * end() noexcept {return m_data + m_size;}
-        T const * cend() const noexcept {return m_data + m_size;}
-        value_read_only_type front() const noexcept {return m_data[0];}
-        T & front() noexcept {return m_data[0];}
-        value_read_only_type back() const noexcept {return m_data[m_size-1];}
-        T & back() noexcept {return m_data[m_size-1];}
+        T const * end() const noexcept {return data + size;}
+        T * end() noexcept {return data + size;}
+        T const * cend() const noexcept {return data + size;}
+        value_read_only_type front() const noexcept {return data[0];}
+        T & front() noexcept {return data[0];}
+        value_read_only_type back() const noexcept {return data[size-1];}
+        T & back() noexcept {return data[size-1];}
 
-        size_type size() const noexcept {return m_size;}
-        T const * data() const noexcept {return m_data;}
-        value_read_only_type operator[](size_type const i) const noexcept {return m_data[i];}
-        T& operator[](size_type const i) noexcept {return m_data[i];}
-        value_read_only_type at(size_type const i) const {this->range_check(i); return m_data[i];}
-        T& at(size_type const i) {this->range_check(i); return m_data[i];}
+        size_type get_size() const noexcept {return size;}
+        T const * get_data() const noexcept {return data;}
+        value_read_only_type operator[](size_type const i) const noexcept {return data[i];}
+        T& operator[](size_type const i) noexcept {return data[i];}
+        value_read_only_type at(size_type const i) const {this->range_check(i); return data[i];}
+        T& at(size_type const i) {this->range_check(i); return data[i];}
     };
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size,
                                                                             Do_not_initialize const)
-            : m_size{_size}, m_data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))} {}
+            : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))} {}
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size,Initialize const)
-            : m_size{_size}, m_data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))} {for(auto & x:(*this)) x = T{};}
+            : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))} {for(auto & x:(*this)) x = T{};}
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array const & source)
-            : m_size{source.size}, m_data{source.duplicate_data()} {}
+            : size{source.size}, data{source.duplicate_data()} {}
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array && source)
-            : m_size{source.size}, m_data{source.data} {source.size = 0; source.data = nullptr;}
+            : size{source.size}, data{source.data} {source.size = 0; source.data = nullptr;}
 
     template<typename T,typename S> inline Memory_mapped_array<T,S> &
             Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> && source) {this->swap(source);}
 
     template<typename T,typename S> void Memory_mapped_array<T,S>::range_check(const size_type i) const {
-        if (i >= this->size()) {
+        if (i >= this->get_size()) {
             throw std::runtime_error{
                     std::string{"Memory_mapped_array::range_check : i (which is " + std::to_string(i) +
-                                ") >= this->size() (which is " + std::to_string(m_size) + ")."}};
+                                ") >= this->get_size() (which is " + std::to_string(size) + ")."}};
         }
     }
 
     template<typename T,typename S> void Memory_mapped_array<T,S>::resize(size_type const new_size) {
-        if(new_size != m_size) {
-            Memory_mapper::release_memory<T>(m_data,m_size);
-            m_size = new_size;
-            m_data = Memory_mapper::get_memory<T>(static_cast<std::size_t>(m_size));
+        if(new_size != size) {
+            Memory_mapper::release_memory<T>(data,size);
+            size = new_size;
+            data = Memory_mapper::get_memory<T>(static_cast<std::size_t>(size));
         }
     }
 
     template<typename T,typename S> inline T * Memory_mapped_array<T,S>::duplicate_data() const {
-        T * const data_copy {Memory_mapper::get_memory<T>(static_cast<std::size_t>(m_size))};
-        for(size_type i{0};i<m_size;i++) data_copy[i] = m_data[i];
+        T * const data_copy {Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))};
+        for(size_type i{0};i<size;i++) data_copy[i] = data[i];
         return data_copy;
     }
 
-#ifdef ENABLE_CUSTOM_MEMORY_MAPPING
-#define MEMORY_ALLOCATION_POLICY : Memory_mapped
-#define ARRAY_ALLOCATION_POLICY(value_type) Memory_mapped_array<value_type>
-#else
-#define MEMORY_ALLOCATION_POLICY
-#define ARRAY_ALLOCATION_POLICY(value_type) value_type *
-#endif
 }
 
 

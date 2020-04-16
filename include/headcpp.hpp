@@ -28,7 +28,7 @@
 #include <cassert>
 #include "stdlib.h"
 #include "config.h"
-#include "memory.h"
+#include "memory.hpp"
 
 using namespace std ;
 

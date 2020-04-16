@@ -35,9 +35,9 @@ class Tensor;
 * It simply consists of a list of integers.
 * \ingroup util
 **/
-class Index MEMORY_ALLOCATION_POLICY {
+class Index : public Memory_mapped {
 public:
-    using Data_type = ARRAY_ALLOCATION_POLICY(int);
+    using Data_type = Memory_mapped_array<int>;
 
 protected:
 	/**
