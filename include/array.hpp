@@ -129,7 +129,7 @@ template <typename T> class Array : public Memory_mapped {
 
 	public:
 
-	    void delete_data() {data.clear()} ///< Logical destructor (kills the data)
+	    void delete_data() {data.clear();} ///< Logical destructor (kills the data)
 
 		/**
 	    * Save in a file.
