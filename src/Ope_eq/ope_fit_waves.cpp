@@ -144,7 +144,7 @@ Term_eq Ope_fit_waves::action() const {
 		Array<int> ind (target.val_t->indices(i)) ;
 		// Sym or not sym ?
 		int sym = 1 ;
-		for (int n=0 ; n<ind.get_size(0) ; n++)
+		for (int n=0 ; n<ind.set_size(0) ; n++)
 		  if (ind(n)==3)
 		    sym *= -1 ;
 		if (sym==1) {

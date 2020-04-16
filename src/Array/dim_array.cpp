@@ -24,7 +24,7 @@ namespace Kadath {
 Dim_array::Dim_array (FILE* fd) : Data_type{} {
 	fread_be(&size, sizeof(int), 1, fd) ;
 	this->resize(size) ;
-	fread_be(this->get_data(), sizeof(int), size, fd) ;
+	fread_be(this->set_data(), sizeof(int), size, fd) ;
 }
 
 

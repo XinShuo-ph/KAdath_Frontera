@@ -265,12 +265,12 @@ template <typename T> class Array : public Memory_mapped {
 	     /**
 	   * Direct accessor to the data, read only version
 	   */
-	    const_pointer get_data() const {return data ;} ;
+	    const_pointer get_data() const {return data.set_data() ;} ;
 	
 	   /**
 	   * Direct accessor to the data, read/write version
 	   */
-	    pointer set_data() {return data ;} ;
+	    pointer set_data() {return data.set_data() ;} ;
 
 	    /**
 	    * Returns the number of dimensions.
@@ -360,14 +360,14 @@ template <typename T> bool Array<T>::is_increasing() const {
     template <typename T> Array<T>::Array (FILE* fd) : dimensions{fd},nbr{},data{nullptr} {
         fread_be(&nbr, sizeof(int), 1, fd) ;
         data.resize(nbr) ;
-        fread_be(data, sizeof(T), nbr, fd) ;
+        fread_be(data.set_data(), sizeof(T), nbr, fd) ;
     }
 
 
     template <typename T> void Array<T>::save (FILE* fd) const {
         dimensions.save(fd) ;
         fwrite_be(&nbr, sizeof(int), 1, fd) ;
-        fwrite_be(data, sizeof(T), nbr, fd) ;
+        fwrite_be(data.set_data(), sizeof(T), nbr, fd) ;
     }
 
 // Display
