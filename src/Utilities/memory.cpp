@@ -3,8 +3,6 @@
 //
 #include "config.h"
 
-#ifdef ENABLE_CUSTOM_MEMORY_MAPPING
-
 #include "memory.hpp"
 
 
@@ -19,4 +17,3 @@ namespace Kadath {
 
 }
 
-#endif
