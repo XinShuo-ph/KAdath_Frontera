@@ -64,7 +64,6 @@ namespace Kadath {
         using mem_map_t = std::map<std::size_t,ptr_vec_t>;
 #elif MEMORY_MAP_TYPE == 3
         using mem_map_t = ska::flat_hash_map<std::size_t, ptr_vec_t>;
-
 #endif
         using raw_ptr_t = std::unique_ptr<void, Free_deleter>;
         using ptr_list_t = std::vector<raw_ptr_t>;
@@ -115,7 +114,7 @@ namespace Kadath {
                 auto pos = std::find(std::begin(mem_sizes), std::end(mem_sizes), sz);
                 std::size_t index = pos - mem_sizes.begin();
                 memory_map[index].push_back(raw_mem_ptr);
-#elif MEMORY_MAP_TYPE == 3
+#else
                 memory_map[sz].push_back(raw_mem_ptr);
 #endif
             }
