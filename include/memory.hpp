@@ -176,7 +176,7 @@ namespace Kadath {
         Memory_mapped_array(Memory_mapped_array &&);
         virtual ~Memory_mapped_array() {this->clear();}
 
-        Memory_mapped_array & operator=(Memory_mapped_array const &) = delete;
+        Memory_mapped_array & operator=(Memory_mapped_array const &);
         Memory_mapped_array & operator=(Memory_mapped_array &&);
         void swap(Memory_mapped_array<T> &so) noexcept {std::swap(size,so.size); std::swap(data,so.data);}
         void resize(size_type const new_size);
@@ -213,6 +213,15 @@ namespace Kadath {
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array && source)
             : size{source.size}, data{source.data} {source.size = 0; source.data = nullptr;}
 
+    template<typename T,typename S> inline Memory_mapped_array<T,S> &
+            Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> const &source) {
+                if(size != source.size) {
+                    Memory_mapper::release_memory<T>(data,static_cast<std::size_t>(size));
+                    size = source.size;
+                }
+                for(std::size_t i{0};i<size;i++) data[i] = source.data[i];
+                return *this;
+            }
     template<typename T,typename S> inline Memory_mapped_array<T,S> &
             Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> && source) {this->swap(source);}
 

@@ -13,7 +13,7 @@
 namespace Kadath {
 
 
-    class Array_iterator
+    class Array_iterator : public Memory_mapped
     {
     protected:
         /**
@@ -22,7 +22,7 @@ namespace Kadath {
         */
         Dim_array sizes ;
         //! The incremental index step with respect to each dimensions.
-        std::vector<int> steps;
+        Memory_mapped_array<int> steps;
         int position; ///< Corresponding value for 1D indexing (i.e. \f$ \prod_{i=0}^{\mathrm{ndim}-1} \mathrm{coord}\[i\] \f$.
 
     public:
