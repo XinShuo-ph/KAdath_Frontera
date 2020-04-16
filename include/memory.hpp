@@ -201,8 +201,8 @@ namespace Kadath {
         value_read_only_type at(size_type const i) const {this->range_check(i); return data[i];}
         T& at(size_type const i) {this->range_check(i); return data[i];}
 
-//        operator T const * () const {return data;}
-//        operator T * () {return data;}
+        operator T const * () const {return data;}
+        operator T * () {return data;}
     };
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size,
