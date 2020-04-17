@@ -180,6 +180,8 @@ namespace Kadath {
         void swap(Memory_mapped_array<T> &so) noexcept {std::swap(size,so.size); std::swap(data,so.data);}
         void resize(size_type const new_size);
         void clear() {Memory_mapper::release_memory<T>(data,static_cast<std::size_t>(size)); data=nullptr; size=0;}
+        template<typename F> void clear(F f) {this->apply(f); this->clear();}
+        template<typename F> void apply(F f) {for(auto &x : (*this)) f(x);}
 
         T const * begin() const noexcept {return data;};
         T const * cbegin() const noexcept {return data;};

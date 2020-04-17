@@ -36,36 +36,36 @@ constexpr double PRECISION = 1e-14;
 
 namespace Kadath {
 
-  using std::cos ;
-  using std::sin ;
-  using std::sqrt ;
-  using std::pow ;
+    using std::cos ;
+    using std::sin ;
+    using std::sqrt ;
+    using std::pow ;
 
-  using std::log10 ;
-  using std::log ;
-  using std::exp ;
-  using std::acos ;
-  using std::asin ;
+    using std::log10 ;
+    using std::log ;
+    using std::exp ;
+    using std::acos ;
+    using std::asin ;
 
-  using std::abs ;
-  using std::fabs ;
-  using std::max ;
-  using std::min ;
+    using std::abs ;
+    using std::fabs ;
+    using std::max ;
+    using std::min ;
 
-  using std::cos;
-  using std::sin;
-  using std::tan ;
-  using std::atan ;
-  using std::atanh ; 
-  using std::cosh;
-  using std::sinh;
+    using std::cos;
+    using std::sin;
+    using std::tan ;
+    using std::atan ;
+    using std::atanh ;
+    using std::cosh;
+    using std::sinh;
 
-  /**
-   * Set of enumerators used to select the computational model to use for the matrix-related computations (matrix
-   * coefficient calculation, linear system solve, etc.).
-   */
-  enum class Computational_model
-  {
+    /**
+    * Set of enumerators used to select the computational model to use for the matrix-related computations (matrix
+    * coefficient calculation, linear system solve, etc.).
+    */
+    enum class Computational_model
+    {
       //! value for fully sequential computations.
       sequential,
       //! Value for sequantial matrix comptuation with gpu accelerated linear solver.
@@ -74,14 +74,13 @@ namespace Kadath {
       mpi_parallel,
       //! value for hybrid MPI / GPU computations.
       gpu_mpi_parallel
-  };
+    };
 
-  inline constexpr const char* computational_model_name(Computational_model c)
-  {
+    inline constexpr const char* computational_model_name(Computational_model c)
+    {
       return c == Computational_model::sequential ? "sequential" :
                 (c == Computational_model::mpi_parallel ? "mpi_parallel" : "gpu_mpi_parallel");
-  }
-
+    }
 
 
 #ifdef PAR_VERSION

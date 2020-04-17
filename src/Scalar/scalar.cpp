@@ -95,16 +95,17 @@ void Scalar::save (FILE* fd) const {
 		val_zones[i]->save(fd) ;
 }
 
-void Scalar::operator= (const Scalar& so)  {
+Scalar & Scalar::operator= (const Scalar& so)  {
 	assert (&espace==&so.espace) ;
 	for (int i=0 ; i<ndom ; i++) {
 		if (val_zones[i] != 0x0)
 			delete val_zones[i] ;
 		val_zones[i] = new Val_domain(*so.val_zones[i]) ;
 	}
+	return *this;
 }
 
-void Scalar::operator= (const Tensor& so)  {
+Scalar & Scalar::operator= (const Tensor& so)  {
 	assert (&espace==&so.espace) ;
 	assert (so.valence==0) ;
 	for (int i=0 ; i<ndom ; i++) {
@@ -112,11 +113,13 @@ void Scalar::operator= (const Tensor& so)  {
 			delete val_zones[i] ;
 		val_zones[i] = new Val_domain(*so.cmp[0]->val_zones[i]) ;
 	}
+    return *this;
 }
 
-void Scalar::operator= (double xx) {
+Scalar & Scalar::operator= (double xx) {
 	for (int i=0 ; i<ndom ; i++)
 		set_domain(i) = xx ;
+    return *this;
 }
 
 void Scalar::annule_hard() {

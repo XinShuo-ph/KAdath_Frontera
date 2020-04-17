@@ -63,10 +63,10 @@ class Vector : public Tensor {
     // ---------------------
     public:
 
-	void operator=(const Vector&) ; ///< Assignment to another \c Vector.	
-	virtual void operator=(const Tensor&) ;	
-	virtual void operator=(double) ;
-	virtual void annule_hard() ;
+	Vector & operator=(const Vector&) ; ///< Assignment to another \c Vector.
+	Vector & operator=(const Tensor&) override;
+	Vector & operator=(double) override;
+	void annule_hard() override;
 
 #ifdef TENSOR_MOVE_SEMANTIC
 	Vector(Vector && so) : Tensor{std::move(so)} {}

@@ -169,17 +169,18 @@ Metric_tensor::Metric_tensor (const Space& sp, FILE* ff) :
 Metric_tensor::~Metric_tensor () {
 }
 
-void Metric_tensor::operator= (const Metric_tensor& so) {
+Metric_tensor & Metric_tensor::operator= (const Metric_tensor& so) {
     assert (&espace==&so.espace) ;
     basis = so.basis ;
     assert(so.get_type()==get_type()) ;
 
     for (int i=0 ; i<n_comp ; i++)
       *cmp[i] = *so.cmp[i] ;
+    return *this;
 }
 
 
-void Metric_tensor::operator= (const Tensor& so) {
+Metric_tensor & Metric_tensor::operator= (const Tensor& so) {
 	assert (so.valence==2) ; 
 	assert (&espace==&so.espace) ;
 	basis = so.basis ;
@@ -189,11 +190,13 @@ void Metric_tensor::operator= (const Tensor& so) {
 	for (int i=1 ; i<=ndim ; i++)
 		for (int j=i ; j<=ndim ; j++)
 			set(i,j) = (so(i,j) + so(j,i))/2. ; // On symetrise in case non sym
+    return *this;
 }
 
-void Metric_tensor::operator= (double xx) {
+Metric_tensor & Metric_tensor::operator= (double xx) {
 	for (int i=0 ; i<n_comp ; i++)
 		*cmp[i] = xx ;
+	return *this;
 }
 
 Metric_tensor Metric_tensor::inverse()

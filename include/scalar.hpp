@@ -89,7 +89,7 @@ class Scalar : public Tensor {
 	* @param copy [input] : the values of \c so are only copied if \c copy is \c true. Otherwise, the values of 
 	* the field are left uninitialized.
 	*/
-      Scalar (const Tensor& a, bool copy=true) ;
+      Scalar (const Tensor& a, bool copy=true);
 	/**
 	* Constructor from a file.
 	* @param sp : the \c Space.
@@ -98,9 +98,9 @@ class Scalar : public Tensor {
       Scalar (const Space& sp, FILE* fd) ;
 
 #ifdef TENSOR_MOVE_SEMANTIC
-    Scalar(Scalar &&); ///<Move constructor.
-    Scalar & operator=(Tensor &&) override; ///< Move assignment from a \c Scalar typed as  a \c Tensor.
-    Scalar & operator=(Scalar &&); ///<Move assignment.
+    Scalar(Scalar &&) noexcept; ///<Move constructor.
+    Scalar & operator=(Tensor &&) noexcept override; ///< Move assignment from a \c Scalar typed as  a \c Tensor.
+    Scalar & operator=(Scalar &&) noexcept; ///<Move assignment.
 #endif //#ifdef TENSOR_MOVE_SEMANTIC
 
     ~Scalar () override ; ///< Destructor.
@@ -129,9 +129,9 @@ class Scalar : public Tensor {
       Val_domain& set_domain (int) ; ///< Read/write of a particular \c Val_domain.
       const Val_domain& operator() (int) const; ///< Read only of a particular \c Val_domain.
       const Val_domain& at(int) const; ///< Read only of a particular \c Val_domain.
-      void operator= (const Scalar&) ; ///< Assignement to another \c Scalar.
-      virtual void operator= (const Tensor&) ; ///< Assignement to a \c Tensor (must be scalar)
-      void operator= (double) ; ///< Assignment to a double (sets all the values in the configuration space to that value.
+      Scalar & operator= (const Scalar&) ; ///< Assignement to another \c Scalar.
+      Scalar & operator= (const Tensor&) override ; ///< Assignement to a \c Tensor (must be scalar)
+      Scalar & operator= (double) ; ///< Assignment to a double (sets all the values in the configuration space to that value.
       virtual void annule_hard() ; ///< Sets the value to zero evetywhere (the logical state of the \c Val_domain is NOT zero).
 
       Scalar der_var (int) const ; ///< Returns the derivative with respect to one particular numerical coordinate.

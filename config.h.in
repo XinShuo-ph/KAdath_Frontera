@@ -38,6 +38,9 @@
 
 #define KADATH_VERSION_TWEAK @Kadath_VERSION_TWEAK@
 
+// Debug flag to enable some debug-only instructions and piece of codes.
+
+#cmakedefine DEBUG_MODE
 
 // Enables the MPI version of Kadath
 

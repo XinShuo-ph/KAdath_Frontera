@@ -398,7 +398,7 @@ Term_eq Metric::derive (int type_der, char ind_der, const Term_eq& so) const {
 
 		// Check if one inner summation is needed :
 		bool need_sum = false ;
-		char* ind = p_christo[dd]->val_t->get_name_ind() ;
+		char const * ind = p_christo[dd]->val_t->get_name_ind() ;
 		if ((ind[0]==ind[2]) || (ind[1]==ind[2]) || (ind[0]==ind[1]))
 			need_sum = true ;
 				

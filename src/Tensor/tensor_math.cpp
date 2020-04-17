@@ -23,7 +23,7 @@
 #include "tensor.hpp"
 	
 namespace Kadath {
-void Tensor::operator=(const Tensor& t) {
+Tensor & Tensor::operator=(const Tensor& t) {
     
     assert (valence == t.valence) ;
     assert (&espace==&t.espace) ;
@@ -59,9 +59,10 @@ void Tensor::operator=(const Tensor& t) {
 		}
 	}	
 }
-void Tensor::operator=(double xx) {
+Tensor & Tensor::operator=(double xx) {
 	for (int i=0 ; i<n_comp ; i++)
 		*cmp[i] = xx ;
+	return *this;
 }
 void Tensor::operator+=(const Tensor& t) {
     

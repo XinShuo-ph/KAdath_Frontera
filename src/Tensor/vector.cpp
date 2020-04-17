@@ -52,7 +52,7 @@ Vector::Vector (const Space& sp, FILE* ff) :
 
 
 
-void Vector::operator=(const Vector& t) {
+Vector & Vector::operator=(const Vector& t) {
     
    
     assert (&espace==&t.espace) ; 
@@ -62,9 +62,10 @@ void Vector::operator=(const Vector& t) {
     for (int i=0 ; i<3 ; i++) {
       *cmp[i] = *t.cmp[i] ;
     }
+    return *this;
 }
 
-void Vector::operator=(const Tensor& t) {
+Vector & Vector::operator=(const Tensor& t) {
     
     assert (t.valence == 1) ;
 
@@ -76,12 +77,14 @@ void Vector::operator=(const Tensor& t) {
     for (int i=0 ; i<3 ; i++) {
       *cmp[i] = *t.cmp[i] ;
     }
+    return *this;
 }
 
-void Vector::operator=(double xx) {
+Vector & Vector::operator=(double xx) {
     for (int i=0 ; i<3 ; i++) {
       *cmp[i] = xx ;
     }
+    return *this;
 }
 
 void Vector::annule_hard() {

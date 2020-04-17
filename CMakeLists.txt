@@ -6,6 +6,14 @@ message("Root directory : ${PROJECT_SOURCE_DIR}")
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
+#The following variable is just for the config.h file to trigger a debug macro flag.
+string(TOUPPER ${CMAKE_BUILD_TYPE} STR_DEBUG_MODE)
+if(STR_DEBUG_MODE MATCHES DEBUG)
+    set(DEBUG_MODE ON)
+else()
+    set(DEBUG_MODE OFF)
+endif()
+
 #User options :
 option(PAR_VERSION "Parallel version" ON)
 option(ENABLE_GTEST "Enable unit/functional tests using google-test." OFF)

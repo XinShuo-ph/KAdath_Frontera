@@ -55,9 +55,9 @@ class Metric_tensor : public Tensor {
 		virtual ~Metric_tensor() ;
 
 		// Assignement
-		void operator= (const Metric_tensor&) ; ///< Assignment to another \c Metric_tensor
-		virtual void operator= (const Tensor& a) ;
-		virtual void operator= (double xx) ;
+        Metric_tensor & operator= (const Metric_tensor&) ; ///< Assignment to another \c Metric_tensor
+		Metric_tensor & operator= (const Tensor& a) override ;
+		Metric_tensor & operator= (double xx) override ;
  
 		/**
 		* Computes the inverse of the current objetc.
