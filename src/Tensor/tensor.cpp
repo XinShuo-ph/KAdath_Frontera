@@ -76,7 +76,7 @@ Array<int> std_indices (int place, int valence, int ndim) {
 Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& bb) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
 		   valence(val), basis(bb), type_indice(tipe), 
-		   n_comp(int(pow(espace.get_ndim(), val))), parameters(nullptr) {
+		   n_comp(int(pow(espace.get_ndim(), val))), parameters{} {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -90,7 +90,7 @@ Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tens
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(espace) ;
 
-    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_indice = (valence==0) ? nullptr : new char[valence] ;
     name_affected = false ;
 
     // Storage methods :
@@ -102,7 +102,7 @@ Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tens
 Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
 		   valence(val), basis(bb), type_indice(val), 
-		   n_comp(int(pow(espace.get_ndim(), val))), parameters(0x0) {
+		   n_comp(int(pow(espace.get_ndim(), val))), parameters{} {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -114,7 +114,7 @@ Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb)
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(espace) ;    
 
-    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_indice = (valence==0) ? nullptr : new char[valence] ;
     name_affected = false ;
     
     // Storage methods :
@@ -126,7 +126,7 @@ Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb)
 Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& bb, int dim) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
 		   valence(val), basis(bb), type_indice(tipe), 
-		   n_comp(int(pow(ndim, val))), parameters(0x0) {
+		   n_comp(int(pow(ndim, val))), parameters{} {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -140,7 +140,7 @@ Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tens
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(espace) ;
 
-    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_indice = (valence==0) ? nullptr : new char[valence] ;
     name_affected = false ;
 
     // Storage methods :
@@ -152,7 +152,7 @@ Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tens
 Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb, int dim) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
 		   valence(val), basis(bb), type_indice(val), 
-		   n_comp(int(pow(ndim, val))), parameters(0x0) {
+		   n_comp(int(pow(ndim, val))), parameters{} {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -164,7 +164,7 @@ Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb, int di
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(espace) ;    
 
-    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_indice = (valence==0) ? nullptr : new char[valence] ;
     name_affected = false ;
     
     // Storage methods :
@@ -179,13 +179,13 @@ Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb, int di
 // ----------------
 Tensor::Tensor (const Tensor& source, bool copy) : 
     espace(source.espace), ndom(source.ndom), ndim(source.ndim), valence(source.valence), basis(source.basis), 
-    type_indice(source.type_indice), n_comp (source.n_comp) {
+    type_indice(source.type_indice), n_comp (source.n_comp), parameters{source.parameters} {
 
     cmp = new Scalar*[n_comp] ;
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(*source.cmp[i], copy) ;
     
-    name_indice = (valence==0) ? 0x0  : new char[valence] ;
+    name_indice = (valence==0) ? nullptr  : new char[valence] ;
     name_affected = false ;
     if ((copy) && (source.name_affected)) {
 	name_affected = true ;
@@ -198,10 +198,6 @@ Tensor::Tensor (const Tensor& source, bool copy) :
     give_place_index = source.give_place_index ;
     give_indices = source.give_indices ;
 
-    if (source.parameters!=0x0)
-      parameters = new Param_tensor(*source.parameters) ;
-    else
-      parameters = 0x0 ;
 }
 
 //  Constructor for a scalar field: to be used by the derived
@@ -209,11 +205,11 @@ Tensor::Tensor (const Tensor& source, bool copy) :
 //-----------------------------------------------------------
 Tensor::Tensor(const Space& sp) : espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
 		valence(0), basis(sp),
-		type_indice(0), n_comp(1), parameters(0x0) {
+		type_indice(0), n_comp(1), parameters{} {
 		
   cmp = new Scalar*[1] ;
-  cmp[0] = 0x0 ;
-  name_indice = 0x0 ;
+  cmp[0] = nullptr ;
+  name_indice = nullptr ;
   name_affected = false ;
 
    // Storage methods :
@@ -225,7 +221,7 @@ Tensor::Tensor(const Space& sp) : espace(sp), ndom(espace.get_nbr_domains()), nd
 Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor& bb) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
 		   valence(val), basis(bb), type_indice(val), 
-		   n_comp(ncompi), parameters(0x0) {
+		   n_comp(ncompi), parameters{} {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -237,14 +233,14 @@ Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(espace) ;
 
-    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_indice = (valence==0) ? nullptr : new char[valence] ;
     name_affected = false ;
 }
 
 Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, const Base_tensor& bb) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
 		   valence(val), basis(bb), type_indice(tipe), 
-		   n_comp(ncompi), parameters(0x0) {
+		   n_comp(ncompi), parameters{} {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -258,14 +254,14 @@ Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, con
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(espace) ;
 
-    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_indice = (valence==0) ? nullptr : new char[valence] ;
     name_affected = false ;
 }
 
 Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor& bb, int dim) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
 		   valence(val), basis(bb), type_indice(val), 
-		   n_comp(ncompi), parameters(0x0) {
+		   n_comp(ncompi), parameters{} {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -277,14 +273,14 @@ Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(espace) ;
 
-    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_indice = (valence==0) ? nullptr : new char[valence] ;
     name_affected = false ;
 }
 
 Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, const Base_tensor& bb, int dim) 
 		: espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
 		   valence(val), basis(bb), type_indice(tipe), 
-		   n_comp(ncompi), parameters(0x0) {
+		   n_comp(ncompi), parameters{} {
 		
     // Des verifs :
     assert (valence >= 0) ;
@@ -298,13 +294,13 @@ Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, con
     for (int i=0 ; i<n_comp ; i++)
 	cmp[i] = new Scalar(espace) ;
 
-    name_indice = (valence==0) ? 0x0 : new char[valence] ;
+    name_indice = (valence==0) ? nullptr : new char[valence] ;
     name_affected = false ;
 }
 
 Tensor::Tensor (const Space& sp, FILE* fd) : 
 	espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
-	basis(sp, fd), type_indice(fd), parameters(0x0) {
+	basis(sp, fd), type_indice(fd), parameters{} {
 
 	fread_be (&valence, sizeof(int), 1, fd) ;
 	assert (type_indice.get_size(0) == valence) ;
@@ -313,7 +309,7 @@ Tensor::Tensor (const Space& sp, FILE* fd) :
 	for (int i=0 ; i<n_comp ; i++)
 		cmp[i] = new Scalar (espace, fd) ;
 	// name of indices are not saved :
-        name_indice = (valence==0) ? 0x0 : new char[valence] ;
+        name_indice = (valence==0) ? nullptr : new char[valence] ;
         name_affected = false ; 
 
     // Storage methods (overwritten in case of non std things)
@@ -324,7 +320,7 @@ Tensor::Tensor (const Space& sp, FILE* fd) :
 
 Tensor::Tensor (const Space& sp, int dim, FILE* fd) : 
 	espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
-	basis(sp, fd), type_indice(fd), parameters(0x0) {
+	basis(sp, fd), type_indice(fd), parameters{} {
 
 	fread_be (&valence, sizeof(int), 1, fd) ;
 	assert (type_indice.get_size(0) == valence) ;
@@ -333,7 +329,7 @@ Tensor::Tensor (const Space& sp, int dim, FILE* fd) :
 	for (int i=0 ; i<n_comp ; i++)
 		cmp[i] = new Scalar (espace, fd) ;
 	// name of indices are not saved :
-        name_indice = (valence==0) ? 0x0 : new char[valence] ;
+        name_indice = (valence==0) ? nullptr : new char[valence] ;
         name_affected = false ; 
 
     // Storage methods (overwritten in case of non std things)
@@ -345,12 +341,11 @@ Tensor::Tensor (const Space& sp, int dim, FILE* fd) :
 #ifdef TENSOR_MOVE_SEMANTIC
 Tensor::Tensor(Tensor&& so) : espace{so.espace}, ndom{so.ndom}, ndim{so.ndim}, valence{so.valence},
 basis{std::move(so.basis)}, type_indice{std::move(so.type_indice)}, name_affected{so.name_affected},
-name_indice{nullptr}, n_comp{so.n_comp}, cmp{nullptr}, parameters{nullptr}, give_place_array{so.give_place_array},
+name_indice{nullptr}, n_comp{so.n_comp}, cmp{nullptr}, parameters{std::move(so.parameters)}, give_place_array{so.give_place_array},
 give_place_index{so.give_place_index}, give_indices{so.give_indices}
 {
     std::swap(name_indice,so.name_indice);
     std::swap(cmp,so.cmp);
-    std::swap(parameters,so.parameters);
 }
 
 void Tensor::do_move(Tensor &&so, bool move_cmp)
@@ -385,14 +380,12 @@ Tensor::~Tensor () {
     if(cmp != nullptr)
     {
         for (int i = 0; i < n_comp; i++)
-            if (cmp[i] != 0x0)
+            if (cmp[i] != nullptr)
                 delete cmp[i];
         delete[] cmp;
     }
-    if (name_indice!=0x0)
+    if (name_indice!=nullptr)
 	delete [] name_indice ;
-    if (parameters!=0x0)
-      delete parameters ;
 }
 
 void Tensor::save (FILE* fd) const {
@@ -632,7 +625,7 @@ void Tensor::std_base() {
 			if (!is_m_quant_affected())
 			  cmp[0]->std_base_domain(d) ;
 			else
-			  cmp[0]->std_base_domain(d, parameters->get_m_quant()) ;
+			  cmp[0]->std_base_domain(d, parameters.get_m_quant()) ;
 			break ; 
 		}
 		case 1 : {

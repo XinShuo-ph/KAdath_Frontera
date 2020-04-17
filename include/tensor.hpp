@@ -281,8 +281,10 @@ protected:
     // Mutators / assignment
     // ---------------------
 public:
-    const Param_tensor & get_parameters() const ; ///< Returns a pointer on the possible additional parameters.
-    Param_tensor & set_parameters() ; ///< Read/write of the parameters.
+    //! Returns a pointer on the possible additional parameter
+    const Param_tensor & get_parameters() const {return parameters;}
+    //! Read/write of the parameters.
+    Param_tensor & set_parameters() { return parameters; }
     /**
     * The function \c affect_parameters is deprecated and actually does nothing since the parameters
     * are now always stored in order to lower usage of the memory heap.
