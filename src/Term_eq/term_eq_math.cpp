@@ -45,11 +45,11 @@ Term_eq Term_eq::der_abs (int i) const {
 			abort() ;
 		case TERM_T :
 			res.val_t = new Tensor(*val_t, false) ;
-			if (der_t!=0x0)
+			if (der_t!=nullptr)
 				res.der_t = new Tensor(*der_t, false) ;
 			do {
 				res.val_t->set(pos).set_domain(dom) = (*val_t)(pos)(dom).der_abs(i) ;
-				if (der_t !=0x0)
+				if (der_t !=nullptr)
 					res.der_t->set(pos).set_domain(dom) = (*der_t)(pos)(dom).der_abs(i) ;
 			}
 			while (pos.inc()) ;
@@ -70,17 +70,17 @@ Term_eq operator+ (const Term_eq& aa, const Term_eq& bb) {
 	assert (aa.dom==bb.dom) ;
 	switch (aa.type_data) {
 		case (TERM_D) :
-			if (aa.der_d==0x0)
+			if (aa.der_d==nullptr)
 				do_der = false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
 					data_res = TERM_D ;
-					if (bb.der_d==0x0)
+					if (bb.der_d==nullptr)
 						do_der=false ;
 					break ;
 				case (TERM_T) :
 					data_res = TERM_T ;
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der = false ;
 					break ;
 				default: 
@@ -89,16 +89,16 @@ Term_eq operator+ (const Term_eq& aa, const Term_eq& bb) {
 				}
 			break ;
 		case (TERM_T) :
-			if (aa.der_t==0x0)
+			if (aa.der_t==nullptr)
 				do_der = false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
-					if (bb.der_d==0x0)
+					if (bb.der_d==nullptr)
 						do_der=false ;
 					data_res = TERM_T ;
 					break ;
 				case (TERM_T) :
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der=false ;
 					data_res = TERM_T ;
 					break ;
@@ -118,12 +118,12 @@ Term_eq operator+ (const Term_eq& aa, const Term_eq& bb) {
 			switch (bb.type_data) {
 				case (TERM_D) :
 					res.val_d = new double(*aa.val_d + *bb.val_d) ;
-					res.der_d = (do_der) ? new double (*aa.der_d + *bb.der_d) :0x0 ;
+					res.der_d = (do_der) ? new double (*aa.der_d + *bb.der_d) :nullptr ;
 					break ;
 				case (TERM_T) :
 					res.val_t = new Tensor(add_one_dom(res.dom, *aa.val_d, *bb.val_t)) ;
 					res.der_t = (do_der) ? 
-						new Tensor (add_one_dom(res.dom, *aa.der_d, *bb.der_t)) :0x0;
+						new Tensor (add_one_dom(res.dom, *aa.der_d, *bb.der_t)) :nullptr;
 					break ;
 				default: 
 					cerr << "Unknown data storage in operator+" << endl ;
@@ -135,12 +135,12 @@ Term_eq operator+ (const Term_eq& aa, const Term_eq& bb) {
 				case (TERM_D) :
 					res.val_t = new Tensor(add_one_dom(res.dom, *aa.val_t , *bb.val_d)) ;
 					res.der_t = (do_der) ? 
-						new Tensor(add_one_dom(res.dom, *aa.der_t , *bb.der_d)) :0x0;
+						new Tensor(add_one_dom(res.dom, *aa.der_t , *bb.der_d)) :nullptr;
 					break ;
 				case (TERM_T) :
 					res.val_t = new Tensor(add_one_dom(res.dom, *aa.val_t , *bb.val_t)) ;
 					res.der_t = (do_der) ? 
-					 new Tensor(add_one_dom(res.dom, *aa.der_t , *bb.der_t)) : 0x0 ;
+					 new Tensor(add_one_dom(res.dom, *aa.der_t , *bb.der_t)) : nullptr ;
 					break ;
 				default: 
 					cerr << "Unknown data storage in operator+" << endl ;
@@ -161,16 +161,16 @@ Term_eq operator- (const Term_eq& aa, const Term_eq& bb) {
 	bool do_der = true ;
 	switch (aa.type_data) {
 		case (TERM_D) :
-			if (aa.der_d==0x0)
+			if (aa.der_d==nullptr)
 				do_der = false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
-					if (bb.der_d==0x0)
+					if (bb.der_d==nullptr)
 						do_der = false ;
 					data_res = TERM_D ;
 					break ;
 				case (TERM_T) :
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der = false ;
 					data_res = TERM_T ;
 					break ;
@@ -180,16 +180,16 @@ Term_eq operator- (const Term_eq& aa, const Term_eq& bb) {
 				}
 			break ;
 		case (TERM_T) :
-			if (aa.der_t==0x0)
+			if (aa.der_t==nullptr)
 				do_der = false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
-					if (bb.der_d==0x0)
+					if (bb.der_d==nullptr)
 						do_der = false ;
 					data_res = TERM_T ;
 					break ;
 				case (TERM_T) :
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der = false ;
 					data_res = TERM_T ;
 					break ;
@@ -209,12 +209,12 @@ Term_eq operator- (const Term_eq& aa, const Term_eq& bb) {
 			switch (bb.type_data) {
 				case (TERM_D) :
 					res.val_d = new double(*aa.val_d - *bb.val_d) ;
-					res.der_d = (do_der) ? new double (*aa.der_d - *bb.der_d) :0x0 ;
+					res.der_d = (do_der) ? new double (*aa.der_d - *bb.der_d) :nullptr ;
 					break ;
 				case (TERM_T) :
 					res.val_t = new Tensor(sub_one_dom(res.dom, *aa.val_d, *bb.val_t)) ;
 					res.der_t = (do_der) ? 
-						new Tensor (sub_one_dom(res.dom, *aa.der_d, *bb.der_t)) : 0x0 ;
+						new Tensor (sub_one_dom(res.dom, *aa.der_d, *bb.der_t)) : nullptr ;
 					break ;
 				default: 
 					cerr << "Unknown data storage in operator+" << endl ;
@@ -226,12 +226,12 @@ Term_eq operator- (const Term_eq& aa, const Term_eq& bb) {
 				case (TERM_D) :
 					res.val_t = new Tensor(sub_one_dom(res.dom, *aa.val_t, *bb.val_d)) ;
 					res.der_t = (do_der) ? 
-						new Tensor(sub_one_dom(res.dom, *aa.der_t, *bb.der_d)) : 0x0 ;
+						new Tensor(sub_one_dom(res.dom, *aa.der_t, *bb.der_d)) : nullptr ;
 					break ;
 				case (TERM_T) :
 					res.val_t = new Tensor(sub_one_dom(res.dom, *aa.val_t, *bb.val_t)) ;
 					res.der_t = (do_der) ? 
-						new Tensor(sub_one_dom(res.dom, *aa.der_t, *bb.der_t)) : 0x0 ;
+						new Tensor(sub_one_dom(res.dom, *aa.der_t, *bb.der_t)) : nullptr ;
 					break ;
 				default: 
 					cerr << "Unknown data storage in operator+" << endl ;
@@ -252,16 +252,16 @@ Term_eq operator* (const Term_eq& aa, const Term_eq& bb) {
 	bool do_der = true ;
 	switch (aa.type_data) {
 		case (TERM_D) :
-			if (aa.der_d==0x0)
+			if (aa.der_d==nullptr)
 				do_der = false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
-					if (bb.der_d==0x0)
+					if (bb.der_d==nullptr)
 						do_der = false ;
 					data_res = TERM_D ;
 					break ;
 				case (TERM_T) :
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der = false ;
 					data_res = TERM_T ;
 					break ;
@@ -271,16 +271,16 @@ Term_eq operator* (const Term_eq& aa, const Term_eq& bb) {
 				}
 			break ;
 		case (TERM_T) :
-			if (aa.der_t==0x0)
+			if (aa.der_t==nullptr)
 				do_der=false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
-					if (bb.der_d==0x0)
+					if (bb.der_d==nullptr)
 						do_der=false ;
 					data_res = TERM_T ;
 					break ;
 				case (TERM_T) :
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der = false ;
 					data_res = TERM_T ;
 					break ;
@@ -301,13 +301,13 @@ Term_eq operator* (const Term_eq& aa, const Term_eq& bb) {
 				case (TERM_D) :
 					res.val_d = new double((*aa.val_d) * (*bb.val_d)) ;
 					res.der_d = (do_der) ? 
-						new double ((*aa.der_d)*(*bb.val_d) + (*aa.val_d)*(*bb.der_d)) : 0x0 ;
+						new double ((*aa.der_d)*(*bb.val_d) + (*aa.val_d)*(*bb.der_d)) : nullptr ;
 					break ;
 				case (TERM_T) :
 					res.val_t = new Tensor(mult_one_dom(res.dom, *aa.val_d, *bb.val_t)) ;
 					res.der_t = (do_der) ? 
 	new Tensor (add_one_dom(res.dom, mult_one_dom(res.dom, *aa.der_d,*bb.val_t), 
-				mult_one_dom(res.dom, *aa.val_d, *bb.der_t))) : 0x0 ;
+				mult_one_dom(res.dom, *aa.val_d, *bb.der_t))) : nullptr ;
 					break ;
 				default: 
 					cerr << "Unknown data storage in operator+" << endl ;
@@ -319,13 +319,13 @@ Term_eq operator* (const Term_eq& aa, const Term_eq& bb) {
 				case (TERM_D) :
 					res.val_t = new Tensor(mult_one_dom(res.dom, *aa.val_t, *bb.val_d)) ;
 					res.der_t = (do_der) ? 
-new Tensor(add_one_dom(res.dom, mult_one_dom(res.dom, *aa.der_t, *bb.val_d), mult_one_dom(res.dom, *aa.val_t, *bb.der_d))) : 0x0 ;
+new Tensor(add_one_dom(res.dom, mult_one_dom(res.dom, *aa.der_t, *bb.val_d), mult_one_dom(res.dom, *aa.val_t, *bb.der_d))) : nullptr ;
 					break ;
 				case (TERM_T) :
 					res.val_t = new Tensor(mult_one_dom(res.dom, *aa.val_t, *bb.val_t)) ;
 					res.der_t = (do_der) ? 
 new Tensor(add_one_dom(res.dom, 
-	mult_one_dom(res.dom, *aa.der_t, *bb.val_t), mult_one_dom(res.dom, *aa.val_t, *bb.der_t))) : 0x0 ;
+	mult_one_dom(res.dom, *aa.der_t, *bb.val_t), mult_one_dom(res.dom, *aa.val_t, *bb.der_t))) : nullptr ;
 					break ;
 				default: 
 					cerr << "Unknown data storage in operator*" << endl ;
@@ -348,16 +348,16 @@ Term_eq operator/ (const Term_eq& aa, const Term_eq& bb) {
 	bool do_der = true ;
 	switch (aa.type_data) {
 		case (TERM_D) :
-			if (aa.der_d==0x0)
+			if (aa.der_d==nullptr)
 				do_der = false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
-					if (bb.der_d==0x0)
+					if (bb.der_d==nullptr)
 						do_der = false ;
 					data_res = TERM_D ;
 					break ;
 				case (TERM_T) :
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der = false ;
 					data_res = TERM_T ;
 					break ;
@@ -367,16 +367,16 @@ Term_eq operator/ (const Term_eq& aa, const Term_eq& bb) {
 				}
 			break ;
 		case (TERM_T) :
-			if (aa.der_t==0x0)
+			if (aa.der_t==nullptr)
 				do_der=false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
-					if (bb.der_d==0x0)
+					if (bb.der_d==nullptr)
 						do_der = false ;
 					data_res = TERM_T ;
 					break ;
 				case (TERM_T) :
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der = false ;
 					data_res = TERM_T ;
 					break ;
@@ -398,14 +398,14 @@ Term_eq operator/ (const Term_eq& aa, const Term_eq& bb) {
 					res.val_d = new double((*aa.val_d) / (*bb.val_d)) ;
 					res.der_d = (do_der) ? 
 	new double (((*aa.der_d)*(*bb.val_d) - (*aa.val_d)*(*bb.der_d))/
-								((*bb.val_d)*(*bb.val_d))) : 0x0 ;
+								((*bb.val_d)*(*bb.val_d))) : nullptr ;
 					break ;
 				case (TERM_T) :
 					res.val_t = new Tensor(div_one_dom(res.dom, *aa.val_d, *bb.val_t)) ;
 					res.der_t = (do_der) ? new Tensor (div_one_dom(res.dom, 
 	sub_one_dom(res.dom, mult_one_dom(res.dom, *aa.der_d, *bb.val_t), 
 			     mult_one_dom(res.dom, *aa.val_d, *bb.der_t)), 
-	mult_one_dom(res.dom, *bb.val_t, *bb.val_t))) : 0x0 ;
+	mult_one_dom(res.dom, *bb.val_t, *bb.val_t))) : nullptr ;
 					break ;
 				default: 
 					cerr << "Unknown data storage in operator+" << endl ;
@@ -418,14 +418,14 @@ Term_eq operator/ (const Term_eq& aa, const Term_eq& bb) {
 					res.val_t = new Tensor(div_one_dom(res.dom, *aa.val_t, *bb.val_d)) ;
 					res.der_t = (do_der) ? new Tensor(div_one_dom(res.dom, sub_one_dom(res.dom, 
 			     mult_one_dom(res.dom, *aa.der_t, *bb.val_d), 
-			     mult_one_dom(res.dom, *aa.val_t, *bb.der_d)), (*bb.val_d) * (*bb.val_d))) :  0x0 ;
+			     mult_one_dom(res.dom, *aa.val_t, *bb.der_d)), (*bb.val_d) * (*bb.val_d))) :  nullptr ;
 					break ;
 				case (TERM_T) :
 					res.val_t = new Tensor(div_one_dom(res.dom, *aa.val_t, *bb.val_t)) ;
 					res.der_t = (do_der) ? new Tensor(div_one_dom(res.dom, 
 	sub_one_dom(res.dom, mult_one_dom(res.dom, *aa.der_t, *bb.val_t), 
 			     mult_one_dom(res.dom, *aa.val_t, *bb.der_t)), 
-	mult_one_dom(res.dom, *bb.val_t, *bb.val_t))) : 0x0 ;
+	mult_one_dom(res.dom, *bb.val_t, *bb.val_t))) : nullptr ;
 					break ;
 				default: 
 					cerr << "Unknown data storage in operator+" << endl ;
@@ -450,7 +450,7 @@ Term_eq scalar_product (const Term_eq& aa, const Term_eq& bb) {
 			abort() ;
 			break ;
 		case (TERM_T) :
-			if (aa.der_t==0x0)
+			if (aa.der_t==nullptr)
 				do_der=false ;
 			switch (bb.type_data) {
 				case (TERM_D) :
@@ -458,7 +458,7 @@ Term_eq scalar_product (const Term_eq& aa, const Term_eq& bb) {
 					abort() ;
 					break ;
 				case (TERM_T) :
-					if (bb.der_t==0x0)
+					if (bb.der_t==nullptr)
 						do_der = false ;
 					break ;
 				default: 
@@ -486,9 +486,9 @@ Term_eq scalar_product (const Term_eq& aa, const Term_eq& bb) {
 	    param_val = true ;
 	  if (param_val) {
 	      if (aa.val_t->is_m_quant_affected())
-		mval += aa.val_t->get_parameters()->get_m_quant() ;
+		mval += aa.val_t->get_parameters().get_m_quant() ;
 	      if (bb.val_t->is_m_quant_affected())
-		mval += bb.val_t->get_parameters()->get_m_quant() ;
+		mval += bb.val_t->get_parameters().get_m_quant() ;
 	  }
 	  
 	  if (do_der) {
@@ -498,9 +498,9 @@ Term_eq scalar_product (const Term_eq& aa, const Term_eq& bb) {
 		param_der = true ;
 	  if (param_der) {
 	      if (aa.der_t->is_m_quant_affected())
-		mder += aa.der_t->get_parameters()->get_m_quant() ;
+		mder += aa.der_t->get_parameters().get_m_quant() ;
 	      if (bb.der_t->is_m_quant_affected())
-		mder += bb.der_t->get_parameters()->get_m_quant() ;
+		mder += bb.der_t->get_parameters().get_m_quant() ;
 	  }
 	  }
 	}
@@ -520,16 +520,14 @@ Term_eq scalar_product (const Term_eq& aa, const Term_eq& bb) {
 				case (TERM_T) :
 					res.val_t = new Tensor(scal_one_dom(res.dom, *aa.val_t, *bb.val_t)) ;
 					if (mval != 0) {
-					    res.val_t->affect_parameters() ;
-					    res.val_t->set_parameters()->set_m_quant() = mval ;
+					    res.val_t->set_parameters().set_m_quant() = mval ;
 					}
 					
 					res.der_t = (do_der) ? new Tensor(add_one_dom(res.dom, 
-		scal_one_dom(res.dom, *aa.der_t, *bb.val_t), scal_one_dom(res.dom, *aa.val_t, *bb.der_t))) : 0x0 ;
+		scal_one_dom(res.dom, *aa.der_t, *bb.val_t), scal_one_dom(res.dom, *aa.val_t, *bb.der_t))) : nullptr ;
 		
 					if (mder != 0) {
-					    res.der_t->affect_parameters() ;
-					    res.der_t->set_parameters()->set_m_quant() = mder ;
+					    res.der_t->set_parameters().set_m_quant() = mder ;
 					}
 					break ;
 				default: 
@@ -573,12 +571,12 @@ Term_eq operator* (int nn, const Term_eq& so) {
 	switch (so.type_data) {
 		case (TERM_D) :
 			res.val_d = new double(double(nn)*(*so.val_d)) ;
-			if (so.der_d!=0x0)
+			if (so.der_d!=nullptr)
 				res.der_d = new double(double(nn)*(*so.der_d)) ;
 			break ;
 		case (TERM_T) :
 			res.val_t = new Tensor(mult_one_dom(so.dom, nn, *so.val_t)) ;
-			if (so.der_t!=0x0)
+			if (so.der_t!=nullptr)
 				res.der_t = new Tensor(mult_one_dom(so.dom, nn, (*so.der_t))) ;
 			break ;
 		default :
@@ -599,12 +597,12 @@ Term_eq operator* (double xx, const Term_eq& so) {
 	switch (so.type_data) {
 		case (TERM_D) :
 			res.val_d = new double(xx*(*so.val_d)) ;
-			if (so.der_d!=0x0)
+			if (so.der_d!=nullptr)
 				res.der_d = new double(xx*(*so.der_d)) ;
 			break ;
 		case (TERM_T) :
 			res.val_t = new Tensor(mult_one_dom(so.dom, xx, (*so.val_t))) ;
-			if (so.der_t!=0x0)
+			if (so.der_t!=nullptr)
 				res.der_t = new Tensor(mult_one_dom(so.dom, xx, (*so.der_t))) ;
 			break ;
 		default :
@@ -625,7 +623,7 @@ Term_eq operator* (const Scalar& fact, const Term_eq& so) {
 			break ;
 		case (TERM_T) :
 			res.val_t = new Tensor(mult_one_dom(so.dom, fact, *so.val_t)) ;
-			if (so.der_t!=0x0)
+			if (so.der_t!=nullptr)
 				res.der_t = new Tensor(mult_one_dom(so.dom, fact, *so.der_t)) ;
 			break ;
 		default :
@@ -646,12 +644,12 @@ Term_eq operator/ (const Term_eq& so, double xx) {
 	switch (so.type_data) {
 		case (TERM_D) :
 			res.val_d = new double((*so.val_d)/xx) ;
-			if (so.der_d!=0x0)
+			if (so.der_d!=nullptr)
 				res.der_d = new double((*so.der_d)/xx) ;
 			break ;
 		case (TERM_T) :
 			res.val_t = new Tensor(div_one_dom(so.dom, (*so.val_t), xx)) ;
-			if (so.der_t!=0x0)
+			if (so.der_t!=nullptr)
 				res.der_t = new Tensor(div_one_dom(so.dom, (*so.der_t), xx)) ;
 			break ;
 		default :
@@ -668,12 +666,12 @@ Term_eq sqrt (const Term_eq& so) {
 	switch (so.type_data) {
 		case (TERM_D) :
 			res.val_d = new double(sqrt(*so.val_d)) ;
-			if (so.der_d!=0x0)
+			if (so.der_d!=nullptr)
 				res.der_d = new double((*so.der_d)/2./sqrt(*so.val_d)) ;
 			break ;
 		case (TERM_T) :
 			res.val_t = new Tensor(sqrt_one_dom(so.dom, *so.val_t)) ;
-			if (so.der_t!=0x0)
+			if (so.der_t!=nullptr)
 				res.der_t = new Tensor(div_one_dom(so.dom, (*so.der_t), 2*sqrt_one_dom(so.dom, *so.val_t))) ;
 			break ;
 		default :
@@ -691,7 +689,7 @@ Term_eq partial (const Term_eq& so, char ind) {
 			abort() ;
 		case (TERM_T) :
 			res.val_t = new Tensor(partial_one_dom(so.dom, ind, *so.val_t)) ;
-			if (so.der_t!=0x0)
+			if (so.der_t!=nullptr)
 				res.der_t = new Tensor(partial_one_dom(so.dom, ind, (*so.der_t))) ;
 			break ;
 		default :

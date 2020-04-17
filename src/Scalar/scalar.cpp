@@ -141,7 +141,7 @@ void Scalar::std_base() {
     }
     else {
       for (int l=0 ; l<ndom ; l++)
-	    val_zones[l]->std_base(parameters->get_m_quant()) ;
+	    val_zones[l]->std_base(parameters.get_m_quant()) ;
     }
 }
 

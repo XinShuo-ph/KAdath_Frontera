@@ -81,7 +81,7 @@ Array<int> Domain_shell_inner_adapted::nbr_conditions (const Tensor& tt, int dom
 			if (!tt.is_m_order_affected())
 			  res.set(0) = nbr_conditions_val_domain (tt()(dom), 0, order) ;
 			else 
-			  res.set(0) = nbr_conditions_val_domain (tt()(dom), tt.get_parameters()->get_m_order(), order) ;
+			  res.set(0) = nbr_conditions_val_domain (tt()(dom), tt.get_parameters().get_m_order(), order) ;
 			break ;
 		case 1 : {
 			bool found = false ;

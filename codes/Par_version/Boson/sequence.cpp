@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     double qpi = 4 * M_PI;
 
     phi.affect_parameters();
-    phi.set_parameters()->set_m_quant() = kk;
+    phi.set_parameters().set_m_quant() = kk;
 
     int number = 2; // Number of configurations to compute
     double step = 0.001; // Increase in omega between configs

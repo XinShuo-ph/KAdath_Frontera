@@ -128,7 +128,7 @@ void Domain_shell_inner_adapted::export_tau (const Tensor& tt, int dom, int orde
 			if (!tt.is_m_order_affected())
 			  export_tau_val_domain (tt()(dom), 0, order, res, pos_res, ncond(0)) ;
 			else 
-			    export_tau_val_domain (tt()(dom), tt.get_parameters()->get_m_order(), order, res, pos_res, ncond(0)) ;
+			    export_tau_val_domain (tt()(dom), tt.get_parameters().get_m_order(), order, res, pos_res, ncond(0)) ;
 			break ;
 		case 1 : {
 			bool found = false ;

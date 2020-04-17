@@ -77,7 +77,7 @@ Array<int> Domain_polar_shell_inner_adapted::nbr_conditions_boundary (const Tens
 			if (!tt.is_m_quant_affected())
 			  res.set(0) = nbr_conditions_val_domain_boundary (tt()(dom), 0) ;
 			else
-			  res.set(0) = nbr_conditions_val_domain_boundary (tt()(dom), tt.get_parameters()->get_m_quant()) ;
+			  res.set(0) = nbr_conditions_val_domain_boundary (tt()(dom), tt.get_parameters().get_m_quant()) ;
 			break ;
 		default :
 			cerr << "Valence " << val << " not implemented in Domain_polar_shell_inner_adapted::nbr_conditions_boundary" << endl ;

@@ -116,8 +116,7 @@ Tensor add_one_dom (int dd, const Tensor & t1, const Tensor & t2) {
     // Put parameters :
     int m_res = add_m_quant (t1.get_parameters(), t2.get_parameters()) ;
     if (m_res!=0) {
-      res.affect_parameters() ;
-      res.set_parameters()->set_m_quant() = m_res ;
+      res.set_parameters().set_m_quant() = m_res ;
     }
 
     return res ;
@@ -132,8 +131,8 @@ Tensor add_one_dom (int dd, const Tensor& t, double xx) {
 		res.cmp[i]->set_domain(dd) = t(res.indices(i))(dd)+xx ;
 
 	// Copy parameters in this case...
-	if (t.parameters!=0x0)
-	  res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters)
+	  res.parameters = t.get_parameters() ;
 	return res ;
 }
 
@@ -146,8 +145,8 @@ Tensor add_one_dom (int dd, double xx, const Tensor& t) {
 		res.cmp[i]->set_domain(dd) = t(res.indices(i))(dd)+xx ;
 
 	// Copy parameters in this case...
-	if (t.parameters!=0x0)
-	  res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters)
+	  res.parameters = t.get_parameters() ;
 	return res ;
 }
 
@@ -215,8 +214,7 @@ Tensor sub_one_dom (int dd, const Tensor & t1, const Tensor & t2) {
   // Put parameters :
     int m_res = add_m_quant (t1.get_parameters(), t2.get_parameters()) ;
     if (m_res!=0) {
-      res.affect_parameters() ;
-      res.set_parameters()->set_m_quant() = m_res ;
+      res.set_parameters().set_m_quant() = m_res ;
     }
 
     return res ;
@@ -230,8 +228,8 @@ Tensor sub_one_dom (int dd, const Tensor& t, double xx) {
 	for (int i=0 ; i<res.n_comp ; i++)
 		res.cmp[i]->set_domain(dd) = t(res.indices(i))(dd)-xx ;
 	// Copy parameters in this case...
-	if (t.parameters!=0x0)
-	    res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters)
+	    res.parameters = t.get_parameters() ;
 	return res ;
 }
 
@@ -243,8 +241,7 @@ Tensor sub_one_dom (int dd, double xx, const Tensor& t) {
 	for (int i=0 ; i<res.n_comp ; i++)
 		res.cmp[i]->set_domain(dd) = -t(res.indices(i))(dd)+xx ;
 	// Copy parameters in this case...
-	if (t.parameters!=0x0)
-	  res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters) res.parameters = t.get_parameters() ;
 	return res ;
 }
 
@@ -286,8 +283,7 @@ Tensor mult_one_dom (int dd, const Tensor& t1, const Tensor& t2) {
 	// Put parameters :
       int m_res = mult_m_quant (t1.get_parameters(), t2.get_parameters()) ;
       if (m_res!=0) {
-	res.affect_parameters() ;
-	res.set_parameters()->set_m_quant() = m_res ;
+	res.set_parameters().set_m_quant() = m_res ;
       }
 
 	return res ;
@@ -401,8 +397,7 @@ Tensor mult_one_dom (int dd, const Tensor& t1, const Tensor& t2) {
 		// Put parameters :
       int m_res = mult_m_quant (t1.get_parameters(), t2.get_parameters()) ;
       if (m_res!=0) {
-	res.affect_parameters() ;
-	res.set_parameters()->set_m_quant() = m_res ;
+	res.set_parameters().set_m_quant() = m_res ;
       }
 		return res ;
 		}
@@ -438,8 +433,7 @@ Tensor mult_one_dom (int dd, const Tensor& t1, const Tensor& t2) {
       // Put parameters :
       int m_res = mult_m_quant (t1.get_parameters(), t2.get_parameters()) ;
       if (m_res!=0) {
-	res.affect_parameters() ;
-	res.set_parameters()->set_m_quant() = m_res ;
+	res.set_parameters().set_m_quant() = m_res ;
       }
 		return res ;
 		}
@@ -458,8 +452,8 @@ Tensor mult_one_dom (int dd, const Tensor& t, double xx) {
 			res.set_name_ind(i, t.name_indice[i]) ;
    	}
 // Copy parameters in this case...
-	if (t.parameters!=0x0)
-	  res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters)
+	  res.parameters = t.get_parameters() ;
 	return res ;
 }
 
@@ -475,8 +469,8 @@ Tensor mult_one_dom (int dd, double xx, const Tensor& t) {
 			res.set_name_ind(i, t.name_indice[i]) ;
    	}
       // Copy parameters in this case...
-	if (t.parameters!=0x0)
-	  res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters)
+	  res.parameters = t.get_parameters() ;
 	return res ;
 }
 
@@ -492,8 +486,8 @@ Tensor mult_one_dom (int dd, const Tensor& t, int mm) {
 			res.set_name_ind(i, t.name_indice[i]) ;
    	}
 // Copy parameters in this case...
-	if (t.parameters!=0x0)
-	  res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters)
+	  res.parameters = t.get_parameters() ;
 	return res ;
 }
 
@@ -509,8 +503,8 @@ Tensor mult_one_dom (int dd, int mm, const Tensor& t) {
 			res.set_name_ind(i, t.name_indice[i]) ;
    	}
 	// Copy parameters in this case...
-	if (t.parameters!=0x0)
-	  res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters)
+	  res.parameters = t.get_parameters() ;
 	return res ;
 }
 
@@ -559,8 +553,8 @@ Tensor div_one_dom (int dd, const Tensor& t, double xx) {
    }
 
       // Copy parameters in this case...
-	if (t.parameters!=0x0)
-	  res.parameters = new Param_tensor(*t.get_parameters()) ;
+	if (t.parameters)
+	  res.parameters = t.get_parameters() ;
 	return res ;
 }
 

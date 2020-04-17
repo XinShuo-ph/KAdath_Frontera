@@ -75,7 +75,7 @@ int Domain_polar_compact::nbr_unknowns (const Tensor& tt, int dom) const {
 			if (!tt.is_m_quant_affected())
 			  res += nbr_unknowns_val_domain (tt()(dom), 0) ;
 			else 
-			  res += nbr_unknowns_val_domain (tt()(dom), tt.get_parameters()->get_m_quant()) ;
+			  res += nbr_unknowns_val_domain (tt()(dom), tt.get_parameters().get_m_quant()) ;
 			break ;
 		default :
 			cerr << "Valence " << val << " not implemented in Domain_polar_compact::nbr_unknowns" << endl ;

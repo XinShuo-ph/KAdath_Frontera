@@ -33,7 +33,7 @@ Term_eq Ope_lap::action() const {
 	Term_eq target (parts[0]->action()) ;
 	int mm ;
         if (target.val_t->is_m_quant_affected())
-          mm =  target.val_t->get_parameters()->get_m_quant() ;
+          mm =  target.val_t->get_parameters().get_m_quant() ;
         else
           mm = 0 ;
 	return target.val_t->get_space().get_domain(dom)->lap_term_eq(target, mm) ;

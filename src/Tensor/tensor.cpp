@@ -709,37 +709,6 @@ bool Tensor::find_indices (const Tensor& tt, Array<int>& perm) const {
 	return res ;
 }
 
-int& Tensor::set_basis (int d) {
-    return basis.set_basis(d) ;
-}
-     
-const Param_tensor* Tensor::get_parameters() const {
-   return parameters ;
-}
-     
-Param_tensor*& Tensor::set_parameters() {
-   return parameters ;
-}
-
-void Tensor::affect_parameters() {
-    if (parameters==0x0)
-      parameters = new Param_tensor() ;
-}
-
-bool Tensor::is_m_order_affected() const {
-      if (parameters==0x0)
-	return false ;
-      else
-	return parameters->m_order_affected ;
-}
-
-bool Tensor::is_m_quant_affected() const {
-      if (parameters==0x0)
-	return false ;
-      else
-	return parameters->m_quant_affected ;
-}
-
 void Tensor::coef() const
 {
    Index pos(*this);

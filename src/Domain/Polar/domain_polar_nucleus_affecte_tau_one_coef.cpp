@@ -379,7 +379,7 @@ void Domain_polar_nucleus::affecte_tau_one_coef (Tensor& tt, int dom, int cc, in
 			if (!tt.is_m_quant_affected())
 			  affecte_tau_one_coef_val_domain (tt.set().set_domain(dom), 0, 0, cc, pos_cf) ;
 			else
-			  affecte_tau_one_coef_val_domain (tt.set().set_domain(dom), tt.get_parameters()->get_m_quant(), 0, cc, pos_cf) ;
+			  affecte_tau_one_coef_val_domain (tt.set().set_domain(dom), tt.get_parameters().get_m_quant(), 0, cc, pos_cf) ;
 			break ;
 	
 		default :

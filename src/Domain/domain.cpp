@@ -26,17 +26,17 @@ Domain::Domain (int num, int ttype, const Dim_array& res) : num_dom(num), ndim(r
 		nbr_coefs.set(i) = 0 ;
 	coloc = new Array<double>* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		coloc[i] = 0x0 ;	
+		coloc[i] = nullptr ;	
 	absol = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		absol[i] = 0x0 ;
+		absol[i] = nullptr ;
 	cart = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		cart[i] = 0x0 ;
+		cart[i] = nullptr ;
 	cart_surr = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		cart_surr[i] = 0x0 ;
-	radius = 0x0 ;
+		cart_surr[i] = nullptr ;
+	radius = nullptr ;
 }
 
 // Constructor by copy
@@ -44,17 +44,17 @@ Domain::Domain (const Domain& so) : num_dom (so.num_dom), ndim(so.ndim), nbr_poi
 		type_base(so.type_base)  {
 	coloc = new Array<double>* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		coloc[i] = (so.coloc[i] == 0x0) ? 0x0 : new Array<double>(*so.coloc[i]) ;
+		coloc[i] = (so.coloc[i] == nullptr) ? nullptr : new Array<double>(*so.coloc[i]) ;
 	absol = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		absol[i] = (so.absol[i]==0x0) ? 0x0 : new Val_domain (*so.absol[i]) ;
+		absol[i] = (so.absol[i]==nullptr) ? nullptr : new Val_domain (*so.absol[i]) ;
 	cart = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		cart[i] = (so.cart[i]==0x0) ? 0x0 : new Val_domain (*so.cart[i]) ;
+		cart[i] = (so.cart[i]==nullptr) ? nullptr : new Val_domain (*so.cart[i]) ;
 	cart_surr = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		cart_surr[i] = (so.cart_surr[i]==0x0) ? 0x0 : new Val_domain (*so.cart_surr[i]) ;
-	radius = (so.radius==0x0) ? 0x0 : new Val_domain(*so.radius) ;
+		cart_surr[i] = (so.cart_surr[i]==nullptr) ? nullptr : new Val_domain (*so.cart_surr[i]) ;
+	radius = (so.radius==nullptr) ? nullptr : new Val_domain(*so.radius) ;
 }
 
 
@@ -65,17 +65,17 @@ Domain::Domain (int num, FILE* fd) : num_dom(num), nbr_points(fd), nbr_coefs(fd)
 	assert (ndim==nbr_coefs.get_ndim()) ;
 	coloc = new Array<double>* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		coloc[i] = 0x0 ;	
+		coloc[i] = nullptr ;	
 	absol = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		absol[i] = 0x0 ;
+		absol[i] = nullptr ;
 	cart = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		cart[i] = 0x0 ;
+		cart[i] = nullptr ;
 	cart_surr = new Val_domain* [ndim] ;
 	for (int i=0 ; i<ndim ; i++)
-		cart_surr[i] = 0x0 ;
-	radius = 0x0 ;
+		cart_surr[i] = nullptr ;
+	radius = nullptr ;
 }
 
 // Destructor
@@ -103,37 +103,37 @@ void Domain::operator= (const Domain&) {
 // destructor of the derived quantities
 void Domain::del_deriv() const  {
 	for (int l=0 ; l<ndim ; l++) {
-		if (coloc[l] !=0x0) delete coloc[l] ;
-		if (absol[l] !=0x0) delete absol[l] ;
-		if (cart[l] !=0x0) delete cart[l] ;
-		if (cart_surr[l] !=0x0) delete cart_surr[l] ;
-		coloc[l] = 0x0 ;
-		absol[l] = 0x0 ;
-		cart_surr[l] = 0x0 ;
-		cart[l]=  0x0 ;
+		if (coloc[l] !=nullptr) delete coloc[l] ;
+		if (absol[l] !=nullptr) delete absol[l] ;
+		if (cart[l] !=nullptr) delete cart[l] ;
+		if (cart_surr[l] !=nullptr) delete cart_surr[l] ;
+		coloc[l] = nullptr ;
+		absol[l] = nullptr ;
+		cart_surr[l] = nullptr ;
+		cart[l]=  nullptr ;
 	}
-	if (radius !=0x0)
+	if (radius !=nullptr)
 	    delete radius ;
-	radius = 0x0 ;
+	radius = nullptr ;
 }
 // Returns absolute coordinates
 Val_domain Domain::get_absol(int i) const {
 	assert ((i>0) && (i<=ndim)) ;
-	if (absol[i-1]== 0x0)
+	if (absol[i-1]== nullptr)
 	    do_absol() ;
 	return *absol[i-1] ;
 }
 
 // Returns the generalized radius
 Val_domain Domain::get_radius() const {
-	if (radius == 0x0)
+	if (radius == nullptr)
 	    do_radius() ;
 	return *radius ;
 }
 // Returns cartesian coordinate
 Val_domain Domain::get_cart(int i) const {
 	assert ((i>0) && (i<=ndim)) ;
-	if (cart[i-1]== 0x0)
+	if (cart[i-1]== nullptr)
 	    do_cart() ;
 	return *cart[i-1] ;
 }
@@ -141,14 +141,14 @@ Val_domain Domain::get_cart(int i) const {
 // Returns cartesian coordinate over radius
 Val_domain Domain::get_cart_surr(int i) const {
 	assert ((i>0) && (i<=ndim)) ;
-	if (cart_surr[i-1]== 0x0)
+	if (cart_surr[i-1]== nullptr)
 	    do_cart_surr() ;
 	return *cart_surr[i-1] ;
 }
 
 Array<double> Domain::get_coloc (int i) const {
 	assert ((i>0) && (i<=ndim)) ;
-	assert (coloc[i-1] !=0x0) ;
+	assert (coloc[i-1] !=nullptr) ;
 	return *coloc[i-1] ;
 }
 
@@ -190,7 +190,7 @@ Term_eq Domain::import (int numdom, int bound, int n_ope, Term_eq** parts) const
   // Do the derivative parts ?
   bool doder = true ;
   for (int i=0 ; i<n_ope ; i++)
-      if (parts[i]->der_t==0x0)
+      if (parts[i]->der_t==nullptr)
 	  doder = false ;
           
   if (doder) {
@@ -244,80 +244,80 @@ ostream& operator<< (ostream& o, const Domain& so) {
        const Domain_fourD_periodic_nucleus* fourDperiodicnuc = dynamic_cast<const Domain_fourD_periodic_nucleus*>(&so) ;
        const Domain_fourD_periodic_shell* fourDperiodicshell = dynamic_cast<const Domain_fourD_periodic_shell*>(&so) ;
 
-       if (nuc != 0x0)
+       if (nuc != nullptr)
            o << *nuc << endl ;
-       if ((shell != 0x0) && (shell_log==0x0) && (shell_surr==0x0))
+       if ((shell != nullptr) && (shell_log==nullptr) && (shell_surr==nullptr))
            o << *shell << endl ;   
-       if (shell_log != 0x0) 
+       if (shell_log != nullptr) 
            o << *shell_log << endl ; 
-       if (shell_surr != 0x0) 
+       if (shell_surr != nullptr) 
            o << *shell_surr << endl ;
-       if (compact !=0x0) 
+       if (compact !=nullptr) 
            o << *compact << endl ;
-       if (bi_rect !=0x0)
+       if (bi_rect !=nullptr)
            o << *bi_rect << endl ;
-       if (bi_chi !=0x0)
+       if (bi_chi !=nullptr)
            o << *bi_chi << endl ;
-       if (bi_eta !=0x0)
+       if (bi_eta !=nullptr)
            o << *bi_eta << endl ;
-	if (critic_inner !=0x0)
+	if (critic_inner !=nullptr)
            o << *critic_inner << endl ;
-	if (critic_outer !=0x0)
+	if (critic_outer !=nullptr)
            o << *critic_outer << endl ;
-	if (polar_nuc != 0x0)
+	if (polar_nuc != nullptr)
            o << *polar_nuc << endl ;
-       if (polar_shell != 0x0) 
+       if (polar_shell != nullptr) 
            o << *polar_shell << endl ;
-       if (polar_compact !=0x0) 
+       if (polar_compact !=nullptr) 
            o << *polar_compact << endl ;
-	  if (period_nuc != 0x0)
+	  if (period_nuc != nullptr)
            o << *period_nuc << endl ;
-       if (period_shell != 0x0) 
+       if (period_shell != nullptr) 
            o << *period_shell << endl ;
-       if (period_compact !=0x0) 
+       if (period_compact !=nullptr) 
            o << *period_compact << endl ;
-       if (oned_ori != 0x0)
+       if (oned_ori != nullptr)
            o << *oned_ori << endl ;
-       if (oned_qcq != 0x0) 
+       if (oned_qcq != nullptr) 
            o << *oned_qcq << endl ;
-       if (oned_inf !=0x0) 
+       if (oned_inf !=nullptr) 
            o << *oned_inf << endl ;  
-       if (time_nuc != 0x0)
+       if (time_nuc != nullptr)
            o << *time_nuc << endl ;
-       if (time_shell != 0x0) 
+       if (time_shell != nullptr) 
            o << *time_shell << endl ; 
-       if (time_compact != 0x0) 
+       if (time_compact != nullptr) 
            o << *time_compact << endl ;	
-      if (shell_outer_homothetic!=0x0) 
+      if (shell_outer_homothetic!=nullptr) 
 	o << *shell_outer_homothetic << endl ;
       else {
-       if (shell_outer_adapted !=0x0)
+       if (shell_outer_adapted !=nullptr)
 	  o << *shell_outer_adapted << endl ;
       }
-	if (shell_inner_homothetic !=0x0)
+	if (shell_inner_homothetic !=nullptr)
 	  o << *shell_inner_homothetic << endl ;
 	else {
-       if (shell_inner_adapted !=0x0)
+       if (shell_inner_adapted !=nullptr)
 	  o << *shell_inner_adapted << endl ;
 	}
 	
-       if (polar_outer_adapted !=0x0)
+       if (polar_outer_adapted !=nullptr)
 	  o << *polar_outer_adapted << endl ;
-       if (polar_inner_adapted !=0x0)
+       if (polar_inner_adapted !=nullptr)
 	  o << *polar_inner_adapted << endl ;
-      if (nucsym != 0x0)
+      if (nucsym != nullptr)
            o << *nucsym << endl ;
-      if (shellsym != 0x0)
+      if (shellsym != nullptr)
            o << *shellsym << endl ;
-       if (compsym != 0x0)
+       if (compsym != nullptr)
            o << *compsym << endl ;
-       if (polarperiodicnuc != 0x0)
+       if (polarperiodicnuc != nullptr)
 		o << *polarperiodicnuc << endl ; 
-	if (polarperiodicshell != 0x0)
+	if (polarperiodicshell != nullptr)
 		o << *polarperiodicshell << endl ; 
-	if (fourDperiodicnuc != 0x0)
+	if (fourDperiodicnuc != nullptr)
 		o << *fourDperiodicnuc << endl ; 
-	if (fourDperiodicshell != 0x0)
+	if (fourDperiodicshell != nullptr)
 		o << *fourDperiodicshell << endl ;
        return o ;   
 }
@@ -359,15 +359,13 @@ Term_eq Domain::grad_term_eq (const Term_eq& so) const {
  
     Term_eq res (partial_cart(so)) ;
     if (so.val_t->is_m_quant_affected()) {
-	  res.val_t->affect_parameters() ;
-	  res.val_t->set_parameters()->set_m_quant() = so.val_t->get_parameters()->get_m_quant() ;
+	  res.val_t->set_parameters().set_m_quant() = so.val_t->get_parameters().get_m_quant() ;
 	}
 	
-    if (so.der_t!=0x0) {
-       if (so.der_t->is_m_quant_affected()) {
-	  res.der_t->affect_parameters() ;
-	  res.der_t->set_parameters()->set_m_quant() = so.der_t->get_parameters()->get_m_quant() ;
-	}
+    if (so.der_t!=nullptr) {
+        if (so.der_t->is_m_quant_affected()) {
+            res.der_t->set_parameters().set_m_quant() = so.der_t->get_parameters().get_m_quant() ;
+        }
     }
     return res ;
 }
@@ -396,7 +394,7 @@ Term_eq Domain::integ_term_eq (const Term_eq& so, int bound) const {
 	else 
 		resval = integ(value, bound) ;
 
-	if (so.der_t!=0x0) {
+	if (so.der_t!=nullptr) {
 		Val_domain value_der ((*so.der_t)(ind)(so.dom)) ;
 		double resder ;
 		if (value_der.check_if_zero()) 
@@ -426,8 +424,8 @@ Term_eq Domain::do_comp_by_comp_with_int (const Term_eq& target, int val, Val_do
 			Val_domain auxi ((this->*pfunc)(value, val)) ;
 			resval.set(ind).set_domain(num_dom) = auxi ;
 		}
-		if (target.get_val_t().get_parameters()!=0x0)
-		  resval.set_parameters() = new Param_tensor(*target.get_val_t().get_parameters()) ;
+		if (target.get_val_t().get_parameters())
+		  resval.set_parameters() = target.get_val_t().get_parameters() ;
 
 		// affecte parameters 
 		if (target.get_val_t().is_name_affected()) {
@@ -437,7 +435,7 @@ Term_eq Domain::do_comp_by_comp_with_int (const Term_eq& target, int val, Val_do
 		}
 	}
 
-	if (target.der_t!=0x0) {
+	if (target.der_t!=nullptr) {
 		Tensor resder (*target.der_t, false) ;
 		for (int i=0 ; i<target.der_t->get_n_comp() ; i++) {
 			Array<int> ind (target.der_t->indices(i)) ;
@@ -449,8 +447,8 @@ Term_eq Domain::do_comp_by_comp_with_int (const Term_eq& target, int val, Val_do
 				resder.set(ind).set_domain(num_dom) = auxi ;
 			}
 			}
-		if (target.get_der_t().get_parameters()!=0x0)
-		  resder.set_parameters() = new Param_tensor(*target.get_der_t().get_parameters()) ;
+		if (target.get_der_t().get_parameters())
+		  resder.set_parameters() = target.get_der_t().get_parameters() ;
 		// affecte parameters 
 		if (target.get_der_t().is_name_affected()) {
 			resder.set_name_affected() ;
@@ -481,8 +479,8 @@ Term_eq Domain::do_comp_by_comp (const Term_eq& target, Val_domain (Domain::*pfu
 			Val_domain auxi ((this->*pfunc)(value)) ;
 			resval.set(ind).set_domain(num_dom) = auxi ;
 		}
-		if (target.get_val_t().get_parameters()!=0x0)
-		  resval.set_parameters() = new Param_tensor(*target.get_val_t().get_parameters()) ;
+		if (target.get_val_t().get_parameters())
+		  resval.set_parameters() = target.get_val_t().get_parameters() ;
 
 		// affecte parameters 
 		if (target.get_val_t().is_name_affected()) {
@@ -492,7 +490,7 @@ Term_eq Domain::do_comp_by_comp (const Term_eq& target, Val_domain (Domain::*pfu
 		}
 	}
 
-	if (target.der_t!=0x0) {
+	if (target.der_t!=nullptr) {
 		Tensor resder (*target.der_t, false) ;
 		for (int i=0 ; i<target.der_t->get_n_comp() ; i++) {
 			Array<int> ind (target.der_t->indices(i)) ;
@@ -504,8 +502,8 @@ Term_eq Domain::do_comp_by_comp (const Term_eq& target, Val_domain (Domain::*pfu
 				resder.set(ind).set_domain(num_dom) = auxi ;
 			}
 			}
-		if (target.get_der_t().get_parameters()!=0x0)
-		  resder.set_parameters() = new Param_tensor(*target.get_der_t().get_parameters()) ;
+		if (target.get_der_t().get_parameters())
+		  resder.set_parameters() = target.get_der_t().get_parameters() ;
 
 		// affecte parameters 
 		if (target.get_der_t().is_name_affected()) {
@@ -546,7 +544,7 @@ Term_eq Domain::partial_cart (const Term_eq& so) const {
 	}
 	while (pos_auxi.inc()) ;
 
-	if (so.der_t==0x0) {
+	if (so.der_t==nullptr) {
 		return Term_eq (dom, auxi_val) ;
 	}
 	else {
@@ -610,7 +608,7 @@ Term_eq Domain::partial_spher (const Term_eq& so) const {
 	}
 	while (pos_auxi.inc()) ;
 
-	if (so.der_t==0x0) {
+	if (so.der_t==nullptr) {
 		return Term_eq (dom, auxi_val) ;
 	}
 	else {
@@ -690,7 +688,7 @@ Term_eq Domain::partial_mtz (const Term_eq& so) const {
 	}
 	while (pos_auxi.inc()) ;
 
-	if (so.der_t==0x0) {
+	if (so.der_t==nullptr) {
 		return Term_eq (dom, auxi_val) ;
 	}
 	else {
@@ -819,7 +817,7 @@ Term_eq Domain::connection_spher (const Term_eq& so) const {
 	}
 	
 	
-	if (so.der_t==0x0) {
+	if (so.der_t==nullptr) {
 		// No need for derivative :
 		return Term_eq (dom, auxi_val) ;
 	}
@@ -997,7 +995,7 @@ Term_eq Domain::connection_mtz (const Term_eq& so) const {
 	}
 	
 	
-	if (so.der_t==0x0) {
+	if (so.der_t==nullptr) {
 		// No need for derivative :
 		return Term_eq (dom, auxi_val) ;
 	}
@@ -1109,7 +1107,7 @@ Term_eq Domain::integ_volume_term_eq (const Term_eq& target) const {
 	else 
 		resval = value.get_domain()->integ_volume(value) ;
 
-	if (target.der_t!=0x0) {
+	if (target.der_t!=nullptr) {
 		Val_domain value_der ((*target.der_t)(ind)(dom)) ;
 		double resder ;
 		if (value_der.check_if_zero()) 

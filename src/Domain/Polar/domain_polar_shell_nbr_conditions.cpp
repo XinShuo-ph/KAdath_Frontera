@@ -77,7 +77,7 @@ Array<int> Domain_polar_shell::nbr_conditions (const Tensor& tt, int dom, int or
 			if (!tt.is_m_quant_affected())
 			  res.set(0) = nbr_conditions_val_domain (tt()(dom), 0, order) ;
 			else 
-			  res.set(0) = nbr_conditions_val_domain (tt()(dom), tt.get_parameters()->get_m_quant(), order) ;
+			  res.set(0) = nbr_conditions_val_domain (tt()(dom), tt.get_parameters().get_m_quant(), order) ;
 			break ;
 		default :
 			cerr << "Valence " << val << " not implemented in Domain_polar_shell::nbr_conditions" << endl ;

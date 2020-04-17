@@ -123,7 +123,7 @@ void Domain_polar_shell_inner_adapted::export_tau (const Tensor& tt, int dom, in
 			if (!tt.is_m_quant_affected())
 			  export_tau_val_domain (tt()(dom), 0, order, res, pos_res, ncond(0)) ;
 			else 
-			    export_tau_val_domain (tt()(dom), tt.get_parameters()->get_m_quant(), order, res, pos_res, ncond(0)) ;
+			    export_tau_val_domain (tt()(dom), tt.get_parameters().get_m_quant(), order, res, pos_res, ncond(0)) ;
 			break ;
 		default :
 			cerr << "Valence " << val << " not implemented in Domain_polar_shell_inner_adapted::export_tau" << endl ;

@@ -23,46 +23,6 @@
 namespace Kadath {
 // Constructors
 
-Base_tensor::Base_tensor (const Space& sp) : space(sp), basis(sp.get_nbr_domains()) {  
-  basis = -1 ;
-}
-
-Base_tensor::Base_tensor (const Space& sp, int bb) : space(sp), basis (sp.get_nbr_domains()) {
-    basis = bb ;
-}
-
-Base_tensor::Base_tensor (const Base_tensor& so) : space(so.space), basis(so.basis) {
-}
-
-Base_tensor::Base_tensor (const Space& sp, FILE* fff) : space(sp), basis(fff) {
-}
-
-// Destructor
-
-Base_tensor::~Base_tensor() {
-}
-
-
-// Accessors :
-
-int& Base_tensor::set_basis (int nd) {
-  return basis.set(nd) ;
-}
-
-int Base_tensor::get_basis (int nd) const  {
-    return basis(nd) ;
-}
-
-void Base_tensor::operator= (const Base_tensor& so) {
-    assert (&space==&so.get_space()) ;
-    for (int i=0 ; i<basis.get_size(0) ; i++)
-	basis.set(i) = so.basis(i) ;
-}
-    
-void Base_tensor::save(FILE* fff) const {
-  basis.save(fff) ;
-}
-
 ostream& operator<< (ostream& flux , const Base_tensor& so) {
   flux << "Tensorial basis" << endl ;
   for (int d=0 ; d<so.space.get_nbr_domains() ; d++) {
@@ -97,8 +57,5 @@ bool operator== (const Base_tensor& b1, const Base_tensor& b2) {
   return res ;
 }
 
-bool operator!= (const Base_tensor& b1, const Base_tensor& b2) {
-  return !(b1 == b2);
-}
 }
 

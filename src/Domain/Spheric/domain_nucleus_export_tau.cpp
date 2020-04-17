@@ -1098,7 +1098,7 @@ void Domain_nucleus::export_tau (const Tensor& tt, int dom, int order, Array<dou
 		      if (!tt.is_m_order_affected())
 			  export_tau_val_domain (tt()(dom), 0, 0, order, res, pos_res, ncond(0)) ;
 		      else
-			  export_tau_val_domain (tt()(dom), tt.get_parameters()->get_m_order(), 0, order, res, pos_res, ncond(0)) ;
+			  export_tau_val_domain (tt()(dom), tt.get_parameters().get_m_order(), 0, order, res, pos_res, ncond(0)) ;
 			break ;
 		case 1 : {
 			bool found = false ;

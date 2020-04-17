@@ -120,7 +120,7 @@ void Domain_polar_shell::export_tau_boundary (const Tensor& tt, int dom, int bou
 			if (!tt.is_m_quant_affected())
 			  export_tau_val_domain_boundary (tt()(dom), 0, bound, res, pos_res, ncond(0)) ;
 			else 
-			    export_tau_val_domain_boundary (tt()(dom), tt.get_parameters()->get_m_quant(), bound, res, pos_res, ncond(0)) ;
+			    export_tau_val_domain_boundary (tt()(dom), tt.get_parameters().get_m_quant(), bound, res, pos_res, ncond(0)) ;
 			break ;
 		default :
 			cerr << "Valence " << val << " not implemented in Domain_polar_shell::export_tau_boundary" << endl ;

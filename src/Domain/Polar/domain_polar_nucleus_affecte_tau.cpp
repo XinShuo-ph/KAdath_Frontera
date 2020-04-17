@@ -335,7 +335,7 @@ void Domain_polar_nucleus::affecte_tau (Tensor& tt, int dom, const Array<double>
 			if (!tt.is_m_quant_affected())
 			  affecte_tau_val_domain (tt.set().set_domain(dom), 0, 0, cf, pos_cf) ;
 			else
-			  affecte_tau_val_domain (tt.set().set_domain(dom), tt.get_parameters()->get_m_quant(), 0, cf, pos_cf) ;
+			  affecte_tau_val_domain (tt.set().set_domain(dom), tt.get_parameters().get_m_quant(), 0, cf, pos_cf) ;
 			break ;
 		default :
 			cerr << "Valence " << val << " not implemented in Domain_polar_nucleus::affecte_tau" << endl ;

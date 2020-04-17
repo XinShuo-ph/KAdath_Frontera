@@ -128,6 +128,8 @@ template <typename T> class Array : public Memory_mapped {
 	    Array (FILE*) ;
 
 	public:
+        //! Swaps contents between the two arrays (carefull with arrays of allocated pointers).
+        void swap(Array<T> & so) {dimensions.swap(so.dimensions); std::swap(nbr,so.nbr); data.swap(so.data);}
 
 	    void delete_data() {data.clear();} ///< Logical destructor (kills the data)
 

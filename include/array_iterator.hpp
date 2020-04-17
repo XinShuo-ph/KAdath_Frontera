@@ -55,7 +55,7 @@ namespace Kadath {
          * @return a reference toward the current object.
          */
         Array_iterator & set(Array_iterator const &_so) {position = _so.position; return *this;}
-        bool check_value() {if(position >= steps.back()) { position = steps.back() - 1; return false;} else return true;}
+        bool check_value();
         void set_start() { position = 0;}
         /**
         * Returns all the dimensions
@@ -73,6 +73,14 @@ namespace Kadath {
         bool inc() {position++; return check_value(); }
         template <class> friend class Array ;
     };
+
+    inline bool Array_iterator::check_value() {
+        if(position >= steps.back()) {
+            position = steps.back() - 1;
+            return false;
+        }
+        else return true;
+    }
 
 }
 

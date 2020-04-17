@@ -100,6 +100,10 @@ namespace Kadath {
         void save(FILE*) const ; ///< Saving function
     public:
         /**
+         * Swaps data between the source and this.
+         */
+        void swap(Base_spectral & so) ;
+        /**
          * @returns : \c true if the basis is defined, \c false otherwise.
          */
         bool is_def () const {return def;} ;
@@ -255,6 +259,12 @@ namespace Kadath {
                 bases_1d[i] = nullptr ;
         }
         return *this;
+    }
+
+    inline void Base_spectral::swap(Base_spectral & so) {
+        std::swap(def,so.def);
+        std::swap(ndim,so.ndim);
+        bases_1d.swap(so.bases_1d);
     }
 
     inline bool operator== (const Base_spectral& a, const Base_spectral& b) {

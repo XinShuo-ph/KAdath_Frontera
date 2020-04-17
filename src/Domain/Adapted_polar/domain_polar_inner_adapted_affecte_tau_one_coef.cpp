@@ -107,7 +107,7 @@ void Domain_polar_shell_inner_adapted::affecte_tau_one_coef (Tensor& tt, int dom
 			if (!tt.is_m_quant_affected())
 			  affecte_tau_one_coef_val_domain (tt.set().set_domain(dom), 0, cc, pos_cf) ;
 			else
-			  affecte_tau_one_coef_val_domain (tt.set().set_domain(dom), tt.get_parameters()->get_m_quant(), cc, pos_cf) ;
+			  affecte_tau_one_coef_val_domain (tt.set().set_domain(dom), tt.get_parameters().get_m_quant(), cc, pos_cf) ;
 			break ;
 		default :
 			cerr << "Valence " << val << " not implemented in Domain_polar_shell_inner_adapted::affecte_tau" << endl ;

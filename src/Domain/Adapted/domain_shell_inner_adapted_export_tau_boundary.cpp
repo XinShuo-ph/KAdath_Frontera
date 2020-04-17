@@ -131,7 +131,7 @@ void Domain_shell_inner_adapted::export_tau_boundary (const Tensor& tt, int dom,
 			if (!tt.is_m_order_affected())
 			  export_tau_val_domain_boundary (tt()(dom), 0, bound, res, pos_res, ncond(0)) ;
 			else 
-			    export_tau_val_domain_boundary (tt()(dom), tt.get_parameters()->get_m_order(), bound, res, pos_res, ncond(0)) ;
+			    export_tau_val_domain_boundary (tt()(dom), tt.get_parameters().get_m_order(), bound, res, pos_res, ncond(0)) ;
 			break ;
 		case 1 : {
 			bool found = false ;

@@ -183,7 +183,7 @@ Array<int> Domain_nucleus::nbr_conditions_boundary (const Tensor& tt, int dom, i
 			if (!tt.is_m_order_affected())
 			  res.set(0) = nbr_conditions_val_domain_boundary (tt()(dom), 0) ;
 			else
-			  res.set(0) = nbr_conditions_val_domain_boundary (tt()(dom), tt.get_parameters()->get_m_order()) ;
+			  res.set(0) = nbr_conditions_val_domain_boundary (tt()(dom), tt.get_parameters().get_m_order()) ;
 			break ;
 		case 1 : {
 			bool found = false ;
