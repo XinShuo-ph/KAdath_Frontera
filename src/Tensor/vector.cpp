@@ -22,90 +22,37 @@
 #include "scalar.hpp"
 #include "tensor_impl.hpp"
 namespace Kadath {
-			//--------------//
-			// Constructors //
-			//--------------//
+    Vector & Vector::operator=(const Vector& t) {
+        assert (&espace==&t.espace) ;
+        basis = t.basis ;
+        assert(t.type_indice(0) == type_indice(0)) ;
 
-// Standard constructor 
-// --------------------
-Vector::Vector(const Space& sp, int tipe, const Base_tensor& bb) 
-		: Tensor(sp, 1, tipe, bb) {
-}
-	
-// Copy constructor
-// ----------------
-Vector::Vector (const Vector& source) : 
-    Tensor(source) {
-}   
-
-
-// Constructor from a {\tt Tensor}.
-//--------------------------------
-Vector::Vector(const Tensor& uu) : Tensor(uu) {
-  assert(valence == 1) ;
-}
-
-Vector::Vector (const Space& sp, FILE* ff) :
-	Tensor (sp, ff) {
-
-	assert (valence==1) ;
-}
-
-
-
-Vector & Vector::operator=(const Vector& t) {
-    
-   
-    assert (&espace==&t.espace) ; 
-    basis = t.basis ; 
-    assert(t.type_indice(0) == type_indice(0)) ;
-
-    for (int i=0 ; i<3 ; i++) {
-      *cmp[i] = *t.cmp[i] ;
+        for (int i=0 ; i<3 ; i++) {
+          *cmp[i] = *t.cmp[i] ;
+        }
+        return *this;
     }
-    return *this;
-}
 
-Vector & Vector::operator=(const Tensor& t) {
-    
-    assert (t.valence == 1) ;
+    Vector & Vector::operator=(const Tensor& t) {
+
+        assert (t.valence == 1) ;
 
 
-    assert (&espace==&t.espace) ;    
-    basis = t.basis ; 
-    assert(t.type_indice(0) == type_indice(0)) ;
+        assert (&espace==&t.espace) ;
+        basis = t.basis ;
+        assert(t.type_indice(0) == type_indice(0)) ;
 
-    for (int i=0 ; i<3 ; i++) {
-      *cmp[i] = *t.cmp[i] ;
+        for (int i=0 ; i<3 ; i++) {
+          *cmp[i] = *t.cmp[i] ;
+        }
+        return *this;
     }
-    return *this;
-}
 
-Vector & Vector::operator=(double xx) {
-    for (int i=0 ; i<3 ; i++) {
-      *cmp[i] = xx ;
+    Vector & Vector::operator=(double xx) {
+        for (int i=0 ; i<3 ; i++) {
+          *cmp[i] = xx ;
+        }
+        return *this;
     }
-    return *this;
-}
 
-void Vector::annule_hard() {
-	for (int i=0  ; i<3 ; i++)
-		cmp[i]->annule_hard() ;
-}
-
-
-// Affectation d'une composante :
-Scalar& Vector::set(int index) {
-  assert ( (index>=1) && (index<=3) ) ;
-  return *cmp[index - 1] ;
-}
-
-const Scalar& Vector::operator()(int index) const {
-  assert ((index>=1) && (index<=3)) ;
-  return *cmp[index - 1] ;
-}
-
-const Scalar& Vector::at(int index) const {
-  return operator()(index);
-}
 }

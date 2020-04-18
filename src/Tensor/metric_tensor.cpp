@@ -142,33 +142,7 @@ Array<int> metric_tensor_indices (int pos, int valence, int ndim) {
 		// Members
 		//////////////
 
-Metric_tensor::Metric_tensor (const Space& sp, int type_descr, const Base_tensor& bb) : 
-	Tensor (sp, 2, type_descr, 6, bb, 3) {
 
-	give_place_array = metric_tensor_position_array ;
-	give_place_index = metric_tensor_position_index ;
-	give_indices = metric_tensor_indices ;
-}
-
-Metric_tensor::Metric_tensor (const Metric_tensor& so, bool copie) :
-	Tensor (so, copie) {
-}
-
-Metric_tensor::Metric_tensor (const Space& sp, FILE* ff) :
-	Tensor (sp, 3, ff) {
-
-	assert (valence==2) ;
-	assert (type_indice(0)==type_indice(1)) ;
-	assert (n_comp==6) ;
-
-	// Overwrite the storage functions :
-	give_place_array = metric_tensor_position_array ;
-	give_place_index = metric_tensor_position_index ;
-	give_indices = metric_tensor_indices ;
-}
-
-Metric_tensor::~Metric_tensor () {
-}
 
 Metric_tensor & Metric_tensor::operator= (const Metric_tensor& so) {
     assert (&espace==&so.espace) ;

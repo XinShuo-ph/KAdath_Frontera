@@ -15,6 +15,11 @@ namespace Kadath {
 //    int std_position_index (const Index& , int );
 //    Array<int> std_indices (int , int , int );
 
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //                              INLINED TENSOR METHODS                                 //
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+
     inline void Tensor::annule_hard() {
         for (int i=0 ; i<n_comp ; i++)
             cmp[i]->annule_hard() ;
@@ -218,7 +223,31 @@ namespace Kadath {
         for (int d=0 ; d<espace.get_nbr_domains() ; d++) {
             espace.get_domain(d)->filter(*this, d, threshold) ;
         }
+    }
 
+
+    inline void Vector::annule_hard() {
+        for (int i=0  ; i<3 ; i++)
+            cmp[i]->annule_hard() ;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //                              INLINED VECTOR METHODS                                 //
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+    inline Scalar& Vector::set(int index) {
+        assert ( (index>=1) && (index<=3) ) ;
+        return *cmp[index - 1] ;
+    }
+
+    inline const Scalar& Vector::operator()(int index) const {
+        assert ((index>=1) && (index<=3)) ;
+        return *cmp[index - 1] ;
+    }
+
+    inline const Scalar& Vector::at(int index) const {
+        return operator()(index);
     }
 }
 #endif //__TENSOR_IMPL_HPP_

@@ -46,17 +46,15 @@ namespace Kadath {
          * @param tipe : the type tensor (COV vs CON).
          * @param ba : the tensorial basis used.
          */
-        Vector(const Space& sp, int tipe, const Base_tensor& ba) ;
+        Vector(const Space& sp, int tipe, const Base_tensor& ba) : Tensor{sp, 1, tipe, ba} {}
 
-        Vector(const Vector& a) ;       ///< Copy constructor
-            Vector (const Space& sp, FILE*) ; ///< Constructor from a file.
+        Vector(const Vector& a) : Tensor{a} {}       ///< Copy constructor
+        Vector (const Space& sp, FILE*ff) : Tensor{sp, ff} {assert (valence==1) ;} ///< Constructor from file.
 
         /** Constructor from a \c Tensor .
          *  The \c Tensor  must be of valence one.
          */
-        Vector(const Tensor& a) ;
-
-        ~Vector() override {}			///< Destructor
+        Vector(const Tensor& a) : Tensor{a} {assert(valence == 1) ;}
 
         // Mutators / assignment
         // ---------------------
@@ -67,10 +65,10 @@ namespace Kadath {
         Vector & operator=(double) override;
         void annule_hard() override;
 
-    #ifdef TENSOR_MOVE_SEMANTIC
+#ifdef TENSOR_MOVE_SEMANTIC
         Vector(Vector && so) : Tensor{std::move(so)} {}
         Vector & operator=(Vector && so) {this->Tensor::operator=(std::move(so)); return *this;}
-    #endif //#ifdef TENSOR_MOVE_SEMANTIC
+#endif //#ifdef TENSOR_MOVE_SEMANTIC
 
         // Accessors
         // ---------
