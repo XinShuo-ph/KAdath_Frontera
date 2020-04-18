@@ -54,14 +54,14 @@ Scalar::Scalar (const Space& sp, FILE* fd) : Tensor(sp) {
 }
 
 #ifdef TENSOR_MOVE_SEMANTIC
-Scalar::Scalar(Scalar && so) : Tensor{std::move(so)}, val_zones{so.val_zones}
+Scalar::Scalar(Scalar && so) noexcept : Tensor{std::move(so)}, val_zones{so.val_zones}
 {
     so.val_zones = nullptr;
     cmp[0]=this;
-    assert(so.cmp == nullptr);
+    assert(so.cmp.get_data() == nullptr);
 }
 
-Scalar & Scalar::operator=(Tensor && so)
+Scalar & Scalar::operator=(Tensor && so) noexcept
 {
 	assert(so.valence==0);
 	this->do_move(std::move(so),false);
@@ -70,7 +70,7 @@ Scalar & Scalar::operator=(Tensor && so)
     return *this;
 }
 
-Scalar & Scalar::operator=(Scalar && so)
+Scalar & Scalar::operator=(Scalar && so) noexcept
 {
 	this->do_move(std::move(so),false);
     std::swap(val_zones,so.val_zones);
@@ -87,7 +87,7 @@ Scalar::~Scalar () {
             if(val_zones[i]) delete val_zones[i];
         delete[] val_zones;
     }
-    if(cmp) cmp[0] = nullptr ;
+    if(!cmp.empty()) cmp[0] = nullptr ;
 }
 
 void Scalar::save (FILE* fd) const {

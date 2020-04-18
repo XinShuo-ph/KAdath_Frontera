@@ -73,7 +73,7 @@ namespace Kadath {
 
 // Standard constructor
 // --------------------
-    inline Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& bb)
+    Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& bb)
             : espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()),
               valence(val), basis(bb), type_indice(tipe), name_affected{false}, name_indice{valence},
               n_comp(int(pow(espace.get_ndim(), val))), cmp{n_comp},  parameters{}
@@ -93,14 +93,15 @@ namespace Kadath {
         give_indices = std_indices ;
     }
 
-    inline Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb)
+    Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb)
             : espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()),
-              valence(val), basis(bb), type_indice(tipe), name_affected{false}, name_indice{valence},
+              valence(val), basis(bb), type_indice(val), name_affected{false}, name_indice{valence},
               n_comp(int(pow(espace.get_ndim(), val))), cmp{n_comp}, parameters{}
     {
         assert (valence >= 0) ;
         assert ((tipe == COV) || (tipe == CON)) ;
-        for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar(espace) ;
+        type_indice = tipe;
+        for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace} ;
 
         // Storage methods :
         give_place_array = std_position_array ;
@@ -108,7 +109,7 @@ namespace Kadath {
         give_indices = std_indices ;
     }
 
-    inline Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& bb, int dim)
+    Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, const Base_tensor& bb, int dim)
             : espace(sp), ndom(espace.get_nbr_domains()), ndim(dim),
               valence(val), basis(bb), type_indice(tipe), name_affected{false}, name_indice{valence},
               n_comp(int(pow(ndim, val))), cmp{n_comp}, parameters{}
@@ -128,13 +129,14 @@ namespace Kadath {
         give_indices = std_indices ;
     }
 
-    inline Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb, int dim)
+    Tensor::Tensor(const Space& sp, int val, int tipe, const Base_tensor& bb, int dim)
             : espace(sp), ndom(espace.get_nbr_domains()), ndim(dim),
-              valence(val), basis(bb), type_indice(tipe), name_affected{false}, name_indice{valence},
+              valence(val), basis(bb), type_indice(val), name_affected{false}, name_indice{valence},
               n_comp(int(pow(ndim, val))), cmp{n_comp}, parameters{}
     {
         assert (valence >= 0) ;
         assert ((tipe == COV) || (tipe == CON)) ;
+        type_indice = tipe;
         for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace} ;
 
         // Storage methods :
@@ -147,7 +149,7 @@ namespace Kadath {
 
 // Copy constructor
 // ----------------
-    inline Tensor::Tensor (const Tensor& source, bool copy) :
+    Tensor::Tensor (const Tensor& source, bool copy) :
             espace(source.espace), ndom(source.ndom), ndim(source.ndim), valence(source.valence), basis(source.basis),
             type_indice(source.type_indice), name_affected{copy && source.name_affected}, name_indice{valence},
             n_comp (source.n_comp), cmp{n_comp}, parameters{source.parameters}
@@ -167,9 +169,9 @@ namespace Kadath {
 //  Constructor for a scalar field: to be used by the derived
 //  class {\tt Scalar}
 //-----------------------------------------------------------
-    inline Tensor::Tensor(const Space& sp) : espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()),
-                                             valence(0), basis(sp), type_indice(0), name_affected{false}, name_indice{}, n_comp{1}, cmp{1},
-                                             parameters{}
+    Tensor::Tensor(const Space& sp) : espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()),
+                                      valence(0), basis(sp), type_indice(0), name_affected{false}, name_indice{},
+                                      n_comp{1}, cmp{1}, parameters{}
     {
         cmp[0] = nullptr ;
 
@@ -179,17 +181,18 @@ namespace Kadath {
         give_indices = std_indices ;
     }
 
-    inline Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor& bb)
+    Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor& bb)
             : espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()),
-              valence(val), basis(bb), type_indice(tipe), name_affected{false}, name_indice{valence},
+              valence(val), basis(bb), type_indice(val), name_affected{false}, name_indice{valence},
               n_comp(ncompi), cmp{n_comp}, parameters{}
     {
         assert (valence >= 0) ;
         assert ((tipe == COV) || (tipe == CON)) ;
+        type_indice = tipe;
         for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace} ;
     }
 
-    inline Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, const Base_tensor& bb)
+    Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, const Base_tensor& bb)
             : espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()),
               valence(val), basis(bb), type_indice(tipe), name_affected{false}, name_indice{valence},
               n_comp(ncompi), cmp{n_comp}, parameters{}
@@ -205,17 +208,18 @@ namespace Kadath {
         for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace} ;
     }
 
-    inline Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor& bb, int dim)
+    Tensor::Tensor(const Space& sp, int val, int tipe, int ncompi, const Base_tensor& bb, int dim)
             : espace(sp), ndom(espace.get_nbr_domains()), ndim(dim),
-              valence(val), basis(bb), type_indice(tipe), name_affected{false}, name_indice{valence},
+              valence(val), basis(bb), type_indice(val), name_affected{false}, name_indice{valence},
               n_comp(ncompi), cmp{n_comp}, parameters{}
     {
         assert (valence >= 0) ;
         assert ((tipe == COV) || (tipe == CON)) ;
+        type_indice = tipe;
         for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace} ;
     }
 
-    inline Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, const Base_tensor& bb, int dim)
+    Tensor::Tensor(const Space& sp, int val, const Array<int>& tipe, int ncompi, const Base_tensor& bb, int dim)
             : espace(sp), ndom(espace.get_nbr_domains()), ndim(dim),
               valence(val), basis(bb), type_indice(tipe), name_affected{false}, name_indice{valence},
               n_comp(ncompi), cmp{n_comp}, parameters{}
