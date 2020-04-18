@@ -54,17 +54,15 @@ namespace Kadath {
             Metric_tensor (const Metric_tensor&, bool copie = true) ;
             Metric_tensor (const Space& sp, FILE*) ; ///< Copy from file.
 
-            virtual ~Metric_tensor() ;
-
             // Assignement
             Metric_tensor & operator= (const Metric_tensor&) ; ///< Assignment to another \c Metric_tensor
             Metric_tensor & operator= (const Tensor& a) override ;
             Metric_tensor & operator= (double xx) override ;
 
-    #ifdef TENSOR_MOVE_SEMANTIC
+#ifdef TENSOR_MOVE_SEMANTIC
             Metric_tensor(Metric_tensor &&s) noexcept : Tensor{std::move(s)} {}
             Metric_tensor & operator=(Metric_tensor &&s) noexcept {this->Tensor::operator=(std::move(s)); return *this;}
-    #endif
+#endif
 
             /**
             * Computes the inverse of the current objetc.
