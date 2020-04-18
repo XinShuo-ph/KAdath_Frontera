@@ -4,6 +4,6 @@ else()
     add_executable(starter starter.cpp)
 endif()
 
-target_link_libraries(starter LINK_PUBLIC kadath)
+target_link_libraries(starter LINK_PUBLIC kadath ${KADATH_DEPENDENCIES})
 
 set_target_properties(starter PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
