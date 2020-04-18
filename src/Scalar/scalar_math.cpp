@@ -18,6 +18,7 @@
 */
 
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 void Scalar::operator+= (const Scalar& so) {
 	assert (&espace==&so.espace) ;

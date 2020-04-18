@@ -20,6 +20,7 @@
 #include "headcpp.hpp"
 #include "val_domain.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 Array<double> Base_spectral::ope_1d (int (*func) (int, Array<double>&), 

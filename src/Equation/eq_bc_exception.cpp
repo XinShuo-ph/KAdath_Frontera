@@ -21,6 +21,7 @@
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 Eq_bc_exception::Eq_bc_exception(const Domain* zedom, int dd, int bb,  Ope_eq* so, Ope_eq* constant) : Equation(zedom, dd, 2), bound(bb) {

@@ -24,6 +24,7 @@
 #include "array_math.hpp"
 #include "val_domain.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 void coef_1d (int, Array<double>&) ;

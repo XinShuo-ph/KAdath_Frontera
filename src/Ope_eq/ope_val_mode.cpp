@@ -19,6 +19,7 @@
 
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Ope_val_mode::Ope_val_mode (const System_of_eqs* zesys, const Index &pp, double vv, Ope_eq* target) : 
 		Ope_eq(zesys, target->get_dom(), 1), pos_cf (pp), value(vv) {

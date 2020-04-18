@@ -22,6 +22,7 @@
 #include "point.hpp"
 #include "array_math.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 void Domain_polar_nucleus::affecte_tau_val_domain (Val_domain& so, int mquant, int llim, const Array<double>& values, int& conte) const {

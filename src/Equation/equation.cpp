@@ -21,6 +21,7 @@
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Equation::Equation (const Domain* zedom, int nd, int np, int nused, Array<int>** pused) : 
 	dom(zedom), ndom(nd), 

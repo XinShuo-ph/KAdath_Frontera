@@ -19,6 +19,7 @@
 
 #include "tensor.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Tensor Tensor::do_summation() const {
 	if (!name_affected) {

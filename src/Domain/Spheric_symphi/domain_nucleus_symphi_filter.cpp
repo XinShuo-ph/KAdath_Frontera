@@ -21,6 +21,7 @@
 #include "spheric_symphi.hpp"
 #include "array_math.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold) const {

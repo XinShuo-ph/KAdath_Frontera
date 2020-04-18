@@ -22,6 +22,7 @@
 #include "metric.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "system_of_eqs.hpp"
 namespace Kadath {
 Metric::Metric (const Space& sp) : espace (sp), syst(0x0), type_tensor(0) {

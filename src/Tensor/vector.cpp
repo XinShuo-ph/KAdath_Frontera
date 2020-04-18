@@ -20,6 +20,7 @@
 #include "vector.hpp"
 #include "tensor.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 			//--------------//
 			// Constructors //

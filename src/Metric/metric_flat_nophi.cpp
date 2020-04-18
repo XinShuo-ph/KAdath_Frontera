@@ -23,6 +23,7 @@
 #include "metric_nophi.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "name_tools.hpp"
 #include "metric_tensor.hpp"
 namespace Kadath {

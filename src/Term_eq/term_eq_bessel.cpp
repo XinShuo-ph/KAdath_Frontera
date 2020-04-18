@@ -19,6 +19,7 @@
 
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include <gsl/gsl_sf_bessel.h>
 namespace Kadath {
 Term_eq bessel_jl (const Term_eq& so, int ll) {

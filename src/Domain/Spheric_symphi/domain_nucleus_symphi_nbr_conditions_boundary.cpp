@@ -21,6 +21,7 @@
 #include "spheric_symphi.hpp"
 #include "array_math.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 int Domain_nucleus_symphi::nbr_conditions_val_domain_boundary (const Val_domain& so) const {

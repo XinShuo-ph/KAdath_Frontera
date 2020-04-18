@@ -19,6 +19,7 @@
 
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Ope_val_ori::Ope_val_ori (const System_of_eqs* zesys, int dd, Ope_eq* target) : 
 		Ope_eq(zesys, dd, 1) {

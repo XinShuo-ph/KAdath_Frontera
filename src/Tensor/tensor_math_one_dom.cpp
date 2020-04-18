@@ -18,6 +18,7 @@
 */
 
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 void affecte_one_dom (int dd, Tensor* res, const Tensor* so) {

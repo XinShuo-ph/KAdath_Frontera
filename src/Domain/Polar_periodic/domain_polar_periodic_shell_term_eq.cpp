@@ -23,6 +23,7 @@
 #include "point.hpp"
 #include "array_math.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "vector.hpp"
 #include "term_eq.hpp"
 

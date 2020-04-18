@@ -25,6 +25,7 @@
 #include "system_of_eqs.hpp"
 #include "matrice.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "metric.hpp"
 #include "array_math.hpp"
 

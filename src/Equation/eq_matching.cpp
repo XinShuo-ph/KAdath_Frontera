@@ -20,6 +20,7 @@
 #include "system_of_eqs.hpp"
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Eq_matching::Eq_matching(const Domain* zedom, int dd, int bb, int other_dd, int other_bb, 
 								Ope_eq* lhs, Ope_eq* rhs, int nused, Array<int>** pused) : 

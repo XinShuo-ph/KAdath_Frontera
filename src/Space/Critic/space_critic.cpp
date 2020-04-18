@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include "point.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Space_critic::Space_critic(int ttype, double xlim, const Dim_array& res_inner, const Dim_array& res_outer) {
 

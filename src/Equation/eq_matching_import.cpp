@@ -20,6 +20,7 @@
 #include "system_of_eqs.hpp"
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Eq_matching_import::Eq_matching_import(const Domain* zedom, int dd, int bb, Ope_eq* so, const Array<int>& ozers, int nused, Array<int>** pused) : Equation(zedom, dd, 1, nused, pused), bound(bb), 
   other_doms(ozers.get_size(1)), other_bounds(ozers.get_size(1)) {

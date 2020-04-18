@@ -21,6 +21,7 @@
 #include "critic.hpp"
 #include "array_math.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 void Domain_critic_outer::affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& conte) const {

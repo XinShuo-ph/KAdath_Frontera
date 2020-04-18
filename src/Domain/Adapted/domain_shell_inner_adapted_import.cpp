@@ -24,6 +24,7 @@
 #include "array_math.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 // Tensorial parts :

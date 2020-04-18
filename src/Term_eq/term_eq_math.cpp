@@ -19,6 +19,7 @@
 
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 Term_eq operator+ (const Term_eq& aa, double xx) {

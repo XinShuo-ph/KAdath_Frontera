@@ -31,6 +31,7 @@
 #include "param.hpp"
 #include "point.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 #include "vector.hpp"
 

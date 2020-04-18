@@ -21,6 +21,7 @@
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Eq_inside::Eq_inside(const Domain* zedom, int dd, Ope_eq* so, int nused, Array<int>** pused) : Equation(zedom, dd, 1, nused, pused) {
 	parts[0] = so ;

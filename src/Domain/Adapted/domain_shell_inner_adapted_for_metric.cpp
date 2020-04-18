@@ -25,6 +25,7 @@
 #include "term_eq.hpp"
 #include "metric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 Term_eq Domain_shell_inner_adapted::derive_flat_spher (int type_der, char ind_der, const Term_eq& so, const Metric* manipulator) const {

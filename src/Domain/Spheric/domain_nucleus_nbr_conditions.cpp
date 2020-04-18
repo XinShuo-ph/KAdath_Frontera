@@ -21,6 +21,7 @@
 
 #include "spheric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 int Domain_nucleus::nbr_conditions_val_domain_vr (const Val_domain& so, int order) const {

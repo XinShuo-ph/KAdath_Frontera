@@ -21,6 +21,7 @@
 #include "critic.hpp"
 #include "array_math.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 int Domain_critic_outer::nbr_unknowns_val_domain (const Val_domain& so) const {

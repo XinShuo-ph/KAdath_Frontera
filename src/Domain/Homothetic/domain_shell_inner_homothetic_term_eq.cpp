@@ -23,6 +23,7 @@
 #include "array_math.hpp"
 #include "val_domain.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "vector.hpp"
 namespace Kadath {
 Term_eq Domain_shell_inner_homothetic::integ_term_eq (const Term_eq& so, int bound) const {

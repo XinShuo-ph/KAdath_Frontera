@@ -19,6 +19,7 @@
 
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "system_of_eqs.hpp"
 namespace Kadath {
 Ope_point::Ope_point (const System_of_eqs* zesys, const Point &MM, Ope_eq* target) : 

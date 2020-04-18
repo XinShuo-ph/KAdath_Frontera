@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include "spheric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "term_eq.hpp"
 namespace Kadath {
 Array<double> mat_inv_leg_even (int, int) ;

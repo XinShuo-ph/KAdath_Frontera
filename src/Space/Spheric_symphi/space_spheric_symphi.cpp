@@ -21,6 +21,7 @@
 #include "spheric_symphi.hpp"
 #include "utilities.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Space_spheric_symphi::Space_spheric_symphi(int ttype, const Point& center, const Dim_array& res, double bound) {
 

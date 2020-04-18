@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include "point.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Space_spheric_time::Space_spheric_time(int ttype, const Dim_array& res, const Array<double>& bounds, double ttmin, double ttmax, bool wc) : tmin(ttmin), tmax (ttmax), withcompact (wc)  {
 

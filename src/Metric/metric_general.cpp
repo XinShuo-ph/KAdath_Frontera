@@ -22,6 +22,7 @@
 #include "metric.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "system_of_eqs.hpp"
 #include "metric_tensor.hpp"
 #include "name_tools.hpp"

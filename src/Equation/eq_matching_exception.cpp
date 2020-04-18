@@ -20,6 +20,7 @@
 #include "system_of_eqs.hpp"
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Eq_matching_exception::Eq_matching_exception(const Domain* zedom, int dd, int bb, int other_dd, int other_bb, 
 								Ope_eq* lhs, Ope_eq* rhs, const Param& par, Ope_eq* exception, int nused, Array<int>** pused) : 

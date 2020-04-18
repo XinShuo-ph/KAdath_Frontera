@@ -21,6 +21,7 @@
 #include "spheric.hpp"
 #include <assert.h>
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Space_spheric::Space_spheric(int ttype, const Point& center, const Dim_array& res, const Array<double>& bounds, bool withzec) {
 

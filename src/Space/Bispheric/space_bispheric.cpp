@@ -21,6 +21,7 @@
 
 #include "bispheric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "param.hpp"
 #include "utilities.hpp"
 namespace Kadath {

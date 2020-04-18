@@ -23,6 +23,7 @@
 #include "spheric.hpp"
 #include "val_domain.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "term_eq.hpp"
 #include "metric.hpp"
 namespace Kadath {

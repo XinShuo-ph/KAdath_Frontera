@@ -19,6 +19,7 @@
 
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "param.hpp"
 namespace Kadath {
 Ope_user_bin::Ope_user_bin (const System_of_eqs* zesys, Term_eq (*zeope) (const Term_eq&, const Term_eq&, Param*), Param* parso, Ope_eq* p1, Ope_eq* p2) : Ope_eq(zesys, p1->get_dom(), 2), pope(zeope) {

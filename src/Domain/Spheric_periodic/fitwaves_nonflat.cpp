@@ -21,6 +21,7 @@
 #include "spheric_periodic.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 #include "array_math.hpp"
 namespace Kadath {

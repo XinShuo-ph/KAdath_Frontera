@@ -21,6 +21,7 @@
 #include "system_of_eqs.hpp"
 #include "name_tools.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 // Constructor
 System_of_eqs::System_of_eqs (const Space& sp) :

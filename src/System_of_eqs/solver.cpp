@@ -19,6 +19,7 @@
 
 #include "system_of_eqs.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "metric.hpp"
 namespace Kadath {
 Array<double> System_of_eqs::check_equations() {

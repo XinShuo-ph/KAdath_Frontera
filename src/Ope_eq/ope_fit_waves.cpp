@@ -19,6 +19,7 @@
 
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "param.hpp"
 #include "system_of_eqs.hpp"
 #include <gsl/gsl_sf_bessel.h>

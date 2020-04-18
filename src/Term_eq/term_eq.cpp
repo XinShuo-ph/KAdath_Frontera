@@ -19,6 +19,7 @@
 
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "space.hpp"
 namespace Kadath {
 void affecte_one_dom (int, Tensor*, const Tensor*) ;

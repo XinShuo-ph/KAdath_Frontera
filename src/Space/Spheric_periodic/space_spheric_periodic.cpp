@@ -21,6 +21,7 @@
 #include "spheric_periodic.hpp"
 #include "point.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Space_spheric_periodic::Space_spheric_periodic(int ttype, int typet, const Dim_array& res, const Array<double>& bounds, double ome) : omega(ome) {
 

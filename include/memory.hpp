@@ -168,7 +168,6 @@ namespace Kadath {
     public:
         Memory_mapped_array() : size{0}, data{nullptr} {}
         Memory_mapped_array(std::nullptr_t ) : size{0}, data{nullptr} {}
-        Memory_mapped_array(Initialize const) : size{0}, data{nullptr} {for(auto & x : (*this)) x = T{};}
         Memory_mapped_array(size_type const,Do_not_initialize const init = do_not_initialize);
         Memory_mapped_array(size_type const,Initialize const);
         Memory_mapped_array(Memory_mapped_array const &);
@@ -208,27 +207,37 @@ namespace Kadath {
 //        operator T * () {return data;}
     };
 
-    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size,
-                                                                            Do_not_initialize const)
-            : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))} {}
+    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size, Do_not_initialize const)
+    : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))}
+    {}
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size,Initialize const)
-            : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))} {for(auto & x:(*this)) x = T{};}
+    : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))}
+    {
+        for(auto & x:(*this)) x = T{};
+    }
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array const & source)
-            : size{source.size}, data{source.duplicate_data()} {}
+            : size{source.size}, data{source.duplicate_data()}
+    {}
+
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array && source)
-            : size{source.size}, data{source.data} {source.size = 0; source.data = nullptr;}
+    : size{source.size}, data{source.data}
+    {
+        source.size = 0;
+        source.data = nullptr;
+    }
 
     template<typename T,typename S> inline Memory_mapped_array<T,S> &
-            Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> const &source) {
-                if(size != source.size) {
-                    Memory_mapper::release_memory<T>(data,static_cast<std::size_t>(size));
-                    size = source.size;
-                }
-                for(std::size_t i{0};i<size;i++) data[i] = source.data[i];
-                return *this;
-            }
+    Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> const &source)
+    {
+        if(size != source.size) {
+            Memory_mapper::release_memory<T>(data,static_cast<std::size_t>(size));
+            size = source.size;
+        }
+        for(std::size_t i{0};i<size;i++) data[i] = source.data[i];
+        return *this;
+    }
     template<typename T,typename S> inline Memory_mapped_array<T,S> &
             Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> && source) {this->swap(source);}
 

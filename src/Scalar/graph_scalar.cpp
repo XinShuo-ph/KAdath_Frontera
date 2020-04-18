@@ -20,6 +20,7 @@
 #include "headcpp.hpp"
 #include "space.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 
 //Pgplot stuff

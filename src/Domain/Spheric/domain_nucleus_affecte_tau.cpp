@@ -21,6 +21,7 @@
 
 #include "spheric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 void Domain_nucleus::affecte_tau_val_domain_vr (Val_domain& so, const Array<double>& values, int& conte) const {

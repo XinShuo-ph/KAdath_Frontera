@@ -24,6 +24,7 @@
 #include "term_eq.hpp"
 #include "metric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 
 Term_eq Domain_polar_periodic_nucleus::partial_spher (const Term_eq& so) const {

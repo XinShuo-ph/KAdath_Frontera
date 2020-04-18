@@ -23,6 +23,7 @@
 #include "term_eq.hpp"
 #include "metric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 Term_eq Domain_bispheric_chi_first::derive_flat_cart (int type_der, char ind_der, const Term_eq& so, const Metric* manipulator) const {

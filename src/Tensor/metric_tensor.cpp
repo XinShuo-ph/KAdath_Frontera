@@ -18,6 +18,7 @@
 */
 
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "metric_tensor.hpp"
 namespace Kadath {
 double sign(gsl_permutation* p)     // compute permutation signature

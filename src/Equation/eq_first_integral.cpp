@@ -21,6 +21,7 @@
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "name_tools.hpp"
 namespace Kadath {
 Eq_first_integral::Eq_first_integral(const System_of_eqs* syst, const Domain* innerdom, int dommin, int dommax, const char* integ_part, const char* const_part) : Equation(innerdom, dommin, dommax-dommin+2), dom_min(dommin), dom_max(dommax) {

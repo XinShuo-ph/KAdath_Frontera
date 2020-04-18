@@ -27,6 +27,7 @@
 #include "headcpp.hpp"
 #include "tensor.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "vector.hpp"
 #include "metric_tensor.hpp"
 
@@ -236,476 +237,268 @@ namespace Kadath {
     }
 
 
-Tensor::Tensor (const Space& sp, FILE* fd) : 
-	espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()), 
-	basis(sp, fd), type_indice(fd), name_affected{false}, name_indice{valence}, n_comp{}, cmp{}, parameters{}
-{
-	fread_be (&valence, sizeof(int), 1, fd) ;
-	assert (type_indice.get_size(0) == valence) ;
-	fread_be (&n_comp, sizeof(int), 1, fd) ;
-	cmp.resize(n_comp);
-	for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace, fd} ;
-    // Storage methods (overwritten in case of non std things)
-    give_place_array = std_position_array ;
-    give_place_index = std_position_index ;
-    give_indices = std_indices ;
-}
+    Tensor::Tensor (const Space& sp, FILE* fd) :
+        espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()),
+        basis(sp, fd), type_indice(fd), name_affected{false}, name_indice{valence}, n_comp{}, cmp{}, parameters{}
+    {
+        fread_be (&valence, sizeof(int), 1, fd) ;
+        assert (type_indice.get_size(0) == valence) ;
+        fread_be (&n_comp, sizeof(int), 1, fd) ;
+        cmp.resize(n_comp);
+        for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace, fd} ;
+        // Storage methods (overwritten in case of non std things)
+        give_place_array = std_position_array ;
+        give_place_index = std_position_index ;
+        give_indices = std_indices ;
+    }
 
-Tensor::Tensor (const Space& sp, int dim, FILE* fd) : 
-	espace(sp), ndom(espace.get_nbr_domains()), ndim(dim), 
-	basis(sp, fd), type_indice(fd), name_affected{false}, name_indice{valence}, n_comp{}, cmp{}, parameters{}
-{
-	fread_be (&valence, sizeof(int), 1, fd) ;
-	assert (type_indice.get_size(0) == valence) ;
-	fread_be (&n_comp, sizeof(int), 1, fd) ;
-	cmp.resize(n_comp);
-	for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace, fd} ;
-    // Storage methods (overwritten in case of non std things)
-    give_place_array = std_position_array ;
-    give_place_index = std_position_index ;
-    give_indices = std_indices ;
-}
+    Tensor::Tensor (const Space& sp, int dim, FILE* fd) :
+        espace(sp), ndom(espace.get_nbr_domains()), ndim(dim),
+        basis(sp, fd), type_indice(fd), name_affected{false}, name_indice{valence}, n_comp{}, cmp{}, parameters{}
+    {
+        fread_be (&valence, sizeof(int), 1, fd) ;
+        assert (type_indice.get_size(0) == valence) ;
+        fread_be (&n_comp, sizeof(int), 1, fd) ;
+        cmp.resize(n_comp);
+        for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace, fd} ;
+        // Storage methods (overwritten in case of non std things)
+        give_place_array = std_position_array ;
+        give_place_index = std_position_index ;
+        give_indices = std_indices ;
+    }
 
-void Tensor::swap(Tensor & so) noexcept {
-    assert(&espace == &so.espace);
-    std::swap(ndom,so.ndom);
-    std::swap(ndim,so.ndim);
-    std::swap(valence,so.valence);
-    basis.swap(so.basis);
-    type_indice.swap(so.type_indice);
-    std::swap(name_affected,so.name_affected);
-    name_indice.swap(so.name_indice);
-    std::swap(n_comp,so.n_comp);
-    cmp.swap(so.cmp);
-    parameters.swap(so.parameters);
-    std::swap(give_place_array,so.give_place_array);
-    std::swap(give_place_index,so.give_place_index);
-    std::swap(give_indices,so.give_indices);
-}
+    void Tensor::swap(Tensor & so) noexcept {
+        assert(&espace == &so.espace);
+        std::swap(ndom,so.ndom);
+        std::swap(ndim,so.ndim);
+        std::swap(valence,so.valence);
+        basis.swap(so.basis);
+        type_indice.swap(so.type_indice);
+        std::swap(name_affected,so.name_affected);
+        name_indice.swap(so.name_indice);
+        std::swap(n_comp,so.n_comp);
+        cmp.swap(so.cmp);
+        parameters.swap(so.parameters);
+        std::swap(give_place_array,so.give_place_array);
+        std::swap(give_place_index,so.give_place_index);
+        std::swap(give_indices,so.give_indices);
+    }
 
 #ifdef TENSOR_MOVE_SEMANTIC
-Tensor::Tensor(Tensor&& so) noexcept: espace{so.espace}, ndom{so.ndom}, ndim{so.ndim}, valence{so.valence},
-basis{std::move(so.basis)}, type_indice{std::move(so.type_indice)}, name_affected{so.name_affected},
-name_indice{std::move(so.name_indice)}, n_comp{so.n_comp}, cmp{std::move(so.cmp)},
-parameters{std::move(so.parameters)}, give_place_array{so.give_place_array},
-give_place_index{so.give_place_index}, give_indices{so.give_indices}
-{}
+    Tensor::Tensor(Tensor&& so) noexcept: espace{so.espace}, ndom{so.ndom}, ndim{so.ndim}, valence{so.valence},
+    basis{std::move(so.basis)}, type_indice{std::move(so.type_indice)}, name_affected{so.name_affected},
+    name_indice{std::move(so.name_indice)}, n_comp{so.n_comp}, cmp{std::move(so.cmp)},
+    parameters{std::move(so.parameters)}, give_place_array{so.give_place_array},
+    give_place_index{so.give_place_index}, give_indices{so.give_indices}
+    {}
 
-void Tensor::do_move(Tensor &&so, bool move_cmp) noexcept
-{
-    std::swap(ndom,so.ndom);
-    ndim = so.ndim;
-    valence = so.valence;
-    basis = std::move(so.basis);
-    type_indice = std::move(so.type_indice);
-    name_affected = so.name_affected;
-    std::swap(name_indice,so.name_indice);
-    std::swap(n_comp,so.n_comp);
-    if(move_cmp) cmp = std::move(so.cmp);
-    std::swap(parameters,so.parameters);
-    give_place_array = so.give_place_array;
-    give_place_index = so.give_place_index;
-    give_indices = so.give_indices;
-}
-
-Tensor & Tensor::operator=(Tensor && so) noexcept
-{
-    this->do_move(std::move(so),true);
-    return *this;
-}
-#endif //#ifdef TENSOR_MOVE_SEMANTIC
-			//--------------//
-			//  Destructor  //
-			//--------------//
-
-
-Tensor::~Tensor () {
-    if(!cmp.empty())
+    void Tensor::do_move(Tensor &&so, bool move_cmp) noexcept
     {
-        for (int i = 0; i < n_comp; i++)
-            if (cmp[i] != nullptr)
-                delete cmp[i];
+        std::swap(ndom,so.ndom);
+        ndim = so.ndim;
+        valence = so.valence;
+        basis = std::move(so.basis);
+        type_indice = std::move(so.type_indice);
+        name_affected = so.name_affected;
+        std::swap(name_indice,so.name_indice);
+        std::swap(n_comp,so.n_comp);
+        if(move_cmp) cmp = std::move(so.cmp);
+        std::swap(parameters,so.parameters);
+        give_place_array = so.give_place_array;
+        give_place_index = so.give_place_index;
+        give_indices = so.give_indices;
     }
-}
 
-void Tensor::save (FILE* fd) const {
-	basis.save(fd) ;
-	type_indice.save(fd) ;
-	fwrite_be (&valence, sizeof(int), 1, fd) ;
-	assert (type_indice.get_size(0) == valence) ;
-	fwrite_be (&n_comp, sizeof(int), 1, fd) ;
-	for (int i=0 ; i<n_comp ; i++)
-		cmp[i]->save(fd) ;
-}
-
-void Tensor::annule_hard() {
-	for (int i=0 ; i<n_comp ; i++)
-		cmp[i]->annule_hard() ;
-}
-
-		//-------------
-		// Accessors 
-		//-------------
-
-// Affectation d'un tenseur d'ordre 1 :
-Scalar& Tensor::set(int i) {
-    
-    assert (valence == 1) ;
-    
-    Array<int> ind (valence) ;
-    ind.set(0) = i ;
-    
-    int place = position(ind) ;
-
-    return *cmp[place] ;
-}
-
-// Affectation d'un tenseur d'ordre 2 :
-Scalar& Tensor::set(int ind1, int ind2) {
-    
-    assert (valence == 2) ;
-    
-    Array<int> ind (valence) ;
-    ind.set(0) = ind1 ;
-    ind.set(1) = ind2 ;
-    
-    int place = position(ind) ;
-
-    return *cmp[place] ;
-}
-
-// Affectation d'un tenseur d'ordre 3 :
-Scalar& Tensor::set(int ind1, int ind2, int ind3) {
-    
-    assert (valence == 3) ;
-    
-    Array<int> idx(valence) ;
-    idx.set(0) = ind1 ;
-    idx.set(1) = ind2 ;
-    idx.set(2) = ind3 ;
-    int place = position(idx) ;
-
-    return *cmp[place] ;
-}
-
-
-// Affectation d'un tenseur d'ordre 4 :
-Scalar& Tensor::set(int ind1, int ind2, int ind3, int ind4) {
-    
-    assert (valence == 4) ;
-    
-    Array<int> idx(valence) ;
-    idx.set(0) = ind1 ;
-    idx.set(1) = ind2 ;
-    idx.set(2) = ind3 ;
-    idx.set(3) = ind4 ;
-    int place = position(idx) ;
- 
-    return *cmp[place] ;
-}
-
-
-// Affectation cas general
-Scalar& Tensor::set(const Array<int>& idx) {
-    
-    assert (idx.get_ndim() == 1) ;
-    assert (idx.get_size(0) == valence) ;
-    	
-    int place = position(idx) ;
-    return *cmp[place] ;
-}
-
-// Affectation cas general from an Index
-Scalar& Tensor::set(const Index& idx) {
-    
-    Array<int> ind (valence) ;
-    for (int i=0 ; i<valence ; i++)
-	ind.set(i) = idx(i)+1 ;
-   
-    return set(ind) ;
-}
-
-const Scalar& Tensor::operator()() const {
-    
-    assert(valence == 0) ;
-    
-    return *cmp[0] ;
-
-}
-
-const Scalar& Tensor::operator()(int indice) const {
-    
-    assert(valence == 1) ;
-    
-    Array<int> idx(1) ;		
-    idx.set(0) = indice ;
-    return *cmp[position(idx)] ;
-
-}
-
-const Scalar& Tensor::operator()(int indice1, int indice2) const {
-    
-    assert(valence == 2) ;
-    
-    Array<int> idx(2) ;		
-    idx.set(0) = indice1 ;
-    idx.set(1) = indice2 ;
-    return *cmp[position(idx)] ;
-
-}
-
-const Scalar& Tensor::operator()(int indice1, int indice2, int indice3) const {
-    
-    assert(valence == 3) ;
-    
-    Array<int> idx(3) ;		
-    idx.set(0) = indice1 ;
-    idx.set(1) = indice2 ;
-    idx.set(2) = indice3 ;
-    return *cmp[position(idx)] ;
-}
-
-
-const Scalar& Tensor::operator()(int indice1, int indice2, int indice3,
-                                 int indice4) const {
-    
-    assert(valence == 4) ;
-    
-    Array<int> idx(4) ;		
-    idx.set(0) = indice1 ;
-    idx.set(1) = indice2 ;
-    idx.set(2) = indice3 ;
-    idx.set(3) = indice4 ;
-    return *cmp[position(idx)] ;
-}
-
-const Scalar& Tensor::at(int indice1, int indice2) const {
-    return operator()(indice1,indice2);
-
-}
-
-const Scalar& Tensor::operator()(const Array<int>& ind) const {
-    
-    assert (ind.get_ndim() == 1) ;
-    assert (ind.get_size(0) == valence) ;
-    return *cmp[position(ind)] ;
-    
-}
-
-const Scalar& Tensor::operator()(const Index& idx) const {
-    Array<int> ind (valence) ;
-    for (int i=0 ; i<valence ; i++)
-	ind.set(i) = idx(i)+1 ;
-   
-    return operator()(ind) ;
-    
-}
-
-void Tensor::set_name_ind (int pos, char name) {
-	assert ((pos>=0) && (pos<valence)) ;
-	if (!name_affected)
-		name_affected = true ;
-	name_indice[pos] = name ;
-}	
-
-// Le cout :
-ostream& operator<<(ostream& flux, const Tensor &source ) {
-
-  	flux << '\n' ;
-  	flux << "Class : " << typeid(source).name() 
-        << "           Valence : " << source.valence << '\n' ;
-
-    if (source.valence!=0) {
-		flux << source.get_basis() << endl ;
+    Tensor & Tensor::operator=(Tensor && so) noexcept
+    {
+        this->do_move(std::move(so),true);
+        return *this;
     }
-    
-    if (source.valence != 0) {
-		flux <<    "Type of the indices : " ;
-		for (int i=0 ; i<source.valence ; i++) {
-			flux << "index " << i << " : " ;
-			if (source.type_indice(i) == CON)
-	    		flux << " contravariant." << '\n' ;
-			else
-	    		flux << " covariant." << '\n' ;
-			if ( i < source.valence-1 ) flux << "                      " ;
-		}
-		flux << '\n' ; 
-	}
-    
-    for (int i=0 ; i<source.n_comp ; i++) {
+#endif //#ifdef TENSOR_MOVE_SEMANTIC
+                //--------------//
+                //  Destructor  //
+                //--------------//
 
-		if (source.valence == 0) {
-			flux << 
-			"===================== Scalar field ========================= \n" ;
-		}
-		else { 
-      		flux << "================ Component " ;
-			Array<int> num_indices (source.indices(i)) ;
-			for (int j=0 ; j<source.valence ; j++) {
-	  			flux << " " << num_indices(j) ;
-      		}
-			flux << " ================ \n" ; 
-		}
-		flux << '\n' ; 
-      
-      	flux << *source.cmp[i] << '\n' ;
+
+    Tensor::~Tensor () {
+        for(auto & v : cmp) if(v != nullptr) delete v;
     }
-	
-	return flux ;
-}
 
-// Sets the standard spectal bases of decomposition for each component
-void Tensor::std_base() {
-	// Loop on the domains
-	for (int d=0 ; d<ndom ; d++) {
-  
-	switch (valence) {
-
-		case 0 : {
-			if (!is_m_quant_affected())
-			  cmp[0]->std_base_domain(d) ;
-			else
-			  cmp[0]->std_base_domain(d, parameters.get_m_quant()) ;
-			break ; 
-		}
-		case 1 : {
-			bool done = false ;
-			if (basis.get_basis(d) ==CARTESIAN_BASIS) {
-			  cmp[0]->std_base_x_cart_domain(d) ;
-			  cmp[1]->std_base_y_cart_domain(d) ;
-			  cmp[2]->std_base_z_cart_domain(d) ;
-			  done = true ;
-			}
-			if (basis.get_basis(d) == SPHERICAL_BASIS) {
-			  cmp[0]->std_base_r_spher_domain(d) ;
-			  cmp[1]->std_base_t_spher_domain(d) ;
-			  cmp[2]->std_base_p_spher_domain(d) ;
-			  done = true ;
-			  }
-			if (basis.get_basis(d) == MTZ_BASIS) {
-			  cmp[0]->std_base_r_mtz_domain(d) ;
-			  cmp[1]->std_base_t_mtz_domain(d) ;
-			  cmp[2]->std_base_p_mtz_domain(d) ;
-			  done = true ;
-			  }
-			if (!done) {
-			    cerr << "Tensor::std_base not yet implemented for " << basis << endl ;
-			    abort() ;
-			}
-			break ;
-			}
-	    default : {
-			Vector auxi (espace, CON, basis) ;
-			auxi.std_base() ;
-			
-			for (int cc=0 ; cc<n_comp ; cc++) {
-				  Array<int> ind (indices(cc)) ;
-				  Base_spectral result (auxi(ind(0))(d).get_base()) ;
-				  for (int i=1 ; i<valence ; i++)
-					result =  espace.get_domain(d)->mult(result, auxi(ind(i))(d).get_base()) ;
-				  cmp[cc]->set_domain(d).set_base() = result ;
-				
-			  }
-			}
-			break ;
-		}
-	}
-}
+    void Tensor::save (FILE* fd) const {
+        basis.save(fd) ;
+        type_indice.save(fd) ;
+        fwrite_be (&valence, sizeof(int), 1, fd) ;
+        assert (type_indice.get_size(0) == valence) ;
+        fwrite_be (&n_comp, sizeof(int), 1, fd) ;
+        for (int i=0 ; i<n_comp ; i++)
+            cmp[i]->save(fd) ;
+    }
 
 
-bool Tensor::find_indices (const Tensor& tt, Array<int>& perm) const {
+    // Le cout :
+    ostream& operator<<(ostream& flux, const Tensor &source ) {
 
-	assert (name_affected) ;
-	bool res = true ;
-	Array<bool> found (valence) ;
-	found = false ;
-	for (int ncmp=0 ; ncmp<valence ; ncmp++) {
-		int pos=0 ;
-		bool finloop = false ;
-		do {
-			if ((!found(pos)) && (tt.name_indice[pos]==name_indice[ncmp])) {
-				found.set(pos) = true ;
-				perm.set(ncmp) = pos ;
-				finloop = true ;
-				// Check valence :
-				if (type_indice(ncmp) != tt.type_indice(pos))
-					res = false ;
-			}
-			pos ++ ;
-			if ((pos == valence) && (!finloop)) {
-				finloop = true ;
-				res = false ;
-			}
-		}
-		while ((!finloop) && (res));
-	}
-	return res ;
-}
+        flux << '\n' ;
+        flux << "Class : " << typeid(source).name()
+            << "           Valence : " << source.valence << '\n' ;
 
-void Tensor::coef() const
-{
-   Index pos(*this);
-   do
-   {
-      (*this)(pos).coef();
-   }while(pos.inc());
-}
+        if (source.valence!=0) {
+            flux << source.get_basis() << endl ;
+        }
 
-void Tensor::coef_i() const
-{
-   Index pos(*this);
-   do
-   {
-      (*this)(pos).coef_i();
-   }while(pos.inc());
-}
-void Tensor::filter_phi(int dom, int ncf)
-{
-   Index pos(*this);
-   do
-   {
-      set(pos).filter_phi(dom, ncf);
-   }while(pos.inc());
-}
+        if (source.valence != 0) {
+            flux <<    "Type of the indices : " ;
+            for (int i=0 ; i<source.valence ; i++) {
+                flux << "index " << i << " : " ;
+                if (source.type_indice(i) == CON)
+                    flux << " contravariant." << '\n' ;
+                else
+                    flux << " covariant." << '\n' ;
+                if ( i < source.valence-1 ) flux << "                      " ;
+            }
+            flux << '\n' ;
+        }
 
-void Tensor::change_basis_spher_to_cart()
-{
-   for (int d(0) ; d <= espace.get_nbr_domains() - 1 ; ++d)
-   {
-      Tensor auxi(espace, get_valence(), get_index_type(), get_basis());
-      auxi = espace.get_domain(d)->change_basis_spher_to_cart(d, *this);
-      Index pos(auxi);
-      do
-      {
-         set(pos).set_domain(d) = auxi(pos)(d);
-      }while(pos.inc());
-      set_basis(d) = CARTESIAN_BASIS;
-   }
-}
+        for (int i=0 ; i<source.n_comp ; i++) {
 
-void Tensor::change_basis_cart_to_spher()
-{
-   for (int d(0) ; d <= espace.get_nbr_domains() - 1 ; ++d)
-   {
-      Tensor auxi(espace, get_valence(), get_index_type(), get_basis());
-      auxi = espace.get_domain(d)->change_basis_cart_to_spher(d, *this);
-      Index pos(auxi);
-      do
-      {
-         set(pos).set_domain(d) = auxi(pos)(d);
-      }while(pos.inc());
-      set_basis(d) = SPHERICAL_BASIS;
-   }
-}
+            if (source.valence == 0) {
+                flux <<
+                "===================== Scalar field ========================= \n" ;
+            }
+            else {
+                flux << "================ Component " ;
+                Array<int> num_indices (source.indices(i)) ;
+                for (int j=0 ; j<source.valence ; j++) {
+                    flux << " " << num_indices(j) ;
+                }
+                flux << " ================ \n" ;
+            }
+            flux << '\n' ;
+
+            flux << *source.cmp[i] << '\n' ;
+        }
+
+        return flux ;
+    }
+
+    // Sets the standard spectal bases of decomposition for each component
+    void Tensor::std_base() {
+        // Loop on the domains
+        for (int d=0 ; d<ndom ; d++) {
+
+        switch (valence) {
+
+            case 0 : {
+                if (!is_m_quant_affected())
+                  cmp[0]->std_base_domain(d) ;
+                else
+                  cmp[0]->std_base_domain(d, parameters.get_m_quant()) ;
+                break ;
+            }
+            case 1 : {
+                bool done = false ;
+                if (basis.get_basis(d) ==CARTESIAN_BASIS) {
+                  cmp[0]->std_base_x_cart_domain(d) ;
+                  cmp[1]->std_base_y_cart_domain(d) ;
+                  cmp[2]->std_base_z_cart_domain(d) ;
+                  done = true ;
+                }
+                if (basis.get_basis(d) == SPHERICAL_BASIS) {
+                  cmp[0]->std_base_r_spher_domain(d) ;
+                  cmp[1]->std_base_t_spher_domain(d) ;
+                  cmp[2]->std_base_p_spher_domain(d) ;
+                  done = true ;
+                  }
+                if (basis.get_basis(d) == MTZ_BASIS) {
+                  cmp[0]->std_base_r_mtz_domain(d) ;
+                  cmp[1]->std_base_t_mtz_domain(d) ;
+                  cmp[2]->std_base_p_mtz_domain(d) ;
+                  done = true ;
+                  }
+                if (!done) {
+                    cerr << "Tensor::std_base not yet implemented for " << basis << endl ;
+                    abort() ;
+                }
+                break ;
+                }
+            default : {
+                Vector auxi (espace, CON, basis) ;
+                auxi.std_base() ;
+
+                for (int cc=0 ; cc<n_comp ; cc++) {
+                      Array<int> ind (indices(cc)) ;
+                      Base_spectral result (auxi(ind(0))(d).get_base()) ;
+                      for (int i=1 ; i<valence ; i++)
+                        result =  espace.get_domain(d)->mult(result, auxi(ind(i))(d).get_base()) ;
+                      cmp[cc]->set_domain(d).set_base() = result ;
+
+                  }
+                }
+                break ;
+            }
+        }
+    }
 
 
-void Tensor::filter (double threshold)  {
+    bool Tensor::find_indices (const Tensor& tt, Array<int>& perm) const {
 
-   for (int d=0 ; d<espace.get_nbr_domains() ; d++) {
-	espace.get_domain(d)->filter(*this, d, threshold) ;
-   }
+        assert (name_affected) ;
+        bool res = true ;
+        Array<bool> found (valence) ;
+        found = false ;
+        for (int ncmp=0 ; ncmp<valence ; ncmp++) {
+            int pos=0 ;
+            bool finloop = false ;
+            do {
+                if ((!found(pos)) && (tt.name_indice[pos]==name_indice[ncmp])) {
+                    found.set(pos) = true ;
+                    perm.set(ncmp) = pos ;
+                    finloop = true ;
+                    // Check valence :
+                    if (type_indice(ncmp) != tt.type_indice(pos))
+                        res = false ;
+                }
+                pos ++ ;
+                if ((pos == valence) && (!finloop)) {
+                    finloop = true ;
+                    res = false ;
+                }
+            }
+            while ((!finloop) && (res));
+        }
+        return res ;
+    }
 
-}
+    void Tensor::change_basis_spher_to_cart()
+    {
+       for (int d(0) ; d <= espace.get_nbr_domains() - 1 ; ++d)
+       {
+          Tensor auxi(espace, get_valence(), get_index_type(), get_basis());
+          auxi = espace.get_domain(d)->change_basis_spher_to_cart(d, *this);
+          Index pos(auxi);
+          do
+          {
+             set(pos).set_domain(d) = auxi(pos)(d);
+          }while(pos.inc());
+          set_basis(d) = CARTESIAN_BASIS;
+       }
+    }
+
+    void Tensor::change_basis_cart_to_spher()
+    {
+       for (int d(0) ; d <= espace.get_nbr_domains() - 1 ; ++d)
+       {
+          Tensor auxi(espace, get_valence(), get_index_type(), get_basis());
+          auxi = espace.get_domain(d)->change_basis_cart_to_spher(d, *this);
+          Index pos(auxi);
+          do
+          {
+             set(pos).set_domain(d) = auxi(pos)(d);
+          }while(pos.inc());
+          set_basis(d) = SPHERICAL_BASIS;
+       }
+    }
+
 
 
 }

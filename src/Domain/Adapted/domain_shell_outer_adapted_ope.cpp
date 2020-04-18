@@ -20,6 +20,7 @@
 #include "adapted.hpp"
 #include "array_math.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 int mult_cos_1d (int, Array<double>&) ;

@@ -19,6 +19,7 @@
 
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Ope_div::Ope_div (const System_of_eqs* zesys, Ope_eq* aa, Ope_eq* bb) : Ope_eq(zesys,aa->get_dom(), 2) {
 

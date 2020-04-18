@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include "point.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "system_of_eqs.hpp"
 #include "name_tools.hpp"
 namespace Kadath {

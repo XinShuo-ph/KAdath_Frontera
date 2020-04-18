@@ -21,6 +21,7 @@
 
 #include "spheric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 void Domain_nucleus::export_tau_val_domain_vr (const Val_domain& so, int order, Array<double>& sec, int& pos_sec, int ncond) const {

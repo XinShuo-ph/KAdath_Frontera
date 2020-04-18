@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include "point.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 Space_fourD_periodic::Space_fourD_periodic(int ttype, double omega, const Dim_array& res, const Array<double>& bounds) {

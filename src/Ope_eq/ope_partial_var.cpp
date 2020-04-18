@@ -19,6 +19,7 @@
 
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Ope_partial_var::Ope_partial_var (const System_of_eqs* zesys, int which, Ope_eq* target) : Ope_eq(zesys, target->get_dom(), 1), which_var(which) {
 	parts[0] = target ;

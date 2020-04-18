@@ -21,6 +21,7 @@
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Eq_int::Eq_int (int np) : n_ope(np) {
 	parts = new Ope_eq*[n_ope] ;

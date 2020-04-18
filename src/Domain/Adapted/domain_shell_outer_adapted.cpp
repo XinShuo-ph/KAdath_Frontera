@@ -23,6 +23,7 @@
 #include "point.hpp"
 #include "array_math.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 
 namespace Kadath {
 void coef_1d (int, Array<double>&) ;

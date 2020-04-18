@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include "spheric_symphi.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 Tensor Domain_compact_symphi::change_basis_spher_to_cart (int dd, const Tensor& so) const {

@@ -21,6 +21,7 @@
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Eq_order_array::Eq_order_array(const Domain* zedom, int dd, const Array<int>& ord, Ope_eq* so, int nused, Array<int>** pused) : Equation(zedom, dd, 1, nused, pused), order(ord) {
 	parts[0] = so ;

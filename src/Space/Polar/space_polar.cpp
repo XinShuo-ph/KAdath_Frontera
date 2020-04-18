@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include "point.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Space_polar::Space_polar(int ttype, const Point& center, const Dim_array& res, const Array<double>& bounds) {
 

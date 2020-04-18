@@ -24,6 +24,7 @@
 #include "param.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "vector.hpp"
 
 namespace Kadath {

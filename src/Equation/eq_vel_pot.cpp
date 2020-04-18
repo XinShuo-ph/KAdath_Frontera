@@ -21,6 +21,7 @@
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Eq_vel_pot::Eq_vel_pot(const Domain* zedom, int dd, int ord, Ope_eq* so, Ope_eq* constant) : Equation(zedom, dd, 2), order(ord) {
 	parts[0] = so ;

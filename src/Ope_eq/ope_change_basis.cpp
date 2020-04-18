@@ -19,6 +19,7 @@
 
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 Ope_change_basis::Ope_change_basis (const System_of_eqs* zesys, int base, Ope_eq* target) : Ope_eq(zesys, target->get_dom(), 1), target_basis(base) {

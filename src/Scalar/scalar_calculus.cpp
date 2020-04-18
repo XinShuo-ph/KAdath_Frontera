@@ -18,6 +18,7 @@
 */
 
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "vector.hpp"
 namespace Kadath {
 Vector Scalar::grad() const {

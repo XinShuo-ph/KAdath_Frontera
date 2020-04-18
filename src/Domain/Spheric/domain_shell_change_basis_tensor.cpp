@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include "spheric.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
 Tensor Domain_shell::change_basis_spher_to_cart (int dd, const Tensor& so) const {

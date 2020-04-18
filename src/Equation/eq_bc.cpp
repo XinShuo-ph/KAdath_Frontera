@@ -20,6 +20,7 @@
 #include "system_of_eqs.hpp"
 #include "ope_eq.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Eq_bc::Eq_bc(const Domain* zedom, int dd, int bb, Ope_eq* so, int nused, Array<int>** pused) : Equation(zedom, dd, 1, nused, pused), bound(bb) {
 	parts[0] = so ;

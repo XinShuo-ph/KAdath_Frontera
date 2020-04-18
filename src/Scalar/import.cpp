@@ -19,6 +19,7 @@
 
 #include "headcpp.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 #include "point.hpp"
 
 namespace Kadath {

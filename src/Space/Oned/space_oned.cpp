@@ -21,6 +21,7 @@
 #include "oned.hpp"
 #include "utilities.hpp"
 #include "scalar.hpp"
+#include "tensor_impl.hpp"
 namespace Kadath {
 Space_oned::Space_oned(int ttype, const Dim_array& res, const Array<double>& bounds) {
 
