@@ -22,8 +22,9 @@
 namespace Kadath {
 
 Dim_array::Dim_array (FILE* fd) : Data_type{} {
-	fread_be(&size, sizeof(int), 1, fd) ;
-	this->resize(size) ;
+    int read_size{};
+	fread_be(&read_size, sizeof(int), 1, fd) ;
+	this->resize(read_size) ;
 	fread_be(this->set_data(), sizeof(int), size, fd) ;
 }
 
