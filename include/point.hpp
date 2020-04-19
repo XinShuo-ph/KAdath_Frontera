@@ -22,58 +22,35 @@
 
 #include "headcpp.hpp"
 namespace Kadath {
-/**
- * The class \c Point is used to store the coordinates of a point.
- * \ingroup fields
- */
 
-class Point {
+    /**
+     * The class \c Point is used to store the coordinates of a point.
+     * \ingroup fields
+     */
+    class Point : public Memory_mapped {
     protected:
         int ndim ; ///< Number of dimensions.
-	double *coord ; ///< Array on the coordinates (mainly designed for absolute Cartesian coordinates).
+        Memory_mapped_array<double> coord ; ///< Array on the coordinates (mainly designed for absolute Cartesian coordinates).
 
     public:
-	/**
-	* Standard constructor (the coordinates are not affected).
-	* @param n [input] : number of dimensions.
-	*/
-    explicit Point (int n) : ndim{n}, coord{new double[ndim]} {
-        for (int i=0 ; i<ndim ; i++) coord[i] = 0 ;
-    }
-    Point (FILE*) ; ///< Constructor from a file
-	Point (const Point & so) : ndim{so.ndim}, coord{new double[ndim]} {
-        for (int i=0 ; i<ndim ; i++) coord[i] = so.coord[i] ;
-    }
-    //! Destructor.
-	~Point() {if(coord) delete [] coord ;}
+        /**
+        * Standard constructor (the coordinates are not affected).
+        * @param n [input] : number of dimensions.
+        */
+        explicit Point (int n) : ndim{n}, coord{ndim} {
+            for (int i=0 ; i<ndim ; i++) coord[i] = 0 ;
+        }
+        Point (FILE*) ; ///< Constructor from a file
 
-    //! Move constructor.
-    Point(Point && so) : ndim{so.ndim}, coord{nullptr} {
-        std::swap(coord,so.coord);
-    }
-    //! Move assignment operator.
-    Point & operator=(Point && so) {
-        ndim = so.ndim;
-        std::swap(coord,so.coord);
-        return *this;
-    }
+        void save (FILE*) const ; ///< Saving function
+        //! Read/write of a coordinate
+        double& set(int i) {assert(i>0); assert(i<=ndim); return coord[i-1] ;}
+        //! Read only access to a coordinate.
+        double operator() (int i) const {assert(i>0); assert(i<=ndim); return coord[i-1] ;}
+        //! Returns the number of dimensions.
+        const int& get_ndim() const {return ndim ;} ;
 
-	void save (FILE*) const ; ///< Saving function
-    //! Assignment operator.
-	void operator= (const Point& so) {
-        assert (ndim==so.ndim) ;
-        for (int i=0 ; i<ndim ; i++) coord[i] = so.coord[i] ;
-    }
-	//! Read/write of a coordinate
-    double& set(int i) {assert(i>0); assert(i<=ndim); return coord[i-1] ;}
-    //! Read only of a coordinate.
-	double operator() (int i) const {assert(i>0); assert(i<=ndim); return coord[i-1] ;}
-	/**
-	* @returns the number of dimensions.
-	*/
-	const int& get_ndim() const {return ndim ;} ; 
-	
-	friend ostream& operator<< (ostream&, const Point&) ; ///< Display
-} ; 
+        friend ostream& operator<< (ostream&, const Point&) ; ///< Display
+    } ;
 }
 #endif

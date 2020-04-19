@@ -23,16 +23,16 @@
 #include "utilities.hpp"
 namespace Kadath {
 
-Point::Point (FILE* fd) {
+Point::Point (FILE* fd) : ndim{}, coord{} {
 	fread_be (&ndim, sizeof(int), 1, fd) ;
-	coord = new double[ndim] ;
-	fread_be (coord, sizeof(double), ndim, fd) ;
+	coord.resize(ndim) ;
+	fread_be (coord.set_data(), sizeof(double), ndim, fd) ;
 }
 
 
 void Point::save (FILE* fd) const {
 	fwrite_be (&ndim, sizeof(int), 1, fd) ;
-	fwrite_be (coord, sizeof(double), ndim, fd) ;
+	fwrite_be (coord.get_data(), sizeof(double), ndim, fd) ;
 }
 
 ostream& operator<< (ostream& o, const Point& so) {

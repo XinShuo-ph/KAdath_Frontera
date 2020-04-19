@@ -171,11 +171,11 @@ namespace Kadath {
         Memory_mapped_array(size_type const,Do_not_initialize const init = do_not_initialize);
         Memory_mapped_array(size_type const,Initialize const);
         Memory_mapped_array(Memory_mapped_array const &);
-        Memory_mapped_array(Memory_mapped_array &&);
+        Memory_mapped_array(Memory_mapped_array &&) noexcept;
         virtual ~Memory_mapped_array() {this->clear();}
 
         Memory_mapped_array & operator=(Memory_mapped_array const &);
-        Memory_mapped_array & operator=(Memory_mapped_array &&);
+        Memory_mapped_array & operator=(Memory_mapped_array &&) noexcept;
         void swap(Memory_mapped_array<T> &so) noexcept {std::swap(size,so.size); std::swap(data,so.data);}
         void resize(size_type const new_size);
         void clear() {Memory_mapper::release_memory<T>(data,static_cast<std::size_t>(size)); data=nullptr; size=0;}
@@ -221,7 +221,7 @@ namespace Kadath {
             : size{source.size}, data{source.duplicate_data()}
     {}
 
-    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array && source)
+    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array && source) noexcept
     : size{source.size}, data{source.data}
     {
         source.size = 0;
@@ -239,7 +239,7 @@ namespace Kadath {
         return *this;
     }
     template<typename T,typename S> inline Memory_mapped_array<T,S> &
-            Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> && source) {this->swap(source);}
+            Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> && source) noexcept {this->swap(source);}
 
     template<typename T,typename S> void Memory_mapped_array<T,S>::range_check(const size_type i) const {
         if (i >= this->set_size()) {
