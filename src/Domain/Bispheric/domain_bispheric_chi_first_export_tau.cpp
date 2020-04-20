@@ -67,7 +67,7 @@ void Domain_bispheric_chi_first::export_tau_val_domain (const Val_domain& so, in
 						if ((k%2!=1) || (j!=nbr_coefs(1)-1-forgot_chi)) {
 							if ((k==0) || (k%2==1)) {
 								// The ones without regularity issues 
-								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							}
 							else if (j!=0) {
@@ -89,7 +89,7 @@ void Domain_bispheric_chi_first::export_tau_val_domain (const Val_domain& so, in
 								}
 							pos_galerkin = pos_cf ;
 							pos_galerkin.set(1) = 0 ;
-							sec.set(pos_sec) = (*so.cf)(pos_cf) + factor_galerkin * (*so.cf)(pos_galerkin) ;
+							sec.set(pos_sec) = (so.cf)(pos_cf) + factor_galerkin * (so.cf)(pos_galerkin) ;
 							pos_sec ++ ;
 						}}
 						break ;
@@ -100,7 +100,7 @@ void Domain_bispheric_chi_first::export_tau_val_domain (const Val_domain& so, in
 						if ((k%2!=1) || (j!=nbr_coefs(1)-1-forgot_chi)) {
 							if (k%2==1) {
 								// The ones without regularity issues 
-								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							}
 							else if (j!=0) {
@@ -122,7 +122,7 @@ void Domain_bispheric_chi_first::export_tau_val_domain (const Val_domain& so, in
 								}
 							pos_galerkin = pos_cf ;
 							pos_galerkin.set(1) = 0 ;
-							sec.set(pos_sec) = (*so.cf)(pos_cf) + factor_galerkin * (*so.cf)(pos_galerkin) ;
+							sec.set(pos_sec) = (so.cf)(pos_cf) + factor_galerkin * (so.cf)(pos_galerkin) ;
 							pos_sec ++ ;
 						}}
 						break ;	

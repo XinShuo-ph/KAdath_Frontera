@@ -204,7 +204,7 @@ class Domain_nucleus_symphi : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
     /**
      * Method for the multiplication of two \c Base_spectral.
      * @returns the output base is undefined if the result is not implemented (i.e. if one tries to multiply 
@@ -522,7 +522,7 @@ class Domain_shell_symphi : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
     /**
      * Method for the multiplication of two \c Base_spectral.
      * @returns the output base is undefined if the result is not implemented (i.e. if one tries to multiply 
@@ -826,7 +826,7 @@ class Domain_compact_symphi : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
     /**
      * Method for the multiplication of two \c Base_spectral.
      * @returns the output base is undefined if the result is not implemented (i.e. if one tries to multiply 

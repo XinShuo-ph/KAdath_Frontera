@@ -73,7 +73,7 @@ void Domain_oned_ori::export_tau_val_domain (const Val_domain& so, int order, Ar
 	Index pos_cf (nbr_coefs) ;
 	for (int i=0 ; i<max ; i++) {
 		pos_cf.set(0) = i ;
-		sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+		sec.set(pos_sec) = (so.cf)(pos_cf) ;
 		pos_sec ++ ;
 	}
       }

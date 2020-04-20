@@ -329,7 +329,7 @@ void Domain_spheric_periodic_compact::set_anti_legendre_base(Base_spectral& base
 	    base.bases_1d[0]->set(j) = LEG ;
  }
 // Computes the derivatives with respect to rho,Z as a function of the numerical ones.
-void Domain_spheric_periodic_compact::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_spheric_periodic_compact::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
 	// d/dr
 	der_abs[0] = new Val_domain (-der_var[0]->mult_xm1()) ;
 	// d/dt :

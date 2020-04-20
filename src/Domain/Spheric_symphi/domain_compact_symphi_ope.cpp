@@ -40,7 +40,7 @@ Val_domain Domain_compact_symphi::mult_cos_phi (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 2, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(mult_cos_1d, 2, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -51,7 +51,7 @@ Val_domain Domain_compact_symphi::mult_sin_phi (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 2, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(mult_sin_1d, 2, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -60,7 +60,7 @@ Val_domain Domain_compact_symphi::mult_cos_theta (const Val_domain& so) const {
 	so.coef() ;
 	Val_domain res(this) ;
 	res.base = so.base ;
-	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 1, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(mult_cos_1d, 1, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -71,7 +71,7 @@ Val_domain Domain_compact_symphi::mult_sin_theta (const Val_domain& so) const {
 	Val_domain res(this) ;
 
 	res.base= so.base ;
-	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 1, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(mult_sin_1d, 1, so.cf, res.base)) ;
 	res.in_coef = true ;	
 	return res ;
 }
@@ -82,7 +82,7 @@ Val_domain Domain_compact_symphi::div_sin_theta (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = new Array<double> (so.base.ope_1d(div_sin_1d, 1, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(div_sin_1d, 1, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -93,7 +93,7 @@ Val_domain Domain_compact_symphi::div_cos_theta (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = new Array<double> (so.base.ope_1d(div_cos_1d, 1, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(div_cos_1d, 1, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -104,7 +104,7 @@ Val_domain Domain_compact_symphi::div_xm1 (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = new Array<double> (so.base.ope_1d(div_xm1_1d, 0, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(div_xm1_1d, 0, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -115,7 +115,7 @@ Val_domain Domain_compact_symphi::mult_xm1 (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = new Array<double> (so.base.ope_1d(mult_xm1_1d, 0, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(mult_xm1_1d, 0, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }

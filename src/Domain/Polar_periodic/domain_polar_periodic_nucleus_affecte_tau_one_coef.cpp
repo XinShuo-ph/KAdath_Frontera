@@ -31,7 +31,7 @@ void Domain_polar_periodic_nucleus::affecte_tau_one_coef_val_domain (Val_domain&
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	*so.cf=0. ;
+	so.cf=0. ;
 	Index pos_cf(nbr_coefs) ;
 
 	bool found = false ;
@@ -139,7 +139,7 @@ int mink, maxk ;
 			if (lquant<=llim) {
 				if (conte==cc)  {
 					found = true ;
-					so.cf->set(pos_cf) = 1. ;
+					so.cf.set(pos_cf) = 1. ;
 					}
 				conte ++ ;
 			}
@@ -172,8 +172,8 @@ int mink, maxk ;
 						cerr << "Strange base in Domain_polar_periodic_nucleus::affecte_tau_val_domain" << endl ;
 						abort()  ;
 				}
-				so.cf->set(pos_cf) = 1 ;
-				so.cf->set(pos_gal_r) += fact_r ;
+				so.cf.set(pos_cf) = 1 ;
+				so.cf.set(pos_gal_r) += fact_r ;
 				}
 				conte ++ ;
 			}

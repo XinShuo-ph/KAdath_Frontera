@@ -60,13 +60,13 @@ void Domain_shell_inner_homothetic::affecte_coef(int& conte, int cc, bool& found
     auxi.std_base() ;
     auxi.set_in_coef() ;
     auxi.allocate_coef() ;
-    *auxi.cf = 0 ;
+    auxi.cf = 0 ;
     
     found = false ;
     
    if (conte==cc) {
 	Index pos_cf (nbr_coefs) ;
-	auxi.cf->set(pos_cf) = 1 ;
+	auxi.cf.set(pos_cf) = 1 ;
 	found = true ;
       }
       
@@ -87,12 +87,12 @@ void Domain_shell_inner_homothetic::affecte_coef(int& conte, int cc, bool& found
 void Domain_shell_inner_homothetic::xx_to_vars_from_adapted(Val_domain& new_inner_radius, const Array<double>& xx, int& pos) const {
 
     new_inner_radius.allocate_coef() ;
-    *new_inner_radius.cf = 0 ;
+    new_inner_radius.cf = 0 ;
     
     Index pos_cf (nbr_coefs) ;	    
     pos_cf.set(0) = 0 ;
  
-    new_inner_radius.cf->set(pos_cf) -= xx(pos) ; 
+    new_inner_radius.cf.set(pos_cf) -= xx(pos) ;
     pos ++ ;
     new_inner_radius.set_base() = inner_radius->get_base() ;  
 }
@@ -105,12 +105,12 @@ void Domain_shell_inner_homothetic::xx_to_ders_from_adapted(const Array<double>&
     auxi.std_base() ;
     auxi.set_in_coef() ;
     auxi.allocate_coef() ;
-    *auxi.cf = 0 ;
+    auxi.cf = 0 ;
     
     Index pos_cf (nbr_coefs) ;	    
     pos_cf.set(0) = 0 ;
     
-    auxi.cf->set(pos_cf) = xx(pos) ;
+    auxi.cf.set(pos_cf) = xx(pos) ;
     pos ++ ;
 
      Scalar auxi_scal (sp) ;

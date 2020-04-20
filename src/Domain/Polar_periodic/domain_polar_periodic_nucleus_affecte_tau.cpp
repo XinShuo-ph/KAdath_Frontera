@@ -30,7 +30,7 @@ void Domain_polar_periodic_nucleus::affecte_tau_val_domain (Val_domain& so, int 
 	int lquant ;
 
 	so.allocate_coef() ;
-	*so.cf = 0. ;
+	so.cf = 0. ;
 	Index pos_cf (nbr_coefs) ;
 
 	// Positions of the Galerkin basis
@@ -135,7 +135,7 @@ void Domain_polar_periodic_nucleus::affecte_tau_val_domain (Val_domain& so, int 
 			pos_cf.set(0) = i ;
 			// No garlekin
 			if (lquant<=llim) {
-				so.cf->set(pos_cf) += values(conte) ;
+				so.cf.set(pos_cf) += values(conte) ;
 				conte ++ ;
 			}
 			else {
@@ -166,8 +166,8 @@ void Domain_polar_periodic_nucleus::affecte_tau_val_domain (Val_domain& so, int 
 						cerr << "Strange base in Domain_polar_periodic_nucleus::affecte_tau_val_domain" << endl ;
 						abort()  ;
 				}
-				so.cf->set(pos_cf) += values(conte) ;
-				so.cf->set(pos_gal_r) += fact_r*values(conte) ;
+				so.cf.set(pos_cf) += values(conte) ;
+				so.cf.set(pos_gal_r) += fact_r*values(conte) ;
 				conte ++ ;
 			}
 		 } // end loop i

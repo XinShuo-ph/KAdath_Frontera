@@ -30,7 +30,7 @@ Val_domain Domain_spheric_periodic_nucleus::div_x (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = new Array<double> (so.base.ope_1d(div_x_1d, 0, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(div_x_1d, 0, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -41,8 +41,8 @@ Val_domain Domain_spheric_periodic_nucleus::mult_r (const Val_domain& so) const 
 
 	res.base= so.base ;
 	
-	res.cf = new Array<double> (so.base.ope_1d(mult_x_1d, 0, *so.cf, res.base)) ;
-	*res.cf *= alpha ;
+	res.cf = (so.base.ope_1d(mult_x_1d, 0, so.cf, res.base)) ;
+	res.cf *= alpha ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -53,8 +53,8 @@ Val_domain Domain_spheric_periodic_nucleus::div_r (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = new Array<double> (so.base.ope_1d(div_x_1d, 0, *so.cf, res.base)) ;
-	*res.cf /= alpha ;
+	res.cf = (so.base.ope_1d(div_x_1d, 0, so.cf, res.base)) ;
+	res.cf /= alpha ;
 	res.in_coef = true ;
 	return res ;
 }

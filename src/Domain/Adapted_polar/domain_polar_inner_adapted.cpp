@@ -174,7 +174,7 @@ void Domain_polar_shell_inner_adapted::affecte_coef(int& conte, int cc, bool& fo
     auxi.std_base() ;
     auxi.set_in_coef() ;
     auxi.allocate_coef() ;
-    *auxi.cf = 0 ;
+    auxi.cf = 0 ;
     
     found = false ;
     
@@ -184,7 +184,7 @@ void Domain_polar_shell_inner_adapted::affecte_coef(int& conte, int cc, bool& fo
 		  Index pos_cf (nbr_coefs) ;
 		  pos_cf.set(0) = 0 ;
 		  pos_cf.set(1) = j ;
-		  auxi.cf->set(pos_cf) = 1 ;
+		  auxi.cf.set(pos_cf) = 1 ;
 		  found = true ;
 	      }
 	      conte ++ ;
@@ -204,14 +204,14 @@ void Domain_polar_shell_inner_adapted::affecte_coef(int& conte, int cc, bool& fo
 void Domain_polar_shell_inner_adapted::xx_to_vars_from_adapted(Val_domain& new_inner_radius, const Array<double>& xx, int& pos) const {
 
     new_inner_radius.allocate_coef() ;
-    *new_inner_radius.cf = 0 ;
+    new_inner_radius.cf = 0 ;
     
     Index pos_cf (nbr_coefs) ;	    
     pos_cf.set(0) = 0 ;
     
 	  for (int j=0 ; j<nbr_coefs(1) ; j++) {
 	    pos_cf.set(1)=  j ;
-	    new_inner_radius.cf->set(pos_cf) -= xx(pos) ; 
+	    new_inner_radius.cf.set(pos_cf) -= xx(pos) ;
 	    pos ++ ;
 	  }
       
@@ -278,14 +278,14 @@ void Domain_polar_shell_inner_adapted::xx_to_ders_from_adapted(const Array<doubl
     auxi.std_base() ;
     auxi.set_in_coef() ;
     auxi.allocate_coef() ;
-    *auxi.cf = 0 ;
+    auxi.cf = 0 ;
     
     Index pos_cf (nbr_coefs) ;	    
     pos_cf.set(0) = 0 ;
    
 	  for (int j=0 ; j<nbr_coefs(1) ; j++) {
 	    pos_cf.set(1)=  j ;
-	    auxi.cf->set(pos_cf) = xx(pos) ;
+	    auxi.cf.set(pos_cf) = xx(pos) ;
 	    pos ++ ;
 	  }
 
@@ -607,7 +607,7 @@ void Domain_polar_shell_inner_adapted::set_legendre_r_base(Base_spectral& base) 
 }
 
 // Computes the derivatives with respect to XYZ as a function of the numerical ones.
-void Domain_polar_shell_inner_adapted::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_polar_shell_inner_adapted::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
 	Val_domain rr (get_radius()) ;
 	Val_domain dr (*der_var[0] / (*der_rad_term_eq->val_t)()(num_dom)) ;
 	Val_domain dtsr ((*der_var[1] - rr.der_var(2) * dr) / rr);

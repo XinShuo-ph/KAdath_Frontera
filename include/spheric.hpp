@@ -199,7 +199,7 @@ class Domain_nucleus : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
 
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
@@ -688,7 +688,7 @@ class Domain_shell : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
    
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
@@ -1055,7 +1055,7 @@ class Domain_compact : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ; 
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
     /**
      * Method for the multiplication of two \c Base_spectral.
      * @returns the output base is undefined if the result is not implemented (i.e. if one tries to multiply 
@@ -1394,7 +1394,7 @@ class Domain_shell_log : public Domain_shell {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
 
      virtual Val_domain mult_r (const Val_domain&) const ;
      virtual Val_domain div_r (const Val_domain&) const ;
@@ -1483,7 +1483,7 @@ class Domain_shell_surr : public Domain_shell {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
 
      virtual Val_domain mult_r (const Val_domain&) const ;
      virtual Val_domain div_r (const Val_domain&) const ;

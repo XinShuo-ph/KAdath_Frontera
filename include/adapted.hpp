@@ -184,7 +184,7 @@ class Domain_shell_inner_adapted : public Domain {
      virtual const Point absol_to_num_bound(const Point&, int) const;
      
    
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
   public:
@@ -277,7 +277,7 @@ class Domain_shell_inner_adapted : public Domain {
 	* @param cc : location, in the overall system, of the coefficient to be set to 1.
 	* @param pos_cf : current position.
 	*/
-     void affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, int cc, int& pos_cf) const ;
+     void affecte_tau_one_coef_val_domain ( Val_domain& so, int mlim, int cc, int& pos_cf) const ;
 
      virtual int nbr_points_boundary (int, const Base_spectral&) const ;
      virtual void do_which_points_boundary (int, const Base_spectral&, Index**, int) const ;
@@ -491,7 +491,7 @@ class Domain_shell_outer_adapted : public Domain {
 
      virtual bool is_in(const Point&xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
   public:

@@ -101,8 +101,8 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 							lquant = 2*j ;
 							// No galerkin :
 							if ((mquant==0) && (lquant==0))  {
-								if (fabs((*so.cf)(pos_cf)) < threshold)
-									so.cf->set(pos_cf) = 0. ;
+								if (fabs((so.cf)(pos_cf)) < threshold)
+									so.cf.set(pos_cf) = 0. ;
 							}
 							else if (mquant==0) {
 							  if (i!=0) {
@@ -124,9 +124,9 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 									  abort()  ;
 								}
 									  
-								if (fabs((*so.cf)(pos_cf)) < threshold) {
-									so.cf->set(pos_gal_r) -= fact_r*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_cf) = 0 ;
+								if (fabs((so.cf)(pos_cf)) < threshold) {
+									so.cf.set(pos_gal_r) -= fact_r*(so.cf)(pos_cf) ;
+									so.cf.set(pos_cf) = 0 ;
 								}
 							  }
 							}
@@ -158,11 +158,11 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 									  cerr << "Strange base in Domain_nucleus_symphi::filter_val_domain" << endl ;
 									  abort()  ;
 								}
-							   if (fabs((*so.cf)(pos_cf)) < threshold) {
-									so.cf->set(pos_gal_r) -= fact_r*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_gal_t) -= fact_t*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_gal_rt) -= fact_rt*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_cf) = 0 ;
+							   if (fabs((so.cf)(pos_cf)) < threshold) {
+									so.cf.set(pos_gal_r) -= fact_r*(so.cf)(pos_cf) ;
+									so.cf.set(pos_gal_t) -= fact_t*(so.cf)(pos_cf) ;
+									so.cf.set(pos_gal_rt) -= fact_rt*(so.cf)(pos_cf) ;
+									so.cf.set(pos_cf) = 0 ;
 								}
 							    }
 						break ;
@@ -170,8 +170,8 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 						lquant = 2*j+1 ;
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-1))  {
 							if ((k==0) && (lquant<=1)) {
-							     if (fabs((*so.cf)(pos_cf)) < threshold)
-									so.cf->set(pos_cf) = 0. ;
+							     if (fabs((so.cf)(pos_cf)) < threshold)
+									so.cf.set(pos_cf) = 0. ;
 							}
 							else {
 							if ((mquant==0) && (i!=0))  {
@@ -192,9 +192,9 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 								    abort()  ;
 								  }
 							      	  
-								if (fabs((*so.cf)(pos_cf)) < threshold) {
-									so.cf->set(pos_gal_r) -= fact_r*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_cf) = 0 ;
+								if (fabs((so.cf)(pos_cf)) < threshold) {
+									so.cf.set(pos_gal_r) -= fact_r*(so.cf)(pos_cf) ;
+									so.cf.set(pos_cf) = 0 ;
 								}
 							}
 							else if ((j!=0) && (i!=0)) {
@@ -225,11 +225,11 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 									  cerr << "Strange base in Domain_nucleus_symphi::filter_val_domain" << endl ;
 									  abort()  ;
 								}  
-							     if (fabs((*so.cf)(pos_cf)) < threshold) {
-									so.cf->set(pos_gal_r) -= fact_r*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_gal_t) -= fact_t*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_gal_rt) -= fact_rt*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_cf) = 0 ;
+							     if (fabs((so.cf)(pos_cf)) < threshold) {
+									so.cf.set(pos_gal_r) -= fact_r*(so.cf)(pos_cf) ;
+									so.cf.set(pos_gal_t) -= fact_t*(so.cf)(pos_cf) ;
+									so.cf.set(pos_gal_rt) -= fact_rt*(so.cf)(pos_cf) ;
+									so.cf.set(pos_cf) = 0 ;
 								}
 							}
 						      }
@@ -239,8 +239,8 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 						lquant = 2*j ;
 						if ((j!=0) && (j!=nbr_coefs(1)-1)) { 
 						if ((mquant<=1) && (lquant==0)) {
-						     if (fabs((*so.cf)(pos_cf)) < threshold)
-									so.cf->set(pos_cf) = 0. ;
+						     if (fabs((so.cf)(pos_cf)) < threshold)
+									so.cf.set(pos_cf) = 0. ;
 						}
 						else {
 						if ((mquant<=1) && (i!=0)) {
@@ -261,9 +261,9 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 								  cerr << "Strange base in Domain_nucleus_symphi::filter_val_domain" << endl ;
 								  abort()  ;
 								}	  
-							    if (fabs((*so.cf)(pos_cf)) < threshold) {
-									so.cf->set(pos_gal_r) -= fact_r*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_cf) = 0 ;
+							    if (fabs((so.cf)(pos_cf)) < threshold) {
+									so.cf.set(pos_gal_r) -= fact_r*(so.cf)(pos_cf) ;
+									so.cf.set(pos_cf) = 0 ;
 								}
 							}
 						
@@ -296,11 +296,11 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 									  cerr << "Strange base in Domain_nucleus_symphi::filter_val_domain" << endl ;
 									  abort()  ;
 								}  
-							       if (fabs((*so.cf)(pos_cf)) < threshold) {
-									so.cf->set(pos_gal_r) -= fact_r*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_gal_t) -= fact_t*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_gal_rt) -= fact_rt*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_cf) = 0 ;
+							       if (fabs((so.cf)(pos_cf)) < threshold) {
+									so.cf.set(pos_gal_r) -= fact_r*(so.cf)(pos_cf) ;
+									so.cf.set(pos_gal_t) -= fact_t*(so.cf)(pos_cf) ;
+									so.cf.set(pos_gal_rt) -= fact_rt*(so.cf)(pos_cf) ;
+									so.cf.set(pos_cf) = 0 ;
 								}
 							}
 						      }
@@ -311,8 +311,8 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 						lquant = 2*j+1 ;
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-1))  {
 							if ((mquant<=1) && (lquant<=1)) {
-							       if (fabs((*so.cf)(pos_cf)) < threshold)
-									so.cf->set(pos_cf) = 0. ;
+							       if (fabs((so.cf)(pos_cf)) < threshold)
+									so.cf.set(pos_cf) = 0. ;
 							}
 							else {
 							if ((mquant<=1) && (i!=0))  {
@@ -332,9 +332,9 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 								    cerr << "Strange base in Domain_nucleus_symphi::filter_val_domain" << endl ;
 								    abort()  ;
 								  }
-							        if (fabs((*so.cf)(pos_cf)) < threshold) {
-									so.cf->set(pos_gal_r) -= fact_r*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_cf) = 0 ;
+							        if (fabs((so.cf)(pos_cf)) < threshold) {
+									so.cf.set(pos_gal_r) -= fact_r*(so.cf)(pos_cf) ;
+									so.cf.set(pos_cf) = 0 ;
 								}
 							}
 							else if ((j!=0) && (i!=0)) {
@@ -365,11 +365,11 @@ void Domain_nucleus_symphi::filter_val_domain (Val_domain& so, double threshold)
 									  cerr << "Strange base in Domain_nucleus_symphi::filter_val_domain" << endl ;
 									  abort()  ;
 								}  
-							       if (fabs((*so.cf)(pos_cf)) < threshold) {
-									so.cf->set(pos_gal_r) -= fact_r*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_gal_t) -= fact_t*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_gal_rt) -= fact_rt*(*so.cf)(pos_cf) ;
-									so.cf->set(pos_cf) = 0 ;
+							       if (fabs((so.cf)(pos_cf)) < threshold) {
+									so.cf.set(pos_gal_r) -= fact_r*(so.cf)(pos_cf) ;
+									so.cf.set(pos_gal_t) -= fact_t*(so.cf)(pos_cf) ;
+									so.cf.set(pos_gal_rt) -= fact_rt*(so.cf)(pos_cf) ;
+									so.cf.set(pos_cf) = 0 ;
 								}
 							}
 						      }

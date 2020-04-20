@@ -29,7 +29,7 @@ namespace Kadath{
 void Domain_polar_shell_outer_adapted::affecte_tau_val_domain (Val_domain& so, int mquant, const Array<double>& values, int& conte) const {
 
 	so.allocate_coef() ;
-	*so.cf = 0. ;
+	so.cf = 0. ;
 
 	Index pos_cf (nbr_coefs) ;
 	// True values
@@ -63,7 +63,7 @@ void Domain_polar_shell_outer_adapted::affecte_tau_val_domain (Val_domain& so, i
 		if (true_tet)
 			for (int i=0 ; i<nbr_coefs(0) ; i++) {
 					pos_cf.set(0) = i ;
-					so.cf->set(pos_cf) += values(conte);
+					so.cf.set(pos_cf) += values(conte);
 					conte ++ ;
 				}
 	}
@@ -78,34 +78,34 @@ void Domain_polar_shell_outer_adapted::affecte_tau_val_domain (Val_domain& so, i
 			case COS_EVEN:
 				for (int j=1 ; j<nbr_coefs(1) ; j++) {
 					pos_cf.set(1) = j ;
-					sum += (*so.cf)(pos_cf) ;
+					sum += (so.cf)(pos_cf) ;
 					}
 				pos_cf.set(1) = 0 ;
-				so.cf->set(pos_cf) = -sum ;
+				so.cf.set(pos_cf) = -sum ;
 				break ;
 			case COS_ODD:
 				for (int j=1 ; j<nbr_coefs(1) ; j++) {
 					pos_cf.set(1) = j ;
-					sum += (*so.cf)(pos_cf) ;
+					sum += (so.cf)(pos_cf) ;
 				}
 				pos_cf.set(1) = 0 ;
-				so.cf->set(pos_cf) = -sum ;
+				so.cf.set(pos_cf) = -sum ;
 				break ;
 			case SIN_EVEN:
 				for (int j=2 ; j<nbr_coefs(1) ; j++) {
 					pos_cf.set(1) = j ;
-					sum += j*(*so.cf)(pos_cf) ;
+					sum += j*(so.cf)(pos_cf) ;
 				}
 				pos_cf.set(1) = 1 ;
-				so.cf->set(pos_cf) = -sum ;
+				so.cf.set(pos_cf) = -sum ;
 				break ;
 			case SIN_ODD:
 				for (int j=1 ; j<nbr_coefs(1) ; j++) {
 					pos_cf.set(1) = j ;
-					sum += (2*j+1)*(*so.cf)(pos_cf) ;
+					sum += (2*j+1)*(so.cf)(pos_cf) ;
 				}
 				pos_cf.set(1) = 0 ;
-				so.cf->set(pos_cf) = -sum ;
+				so.cf.set(pos_cf) = -sum ;
 				break ;
 			default:
 			cerr << "Unknow theta basis in Domain_polar_shell_outer_adapted::affecte_tau_val_domain" << endl ;

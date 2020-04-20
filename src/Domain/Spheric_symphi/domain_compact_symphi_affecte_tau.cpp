@@ -27,7 +27,7 @@ namespace Kadath {
 void Domain_compact_symphi::affecte_tau_val_domain (Val_domain& so, const Array<double>& values, int& conte) const {
 
 	so.allocate_coef() ;
-	*so.cf = 0. ;
+	so.cf = 0. ;
 	Index pos_cf (nbr_coefs) ;
 
 	// Positions of the Galerkin basis
@@ -98,7 +98,7 @@ void Domain_compact_symphi::affecte_tau_val_domain (Val_domain& so, const Array<
 						case COS_EVEN :
 							// No galerkin :
 							if (mquant==0) {
-								so.cf->set(pos_cf) += values(conte) ;
+								so.cf.set(pos_cf) += values(conte) ;
 								conte ++ ;
 							}
 							else if (j!=0)  {
@@ -106,15 +106,15 @@ void Domain_compact_symphi::affecte_tau_val_domain (Val_domain& so, const Array<
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -1. ;
-							    so.cf->set(pos_cf) += values(conte) ;
-							    so.cf->set(pos_gal_t) += fact_t*values(conte) ;
+							    so.cf.set(pos_cf) += values(conte) ;
+							    so.cf.set(pos_gal_t) += fact_t*values(conte) ;
 							    conte ++ ;
 							    }
 						break ;
 					case COS_ODD:
 						if (j!=nbr_coefs(1)-1) {
 							if (mquant==0) {
-							      so.cf->set(pos_cf) += values(conte) ;
+							      so.cf.set(pos_cf) += values(conte) ;
 							      conte ++ ;
 							}
 							else if (j!=0)  {
@@ -122,8 +122,8 @@ void Domain_compact_symphi::affecte_tau_val_domain (Val_domain& so, const Array<
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -1. ;
-							    so.cf->set(pos_cf) += values(conte) ;
-							    so.cf->set(pos_gal_t) += fact_t*values(conte) ;
+							    so.cf.set(pos_cf) += values(conte) ;
+							    so.cf.set(pos_gal_t) += fact_t*values(conte) ;
 							    conte ++ ;
 							    }
 						}
@@ -131,7 +131,7 @@ void Domain_compact_symphi::affecte_tau_val_domain (Val_domain& so, const Array<
 					case SIN_EVEN:
 						if ((j!=0) && (j!=nbr_coefs(1)-1)) { 
 						if (mquant<=1) {
-						    so.cf->set(pos_cf) += values(conte) ;
+						    so.cf.set(pos_cf) += values(conte) ;
 						    conte ++ ;
 						}
 						else if (j!=1)  {
@@ -139,8 +139,8 @@ void Domain_compact_symphi::affecte_tau_val_domain (Val_domain& so, const Array<
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 1 ;
 							    fact_t = -j ;
-							    so.cf->set(pos_cf) += values(conte) ;
-							    so.cf->set(pos_gal_t) += fact_t*values(conte) ;
+							    so.cf.set(pos_cf) += values(conte) ;
+							    so.cf.set(pos_gal_t) += fact_t*values(conte) ;
 							    conte ++ ;
 							    }
 						}
@@ -148,7 +148,7 @@ void Domain_compact_symphi::affecte_tau_val_domain (Val_domain& so, const Array<
 					case SIN_ODD:
 						if (j!=nbr_coefs(1)-1) { 
 							if (mquant<=1) {
-							      so.cf->set(pos_cf) += values(conte) ;
+							      so.cf.set(pos_cf) += values(conte) ;
 							      conte ++ ;
 							}
 							else if (j!=0)  {
@@ -156,8 +156,8 @@ void Domain_compact_symphi::affecte_tau_val_domain (Val_domain& so, const Array<
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -(2.*j+1) ;
-							    so.cf->set(pos_cf) += values(conte) ;
-							    so.cf->set(pos_gal_t) += fact_t*values(conte) ;
+							    so.cf.set(pos_cf) += values(conte) ;
+							    so.cf.set(pos_gal_t) += fact_t*values(conte) ;
 							    conte ++ ;
 							    }
 						}

@@ -121,7 +121,7 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 							// No galerkin :
 							if ((mquant==0) && (lquant==0))  {
 							    if (i!=nbr_coefs(0)-rlim+1) {
-								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							  }
 							}
@@ -145,7 +145,7 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 									  abort()  ;
 								}
 									  
-								sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
+								sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
 								pos_sec ++ ;
 							  }
 							}
@@ -177,8 +177,8 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 									  cerr << "Strange base in Domain_nucleus_symphi::export_tau_val_domain" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
-								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
+								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							    }
 						break ;
@@ -189,7 +189,7 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1) && (i!=nbr_coefs(0)-rlim))  {
 							if ((mquant==0) && (lquant<=1)) {
 							  // No Galerkin :
-							  sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+							  sec.set(pos_sec) = (so.cf)(pos_cf) ;
 							  pos_sec ++ ;
 							}
 						      else {
@@ -211,7 +211,7 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 								    cerr << "Strange base in Domain_nucleus_symphi::export_tau_val_domain" << endl ;
 								    abort()  ;
 								  }
-							       sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
+							       sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
 							       pos_sec ++ ;
 							}
 							else if ((j!=0) && (i!=0)) {
@@ -242,8 +242,8 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 									  cerr << "Strange base in Domain_nucleus_symphi::export_tau_val_domain" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
-								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
+								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							}
 						}
@@ -256,7 +256,7 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1)) {
 							if ((mquant<=1) && (lquant==0)) {
 							      // No Galerkin
-							      sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+							      sec.set(pos_sec) = (so.cf)(pos_cf) ;
 							      pos_sec ++ ;
 							} 
 							else {
@@ -278,7 +278,7 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 								  cerr << "Strange base in Domain_nucleus_symphi::export_tau_val_domain" << endl ;
 								  abort()  ;
 								}	  
-							sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
+							sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
 							pos_sec ++ ;
 							}
 						else {
@@ -310,8 +310,8 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 									  cerr << "Strange base in Domain_nucleus_symphi::affecte_tau_val_domain" << endl ;
 									  abort()  ;
 								}  
-							     sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
-								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
+							     sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
+								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 						 }
 						}
@@ -326,7 +326,7 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1) && (i!=nbr_coefs(0)-rlim))  {
 							if ((mquant<=1) && (lquant<=1)) {
 							  // No Galerkin :
-							  sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+							  sec.set(pos_sec) = (so.cf)(pos_cf) ;
 							  pos_sec ++ ;
 							}
 						      else {
@@ -348,7 +348,7 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 								    cerr << "Strange base in Domain_nucleus_symphi::export_tau_val_domain" << endl ;
 								    abort()  ;
 								  }
-							       sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
+							       sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
 							       pos_sec ++ ;
 							}
 							else if ((j!=0) && (i!=0)) {
@@ -379,8 +379,8 @@ void Domain_nucleus_symphi::export_tau_val_domain (const Val_domain& so, int ord
 									  cerr << "Strange base in Domain_nucleus_symphi::export_tau_val_domain" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
-								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
+								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							}
 						}

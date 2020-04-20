@@ -28,7 +28,7 @@ void Domain_oned_ori::affecte_tau_one_coef_val_domain (Val_domain& so, int cc, i
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	*so.cf=0. ;
+	so.cf=0. ;
 
         bool found = false ;
 	Index pos_cf(nbr_coefs) ;
@@ -56,11 +56,11 @@ void Domain_oned_ori::affecte_tau_one_coef_val_domain (Val_domain& so, int cc, i
 	for (int i=0 ; i<max ; i++) {
 		pos_cf.set(0) = i ;
 			if (conte==cc) {
-				so.cf->set(pos_cf) = 1;
+				so.cf.set(pos_cf) = 1;
 				found = true ;
 			}
 			else {
-				so.cf->set(pos_cf) = 0. ;
+				so.cf.set(pos_cf) = 0. ;
 			}
 		conte ++ ;
 	}

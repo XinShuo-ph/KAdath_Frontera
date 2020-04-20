@@ -35,6 +35,7 @@ class Dim_array  : public Memory_mapped_array<int> {
     public:
         using Data_type = Memory_mapped_array<int>;
         using size_type = int;
+        Dim_array() = default;
         /** Standard constructor
         * @param nd [input] number of dimensions. The sizes are not initialized.
         **/
@@ -60,6 +61,10 @@ class Dim_array  : public Memory_mapped_array<int> {
          * Assignement to annother \c Dim_array.
          */
         void operator= (const Dim_array& so) {assert (size==so.size);for (int i=0 ;i<size;i++) data[i] = so.data[i];}
+        /**
+         * Computes and returns the complete dimension of the numerical approximation space.
+         */
+        int total_size() const {int tdim{1}; for(int const & d : *this) tdim *= d; return tdim;}
 
         void swap(Dim_array & so) {}
         void save (FILE*) const ; ///< Save function

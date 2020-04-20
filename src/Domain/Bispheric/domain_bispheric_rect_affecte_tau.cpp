@@ -29,7 +29,7 @@ void Domain_bispheric_rect::affecte_tau_val_domain (Val_domain& so, const Array<
 	int basep = (*so.get_base().bases_1d[2]) (0) ;
 
 	so.allocate_coef() ;
-	*so.cf = 0. ;
+	so.cf = 0. ;
 	Index pos (nbr_coefs) ;
 	do {	
 
@@ -60,7 +60,7 @@ void Domain_bispheric_rect::affecte_tau_val_domain (Val_domain& so, const Array<
 		}
 
 		if (indic) {
-			so.cf->set(pos) = values(conte) ;
+			so.cf.set(pos) = values(conte) ;
 			conte ++ ;
 		}
 	}
@@ -82,11 +82,11 @@ void Domain_bispheric_rect::affecte_tau_val_domain (Val_domain& so, const Array<
 					switch (basechi) {
 						case CHEB_EVEN :
 							val *= -1. ;
-							summ += val*(*so.cf)(pos) ;
+							summ += val*(so.cf)(pos) ;
 							break ;
 						case LEG_EVEN :
 							val *= - double(2*j-1)/double(2*j) ;
-							summ += val*(*so.cf)(pos) ;
+							summ += val*(so.cf)(pos) ;
 							break ;
 						default :
 							cerr << "Unknown base in Domain_bispheric_rect::affecte_tau" << endl ;
@@ -94,7 +94,7 @@ void Domain_bispheric_rect::affecte_tau_val_domain (Val_domain& so, const Array<
 					}
 				}
 				pos.set(1) = 0 ;
-				so.cf->set(pos) = -summ ;
+				so.cf.set(pos) = -summ ;
 			}
 		}
 	}

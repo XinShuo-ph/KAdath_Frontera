@@ -202,7 +202,7 @@ void Domain_oned_inf::set_val_inf (Val_domain& so, double x) const {
 }
 
 // Computes the derivatives with respect to rho,Z as a function of the numerical ones.
-void Domain_oned_inf::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_oned_inf::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
 	der_abs[0] = new Val_domain (-alpha*der_var[0]->mult_xm1().mult_xm1()) ;
 }
 

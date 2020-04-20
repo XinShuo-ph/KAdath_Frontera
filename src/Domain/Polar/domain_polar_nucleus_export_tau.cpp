@@ -73,7 +73,7 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 					// No galerkin :
 					if ((mquant==0) && (lquant<=llim))  {
 					    if (i!=nbr_coefs(0)-rlim+1) {
-						sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+						sec.set(pos_sec) = (so.cf)(pos_cf) ;
 						pos_sec ++ ;
 						}
 					}
@@ -97,7 +97,7 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 							  abort()  ;
 						}
 									  
-						sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
+						sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
 						pos_sec ++ ;
 						 }
 					}
@@ -129,8 +129,8 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 									  cerr << "Strange base in Domain_polar_nucleus:export_tau_inside" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
-								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
+								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							    }
 						break ;
@@ -141,7 +141,7 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1) && (i!=nbr_coefs(0)-rlim))  {
 							if ((mquant==0) && (lquant<=llim+1)) {
 							  // No Galerkin :
-							  sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+							  sec.set(pos_sec) = (so.cf)(pos_cf) ;
 							  pos_sec ++ ;
 							}
 						      else {
@@ -163,7 +163,7 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 								    cerr << "Strange base in Domain_polar_nucleus:export_tau_inside" << endl ;
 								    abort()  ;
 								  }
-							       sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
+							       sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
 							       pos_sec ++ ;
 							}
 							else if ((j!=0) && (i!=0)) {
@@ -194,8 +194,8 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 									  cerr << "Strange base in Domain_polar_nucleus:export_tau_inside" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
-								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
+								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							}
 						}
@@ -208,7 +208,7 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 						if ((j!=0) && (j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1)) {
 							if ((mquant<=1) && (lquant<=llim)) {
 							      // No Galerkin
-							      sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+							      sec.set(pos_sec) = (so.cf)(pos_cf) ;
 							      pos_sec ++ ;
 							} 
 							else {
@@ -230,7 +230,7 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 								  cerr << "Strange base in Domain_polar_nucleus::export_tau_val_domain" << endl ;
 								  abort()  ;
 								}	  
-							sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
+							sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
 							pos_sec ++ ;
 							}
 						else {
@@ -262,8 +262,8 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 									  cerr << "Strange base in Domain_polar_nucleus::affecte_tau_val_domain" << endl ;
 									  abort()  ;
 								}  
-							     sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
-								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
+							     sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
+								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 						 }
 						}
@@ -278,7 +278,7 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1) && (i!=nbr_coefs(0)-rlim))  {
 							if ((mquant<=1) && (lquant<=llim+1)) {
 							  // No Galerkin :
-							  sec.set(pos_sec) = (*so.cf)(pos_cf) ;
+							  sec.set(pos_sec) = (so.cf)(pos_cf) ;
 							  pos_sec ++ ;
 							}
 						      else {
@@ -300,7 +300,7 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 								    cerr << "Strange base in Domain_polar_nucleus::export_tau_val_domain" << endl ;
 								    abort()  ;
 								  }
-							       sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
+							       sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
 							       pos_sec ++ ;
 							}
 							else if ((j!=0) && (i!=0)) {
@@ -331,8 +331,8 @@ void Domain_polar_nucleus::export_tau_val_domain (const Val_domain& so, int mqua
 									  cerr << "Strange base in Domain_polar_nucleus::export_tau_val_domain" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
-								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
+								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							}
 						}

@@ -30,7 +30,7 @@ void Domain_bispheric_rect::affecte_tau_one_coef_val_domain (Val_domain& so,  in
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	*so.cf=0. ;
+	so.cf=0. ;
 	Index pos_cf(nbr_coefs) ;
 
 	bool found = false ;
@@ -65,7 +65,7 @@ void Domain_bispheric_rect::affecte_tau_one_coef_val_domain (Val_domain& so,  in
 		if (indic) {
 			if (conte==cc) {
 				found = true ;
-				so.cf->set(pos_cf) = 1;
+				so.cf.set(pos_cf) = 1;
 				// Regularity on the axis :
 				if ((pos_cf(2)%2==0) && (pos_cf(2)!=0)) {
 					Index pos_galerkin (pos_cf) ;
@@ -85,11 +85,11 @@ void Domain_bispheric_rect::affecte_tau_one_coef_val_domain (Val_domain& so,  in
 							cerr << "Unknown base in Domain_bispheric_rect::affecte_one_coef" << endl ;
 							abort() ;
 						}
-					so.cf->set(pos_galerkin) = valreg ;
+					so.cf.set(pos_galerkin) = valreg ;
 					}
 				}
 			else
-				so.cf->set(pos_cf) = 0. ;
+				so.cf.set(pos_cf) = 0. ;
 			conte ++ ;
 		}
 	}

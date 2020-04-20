@@ -91,7 +91,7 @@ Tensor Domain_bispheric_chi_first::import (int numdom, int bound, int n_ope, con
       
       // Now loop on the components :
       for (int nc=0 ; nc<res.get_n_comp() ; nc++) {
-	double val = ((*parts[current]->cmp[nc])(zedoms(current)).check_if_zero()) ? 0 : (*parts[current]->cmp[nc])(zedoms(current)).get_base().summation (num, *(*parts[current]->cmp[nc])(zedoms(current)).cf) ;
+	double val = ((*parts[current]->cmp[nc])(zedoms(current)).check_if_zero()) ? 0 : (*parts[current]->cmp[nc])(zedoms(current)).get_base().summation (num, (*parts[current]->cmp[nc])(zedoms(current)).cf) ;
 	// Loop on radius :
 	for (int i=0 ; i<nbr_points(0) ; i++) {
 	  pos.set(0) = i ;

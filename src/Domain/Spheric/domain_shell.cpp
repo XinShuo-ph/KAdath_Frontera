@@ -662,7 +662,7 @@ void Domain_shell::set_legendre_base_p_mtz(Base_spectral& base) const  {
 }
 
 // Computes the derivatives with respect to XYZ as a function of the numerical ones.
-void Domain_shell::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_shell::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
 
 	// d/dx :
 	Val_domain sintdr (der_var[0]->mult_sin_theta()/alpha) ;	
@@ -884,7 +884,7 @@ double Domain_shell::integ(const Val_domain& so, int bound) const // compute int
          for (int i(0) ; i < nbr_coefs(0) ; ++i) 
          {
             pos.set(0) = i;
-            res += fact_tet*(*so.cf)(pos);
+            res += fact_tet*(so.cf)(pos);
          }
       }
       return res*2.0*M_PI;

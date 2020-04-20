@@ -88,7 +88,7 @@ namespace Kadath {
 
                 coef() ;
                 delete [] inside ;
-                return val_zones[ld]->base.summation(num, *val_zones[ld]->cf) ;
+                return val_zones[ld]->base.summation(num, val_zones[ld]->cf) ;
             }
         }
     }
@@ -121,7 +121,7 @@ namespace Kadath {
 
                 coef() ;
                 delete [] inside ;
-                return val_zones[ld]->base.summation(num, *val_zones[ld]->cf) ;
+                return val_zones[ld]->base.summation(num, val_zones[ld]->cf) ;
             }
         }
     }

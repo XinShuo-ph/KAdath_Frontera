@@ -28,7 +28,7 @@ void Domain_spheric_periodic_nucleus::affecte_tau_one_coef_val_domain (Val_domai
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	*so.cf=0. ;
+	so.cf=0. ;
 	Index pos_cf(nbr_coefs) ;
 
       bool found = false ;
@@ -64,11 +64,11 @@ void Domain_spheric_periodic_nucleus::affecte_tau_one_coef_val_domain (Val_domai
 		for (int i=0 ; i<nbr_coefs(0) ; i++) {
 			pos_cf.set(0) = i ;
 				if (conte==cc) {
-					so.cf->set(pos_cf) = 1;
+					so.cf.set(pos_cf) = 1;
 					found = true ;
 				}
 				else {
-					so.cf->set(pos_cf) = 0. ;
+					so.cf.set(pos_cf) = 0. ;
 					}
 			conte ++ ;
 			}

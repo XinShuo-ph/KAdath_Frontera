@@ -44,7 +44,7 @@ Val_domain Domain_oned_qcq::div_xp1 (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = new Array<double> (so.base.ope_1d(div_xp1_1d, 0, *so.cf, res.base)) ;
+	res.cf = (so.base.ope_1d(div_xp1_1d, 0, so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
