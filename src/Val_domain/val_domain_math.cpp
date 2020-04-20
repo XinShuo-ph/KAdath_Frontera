@@ -160,13 +160,13 @@ Val_domain operator+ (const Val_domain& a, const Val_domain& b) {
 	if (a.in_conf) {
 		if (!b.in_conf)
 			b.coef_i() ;
-		res.c = (*a.c + *b.c) ;
+		res.c = (a.c + b.c) ;
 		res.in_conf=true ;
 		}
 	else if (b.in_conf) {
 		if (!a.in_conf)
 			a.coef_i() ;
-		res.c = (*a.c + *b.c) ;
+		res.c = (a.c + b.c) ;
 		res.in_conf=true ;
 		}
 	
@@ -174,13 +174,13 @@ Val_domain operator+ (const Val_domain& a, const Val_domain& b) {
 	if (a.in_coef) {
 		if (!b.in_coef)
 			b.coef() ;
-		res.cf = new Array<double> (*a.cf + *b.cf) ;
+		res.cf = (a.cf + b.cf) ;
 		res.in_coef=true ;
 		}
 	else if (b.in_coef) {
 		if (!a.in_coef)
 			a.coef() ;
-		res.cf = new Array<double> (*a.cf + *b.cf) ;
+		res.cf = (a.cf + b.cf) ;
 		res.in_coef=true ;
 		}	
 	}
@@ -229,13 +229,13 @@ Val_domain operator- (const Val_domain& a, const Val_domain& b) {
 	if (a.in_conf) {
 		if (!b.in_conf)
 			b.coef_i() ;
-		res.c = (*a.c - *b.c) ;
+		res.c = (a.c - b.c) ;
 		res.in_conf=true ;
 		}
 	else if (b.in_conf) {
 		if (!a.in_conf)
 			a.coef_i() ;
-		res.c = (*a.c - *b.c) ;
+		res.c = (a.c - b.c) ;
 		res.in_conf=true ;
 		}
 	if (!res.in_conf) {
@@ -243,13 +243,13 @@ Val_domain operator- (const Val_domain& a, const Val_domain& b) {
 		if (!b.in_coef)
 			b.coef() ;
 		assert (a.base == b.base) ;
-		res.cf = new Array<double> (*a.cf - *b.cf) ;
+		res.cf = (a.cf - b.cf) ;
 		res.in_coef=true ;
 		}
 	else if (b.in_coef) {
 		if (!a.in_coef)
 			a.coef() ;
-		res.cf = new Array<double> (*a.cf - *b.cf) ;
+		res.cf = (a.cf - b.cf) ;
 		res.in_coef=true ;
 		}
 	}
@@ -310,7 +310,7 @@ Val_domain operator* (const Val_domain& a, const Val_domain& b) {
         assert (a.zone==b.zone) ;
 	Val_domain res (a.zone) ;
 	res.allocate_conf() ;
-	res.c = (*a.c)* (*b.c) ;
+	res.c = (a.c)* (b.c) ;
 	res.base = a.zone->mult(a.base, b.base) ;
 	return res ;
 	}
@@ -392,7 +392,7 @@ Val_domain operator/ (const Val_domain& a, const Val_domain& b) {
         assert (a.zone==b.zone) ;
 	Val_domain res (a.zone) ;
 	res.allocate_conf() ;
-	res.c = (*a.c)/ (*b.c) ;
+	res.c = (a.c)/ (b.c) ;
 	res.base = a.zone->mult(a.base, b.base) ;
 	return res ;
 	}
@@ -517,7 +517,7 @@ Val_domain atanh (const Val_domain& so) {
 double diffmax (const Val_domain& aa, const Val_domain& bb) {
 	aa.coef_i() ;
 	bb.coef_i() ;
-	return diffmax (*aa.c, *bb.c) ;
+	return diffmax (aa.c, bb.c) ;
 }
 
 Val_domain bessel_jl (const Val_domain& so, int l) {

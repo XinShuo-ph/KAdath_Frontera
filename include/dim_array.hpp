@@ -60,7 +60,7 @@ class Dim_array  : public Memory_mapped_array<int> {
         /**
          * Assignement to annother \c Dim_array.
          */
-        void operator= (const Dim_array& so) {assert (size==so.size);for (int i=0 ;i<size;i++) data[i] = so.data[i];}
+        void operator= (const Dim_array& so) {for (int i=0 ;i<size;i++) data[i] = so.data[i];}
         /**
          * Computes and returns the complete dimension of the numerical approximation space.
          */
