@@ -1,5 +1,5 @@
 //
-// Created by sauliac on 14/04/2020.
+// Created by sauliac on 14/04/2020, based on a previous work from Ludwig Jens Papenfort.
 //
 
 #include "config.h"
