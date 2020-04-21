@@ -203,7 +203,7 @@ void Domain_spheric_time_nucleus::set_legendre_base(Base_spectral& base) const  
  }
  
 // Computes the derivatives with respect to rho,Z as a function of the numerical ones.
-void Domain_spheric_time_nucleus::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_spheric_time_nucleus::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
 	// d/dr
 	der_abs[0] = new Val_domain (*der_var[0]/alpha) ;
 	// d/dt :

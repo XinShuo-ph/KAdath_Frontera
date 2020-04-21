@@ -581,7 +581,7 @@ void Domain_bispheric_rect::do_for_der() const {
 }
 
 // Computes the derivatives with respect to the absolute coordinates with respect to the numerical ones.
-void Domain_bispheric_rect::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_bispheric_rect::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
 	if (p_detadx==0x0)
 		do_for_der() ;
 

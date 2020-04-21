@@ -567,7 +567,7 @@ void Domain_polar_periodic_nucleus::set_legendre_base_p_spher(Base_spectral& bas
 }
 
 // Computes the derivatives with respect to rho,Z as a function of the numerical ones.
-void Domain_polar_periodic_nucleus::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_polar_periodic_nucleus::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
 	Val_domain dr (*der_var[0]/alpha) ;
 	Val_domain dtsr (der_var[1]->div_x()/alpha) ;
 

@@ -21,26 +21,23 @@
 #include "utilities.hpp"
 namespace Kadath {
 Val_domain::Val_domain(const Domain* dom) : 
-    zone(dom), base(zone->get_ndim()), is_zero(false), c(nullptr), cf(nullptr), in_conf(false), in_coef(false) {
-	p_der_var = Memory_mapper::get_memory<Val_domain*>(zone->get_ndim()) ;
-	p_der_abs = Memory_mapper::get_memory<Val_domain*>(zone->get_ndim()) ;
+    zone{dom}, base{zone->get_ndim()}, is_zero{false}, c{nullptr}, cf{nullptr}, in_conf{false},
+    in_coef{false}, p_der_var{zone->get_ndim()}, p_der_abs{zone->get_ndim()}
+{
 	for (int i=0 ; i<zone->get_ndim() ; i++) {
 	     p_der_var[i] = nullptr ;
 	     p_der_abs[i] = nullptr ;
      }
 }
 
-Val_domain::Val_domain (const Val_domain& so, bool copie) : zone(so.zone), base(so.base), is_zero(so.is_zero),
-in_conf(so.in_conf), in_coef(so.in_coef) {
-
-	c = ((so.c!=nullptr) && copie) ? new Array<double> (*so.c) : nullptr;
-	cf = ((so.cf!=nullptr) && copie) ? new Array<double> (*so.cf) : nullptr ;
-	if (!copie) {
-		in_conf = false ;
-		in_coef = false ;
-	}
-    p_der_var = Memory_mapper::get_memory<Val_domain*>(zone->get_ndim()) ;
-    p_der_abs = Memory_mapper::get_memory<Val_domain*>(zone->get_ndim()) ;
+Val_domain::Val_domain (const Val_domain& so, bool const copie) :
+    zone{so.zone}, base{so.base}, is_zero{so.is_zero}, in_conf{copie && so.in_conf}, in_coef{copie && so.in_coef},
+    c{nullptr}, cf{nullptr}, p_der_var{zone->get_ndim()}, p_der_abs{zone->get_ndim()}
+{
+    if(copie){
+        c  = (so.c  ? new Array<double> {*so.c}  : nullptr);
+        cf = (so.cf ? new Array<double> {*so.cf} : nullptr);
+    }
 	for (int i=0 ; i<zone->get_ndim() ; i++) {
 	     p_der_var[i] = ((so.p_der_var[i]!=nullptr) && copie) ? new Val_domain(*so.p_der_var[i]) : nullptr ;
 	     p_der_abs[i] = ((so.p_der_abs[i]!=nullptr) && copie) ? new Val_domain(*so.p_der_abs[i]) : nullptr ;
@@ -55,17 +52,16 @@ void Val_domain::swap(Val_domain &so) noexcept {
     std::swap(cf,so.cf);
     std::swap(in_conf,so.in_conf);
     std::swap(in_coef,so.in_coef);
-    std::swap(p_der_var,so.p_der_var);
-    std::swap(p_der_abs,so.p_der_abs);
+    p_der_var.swap(so.p_der_var);
+    p_der_abs.swap(so.p_der_abs);
 }
 
-Val_domain::Val_domain(Val_domain && so) noexcept : zone{so.zone}, base{std::move(so.base)}, is_zero{so.is_zero}, c{so.c},
-    cf{so.cf}, in_conf{so.in_conf},  in_coef{so.in_coef}, p_der_var{so.p_der_var}, p_der_abs{so.p_der_abs}
+Val_domain::Val_domain(Val_domain && so) noexcept :
+    zone{so.zone}, base{std::move(so.base)}, is_zero{so.is_zero}, c{so.c}, cf{so.cf}, in_conf{so.in_conf},
+    in_coef{so.in_coef}, p_der_var{std::move(so.p_der_var)}, p_der_abs{std::move(so.p_der_abs)}
 {
     so.c = nullptr;
     so.cf = nullptr;
-    so.p_der_var = nullptr;
-    so.p_der_abs = nullptr;
 }
 
 Val_domain & Val_domain::operator=(Val_domain && so) noexcept
@@ -77,12 +73,14 @@ Val_domain & Val_domain::operator=(Val_domain && so) noexcept
     in_coef = so.in_coef ;
     std::swap(c,so.c);
     std::swap(cf,so.cf);
-    std::swap(p_der_var,so.p_der_var);
-    std::swap(p_der_abs,so.p_der_abs);
+    p_der_var = std::move(so.p_der_var);
+    p_der_abs = std::move(so.p_der_abs);
     return *this;
 }
 
-Val_domain::Val_domain (const Domain* so, FILE* fd) : zone (so), base(fd) {
+Val_domain::Val_domain (const Domain* so, FILE* fd) :
+    zone (so), base(fd), is_zero{}, c{}, cf{}, in_conf{}, in_coef{}, p_der_var{}, p_der_abs{}
+{
 	int indic ;
 	fread_be (&indic, sizeof(int), 1, fd) ;
 	is_zero = (indic==0) ? false : true ;
@@ -93,8 +91,8 @@ Val_domain::Val_domain (const Domain* so, FILE* fd) : zone (so), base(fd) {
 	in_coef = (indic==0) ? true : false ;
 	cf = (in_coef) ? new Array<double>(fd) : nullptr ;
 
-    p_der_var = Memory_mapper::get_memory<Val_domain*>(zone->get_ndim()) ;
-    p_der_abs = Memory_mapper::get_memory<Val_domain*>(zone->get_ndim()) ;
+    p_der_var.resize(zone->get_ndim()) ;
+    p_der_abs.resize(zone->get_ndim()) ;
 	for (int i=0 ; i<zone->get_ndim() ; i++) {
 	     p_der_var[i] = nullptr ;
 	     p_der_abs[i] = nullptr ;
@@ -103,10 +101,10 @@ Val_domain::Val_domain (const Domain* so, FILE* fd) : zone (so), base(fd) {
 
 Val_domain::~Val_domain() {
 	del_deriv();
-	Memory_mapper::release_memory<Val_domain*>(p_der_var,zone->get_ndim());
-    Memory_mapper::release_memory<Val_domain*>(p_der_abs,zone->get_ndim());
-	if (c!=nullptr) delete c ;
-	if (cf!=nullptr) delete cf ;
+//	if (c!=nullptr) delete c ;
+//	if (cf!=nullptr) delete cf ;
+    safe_delete(c);
+    safe_delete(cf);
 }
 
 void Val_domain::save (FILE* fd) const {
@@ -124,24 +122,9 @@ void Val_domain::save (FILE* fd) const {
 }
 
 void Val_domain::del_deriv() const {
-    auto deleter = [this](Val_domain** const p) -> void {
-        for(int i{0};i<zone->get_ndim();i++) if(p[i] != nullptr) {delete p[i]; p[i] = nullptr;}
-    };
-    if(p_der_var && p_der_abs) {
-        for (int i = 0; i < zone->get_ndim(); i++) {
-            if (p_der_var[i] != nullptr) {
-                delete p_der_var[i];
-                p_der_var[i] = nullptr;
-            }
-            if (p_der_abs[i] != nullptr) {
-                delete p_der_abs[i];
-                p_der_abs[i] = nullptr;
-            }
-        }
-    }
-    else if (p_der_var) deleter(p_der_var);
-    else if (p_der_abs) deleter(p_der_abs);
-
+//    auto safe_delete = [](Val_domain * & p) -> void {if(p) {delete p; p = nullptr;}};
+    p_der_var.apply(Safe_deleter<Val_domain>{});
+    p_der_abs.apply(Safe_deleter<Val_domain>{});
 }
 
 void Val_domain::operator=(const Val_domain& so) {
@@ -149,16 +132,12 @@ void Val_domain::operator=(const Val_domain& so) {
 	is_zero = so.is_zero ;
 	in_conf = so.in_conf ;
 	in_coef = so.in_coef ;
-	if (c!=nullptr)
-	    delete c ;
-	c = (in_conf) ? new Array<double> (*so.c) : nullptr ;
-	if (cf!=nullptr)
-	    delete cf ;
+	safe_delete(c);
+	c = (in_conf) ? new Array<double> {*so.c} : nullptr ;
+	safe_delete(cf);
 	cf = (in_coef) ? new Array<double> (*so.cf) : nullptr ;
-	if (so.base.is_def())
-		base=so.base ;
-	else
-		base.set_non_def() ;
+	if (so.base.is_def()) base=so.base ;
+	else base.set_non_def() ;
 	del_deriv() ;
 	for (int i=0 ; i<zone->get_ndim() ; i++) {
 	     p_der_var[i] = (so.p_der_var[i]==nullptr) ? nullptr : new Val_domain(*so.p_der_var[i]) ;
@@ -208,19 +187,13 @@ double Val_domain::operator()(const Index& index) const {
 }
 
 void Val_domain::set_in_conf()  {
-	if (cf !=nullptr) {
-		delete cf ;
-		cf = nullptr ;
-	}
+	safe_delete(cf);
 	in_conf = true ;
 	in_coef = false ;
 }
 
 void Val_domain::set_in_coef()  {
-	if (c !=nullptr) {
-		delete c ;
-		c = nullptr ;
-	}
+	safe_delete(c);
 	in_conf = false ;
 	in_coef = true ;
 }
@@ -228,17 +201,15 @@ void Val_domain::set_in_coef()  {
 void Val_domain::allocate_conf() {
 	set_in_conf() ;
 	is_zero = false ;
-	if (c!=nullptr)
-	    delete c ;
-	c = new Array<double>(zone->get_nbr_points()) ;
+	safe_delete(c);
+	c = new Array<double>{zone->get_nbr_points()} ;
 }
 
 void Val_domain::allocate_coef() {
 	set_in_coef() ;
 	is_zero = false ;
-	if (cf!=nullptr)
-	    delete cf ;
-	cf = new Array<double>(zone->get_nbr_coefs()) ;
+	safe_delete(cf);
+	cf = new Array<double>{zone->get_nbr_coefs()} ;
 }
 
 void Val_domain::set_zero() {
@@ -246,17 +217,18 @@ void Val_domain::set_zero() {
 		del_deriv() ;
 
 		if (in_conf) {
+		    assert(c);
 			delete c ;
 			c = nullptr ;
 			in_conf = false ;
 			}
 
 		if (in_coef) {
+            assert(cf);
 			delete cf ;
 			cf = nullptr ;
 			in_coef = false ;
 		}
-
 		base.set_non_def() ;
 
 	}
@@ -798,11 +770,10 @@ void Val_domain::compute_der_var () const {
 	for (int var=0 ; var<zone->get_ndim() ; var++) {
 	    Val_domain res(zone) ;
 	    res.base = base ;
-	    res.cf = new Array<double>(base.ope_1d(der_1d, var, *cf, res.base)) ;
+	    res.cf = new Array<double>{base.ope_1d(der_1d, var, *cf, res.base)} ;
 	    res.in_coef = true ;
-	    if (p_der_var[var]!=nullptr)
-		delete [] p_der_var[var] ;
-	    p_der_var[var] = new Val_domain(res) ;
+	    safe_delete(p_der_var[var]);
+	    p_der_var[var] = new Val_domain{res} ;
 	}
 }
 
@@ -810,7 +781,7 @@ void Val_domain::compute_der_abs () const {
 	for (int i=0 ; i<zone->get_ndim() ; i++)
 		if (p_der_var[i]==nullptr)
 			compute_der_var() ;
-	zone->do_der_abs_from_der_var(p_der_var, p_der_abs) ;
+	zone->do_der_abs_from_der_var(p_der_var.get_data(), p_der_abs.set_data()) ;
 }
 
 }

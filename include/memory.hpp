@@ -294,6 +294,19 @@ namespace Kadath {
     bool operator!=(const Memory_mapped_allocator <T>&, const Memory_mapped_allocator <U>&) noexcept { return false; }
 
     template<typename T,typename S> using Memory_mapped_vector = std::vector<T,Memory_mapped_allocator<T,S>>;
+
+    template<typename T> struct Safe_deleter {
+        using pointer = T*;
+        static inline void apply(pointer & p) {if(p) {delete p; p = nullptr;}}
+        inline void operator()(pointer & p) const {apply(p);}
+    };
+    template<typename T> struct Safe_deleter<T[]> {
+        using pointer = T*;
+        static inline void apply(pointer & p) {if(p) {delete [] p; p = nullptr;}}
+        inline void operator()(pointer & p) const {apply(p);}
+    };
+
+    template<typename T> inline void safe_delete(T * & p) {Safe_deleter<T>::apply(p);}
 }
 
 

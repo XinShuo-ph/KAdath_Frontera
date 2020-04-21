@@ -307,7 +307,7 @@ void Domain_polar_shell::set_anti_legendre_base_with_m(Base_spectral& base, int 
 }
 
 // Computes the derivatives with respect to XYZ as a function of the numerical ones.
-void Domain_polar_shell::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_polar_shell::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
 	
 	Val_domain dr (*der_var[0]/alpha) ;
 	Val_domain dtsr (*der_var[1]/get_radius()) ;

@@ -1142,7 +1142,7 @@ const Point Domain::absol_to_num_bound(const Point&, int) const {
 	abort() ;
 }
 
-void Domain::do_der_abs_from_der_var(Val_domain**, Val_domain**) const {
+void Domain::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
 	cerr << "do_der_abs_from_der_var not implemented for" << endl ;
 	cerr << *this << endl  ;
 	abort() ;
