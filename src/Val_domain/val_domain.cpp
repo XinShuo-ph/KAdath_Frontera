@@ -88,7 +88,7 @@ namespace Kadath {
         if(!so.in_conf) c.clear();
         else c = so.c;
         in_conf = so.in_conf;
-        if(!so.in_coef) cf.clear();
+        if(!so.in_conf) cf.clear();
         else cf = so.cf;
         in_coef = so.in_coef;
 

@@ -352,8 +352,8 @@ namespace Kadath {
 
     inline void Val_domain::del_deriv() const {
         auto deleter = [](Val_domain * & v) {if(v != nullptr) {delete v; v = nullptr;}};
-        p_der_var.apply(deleter);
-        p_der_abs.apply(deleter);
+        p_der_var.clear(deleter);
+        p_der_abs.clear(deleter);
     }
 
 

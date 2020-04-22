@@ -244,7 +244,10 @@ namespace Kadath {
     template<typename T,typename S> inline Memory_mapped_array<T,S> &
     Memory_mapped_array<T,S>::operator=(Memory_mapped_array<T,S> const &source)
     {
-        this->resize(source.size);
+        if(size != source.size) {
+            Memory_mapper::release_memory<T>(data,static_cast<std::size_t>(size));
+            size = source.size;
+        }
         for(std::size_t i{0};i<size;i++) data[i] = source.data[i];
         return *this;
     }

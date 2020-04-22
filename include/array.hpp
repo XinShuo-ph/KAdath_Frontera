@@ -131,7 +131,7 @@ template <typename T> class Array : public Memory_mapped {
 	     * Defines a new value for \c dimensions and reallocate data with respect to the new total size. Values are
 	     * discarded.
 	     */
-	    void resize(Dim_array const & new_dim);
+	    void resize(Dim_array const & new_dim) {dimensions = new_dim; nbr = dimensions.total_size(); data.resize(nbr);}
 
 	public:
         //! Swaps contents between the two arrays (carefull with arrays of allocated pointers).
@@ -376,13 +376,6 @@ template <typename T> bool Array<T>::is_increasing() const {
         dimensions.save(fd) ;
         fwrite_be(&nbr, sizeof(int), 1, fd) ;
         fwrite_be(data.get_data(), sizeof(T), nbr, fd) ;
-    }
-
-    template<typename T> inline void Array<T>::resize(Dim_array const & new_dim) {
-        dimensions.resize(new_dim.get_size());
-        dimensions = new_dim;
-        nbr = dimensions.total_size();
-        data.resize(nbr);
     }
 
 // Display

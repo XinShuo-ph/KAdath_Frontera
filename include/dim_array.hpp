@@ -60,7 +60,7 @@ class Dim_array  : public Memory_mapped_array<int> {
         /**
          * Assignement to annother \c Dim_array.
          */
-        Dim_array & operator= (const Dim_array& so) ;
+        void operator= (const Dim_array& so) {for (int i=0 ;i<size;i++) data[i] = so.data[i];}
         /**
          * Computes and returns the complete dimension of the numerical approximation space.
          */
@@ -72,11 +72,6 @@ class Dim_array  : public Memory_mapped_array<int> {
         Dim_array(Dim_array &&so) : Memory_mapped_array<int>{std::forward<Dim_array&&>(so)} {}///< Move constructor.
         Dim_array & operator=(Dim_array && so) {Memory_mapped_array<int>::operator=(std::forward<Dim_array&&>(so)); return *this;}
 } ;
-
-inline Dim_array & Dim_array::operator=(Dim_array const & so) {
-    this->Data_type::operator=(so);
-    return *this;
-}
 
 ostream& operator<< (ostream&, const Dim_array&) ;
 inline bool operator== (const Dim_array& a, const Dim_array& b) {
