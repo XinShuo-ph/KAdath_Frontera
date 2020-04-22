@@ -24,7 +24,7 @@
 
 #include "gtest/gtest.h"
 #include <thread>
-#include "profiled_object.hpp"
+
 #include "array.hpp"
 #include "index.hpp"
 

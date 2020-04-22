@@ -6,7 +6,7 @@
 #define __ARRAY_ITERATOR_HPP_
 
 #include <vector>
-#include <cassert>
+
 #include "headcpp.hpp"
 #include "dim_array.hpp"
 
@@ -23,7 +23,7 @@ namespace Kadath {
         Dim_array sizes ;
         //! The incremental index step with respect to each dimensions.
         Memory_mapped_array<int> steps;
-        int position; ///< Corresponding value for 1D indexing (i.e. \f$ \prod_{i=0}^{\mathrm{ndim}-1} \mathrm{coord}\[i\] \f$.
+        int position; ///< Corresponding value for 1D indexing .
 
     public:
         explicit Array_iterator(int ndim, int tndim) : sizes{ndim}, steps(ndim + 1), position{0}

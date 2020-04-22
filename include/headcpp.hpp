@@ -20,15 +20,24 @@
 #ifndef __HEADCPP_HPP_
 #define __HEADCPP_HPP_
 
+#include "config.h"
 #include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <typeinfo>
 #include <cmath>
+
+#ifdef ENABLE_ASSERTS
 #include <cassert>
+#else
+#undef assert
+#define assert(c) ((void)0)
+#endif
+
 #include "stdlib.h"
-#include "config.h"
 #include "memory.hpp"
+#include "profiled_object.hpp"
+
 
 using namespace std ;
 

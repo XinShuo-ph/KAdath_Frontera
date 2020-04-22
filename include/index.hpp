@@ -20,7 +20,7 @@
 #ifndef __INDEX_HPP_
 #define __INDEX_HPP_
 
-#include <cassert>
+
 #include "headcpp.hpp"
 #include "dim_array.hpp"
 

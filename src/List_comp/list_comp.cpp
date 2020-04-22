@@ -17,7 +17,7 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "assert.h"
+
 #include "array.hpp"
 #include "array.hpp"
 #include "list_comp.hpp"

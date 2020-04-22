@@ -19,7 +19,7 @@
 
 #include "headcpp.hpp"
 #include "spheric.hpp"
-#include "assert.h"
+
 #include "system_of_eqs.hpp"
 #include "name_tools.hpp"
 namespace Kadath {

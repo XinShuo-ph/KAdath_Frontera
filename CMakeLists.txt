@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
-cmake_policy(SET CMP0048 NEW)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.0)
+    cmake_policy(SET CMP0048 NEW)
+endif()
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.1)
+    cmake_policy(SET CMP0054 NEW)
+endif()
 project(Kadath VERSION 2.3.0.0)
 
 message("Root directory : ${PROJECT_SOURCE_DIR}")
@@ -13,7 +18,7 @@ if(STR_DEBUG_MODE MATCHES DEBUG)
 else()
     set(DEBUG_MODE OFF)
 endif()
-
+option(ENABLE_ASSERTS "Enables the assert preprocessor macro (useless in release build mode)" ON)
 #User options :
 option(PAR_VERSION "Parallel version" ON)
 option(ENABLE_GTEST "Enable unit/functional tests using google-test." OFF)
@@ -66,6 +71,7 @@ endif(ENABLE_GPU_USE)
 
 #Get all the src files
 file(GLOB_RECURSE KADATH_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp )
+set(KADATH_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp )
 message ("Source files" : ${KADATH_SOURCES})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -136,3 +142,13 @@ if(NOT(PAR_VERSION) AND ENABLE_GTEST)
     enable_testing()
 endif(NOT(PAR_VERSION) AND ENABLE_GTEST)
 add_subdirectory(tests)
+
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    set(DOXYGEN_GENERATE_LATEX YES)
+    set(INPUT_FILES_FOR_DOXIGEN ${KADATH_SOURCES} ${KADATH_HEADERS} ${PROJECT_SOURCE_DIR}/doc/kadath.cpp)
+    set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/doc)
+    set(DOXYGEN_EXCLUDE ${PROJECT_SOURCE_DIR}/include/Kadath_point_h ${PROJECT_SOURCE_DIR}/tests ${PROJECT_SOURCE_DIR}/tutorials ${PROJECT_SOURCE_DIR}/codes)
+#    set(DOXYGEN_EXCLUDE_PATTERNS )
+    doxygen_add_docs(doc ${INPUT_FILES_FOR_DOXYGEN})
+endif()

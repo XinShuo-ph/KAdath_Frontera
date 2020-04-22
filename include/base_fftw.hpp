@@ -21,7 +21,7 @@
 #define __BASE_FFTW_HPP_
 
 #include <fftw3.h>
-#include "profiled_object.hpp"
+
 #include <unordered_map>
 
 namespace Kadath {

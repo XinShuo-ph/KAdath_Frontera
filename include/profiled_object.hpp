@@ -29,7 +29,7 @@
 #include <iomanip>
 #include <numeric>
 #include <deque>
-#include <cassert>
+
 #include <type_traits>
 #include <functional>
 #include <cmath>

@@ -20,7 +20,7 @@
 #ifndef __ARRAY_HPP_
 #define __ARRAY_HPP_
 
-#include <cassert>
+
 #include "headcpp.hpp"
 #include "utilities.hpp"
 #include "dim_array.hpp"
