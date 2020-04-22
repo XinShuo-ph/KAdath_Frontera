@@ -27,7 +27,7 @@ namespace Kadath {
 void Domain_spheric_periodic_compact::affecte_tau_val_domain (Val_domain& so, const Array<double>& values, int& conte) const {
 
 	so.allocate_coef() ;
-	so.cf = 0. ;
+	*so.cf = 0. ;
 	Index pos_cf (nbr_coefs) ;
 
 	// True values
@@ -60,7 +60,7 @@ void Domain_spheric_periodic_compact::affecte_tau_val_domain (Val_domain& so, co
 		if (true_time)
 		  for (int i=0 ; i<nbr_coefs(0) ; i++) {
 			pos_cf.set(0) = i ;
-			so.cf.set(pos_cf) += values(conte);
+			so.cf->set(pos_cf) += values(conte);
 			conte ++ ;
 		  }
 	  }

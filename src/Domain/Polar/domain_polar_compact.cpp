@@ -114,7 +114,7 @@ double Domain_polar_compact::integ (const Val_domain& so, int bound) const {
 			// Loop on r :
 			for (int i=0 ; i<nbr_coefs(0) ; i++) {
 				pos.set(0) = i ;
-				res += fact_tet*(auxi.cf)(pos) ;
+				res += fact_tet*(*auxi.cf)(pos) ;
 			}
 		}
 		return res*2*M_PI ;
@@ -348,7 +348,7 @@ void Domain_polar_compact::set_val_inf (Val_domain& so, double x) const {
 }
 
 // Computes the derivatives with respect to XYZ as function of the numerical ones.
-void Domain_polar_compact::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
+void Domain_polar_compact::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
 	Val_domain dr (-der_var[0]->mult_xm1()) ;
 
 	// d/dx :

@@ -29,7 +29,7 @@ void Domain_polar_periodic_shell::affecte_tau_one_coef_val_domain (Val_domain& s
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	so.cf=0. ;
+	*so.cf=0. ;
 	Index pos_cf(nbr_coefs) ;
 
 	bool found = false ;
@@ -89,7 +89,7 @@ int mink, maxk ;
 			// No garlekin
 			if (conte==cc)  {
 				found = true ;
-				so.cf.set(pos_cf) = 1. ;
+				so.cf->set(pos_cf) = 1. ;
 				}
 				conte ++ ;
 		 } // end loop i

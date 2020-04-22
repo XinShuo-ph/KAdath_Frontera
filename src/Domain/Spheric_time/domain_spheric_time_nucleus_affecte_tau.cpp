@@ -27,13 +27,13 @@ namespace Kadath {
 void Domain_spheric_time_nucleus::affecte_tau_val_domain (Val_domain& so, const Array<double>& values, int& conte) const {
 
 	so.allocate_coef() ;
-	so.cf = 0. ;
+	*so.cf = 0. ;
 	Index pos_cf (nbr_coefs) ;
 	for (int j=0 ; j<nbr_coefs(1) ; j++) {
 		pos_cf.set(1) = j ;
 		for (int i=0 ; i<nbr_coefs(0) ; i++) {
 			pos_cf.set(0) = i ;
-			so.cf.set(pos_cf) += values(conte);
+			so.cf->set(pos_cf) += values(conte);
 			conte ++ ;
 		  }
 	  }

@@ -35,7 +35,7 @@ Val_domain Domain_polar_compact::mult_cos_theta (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(mult_cos_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -46,7 +46,7 @@ Val_domain Domain_polar_compact::mult_sin_theta (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(mult_sin_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -57,7 +57,7 @@ Val_domain Domain_polar_compact::div_sin_theta (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(div_sin_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_sin_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -69,7 +69,7 @@ Val_domain Domain_polar_compact::mult_xm1 (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(mult_xm1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_xm1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -80,7 +80,7 @@ Val_domain Domain_polar_compact::div_xm1 (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(div_xm1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_xm1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -139,7 +139,7 @@ Val_domain Domain_polar_compact::div_xp1 (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = (so.base.ope_1d(div_xp1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_xp1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }

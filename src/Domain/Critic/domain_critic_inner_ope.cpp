@@ -46,7 +46,7 @@ Val_domain Domain_critic_inner::div_x (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(div_x_1d, 0, so.cf, res.base)/xlim) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_x_1d, 0, *so.cf, res.base)/xlim) ;
 
 	res.in_coef = true ;
 	return res ;

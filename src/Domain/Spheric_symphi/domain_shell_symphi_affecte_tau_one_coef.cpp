@@ -29,7 +29,7 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	so.cf=0. ;
+	*so.cf=0. ;
 	Index pos_cf(nbr_coefs) ;
 
 	bool found = false ;
@@ -107,7 +107,7 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 							if (mquant==0) {
 								if (conte==cc)  {
 								  found = true ;
-								  so.cf.set(pos_cf) = 1. ;
+								  so.cf->set(pos_cf) = 1. ;
 								  }
 								  conte ++ ;
 							}
@@ -118,8 +118,8 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -1. ;
-							     so.cf.set(pos_cf) = 1 ;
-							     so.cf.set(pos_gal_t) += fact_t ;
+							     so.cf->set(pos_cf) = 1 ;
+							     so.cf->set(pos_gal_t) += fact_t ;
 								}
 							    conte ++ ;
 							    }
@@ -129,7 +129,7 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 							if (mquant==0) {
 							      if (conte==cc)  {
 								  found = true ;
-								  so.cf.set(pos_cf) = 1. ;
+								  so.cf->set(pos_cf) = 1. ;
 								  }
 								  conte ++ ;
 							}
@@ -140,8 +140,8 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -1. ;
-							     so.cf.set(pos_cf) = 1 ;
-							     so.cf.set(pos_gal_t) += fact_t ;
+							     so.cf->set(pos_cf) = 1 ;
+							     so.cf->set(pos_gal_t) += fact_t ;
 								}
 							    conte ++ ;
 							    }
@@ -152,7 +152,7 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 						if (mquant<=1) {
 						if (conte==cc)  {
 								  found = true ;
-								  so.cf.set(pos_cf) = 1. ;
+								  so.cf->set(pos_cf) = 1. ;
 								  }
 								  conte ++ ;
 						}
@@ -163,8 +163,8 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 1 ;
 							    fact_t = -j ;
-							     so.cf.set(pos_cf) = 1 ;
-							     so.cf.set(pos_gal_t) += fact_t ;
+							     so.cf->set(pos_cf) = 1 ;
+							     so.cf->set(pos_gal_t) += fact_t ;
 								}
 							    conte ++ ;
 							    }
@@ -175,7 +175,7 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 							if (mquant<=1) {
 							     if (conte==cc)  {
 								  found = true ;
-								  so.cf.set(pos_cf) = 1. ;
+								  so.cf->set(pos_cf) = 1. ;
 								  }
 								  conte ++ ;
 							}
@@ -186,8 +186,8 @@ void Domain_shell_symphi::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -(2.*j+1) ;
-							     so.cf.set(pos_cf) = 1 ;
-							     so.cf.set(pos_gal_t) += fact_t ;
+							     so.cf->set(pos_cf) = 1 ;
+							     so.cf->set(pos_gal_t) += fact_t ;
 								}
 							    conte ++ ;
 							    }

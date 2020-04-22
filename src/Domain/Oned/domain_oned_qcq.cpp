@@ -188,7 +188,7 @@ void Domain_oned_qcq::set_legendre_base_odd(Base_spectral& base) const  {
  }
  
 // Computes the derivatives with respect to rho,Z as a function of the numerical ones.
-void Domain_oned_qcq::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
+void Domain_oned_qcq::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
 	der_abs[0] = new Val_domain (*der_var[0]/alpha) ;
 }
 

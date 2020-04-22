@@ -32,7 +32,7 @@ void Domain_shell_outer_adapted::affecte_tau_one_coef_val_domain (Val_domain& so
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	so.cf=0. ;
+	*so.cf=0. ;
 	Index pos_cf(nbr_coefs) ;
 
 	bool found = false ;
@@ -73,29 +73,29 @@ void Domain_shell_outer_adapted::affecte_tau_one_coef_val_domain (Val_domain& so
 				for (int i=0 ; i<nbr_coefs(0) ; i++) {
 					pos_cf.set(0) = i ;
 					if (conte==cc) {
-						so.cf.set(pos_cf) = 1;
+						so.cf->set(pos_cf) = 1;
 						found = true ;
 						// regularity ??
 						if ((baset==COS_EVEN) || (baset==COS_ODD))
 							if (k>=kmin) {
 								pos_cf.set(1) = 0 ;
-								so.cf.set(pos_cf) = -1 ;
+								so.cf->set(pos_cf) = -1 ;
 								}
 					
 						if (baset==SIN_EVEN)
 							if (k>=kmin+2) {
 								pos_cf.set(1) = 1 ;
-								so.cf.set(pos_cf) = -j ;
+								so.cf->set(pos_cf) = -j ;
 								}
 						if (baset==SIN_ODD)
 							if (k>=kmin+2) {
 								pos_cf.set(1) = 0 ;
-								so.cf.set(pos_cf) = -(2*j+1) ;
+								so.cf->set(pos_cf) = -(2*j+1) ;
 								}
 
 					}
 					else {
-						so.cf.set(pos_cf) = 0. ;
+						so.cf->set(pos_cf) = 0. ;
 						}
 						conte ++ ;
 				}

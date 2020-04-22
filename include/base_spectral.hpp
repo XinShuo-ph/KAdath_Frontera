@@ -241,9 +241,9 @@ namespace Kadath {
 
     inline void Base_spectral::set_non_def() {
         for (int l=0 ; l<ndim ; l++)
-            if (bases_1d[l] !=nullptr) {
+            if (bases_1d[l] !=0x0) {
                 delete bases_1d[l] ;
-                bases_1d[l] = nullptr ;
+                bases_1d[l] = 0x0 ;
             }
         def = false ;
     }

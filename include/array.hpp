@@ -82,12 +82,14 @@ template <typename T> class Array : public Memory_mapped {
         using pointer = T*;
         using const_pointer = T const *;
 
-        Array() = default;
 	    /**
 	    * Constructor from a \c Dim_array.
 	    * The elements are not initialized.
 	    */
-	    explicit Array (const Dim_array& res) : dimensions{res}, nbr{dimensions.total_size()}, data{nbr} {}
+	    explicit Array (const Dim_array& res) : dimensions{res}, nbr{1}, data{nullptr} {
+            for (int i=0 ; i<res.get_ndim() ; i++) nbr *= res(i) ;
+            data.resize(nbr) ;
+        }
 	     /**
 	    * Constructor for a 1d-array.
 	    * @param i [input] : size of the only dimension.
@@ -125,19 +127,11 @@ template <typename T> class Array : public Memory_mapped {
 	    */
 	    Array (FILE*) ;
 
-	    //! Delete internal data and completely nullify the dimensions.
-	    void clear() {dimensions.clear(); nbr=0; data.clear(); }
-	    /**
-	     * Defines a new value for \c dimensions and reallocate data with respect to the new total size. Values are
-	     * discarded.
-	     */
-	    void resize(Dim_array const & new_dim) {dimensions = new_dim; nbr = dimensions.total_size(); data.resize(nbr);}
-
 	public:
         //! Swaps contents between the two arrays (carefull with arrays of allocated pointers).
         void swap(Array<T> & so) {dimensions.swap(so.dimensions); std::swap(nbr,so.nbr); data.swap(so.data);}
 
-	    void delete_data() {data.clear();} ///< Delete datas without touching to dimensions.
+	    void delete_data() {data.clear();} ///< Logical destructor (kills the data)
 
 		/**
 	    * Save in a file.

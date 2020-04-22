@@ -31,7 +31,7 @@ void Domain_bispheric_eta_first::affecte_tau_one_coef_val_domain (Val_domain& so
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	so.cf=0. ;
+	*so.cf=0. ;
 	Index pos(nbr_coefs) ;
 
 	bool found = false ;
@@ -66,7 +66,7 @@ void Domain_bispheric_eta_first::affecte_tau_one_coef_val_domain (Val_domain& so
 		if (indic) {
 			if (conte==cc) {
 				found = true ;
-				so.cf.set(pos) = 1;
+				so.cf->set(pos) = 1;
 				if ((pos(2)%2==0) && (pos(2)!=0)) {
 					Index pos_galerkin (pos) ;
 					pos_galerkin.set(0) = 0 ;
@@ -85,11 +85,11 @@ void Domain_bispheric_eta_first::affecte_tau_one_coef_val_domain (Val_domain& so
 							cerr << "Unknown base in Domain_bispheric_eta_first::affecte_one_coef_val_domain" << endl ;
 							abort() ;
 						}
-					so.cf.set(pos_galerkin) = valreg ;
+					so.cf->set(pos_galerkin) = valreg ;
 					}
 				}
 			else
-				so.cf.set(pos) = 0. ;
+				so.cf->set(pos) = 0. ;
 			conte ++ ;
 		}
 	}

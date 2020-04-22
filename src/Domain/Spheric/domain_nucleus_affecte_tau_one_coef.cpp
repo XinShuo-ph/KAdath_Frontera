@@ -27,7 +27,7 @@ namespace Kadath {
 void Domain_nucleus::affecte_tau_one_coef_val_domain_vr (Val_domain& so, int cc, int& conte) const {
 
 	so.allocate_coef() ;
-	so.cf = 0. ;
+	*so.cf = 0. ;
 	Index pos_cf (nbr_coefs) ;
 
 	// Positions of the Galerkin basis
@@ -52,7 +52,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vr (Val_domain& so, int cc,
 	    pos_cf.set(0) = i ;
 	    if (conte==cc)  {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1. ;
+		  so.cf->set(pos_cf) = 1. ; 
 		  }
 		  conte ++ ;
 	}
@@ -88,8 +88,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vr (Val_domain& so, int cc,
 		  }
 		if (conte==cc) {
 		  found = true ;
-		so.cf.set(pos_cf) = 1 ;
-	       so.cf.set(pos_gal_r) += fact_r ;
+		so.cf->set(pos_cf) = 1 ;
+	       so.cf->set(pos_gal_r) += fact_r ;
 		}
 	       conte ++ ;
 		}
@@ -141,10 +141,10 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vr (Val_domain& so, int cc,
 	    
 	     if (conte==cc)  {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1. ;
-		  so.cf.set(pos_gal_r) += fact_r ;
-		  so.cf.set(pos_gal_t) += fact_t ;
-		  so.cf.set(pos_gal_rt) += fact_rt ;
+		  so.cf->set(pos_cf) = 1. ;
+		  so.cf->set(pos_gal_r) += fact_r ;
+		  so.cf->set(pos_gal_t) += fact_t ;
+		  so.cf->set(pos_gal_rt) += fact_rt ;
 	    }
 	    conte ++ ; 
 	  }
@@ -177,8 +177,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vr (Val_domain& so, int cc,
 	    }
 	     if (conte==cc)  {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1. ;
-		  so.cf.set(pos_gal_r) += fact_r ;
+		  so.cf->set(pos_cf) = 1. ;
+		  so.cf->set(pos_gal_r) += fact_r ;
 	    }
 	  conte ++ ;
 	  }
@@ -197,7 +197,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vt (Val_domain& so, int cc,
   
 	bool found = false ;
 	so.allocate_coef() ;
-	so.cf = 0. ;
+	*so.cf = 0. ;
 	Index pos_cf (nbr_coefs) ;
 
 	// Positions of the Galerkin basis
@@ -235,8 +235,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vt (Val_domain& so, int cc,
 		  }
 		if (conte==cc)  {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1. ;
-		  so.cf.set(pos_gal_r) += fact_r ;
+		  so.cf->set(pos_cf) = 1. ;
+		  so.cf->set(pos_gal_r) += fact_r ;
 	    }
 	    conte ++ ;
 	    }
@@ -257,7 +257,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vt (Val_domain& so, int cc,
 	    pos_cf.set(0) = i ;
 	    if (conte==cc)  {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1. ;
+		  so.cf->set(pos_cf) = 1. ;
 	  }
 	    conte ++ ;
 	  }
@@ -292,8 +292,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vt (Val_domain& so, int cc,
 	    }
 	    if (conte==cc) {
 		found = true ;
-		so.cf.set(pos_cf) = 1 ;
-		so.cf.set(pos_gal_r) += fact_r ;
+		so.cf->set(pos_cf) = 1 ;
+		so.cf->set(pos_gal_r) += fact_r ;
 	  }
 	  conte ++ ;
 	  }
@@ -314,7 +314,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vt (Val_domain& so, int cc,
 	    pos_cf.set(0) = i ;  
 	    if (conte==cc)  {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1. ;
+		  so.cf->set(pos_cf) = 1. ;
 	  }
 	    conte ++ ;
 	    
@@ -351,8 +351,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vt (Val_domain& so, int cc,
 	    }
 	     if (conte==cc) {
 		found = true ;
-		so.cf.set(pos_cf) = 1 ;
-		so.cf.set(pos_gal_r) += fact_r ;
+		so.cf->set(pos_cf) = 1 ;
+		so.cf->set(pos_gal_r) += fact_r ;
 	  }
 	    conte ++ ;
 	  }
@@ -392,8 +392,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vt (Val_domain& so, int cc,
 		  }
 	      if (conte==cc) {
 		found = true ;
-		so.cf.set(pos_cf) = 1 ;
-		so.cf.set(pos_gal_r) += fact_r ;
+		so.cf->set(pos_cf) = 1 ;
+		so.cf->set(pos_gal_r) += fact_r ;
 	  }
 	    conte ++ ;
 	  }
@@ -436,10 +436,10 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vt (Val_domain& so, int cc,
 			}
 		if (conte==cc) {
 		  found = true ;
-		so.cf.set(pos_cf) = 1 ;
-		so.cf.set(pos_gal_r) += fact_r ;
-		so.cf.set(pos_gal_t) += fact_t ;
-		so.cf.set(pos_gal_rt) += fact_rt ;
+		so.cf->set(pos_cf) = 1 ;
+		so.cf->set(pos_gal_r) += fact_r ;
+		so.cf->set(pos_gal_t) += fact_t ;
+		so.cf->set(pos_gal_rt) += fact_rt ;
 		}
 	    conte ++ ;
 	  }
@@ -457,7 +457,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 
 	bool found = false ;
 	so.allocate_coef() ;
-	so.cf = 0. ;
+	*so.cf = 0. ;
 	Index pos_cf (nbr_coefs) ;
 
 	// Positions of the Galerkin basis
@@ -478,7 +478,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 	    pos_cf.set(0) = i ;
 	    if (conte==cc)  {
 	      found = true ;
-	      so.cf.set(pos_cf) = 1 ;
+	      so.cf->set(pos_cf) = 1 ;
 	    }
 	    conte ++ ;
 	  }
@@ -513,8 +513,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 		  }
 		  if (conte==cc) {
 		    found = true ;
-		    so.cf.set(pos_cf) = 1 ;
-		    so.cf.set(pos_gal_r) += fact_r ;
+		    so.cf->set(pos_cf) = 1 ;
+		    so.cf->set(pos_gal_r) += fact_r ;
 		  }  
 	       conte ++ ;
 		}
@@ -536,7 +536,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 	    pos_cf.set(0) = i ;
 	      if (conte==cc)  {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1. ;
+		  so.cf->set(pos_cf) = 1. ;
 	  } 
 	    conte ++ ;
 	  }
@@ -572,8 +572,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 	    
 	      if (conte==cc) {
 		found = true ;
-		so.cf.set(pos_cf) = 1 ;
-		so.cf.set(pos_gal_r) += fact_r ;
+		so.cf->set(pos_cf) = 1 ;
+		so.cf->set(pos_gal_r) += fact_r ;
 	  }
 	    conte ++ ;
 	  }
@@ -594,7 +594,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 	    pos_cf.set(0) = i ;   
 	    if (conte==cc)  {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1. ;
+		  so.cf->set(pos_cf) = 1. ;
 	  } 
 	    conte ++ ;
 	  }
@@ -630,8 +630,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 	    }
 	    if (conte==cc) {
 		found = true ;
-		so.cf.set(pos_cf) = 1 ;
-		so.cf.set(pos_gal_r) += fact_r ;
+		so.cf->set(pos_cf) = 1 ;
+		so.cf->set(pos_gal_r) += fact_r ;
 	  }
 	    conte ++ ;
 	  }
@@ -651,7 +651,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 	    pos_cf.set(0) = i ;
 	    if (conte==cc)  {
 	      found = true ;
-	      so.cf.set(pos_cf) = 1 ;
+	      so.cf->set(pos_cf) = 1 ;
 	    }   
 	    conte ++ ;
 	  }
@@ -687,8 +687,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 		  }
 		  if (conte==cc) {
 		    found = true ;
-		    so.cf.set(pos_cf) = 1 ;
-		    so.cf.set(pos_gal_r) += fact_r ;
+		    so.cf->set(pos_cf) = 1 ;
+		    so.cf->set(pos_gal_r) += fact_r ;
 		  } 
 	       conte ++ ;
 		}
@@ -709,7 +709,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 	    pos_cf.set(0) = i ;
 	    if (conte==cc)  {
 	      found = true ;
-	      so.cf.set(pos_cf) = 1 ;
+	      so.cf->set(pos_cf) = 1 ;
 	    }
 	    conte ++ ;
 	  }
@@ -745,8 +745,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 		  }
 		  if (conte==cc) {
 		    found = true ;
-		    so.cf.set(pos_cf) = 1 ;
-		    so.cf.set(pos_gal_r) += fact_r ;
+		    so.cf->set(pos_cf) = 1 ;
+		    so.cf->set(pos_gal_r) += fact_r ;
 		  } 
 	       conte ++ ;
 		}
@@ -788,8 +788,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 		  }
 		  if (conte==cc) {
 		    found = true ;
-		    so.cf.set(pos_cf) = 1 ;
-		    so.cf.set(pos_gal_r) += fact_r ;
+		    so.cf->set(pos_cf) = 1 ;
+		    so.cf->set(pos_gal_r) += fact_r ;
 		  } 
 	       conte ++ ;
 	   }
@@ -833,10 +833,10 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain_vp (Val_domain& so, int cc,
 			}
 		if (conte==cc) {
 		  found = true ;
-		  so.cf.set(pos_cf) = 1 ;
-		  so.cf.set(pos_gal_r) += fact_r ;
-		  so.cf.set(pos_gal_t) += fact_t ;
-		  so.cf.set(pos_gal_rt) += fact_rt ;
+		  so.cf->set(pos_cf) = 1 ;
+		  so.cf->set(pos_gal_r) += fact_r ;
+		  so.cf->set(pos_gal_t) += fact_t ;
+		  so.cf->set(pos_gal_rt) += fact_rt ;
 		}
 	    conte ++ ;
 	  }
@@ -858,7 +858,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	so.cf=0. ;
+	*so.cf=0. ;
 	Index pos_cf(nbr_coefs) ;
 
 	bool found = false ;
@@ -888,7 +888,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 							if ((k<kmin) && (lquant<=llim))  {
 								if (conte==cc)  {
 								  found = true ;
-								  so.cf.set(pos_cf) = 1. ;
+								  so.cf->set(pos_cf) = 1. ;
 								  }
 								  conte ++ ;
 							}
@@ -913,8 +913,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 									  cerr << "Strange base in Domain_nucleus::affecte_one_coef_val_domain" << endl ;
 									  abort()  ;
 								}
-								so.cf.set(pos_cf) = 1 ;
-								so.cf.set(pos_gal_r) += fact_r ;
+								so.cf->set(pos_cf) = 1 ;
+								so.cf->set(pos_gal_r) += fact_r ;
 								}
 								conte ++ ;
 							  }
@@ -949,10 +949,10 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 									  cerr << "Strange base in Domain_nucleus::affecte_one_coef_val_domain" << endl ;
 									  abort()  ;
 								}
-							      so.cf.set(pos_cf) = 1. ;
-							      so.cf.set(pos_gal_r) = fact_r ;
-							      so.cf.set(pos_gal_t) = fact_t ;
-							      so.cf.set(pos_gal_rt) = fact_rt ;
+							      so.cf->set(pos_cf) = 1. ;
+							      so.cf->set(pos_gal_r) = fact_r ;
+							      so.cf->set(pos_gal_t) = fact_t ;
+							      so.cf->set(pos_gal_rt) = fact_rt ;
 							      }
 							      conte ++ ;
 							    }
@@ -963,7 +963,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 							      if ((k<kmin) && (lquant<=llim+1)) {
 								  if (conte==cc) {
 								      found = true ;
-								      so.cf.set(pos_cf) = 1. ;
+								      so.cf->set(pos_cf) = 1. ;
 								      }
 								  conte++  ;
 							      }
@@ -988,8 +988,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 									abort()  ;
 								      }
 
-								  so.cf.set(pos_cf) = 1. ;
-								  so.cf.set(pos_gal_r) = fact_r ;
+								  so.cf->set(pos_cf) = 1. ;
+								  so.cf->set(pos_gal_r) = fact_r ;
 								}
 							       conte ++ ;
 							}
@@ -1023,10 +1023,10 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 									  cerr << "Strange base in Domain_nucleus::affecte_one_coef_val_domain" << endl ;
 									  abort()  ;
 								}  
-							      so.cf.set(pos_cf) = 1. ;
-							      so.cf.set(pos_gal_r) = fact_r ;
-							      so.cf.set(pos_gal_t) = fact_t ;
-							      so.cf.set(pos_gal_rt) = fact_rt ;
+							      so.cf->set(pos_cf) = 1. ;
+							      so.cf->set(pos_gal_r) = fact_r ;
+							      so.cf->set(pos_gal_t) = fact_t ;
+							      so.cf->set(pos_gal_rt) = fact_rt ;
 							      }
 							      conte ++ ;
 							}
@@ -1039,7 +1039,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 						if ((k<kmin+2) && (lquant<=llim)) {
 						    if (conte==cc) {
 								      found = true ;
-								      so.cf.set(pos_cf) = 1. ;
+								      so.cf->set(pos_cf) = 1. ;
 								      }
 						    conte ++ ;
 						}
@@ -1064,8 +1064,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 								  cerr << "Strange base in Domain_nucleus_::affecte_one_coef_val_domain" << endl ;
 								  abort()  ;
 								}	  
-							    so.cf.set(pos_cf) = 1. ;
-								so.cf.set(pos_gal_r) = fact_r ;
+							    so.cf->set(pos_cf) = 1. ;
+								so.cf->set(pos_gal_r) = fact_r ;
 								}
 							    conte ++ ;
 							}
@@ -1102,10 +1102,10 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 									  cerr << "Strange base in Domain_nucleus::affecte_one_domain_val_domain" << endl ;
 									  abort()  ;
 								}  
-							      so.cf.set(pos_cf) = 1 ;
-							      so.cf.set(pos_gal_r) = fact_r ;
-							      so.cf.set(pos_gal_t) = fact_t ;
-							      so.cf.set(pos_gal_rt) = fact_rt ;
+							      so.cf->set(pos_cf) = 1 ;
+							      so.cf->set(pos_gal_r) = fact_r ;
+							      so.cf->set(pos_gal_t) = fact_t ;
+							      so.cf->set(pos_gal_rt) = fact_rt ;
 								}
 							      conte ++ ;
 							}
@@ -1119,7 +1119,7 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 							      if ((k<kmin+2) && (lquant<=llim+1)) {
 								  if (conte==cc) {
 								      found = true ;
-								      so.cf.set(pos_cf) = 1. ;
+								      so.cf->set(pos_cf) = 1. ;
 								      }
 								  conte++  ;
 							      }
@@ -1144,8 +1144,8 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 									abort()  ;
 								      }
 
-								  so.cf.set(pos_cf) = 1. ;
-								  so.cf.set(pos_gal_r) = fact_r ;
+								  so.cf->set(pos_cf) = 1. ;
+								  so.cf->set(pos_gal_r) = fact_r ;
 								}
 							       conte ++ ;
 							}
@@ -1179,10 +1179,10 @@ void Domain_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, 
 									  cerr << "Strange base in Domain_nucleus::affecte_one_coef_val_domain" << endl ;
 									  abort()  ;
 								}  
-							      so.cf.set(pos_cf) = 1. ;
-							      so.cf.set(pos_gal_r) = fact_r ;
-							      so.cf.set(pos_gal_t) = fact_t ;
-							      so.cf.set(pos_gal_rt) = fact_rt ;
+							      so.cf->set(pos_cf) = 1. ;
+							      so.cf->set(pos_gal_r) = fact_r ;
+							      so.cf->set(pos_gal_t) = fact_t ;
+							      so.cf->set(pos_gal_rt) = fact_rt ;
 							      }
 							      conte ++ ;
 							}

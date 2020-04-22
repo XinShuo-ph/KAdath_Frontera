@@ -65,7 +65,7 @@ Val_domain sin(const Val_domain& so) {
 		so.coef_i() ;
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
-		res.c = (sin(so.c)) ;
+		res.c = new Array<double> (sin(*so.c)) ;
 		res.std_base();
 		return res ;
 	}
@@ -78,7 +78,7 @@ Val_domain cos(const Val_domain& so ) {
 		Val_domain res(so) ;
 		res.is_zero = false ;
 		res.allocate_conf() ;
-		res.c = 1. ;
+		*res.c = 1. ;
 		res.std_base();
 		return res ;
 	}
@@ -86,7 +86,7 @@ Val_domain cos(const Val_domain& so ) {
 		so.coef_i() ;	
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
-		res.c = (cos(so.c)) ;
+		res.c = new Array<double> (cos(*so.c)) ;
 		res.std_base();
 		return res ;
 	}
@@ -98,7 +98,7 @@ Val_domain cosh(const Val_domain& so ) {
 		Val_domain res(so) ;
 		res.is_zero = false ;
 		res.allocate_conf() ;
-		res.c = 1. ;
+		*res.c = 1. ;
 		res.std_base();
 		return res ;
 	}
@@ -106,7 +106,7 @@ Val_domain cosh(const Val_domain& so ) {
 		so.coef_i() ;	
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
-		res.c = (cosh(so.c)) ;
+		res.c = new Array<double> (cosh(*so.c)) ;
 		res.std_base();
 		return res ;
 	}
@@ -118,7 +118,7 @@ Val_domain sinh(const Val_domain& so ) {
 		Val_domain res(so) ;
 		res.is_zero = false ;
 		res.allocate_conf() ;
-		res.c = 1. ;
+		*res.c = 1. ;
 		res.std_base();
 		return res ;
 	}
@@ -126,7 +126,7 @@ Val_domain sinh(const Val_domain& so ) {
 		so.coef_i() ;	
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
-		res.c = (sinh(so.c)) ;
+		res.c = new Array<double> (sinh(*so.c)) ;
 		res.std_base();
 		return res ;
 	}
@@ -140,9 +140,9 @@ Val_domain operator+ (const Val_domain& so) {
 Val_domain operator- (const Val_domain& so) {
 	Val_domain res (so) ;
 	if (so.in_conf)
-		res.c *= -1 ;
+		*res.c *= -1 ;
 	if (so.in_coef) 
-		res.cf *= -1 ;
+		*res.cf *= -1 ;
 	return res ;
 }
 
@@ -160,13 +160,13 @@ Val_domain operator+ (const Val_domain& a, const Val_domain& b) {
 	if (a.in_conf) {
 		if (!b.in_conf)
 			b.coef_i() ;
-		res.c = (*a.c + *b.c) ;
+		res.c = new Array<double> (*a.c + *b.c) ;
 		res.in_conf=true ;
 		}
 	else if (b.in_conf) {
 		if (!a.in_conf)
 			a.coef_i() ;
-		res.c = (*a.c + *b.c) ;
+		res.c = new Array<double> (*a.c + *b.c) ;
 		res.in_conf=true ;
 		}
 	
@@ -198,7 +198,7 @@ Val_domain operator+ (const Val_domain& so, double x) {
 	if (so.is_zero) {
 		Val_domain res (so.zone) ;
 		res.allocate_conf() ;
-		res.c = x ;
+		*res.c = x ;
 		res.std_base() ;
 		return res ;
 	}
@@ -206,7 +206,7 @@ Val_domain operator+ (const Val_domain& so, double x) {
 		so.coef_i() ;
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
-		res.c = (so.c + x) ;
+		res.c = new Array<double> (*so.c + x) ;
 		res.base = so.base ;
 		return res ;
 	}
@@ -229,13 +229,13 @@ Val_domain operator- (const Val_domain& a, const Val_domain& b) {
 	if (a.in_conf) {
 		if (!b.in_conf)
 			b.coef_i() ;
-		res.c = (*a.c - *b.c) ;
+		res.c = new Array<double> (*a.c - *b.c) ;
 		res.in_conf=true ;
 		}
 	else if (b.in_conf) {
 		if (!a.in_conf)
 			a.coef_i() ;
-		res.c = (*a.c - *b.c) ;
+		res.c = new Array<double> (*a.c - *b.c) ;
 		res.in_conf=true ;
 		}
 	if (!res.in_conf) {
@@ -267,7 +267,7 @@ Val_domain operator- (const Val_domain& so, double x) {
 	if (so.is_zero) {
 		Val_domain res (so.zone) ;
 		res.allocate_conf() ;
-		res.c = -x ;
+		*res.c = -x ;
 		res.std_base() ;
 		return res ;
 	}
@@ -275,7 +275,7 @@ Val_domain operator- (const Val_domain& so, double x) {
 		so.coef_i() ;
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
-		res.c = (so.c - x) ;
+		res.c = new Array<double> (*so.c - x) ;
 		res.base = so.base ;
 		return res ;
 	}
@@ -285,7 +285,7 @@ Val_domain operator- (double x, const Val_domain& so) {
 	if (so.is_zero) {
 		Val_domain res (so.zone) ;
 		res.allocate_conf() ;
-		res.c = x ;
+		*res.c = x ;
 		res.std_base() ;
 		return res ;
 	}
@@ -293,7 +293,7 @@ Val_domain operator- (double x, const Val_domain& so) {
 		so.coef_i() ;
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
-		res.c = (x-so.c) ;
+		res.c = new Array<double> (x-*so.c) ;
 		res.base = so.base ;
 		return res ;
 	}
@@ -310,7 +310,7 @@ Val_domain operator* (const Val_domain& a, const Val_domain& b) {
         assert (a.zone==b.zone) ;
 	Val_domain res (a.zone) ;
 	res.allocate_conf() ;
-	res.c = (*a.c)* (*b.c) ;
+	*res.c = (*a.c)* (*b.c) ;
 	res.base = a.zone->mult(a.base, b.base) ;
 	return res ;
 	}
@@ -323,9 +323,9 @@ Val_domain operator* (const Val_domain& so, double x) {
 	else {
 	Val_domain res (so) ;
 	if (res.in_conf)
-		res.c *= x ;
+		*res.c *= x ;
 	if (res.in_coef)
-		res.cf *= x ;
+		*res.cf *= x ;
 	return res ;
 	}
 }
@@ -346,9 +346,9 @@ Val_domain operator* (const Val_domain& so, int nn) {
 		else {
 		Val_domain res (so) ;
 		if (res.in_conf)
-			res.c *= nn ;
+			*res.c *= nn ;
 		if (res.in_coef)
-			res.cf *= nn ;
+			*res.cf *= nn ;
 		return res ;
 		}
 }
@@ -369,9 +369,9 @@ Val_domain operator* (const Val_domain& so, long int nn) {
 		else {
 		Val_domain res (so) ;
 		if (res.in_conf)
-			res.c *= static_cast<double>(nn) ;
+			*res.c *= static_cast<double>(nn) ;
 		if (res.in_coef)
-			res.cf *= static_cast<double>(nn) ;
+			*res.cf *= static_cast<double>(nn) ;
 		return res ;
 		}
 }
@@ -392,7 +392,7 @@ Val_domain operator/ (const Val_domain& a, const Val_domain& b) {
         assert (a.zone==b.zone) ;
 	Val_domain res (a.zone) ;
 	res.allocate_conf() ;
-	res.c = (*a.c)/ (*b.c) ;
+	*res.c = (*a.c)/ (*b.c) ;
 	res.base = a.zone->mult(a.base, b.base) ;
 	return res ;
 	}
@@ -404,9 +404,9 @@ Val_domain operator/ (const Val_domain& so, double x) {
 	else {
 	Val_domain res (so) ;
 	if (res.in_conf)
-		res.c /= x ;
+		*res.c /= x ;
 	if (res.in_coef)
-		res.cf /= x ;
+		*res.cf /= x ;
 	return res ;
 	}
 }
@@ -420,7 +420,7 @@ Val_domain operator/ (double x, const Val_domain& so) {
 	so.coef_i() ;
 	Val_domain res (so.zone) ;
 	res.set_in_conf() ;
-	res.c = (x/ so.c) ;
+	res.c = new Array<double> (x/ *so.c) ;
 	// No sense if the base is not the standard one !
 	res.std_base() ;
 	return res ;
@@ -435,7 +435,7 @@ Val_domain pow (const Val_domain& so, int n) {
 		so.coef_i() ;
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
-		res.c = (pow(so.c,n)) ;
+		res.c = new Array<double> (pow(*so.c,n)) ;
 		return res ;
 	}
 	else {
@@ -454,7 +454,7 @@ Val_domain pow (const Val_domain& so, double nn) {
 	so.coef_i() ;
 	Val_domain res (so.zone) ;
 	res.set_in_conf() ;
-	res.c = (pow(so.c,nn)) ;
+	res.c = new Array<double> (pow(*so.c,nn)) ;
 	return res ;
 	}
 }
@@ -466,7 +466,7 @@ Val_domain sqrt (const Val_domain& so) {
 	so.coef_i() ;
 	Val_domain res (so.zone) ;
 	res.set_in_conf() ;
-	res.c = (sqrt(so.c)) ;
+	res.c = new Array<double> (sqrt(*so.c)) ;
 	// Provisory ? same base as so...
 	res.base = so.base ;
 	return res ;
@@ -478,14 +478,14 @@ Val_domain exp (const Val_domain& so) {
 		Val_domain res(so) ;
 		res.is_zero = false ;
 		res.allocate_conf() ;
-		res.c = 1. ;
+		*res.c = 1. ;
 		return res ;
 	}
 	else {
 	so.coef_i() ;
 	Val_domain res (so.zone) ;
 	res.set_in_conf() ;
-	res.c = (exp(so.c)) ;
+	res.c = new Array<double> (exp(*so.c)) ;
 	// Provisory ? same base as so...
 	res.base = so.base ;
 	return res ;
@@ -497,7 +497,7 @@ Val_domain log (const Val_domain& so) {
 	so.coef_i() ;
 	Val_domain res (so.zone) ;
 	res.set_in_conf() ;
-	res.c = (log(so.c)) ;
+	res.c = new Array<double> (log(*so.c)) ;
 	// Provisory ? same base as so...
 	res.base = so.base ;
 	return res ;
@@ -508,7 +508,7 @@ Val_domain atanh (const Val_domain& so) {
 	so.coef_i() ;
 	Val_domain res (so.zone) ;
 	res.set_in_conf() ;
-	res.c = (atanh(so.c)) ;
+	res.c = new Array<double> (atanh(*so.c)) ;
 	// Provisory ? same base as so...
 	res.base = so.base ;
 	return res ;
@@ -585,7 +585,7 @@ Val_domain atan (const Val_domain& so) {
 	so.coef_i() ;
 	Val_domain res (so.zone) ;
 	res.set_in_conf() ;
-	res.c = (atan(so.c)) ;
+	res.c = new Array<double> (atan(*so.c)) ;
 	// Provisory ? same base as so...
 	res.base = so.base ;
 	return res ;

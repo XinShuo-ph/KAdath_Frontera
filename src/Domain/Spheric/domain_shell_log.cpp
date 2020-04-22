@@ -227,7 +227,7 @@ const Point Domain_shell_log::absol_to_num_bound(const Point& abs, int bound) co
 }
 
 // Computes the derivatives with respect to XYZ as a function of the numerical ones.
-void Domain_shell_log::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
+void Domain_shell_log::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
 
 	// d/dx :
 	Val_domain sintdr (der_var[0]->mult_sin_theta()/alpha/get_radius()) ;	

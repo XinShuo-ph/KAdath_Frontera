@@ -27,7 +27,7 @@ namespace Kadath {
 void Domain_critic_outer::affecte_tau_val_domain (Val_domain& so, const Array<double>& values, int& conte) const {
 
 	so.allocate_coef() ;
-	so.cf = 0. ;
+	*so.cf = 0. ;
 	Index pos (nbr_coefs) ;
 	do {
 		bool indic = true ;
@@ -42,7 +42,7 @@ void Domain_critic_outer::affecte_tau_val_domain (Val_domain& so, const Array<do
 			indic = false ;
 
 		if (indic) {
-			so.cf.set(pos) += values(conte);
+			so.cf->set(pos) += values(conte);
 			conte ++ ;
 		}
 	}

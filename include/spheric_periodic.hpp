@@ -97,7 +97,7 @@ class Domain_spheric_periodic_nucleus : public Domain {
   public:
      virtual bool is_in(const Point&xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
+     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
   public:
@@ -257,7 +257,7 @@ class Domain_spheric_periodic_shell : public Domain {
   public:     
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
+     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
    
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
@@ -490,7 +490,7 @@ class Domain_spheric_periodic_compact : public Domain {
    
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;    
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const ;
+     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ; 
     
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 

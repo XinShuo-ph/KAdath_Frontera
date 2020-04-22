@@ -444,7 +444,7 @@ void Domain_polar_periodic_shell::set_anti_legendre_base_with_m(Base_spectral& b
 }
 
 // Computes the derivatives with respect to rho,Z as a function of the numerical ones.
-void Domain_polar_periodic_shell::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
+void Domain_polar_periodic_shell::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
 	Val_domain dr (*der_var[0]/alpha) ;
 	Val_domain dtsr (der_var[1]->div_x()/alpha) ;
 

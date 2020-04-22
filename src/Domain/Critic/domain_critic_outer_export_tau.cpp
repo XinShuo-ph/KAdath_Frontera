@@ -43,7 +43,7 @@ void Domain_critic_outer::export_tau_val_domain (const Val_domain& so, int order
 				pos_cf.set(1) = j ;
 				for (int i=0 ; i<nbr_coefs(0)-order ; i++) {
 					pos_cf.set(0) = i ;
-					sec.set(pos_sec) = (so.cf)(pos_cf) ;
+					sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 					pos_sec ++ ;
 			}
 	  	}	

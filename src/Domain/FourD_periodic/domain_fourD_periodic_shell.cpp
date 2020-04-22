@@ -356,7 +356,7 @@ void Domain_fourD_periodic_shell::set_legendre_base_y_cart(Base_spectral& base) 
 
 
 // Computes the derivatives with respect to rho,Z as a function of the numerical ones.
-void Domain_fourD_periodic_shell::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
+void Domain_fourD_periodic_shell::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
 
 	// d/dx :
 	Val_domain sintdr (der_var[0]->mult_sin_theta()/alpha) ;	

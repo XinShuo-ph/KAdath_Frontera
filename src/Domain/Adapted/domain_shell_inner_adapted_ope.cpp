@@ -65,7 +65,7 @@ Val_domain Domain_shell_inner_adapted::mult_cos_phi (const Val_domain& so) const
 
 	res.base.def = true ;
 
-	res.cf = (so.base.ope_1d(mult_cos_1d, 2, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 2, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ; }
 }
@@ -105,7 +105,7 @@ Val_domain Domain_shell_inner_adapted::mult_sin_phi (const Val_domain& so) const
 
 	res.base.def = true ;
 
-	res.cf = (so.base.ope_1d(mult_sin_1d, 2, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 2, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;}
 }
@@ -118,7 +118,7 @@ Val_domain Domain_shell_inner_adapted::mult_cos_theta (const Val_domain& so) con
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(mult_cos_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;}
 }
@@ -131,7 +131,7 @@ Val_domain Domain_shell_inner_adapted::mult_sin_theta (const Val_domain& so) con
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(mult_sin_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;}
 }
@@ -144,7 +144,7 @@ Val_domain Domain_shell_inner_adapted::div_sin_theta (const Val_domain& so) cons
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(div_sin_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_sin_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;}
 }
@@ -157,7 +157,7 @@ Val_domain Domain_shell_inner_adapted::div_cos_theta (const Val_domain& so) cons
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(div_cos_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_cos_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;}
 }

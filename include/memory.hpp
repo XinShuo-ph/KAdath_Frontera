@@ -144,19 +144,13 @@ namespace Kadath {
         }
     };
 
-    template<typename T> struct Default_initializer {
-        static constexpr T value = T{};
-    };
-    template<typename T> struct Default_initializer<T*> {
-        static constexpr std::nullptr_t value = nullptr;
-    };
-    struct __MMMA_Initialize {};
-    static constexpr __MMMA_Initialize initialize{};
-    struct __MMA_do_not_initialize {};
-    static constexpr __MMA_do_not_initialize do_not_initialize{};
 
     template<typename T,typename S=int> class Memory_mapped_array : public Memory_mapped {
     public:
+        struct Initialize {};
+        static constexpr Initialize initialize{};
+        struct Do_not_initialize {};
+        static constexpr Do_not_initialize do_not_initialize{};
         using value_type = T;
         using value_read_only_type = typename std::conditional< (sizeof(T)<sizeof(T*)),T,T const &>::type;
         using size_type = S;
@@ -174,9 +168,8 @@ namespace Kadath {
     public:
         Memory_mapped_array() : size{0}, data{nullptr} {}
         Memory_mapped_array(std::nullptr_t ) : size{0}, data{nullptr} {}
-        Memory_mapped_array(size_type const, __MMA_do_not_initialize const init = do_not_initialize);
-        Memory_mapped_array(size_type const, __MMMA_Initialize const);
-        Memory_mapped_array(size_type const,bool const);
+        Memory_mapped_array(size_type const,Do_not_initialize const init = do_not_initialize);
+        Memory_mapped_array(size_type const,Initialize const);
         Memory_mapped_array(Memory_mapped_array const &);
         Memory_mapped_array(Memory_mapped_array &&) noexcept;
         virtual ~Memory_mapped_array() {this->clear();}
@@ -214,20 +207,14 @@ namespace Kadath {
 //        operator T * () {return data;}
     };
 
-    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size, __MMA_do_not_initialize const)
+    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size, Do_not_initialize const)
     : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))}
     {}
 
-    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size, __MMMA_Initialize const)
+    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size,Initialize const)
     : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))}
     {
-        for(auto & x:(*this)) x = Default_initializer<T>::value;
-    }
-
-    template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size, bool const _init)
-            : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))}
-    {
-        if(_init) for(auto & x:(*this)) x = Default_initializer<T>::value;
+        for(auto & x:(*this)) x = T{};
     }
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array const & source)

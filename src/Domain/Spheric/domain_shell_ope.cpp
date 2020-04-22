@@ -66,7 +66,7 @@ Val_domain Domain_shell::mult_cos_phi (const Val_domain& so) const {
 
 	res.base.def = true ;
 
-	res.cf = (so.base.ope_1d(mult_cos_1d, 2, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 2, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -104,7 +104,7 @@ Val_domain Domain_shell::mult_sin_phi (const Val_domain& so) const {
 
 	res.base.def = true ;
 
-	res.cf = (so.base.ope_1d(mult_sin_1d, 2, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 2, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -115,7 +115,7 @@ Val_domain Domain_shell::mult_cos_theta (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(mult_cos_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -126,7 +126,7 @@ Val_domain Domain_shell::mult_sin_theta (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(mult_sin_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -137,7 +137,7 @@ Val_domain Domain_shell::div_sin_theta (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(div_sin_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_sin_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -148,7 +148,7 @@ Val_domain Domain_shell::div_cos_theta (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(div_cos_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_cos_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -159,7 +159,7 @@ Val_domain Domain_shell::mult_r (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = (so.base.ope_1d(mult_x_1d, 0, so.cf, res.base)*alpha + (so.cf)*beta) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_x_1d, 0, *so.cf, res.base)*alpha + (*so.cf)*beta) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -181,7 +181,7 @@ Val_domain Domain_shell::div_1mrsL (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = (-(alpha+beta)/alpha*so.base.ope_1d(div_xm1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (-(alpha+beta)/alpha*so.base.ope_1d(div_xm1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -192,7 +192,7 @@ Val_domain Domain_shell::div_xp1 (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = (so.base.ope_1d(div_xp1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_xp1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -203,7 +203,7 @@ Val_domain Domain_shell::div_1mx2 (const Val_domain& so) const {
 
 	res.base= so.base ;
 
-	res.cf = (so.base.ope_1d(div_1mx2_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_1mx2_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -229,7 +229,7 @@ Val_domain Domain_shell::mult_xm1 (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(mult_xm1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_xm1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -240,7 +240,7 @@ Val_domain Domain_shell::div_xm1 (const Val_domain& so) const {
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(div_xm1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_xm1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }

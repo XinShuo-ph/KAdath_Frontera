@@ -64,24 +64,24 @@ void Eq_matching_non_std::export_val(int& conte, Term_eq** residus, Array<double
 		assert (residus[i]->get_type_data()==TERM_T) ;
 	assert (residus[conte+1]->get_type_data()==TERM_T) ;
 	
-	Tensor copied (residus[conte]->get_val_t()) ;
+	Tensor copie (residus[conte]->get_val_t()) ;
 
 	// Loop on the components :
 	int start = pos_res ;
 	// Case for all the cmps :
 	if (n_cmp_used==-1) {
 		for (int comp=0 ; comp<n_comp ; comp++) {
-			Array<int> ind (copied.indices(comp)) ;
-			copied.set(ind).set_domain(ndom).coef_i() ; //Configuration space
+			Array<int> ind (copie.indices(comp)) ;
+			copie.set(ind).set_domain(ndom).coef_i() ; //Configuration space
 
 			for (int j=0 ; j<(*n_cond)(comp) ; j++) {
 				// Value at the colocation point
-				sec.set(pos_res) = (copied(ind)(ndom).check_if_zero()) ? 0. : (copied(ind)(ndom).c)(*which_points[pos_res - start]) ;
+				sec.set(pos_res) = (copie(ind)(ndom).check_if_zero()) ? 0. : (*copie(ind)(ndom).c)(*which_points[pos_res-start]) ;
 	
 				// Get the absolute coordinates :
 				Point absol (dom->get_ndim()) ;
 				for (int i=1 ; i<=dom->get_ndim() ; i++)
-					absol.set(i) = (dom->get_absol(i).c)(*which_points[pos_res-start]) ;
+					absol.set(i) = (*dom->get_absol(i).c)(*which_points[pos_res-start]) ;
 
 				bool loop = true ;
 				// Loop on the other domains :
@@ -93,11 +93,11 @@ void Eq_matching_non_std::export_val(int& conte, Term_eq** residus, Array<double
 					bool found = zedom->is_in(absol, 1e-5) ;
 					if (found) {
 						Point num(zedom->absol_to_num_bound(absol, ozerbound)) ;
-						Val_domain other_copy
+						Val_domain other_copie 
 								(residus[conte+num_other+1]->get_val_t()(ind)(other_doms(num_other))) ;
-						if (!other_copy.check_if_zero()) {
-							other_copy.coef() ;
-							sec.set(pos_res) -= other_copy.base.summation(num, other_copy.cf) ;
+						if (!other_copie.check_if_zero()) {
+							other_copie.coef() ;
+							sec.set(pos_res) -= other_copie.base.summation(num, *other_copie.cf) ;
 							
 						}
 						loop = false ;
@@ -120,17 +120,17 @@ void Eq_matching_non_std::export_val(int& conte, Term_eq** residus, Array<double
 	}
 	else {
 		for (int comp=0 ; comp<n_cmp_used ; comp++) {
-			copied.set(*p_cmp_used[comp]).set_domain(ndom).coef_i() ; //Configuration space
+			copie.set(*p_cmp_used[comp]).set_domain(ndom).coef_i() ; //Configuration space
 
 			for (int j=0 ; j<(*n_cond)(comp) ; j++) {
 				// Value at the colocation point
-				sec.set(pos_res) = (copied(*p_cmp_used[comp])(ndom).check_if_zero()) ? 0. :
-                                   (copied(*p_cmp_used[comp])(ndom).c)(*which_points[pos_res - start]) ;
+				sec.set(pos_res) = (copie(*p_cmp_used[comp])(ndom).check_if_zero()) ? 0. :
+						 (*copie(*p_cmp_used[comp])(ndom).c)(*which_points[pos_res-start]) ;
 
 				// Get the absolute coordinates :
 				Point absol (dom->get_ndim()) ;
 				for (int i=1 ; i<=dom->get_ndim() ; i++)
-					absol.set(i) = (dom->get_absol(i).c)(*which_points[pos_res-start]) ;
+					absol.set(i) = (*dom->get_absol(i).c)(*which_points[pos_res-start]) ;
 
 				bool loop = true ;
 				// Loop on the other domains :
@@ -146,7 +146,7 @@ void Eq_matching_non_std::export_val(int& conte, Term_eq** residus, Array<double
 								(residus[conte+num_other+1]->get_val_t()(*p_cmp_used[comp])(other_doms(num_other))) ;
 						if (!other_copie.check_if_zero()) {
 							other_copie.coef() ;
-							sec.set(pos_res) -= other_copie.base.summation(num, other_copie.cf) ;
+							sec.set(pos_res) -= other_copie.base.summation(num, *other_copie.cf) ;
 						}
 						loop = false ;
 						indic= true ;
@@ -186,12 +186,12 @@ void Eq_matching_non_std::export_der(int& conte, Term_eq** residus, Array<double
 
 			for (int j=0 ; j<(*n_cond)(comp) ; j++) {
 				// Value at the colocation point
-				sec.set(pos_res) = (copie(ind)(ndom).check_if_zero()) ? 0. : (copie(ind)(ndom).c)(*which_points[pos_res-start]) ;
+				sec.set(pos_res) = (copie(ind)(ndom).check_if_zero()) ? 0. : (*copie(ind)(ndom).c)(*which_points[pos_res-start]) ;
 
 				// Get the absolute coordinates :
 				Point absol (dom->get_ndim()) ;
 				for (int i=1 ; i<=dom->get_ndim() ; i++)
-					absol.set(i) = (dom->get_absol(i).c)(*which_points[pos_res-start]) ;
+					absol.set(i) = (*dom->get_absol(i).c)(*which_points[pos_res-start]) ;
 
 				bool loop = true ;
 				// Loop on the other domains :
@@ -207,7 +207,7 @@ void Eq_matching_non_std::export_der(int& conte, Term_eq** residus, Array<double
 								(residus[conte+num_other+1]->get_der_t()(ind)(other_doms(num_other))) ;
 						if (!other_copie.check_if_zero()) {
 							other_copie.coef() ;
-							sec.set(pos_res) -= other_copie.base.summation(num, other_copie.cf) ;
+							sec.set(pos_res) -= other_copie.base.summation(num, *other_copie.cf) ;
 						}
 						loop = false ;
 						indic = true ;
@@ -233,12 +233,12 @@ void Eq_matching_non_std::export_der(int& conte, Term_eq** residus, Array<double
 			for (int j=0 ; j<(*n_cond)(comp) ; j++) {
 				// Value at the colocation point
 				sec.set(pos_res) = (copie(*p_cmp_used[comp])(ndom).check_if_zero()) ? 0. :
-						 (copie(*p_cmp_used[comp])(ndom).c)(*which_points[pos_res-start]) ;
+						 (*copie(*p_cmp_used[comp])(ndom).c)(*which_points[pos_res-start]) ;
 
 				// Get the absolute coordinates :
 				Point absol (dom->get_ndim()) ;
 				for (int i=1 ; i<=dom->get_ndim() ; i++)
-					absol.set(i) = (dom->get_absol(i).c)(*which_points[pos_res-start]) ;
+					absol.set(i) = (*dom->get_absol(i).c)(*which_points[pos_res-start]) ;
 
 				bool loop = true ;
 				// Loop on the other domains :
@@ -254,7 +254,7 @@ void Eq_matching_non_std::export_der(int& conte, Term_eq** residus, Array<double
 								(residus[conte+num_other+1]->get_der_t()(*p_cmp_used[comp])(other_doms(num_other))) ;
 						if (!other_copie.check_if_zero()) {
 							other_copie.coef() ;
-							sec.set(pos_res) -= other_copie.base.summation(num, other_copie.cf) ;
+							sec.set(pos_res) -= other_copie.base.summation(num, *other_copie.cf) ;
 						}
 						loop = false ;
 						indic= true ;

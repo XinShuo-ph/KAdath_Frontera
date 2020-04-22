@@ -42,28 +42,28 @@ void Domain_spheric_periodic_compact::export_tau_val_domain (const Val_domain& s
 			pos_cf.set(0) = i ;
 			switch (baset) {
 			      case COS :
-				sec.set(pos_sec) = (so.cf)(pos_cf) ;
+				sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 				pos_sec ++ ;
 				break ;
 			      case COS_EVEN : 
-				sec.set(pos_sec) = (so.cf)(pos_cf) ;
+				sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 				pos_sec ++ ;
 				break ;
 			      case COS_ODD :
 				if (j!=nbr_coefs(1)-1) {
-				      sec.set(pos_sec) = (so.cf)(pos_cf) ;
+				      sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 				      pos_sec ++ ;
 				}
 				break ;  
 			      case SIN_ODD :
 				if (j!=nbr_coefs(1)-1) {
-				      sec.set(pos_sec) = (so.cf)(pos_cf) ;
+				      sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 				      pos_sec ++ ;
 				}
 				break ;
 			      case SIN_EVEN :
 				if ((j!=nbr_coefs(1)-1) && (j!=0))  {
-				      sec.set(pos_sec) = (so.cf)(pos_cf) ;
+				      sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 				      pos_sec ++ ;
 				}
 				break ;

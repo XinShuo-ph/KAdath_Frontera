@@ -50,30 +50,30 @@ void Domain_shell::export_tau_val_domain (const Val_domain& so, int mlim, int or
 					switch (baset) {
 						case COS_EVEN:
 							if (k<kmin) {
-								sec.set(pos_sec) = (so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							}
 							else if (j!=0) {
 								// Galerkin base
 								pos_galerkin = pos_cf ;
 								pos_galerkin.set(1) = 0 ;
-								sec.set(pos_sec) = (so.cf)(pos_cf)
-										-2*(so.cf)(pos_galerkin) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) 
+										-2*(*so.cf)(pos_galerkin) ;
 								pos_sec ++ ;
 							}	
 						break ;
 					case COS_ODD:
 						if (j!=nbr_coefs(1)-1) {
 							if (k<kmin) {
-								sec.set(pos_sec) = (so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							}
 							else if (j!=0) {
 								// Galerkin base
 								pos_galerkin = pos_cf ;
 								pos_galerkin.set(1) = 0 ;
-								sec.set(pos_sec) = (so.cf)(pos_cf)
-									-(so.cf)(pos_galerkin) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) 
+									-(*so.cf)(pos_galerkin) ;
 								pos_sec ++ ;
 							}
 						}
@@ -81,15 +81,15 @@ void Domain_shell::export_tau_val_domain (const Val_domain& so, int mlim, int or
 					case SIN_EVEN:
 						if ((j!=0) && (j!=nbr_coefs(1)-1)) {
 							if (k<kmin+2) {
-								sec.set(pos_sec) = (so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							}
 							else if (j!=1) {
 								// Galerkin
 								pos_galerkin = pos_cf ;
 								pos_galerkin.set(1) = 1 ;
-								sec.set(pos_sec) = (so.cf)(pos_cf)
-									-j*(so.cf)(pos_galerkin) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) 
+									-j*(*so.cf)(pos_galerkin) ;
 								pos_sec ++ ;
 							}
 						}
@@ -97,15 +97,15 @@ void Domain_shell::export_tau_val_domain (const Val_domain& so, int mlim, int or
 					case SIN_ODD:
 						if (j!=nbr_coefs(1)-1) {
 							if (k<kmin+2) {
-								sec.set(pos_sec) = (so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							}
 							else if (j!=0) {
 								// Galerkin
 								pos_galerkin = pos_cf ;
 								pos_galerkin.set(1) = 0 ;
-								sec.set(pos_sec) = (so.cf)(pos_cf)
-									-(2*j+1)*(so.cf)(pos_galerkin) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) 
+									-(2*j+1)*(*so.cf)(pos_galerkin) ;
 								pos_sec ++ ;
 							}
 						}

@@ -28,7 +28,7 @@ void Domain_critic_outer::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	so.cf=0. ;
+	*so.cf=0. ;
 	Index pos(nbr_coefs) ;
 
 	bool found = false ;
@@ -47,11 +47,11 @@ void Domain_critic_outer::affecte_tau_one_coef_val_domain (Val_domain& so, int c
 
 		if (indic) {
 			if (conte==cc) {
-				so.cf.set(pos) = 1;
+				so.cf->set(pos) = 1;
 				found = true ;
 				}
 			else
-				so.cf.set(pos) = 0. ;
+				so.cf->set(pos) = 0. ;
 			conte ++ ;
 		}
 	}

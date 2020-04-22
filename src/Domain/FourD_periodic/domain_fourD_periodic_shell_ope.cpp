@@ -31,7 +31,7 @@ Val_domain Domain_fourD_periodic_shell::mult_cos_phi (const Val_domain& so) cons
 	Val_domain res(this) ;
 
 	res.base = so.base ;
-	res.cf = (so.base.ope_1d(mult_cos_1d, 2, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 2, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -41,7 +41,7 @@ Val_domain Domain_fourD_periodic_shell::mult_sin_phi (const Val_domain& so) cons
 	Val_domain res(this) ;
 
 	res.base = so.base ;
-	res.cf = (so.base.ope_1d(mult_sin_1d, 2, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 2, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -50,7 +50,7 @@ Val_domain Domain_fourD_periodic_shell::mult_cos_theta (const Val_domain& so) co
 	so.coef() ;
 	Val_domain res(this) ;
 	res.base = so.base ;
-	res.cf = (so.base.ope_1d(mult_cos_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_cos_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -61,7 +61,7 @@ Val_domain Domain_fourD_periodic_shell::mult_sin_theta (const Val_domain& so) co
 	Val_domain res(this) ;
 
 	res.base= so.base ;
-	res.cf = (so.base.ope_1d(mult_sin_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_sin_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;	
 	return res ;
 }
@@ -73,7 +73,7 @@ Val_domain Domain_fourD_periodic_shell::div_sin_theta (const Val_domain& so) con
 	Val_domain res(this) ;
 
 	res.base= so.base ;
-	res.cf = (so.base.ope_1d(div_sin_1d, 1, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_sin_1d, 1, *so.cf, res.base)) ;
 	res.in_coef = true ;	
 	return res ;
 }
@@ -84,7 +84,7 @@ Val_domain Domain_fourD_periodic_shell::div_xm1 (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(div_xm1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_xm1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -114,7 +114,7 @@ Array<double> Domain_fourD_periodic_shell::integ_outer_boundary (const Val_domai
          for (int i(0) ; i < nbr_coefs(0) ; ++i) 
          {
             pos.set(0) = i;
-            res.set(l) += fact_tet*(so.cf)(pos);
+            res.set(l) += fact_tet*(*so.cf)(pos);
          }
 	}
       res.set(l) *= 2.0*M_PI;

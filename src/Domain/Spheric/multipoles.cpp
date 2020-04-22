@@ -339,10 +339,10 @@ Term_eq Domain_shell::multipoles_sym (int k, int j, int bound, const Term_eq& so
 
      Val_domain res(this) ;
      res.allocate_conf() ;
-     res.c = 0. ;
+     *res.c = 0. ;
      Val_domain der(this) ;
      der.allocate_conf() ;
-     der.c = 0. ;
+     *der.c = 0. ;
 
     // Get theta
     Array<double> phi (get_coloc(3)) ;
@@ -450,10 +450,10 @@ Term_eq Domain_shell::multipoles_asym (int k, int j, int bound, const Term_eq& s
   
      Val_domain res(this) ;
      res.allocate_conf() ;
-     res.c = 0. ;
+     *res.c = 0. ;
      Val_domain der(this) ;
      der.allocate_conf() ;
-     der.c = 0. ;
+     *der.c = 0. ;
 
     // Get theta
     Array<double> phi (get_coloc(3)) ;

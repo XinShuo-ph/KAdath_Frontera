@@ -581,7 +581,7 @@ void Domain_bispheric_rect::do_for_der() const {
 }
 
 // Computes the derivatives with respect to the absolute coordinates with respect to the numerical ones.
-void Domain_bispheric_rect::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
+void Domain_bispheric_rect::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
 	if (p_detadx==0x0)
 		do_for_der() ;
 
@@ -834,9 +834,9 @@ double Domain_bispheric_rect::integ (const Val_domain& so, int bound) const {
 				for (int i=0 ; i<nbr_coefs(0) ; i++) {
 					pos.set(0) = i ;
 					if (i%2==0)
-						res += val_cheb * (auxi.cf)(pos) ;
+						res += val_cheb * (*auxi.cf)(pos) ;
 					else
-						res -= val_cheb * (auxi.cf)(pos) ;
+						res -= val_cheb * (*auxi.cf)(pos) ;
 				}
 			}
 		}
@@ -868,9 +868,9 @@ double Domain_bispheric_rect::integ (const Val_domain& so, int bound) const {
 			for (int i=0 ; i<nbr_coefs(0) ; i++) {
 				pos.set(0) = i ;
 				if (i%2==0)
-					res += val_leg*(auxi.cf)(pos) ;
+					res += val_leg*(*auxi.cf)(pos) ;
 				else
-					res -= val_leg*(auxi.cf)(pos) ;
+					res -= val_leg*(*auxi.cf)(pos) ;
 			}
 		}
 	}

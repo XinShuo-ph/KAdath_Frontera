@@ -63,7 +63,7 @@ void Domain_nucleus::export_tau_val_domain_vr (const Val_domain& so, int order, 
 	    // No Galerkin
 	    for (int i=0 ; i<ilim-1 ; i++) {
 	      pos_cf.set(0) = i ;
-	    sec.set(pos_sec) = (so.cf)(pos_cf) ;
+	    sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 	    pos_sec ++ ;
 	  }
 	  }
@@ -88,7 +88,7 @@ void Domain_nucleus::export_tau_val_domain_vr (const Val_domain& so, int order, 
 			    cerr << "Strange base in Domain_adapted:export_tau_val_domain_vr" << endl ;
 			    abort()  ;
 		 }
-		 sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+		 sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	         pos_sec ++ ;
 	  }
 	}
@@ -136,8 +136,8 @@ void Domain_nucleus::export_tau_val_domain_vr (const Val_domain& so, int order, 
 			  cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vr" << endl ;
 			  abort()  ;
 		}
-	sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
-	  fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
+	sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
+	  fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
 	pos_sec++ ;
 	}
        }
@@ -171,7 +171,7 @@ void Domain_nucleus::export_tau_val_domain_vr (const Val_domain& so, int order, 
 		  cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vr" << endl ;
 		  abort()  ;
 		}
-		sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+		sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 		pos_sec ++ ;
 	  }
        }
@@ -234,7 +234,7 @@ void Domain_nucleus::export_tau_val_domain_vt (const Val_domain& so, int order, 
 			    cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 			    abort()  ;
 		 }
-		 sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+		 sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	         pos_sec ++ ;
 	  }
 	}
@@ -250,7 +250,7 @@ void Domain_nucleus::export_tau_val_domain_vt (const Val_domain& so, int order, 
 	  assert ((baser==CHEB_EVEN) || (baser==LEG_EVEN)) ;
 	  for (int i=0 ; i<ilim ; i++) {
 		pos_cf.set(0) = i ;
-		sec.set(pos_sec) = (so.cf)(pos_cf) ;
+		sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 		pos_sec ++ ;
 	}
 	}
@@ -281,7 +281,7 @@ void Domain_nucleus::export_tau_val_domain_vt (const Val_domain& so, int order, 
 		 cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 	          abort()  ;
 	}							
-	   sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+	   sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	   pos_sec ++ ;
 	  }
   }
@@ -297,7 +297,7 @@ void Domain_nucleus::export_tau_val_domain_vt (const Val_domain& so, int order, 
 	  assert ((baser==CHEB_EVEN) || (baser==LEG_EVEN)) ;
 	  for (int i=0 ; i<ilim ; i++) {
 		pos_cf.set(0) = i ;
-		sec.set(pos_sec) = (so.cf)(pos_cf) ;
+		sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 		pos_sec ++ ;
 	}
 	}
@@ -328,7 +328,7 @@ void Domain_nucleus::export_tau_val_domain_vt (const Val_domain& so, int order, 
 		 cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 	          abort()  ;
 	}							
-	   sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+	   sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	   pos_sec ++ ;
 	  }
   }
@@ -365,7 +365,7 @@ void Domain_nucleus::export_tau_val_domain_vt (const Val_domain& so, int order, 
 			    cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 			    abort()  ;
 		 }
-		 sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+		 sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	         pos_sec ++ ;
 	  }
        }
@@ -407,8 +407,8 @@ void Domain_nucleus::export_tau_val_domain_vt (const Val_domain& so, int order, 
 		cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 		abort()  ;
 	    }
-	sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
-	  fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
+	sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
+	  fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
 	pos_sec++ ;
 	}
        }
@@ -458,7 +458,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 	    // No Galerkin
 	    for (int i=0 ; i<ilim-1 ; i++) {
 	      pos_cf.set(0) = i ;
-	    sec.set(pos_sec) = (so.cf)(pos_cf) ;
+	    sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 	    pos_sec ++ ;
 	  }
 	  }
@@ -483,7 +483,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 			    cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 			    abort()  ;
 		 }
-		 sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+		 sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	         pos_sec ++ ;
 	  }
 	}
@@ -501,7 +501,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 	  assert ((baser==CHEB_EVEN) || (baser==LEG_EVEN)) ;
 	  for (int i=0 ; i<ilim ; i++) {
 		pos_cf.set(0) = i ;
-		sec.set(pos_sec) = (so.cf)(pos_cf) ;
+		sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 		pos_sec ++ ;
 	}
 	}
@@ -532,7 +532,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 		 cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vp" << endl ;
 	          abort()  ;
 	}							
-	   sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+	   sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	   pos_sec ++ ;
 	  }
   }
@@ -548,7 +548,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 	  assert ((baser==CHEB_EVEN) || (baser==LEG_EVEN)) ;
 	  for (int i=0 ; i<ilim ; i++) {
 		pos_cf.set(0) = i ;
-		sec.set(pos_sec) = (so.cf)(pos_cf) ;
+		sec.set(pos_sec) = (*so.cf)(pos_cf) ; 
 		pos_sec ++ ;
 	}
 	}
@@ -579,7 +579,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 		 cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vp" << endl ;
 	          abort()  ;
 	}							
-	   sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+	   sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ; 
 	   pos_sec ++ ;
 	  }
   }
@@ -599,7 +599,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 	    // No Galerkin
 	    for (int i=0 ; i<ilim-1 ; i++) {
 	      pos_cf.set(0) = i ;
-	    sec.set(pos_sec) = (so.cf)(pos_cf) ;
+	    sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 	    pos_sec ++ ;
 	  }
 	  }
@@ -624,7 +624,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 			    cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 			    abort()  ;
 		 }
-		 sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+		 sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	         pos_sec ++ ;
 	  }
 	}
@@ -645,7 +645,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 	    // No Galerkin
 	    for (int i=0 ; i<ilim-1 ; i++) {
 	      pos_cf.set(0) = i ;
-	    sec.set(pos_sec) = (so.cf)(pos_cf) ;
+	    sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 	    pos_sec ++ ;
 	  }
 	  }
@@ -670,7 +670,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 			    cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 			    abort()  ;
 		 }
-		 sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+		 sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ; 
 	         pos_sec ++ ;
 	  }
 	}
@@ -709,7 +709,7 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 			    cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vt" << endl ;
 			    abort()  ;
 		 }
-		 sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+		 sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 	         pos_sec ++ ;
 	  }
        }
@@ -751,8 +751,8 @@ void Domain_nucleus::export_tau_val_domain_vp (const Val_domain& so, int order, 
 		cerr << "Strange base in Domain_nucleus:export_tau_val_domain_vp" << endl ;
 		abort()  ;
 	    }
-	    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
-						fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
+	    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
+						fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
 	   pos_sec++ ;
 	  }
        }
@@ -816,7 +816,7 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 							// No galerkin :
 							if ((k<kmin) && (lquant<=llim))  {
 							    if (i!=nbr_coefs(0)-rlim+1) {
-								sec.set(pos_sec) = (so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							  }
 							}
@@ -840,7 +840,7 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 									  abort()  ;
 								}
 									  
-								sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 								pos_sec ++ ;
 							  }
 							}
@@ -872,8 +872,8 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 									  cerr << "Strange base in Domain_nucleus:export_tau_inside" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
-								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
+								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							    }
 						break ;
@@ -884,7 +884,7 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1) && (i!=nbr_coefs(0)-rlim))  {
 							if ((k<kmin) && (lquant<=llim+1)) {
 							  // No Galerkin :
-							  sec.set(pos_sec) = (so.cf)(pos_cf) ;
+							  sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 							  pos_sec ++ ;
 							}
 						      else {
@@ -906,7 +906,7 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 								    cerr << "Strange base in Domain_nucleus:export_tau_inside" << endl ;
 								    abort()  ;
 								  }
-							       sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+							       sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 							       pos_sec ++ ;
 							}
 							else if ((j!=0) && (i!=0)) {
@@ -937,8 +937,8 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 									  cerr << "Strange base in Domain_nucleus:export_tau_inside" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
-								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
+								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							}
 						}
@@ -950,7 +950,7 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 						if ((j!=0) && (j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1)) {
 							if ((k<kmin+2) && (lquant<=llim)) {
 							      // No Galerkin
-							      sec.set(pos_sec) = (so.cf)(pos_cf) ;
+							      sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 							      pos_sec ++ ;
 							} 
 							else {
@@ -972,7 +972,7 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 								  cerr << "Strange base in Domain_nucleus::export_tau_val_domain" << endl ;
 								  abort()  ;
 								}	  
-							sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+							sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 							pos_sec ++ ;
 							}
 						else {
@@ -1004,8 +1004,8 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 									  cerr << "Strange base in Domain_nucleus::affecte_tau_val_domain" << endl ;
 									  abort()  ;
 								}  
-							     sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
-								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
+							     sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
+								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 						 }
 						}
@@ -1019,7 +1019,7 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 						if ((j!=nbr_coefs(1)-1) && (i!=nbr_coefs(0)-rlim+1) && (i!=nbr_coefs(0)-rlim))  {
 							if ((k<kmin+2) && (lquant<=llim+1)) {
 							  // No Galerkin :
-							  sec.set(pos_sec) = (so.cf)(pos_cf) ;
+							  sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 							  pos_sec ++ ;
 							}
 						      else {
@@ -1041,7 +1041,7 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 								    cerr << "Strange base in Domain_nucleus::export_tau_val_domain" << endl ;
 								    abort()  ;
 								  }
-							       sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+							       sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 							       pos_sec ++ ;
 							}
 							else if ((j!=0) && (i!=0)) {
@@ -1072,8 +1072,8 @@ void Domain_nucleus::export_tau_val_domain (const Val_domain& so, int mlim, int 
 									  cerr << "Strange base in Domain_nucleus::export_tau_val_domain" << endl ;
 									  abort()  ;
 								}
-							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) +
-								fact_t*(so.cf)(pos_gal_t) + fact_rt*(so.cf)(pos_gal_rt) ;
+							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) +
+								fact_t*(*so.cf)(pos_gal_t) + fact_rt*(*so.cf)(pos_gal_rt) ;
 							    pos_sec++ ;
 							}
 						}

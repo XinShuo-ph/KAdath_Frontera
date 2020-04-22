@@ -39,7 +39,7 @@ void Domain_spheric_time_shell::export_tau_val_domain_array (const Val_domain& s
 	  for (int i=0 ; i<nbr_coefs(0) - order(0) ; i++) {
 		pos_cf.set(1) = j ;
 		pos_cf.set(0) = i ,
-		sec.set(pos_sec) = (so.cf)(pos_cf) ;
+		sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 		pos_sec ++ ;
 	      }	
     }

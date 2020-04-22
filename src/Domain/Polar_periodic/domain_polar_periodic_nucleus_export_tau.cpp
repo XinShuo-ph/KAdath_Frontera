@@ -152,7 +152,7 @@ void Domain_polar_periodic_nucleus::export_tau_val_domain (const Val_domain& so,
 
 			// No garlekin
 			if (lquant<=llim) {
-				sec.set(pos_sec) = (so.cf)(pos_cf) ;
+				sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 				pos_sec ++ ;
 			}
 			else {
@@ -183,7 +183,7 @@ void Domain_polar_periodic_nucleus::export_tau_val_domain (const Val_domain& so,
 						cerr << "Strange base in Domain_polar_periodic_nucleus:export_tau_inside" << endl ;
 						abort()  ;
 					}
-				sec.set(pos_sec) = (so.cf)(pos_cf) + fact_r*(so.cf)(pos_gal_r) ;
+				sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_r*(*so.cf)(pos_gal_r) ;
 				pos_sec ++ ;
 			}
 		} // end loop i 

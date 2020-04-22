@@ -45,8 +45,8 @@ Val_domain Domain_oned_ori::div_r (const Val_domain& so) const {
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(div_x_1d, 0, so.cf, res.base)) ;
-	res.cf /= alpha ;
+	res.cf = new Array<double> (so.base.ope_1d(div_x_1d, 0, *so.cf, res.base)) ;
+	*res.cf /= alpha ;
 	res.in_coef = true ;
 	return res ;
 }

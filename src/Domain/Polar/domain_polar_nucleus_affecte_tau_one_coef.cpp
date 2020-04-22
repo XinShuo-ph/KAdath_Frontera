@@ -31,7 +31,7 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 
 	so.is_zero = false ;
 	so.allocate_coef() ;
-	so.cf=0. ;
+	*so.cf=0. ;
 	Index pos_cf(nbr_coefs) ;
 
 	bool found = false ;
@@ -57,7 +57,7 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 					if ((mquant==0) && (lquant<=llim))  {
 						if (conte==cc)  {
 						  found = true ;
-						  so.cf.set(pos_cf) = 1. ;
+						  so.cf->set(pos_cf) = 1. ;
 						  }
 						  conte ++ ;
 					}
@@ -82,8 +82,8 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 							  cerr << "Strange base in Domain_polar_nucleus::affecte_one_coef_val_domain" << endl ;
 							  abort()  ;
 						}
-						so.cf.set(pos_cf) = 1 ;
-						so.cf.set(pos_gal_r) += fact_r ;
+						so.cf->set(pos_cf) = 1 ;
+						so.cf->set(pos_gal_r) += fact_r ;
 						}
 							conte ++ ;
 					  }
@@ -118,10 +118,10 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 							  cerr << "Strange base in Domain_polar_nucleus::affecte_one_coef_val_domain" << endl ;
 							  abort()  ;
 						}
-						  so.cf.set(pos_cf) = 1. ;
-						  so.cf.set(pos_gal_r) = fact_r ;
-						  so.cf.set(pos_gal_t) = fact_t ;
-						  so.cf.set(pos_gal_rt) = fact_rt ;
+						  so.cf->set(pos_cf) = 1. ;
+						  so.cf->set(pos_gal_r) = fact_r ;
+						  so.cf->set(pos_gal_t) = fact_t ;
+						  so.cf->set(pos_gal_rt) = fact_rt ;
 					      }
 					   conte ++ ;
 					   }
@@ -132,7 +132,7 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 					      if ((mquant==0) && (lquant<=llim+1)) {
 						  if (conte==cc) {
 						      found = true ;
-						      so.cf.set(pos_cf) = 1. ;
+						      so.cf->set(pos_cf) = 1. ;
 						     }
 						  conte++  ;
 						  }
@@ -157,8 +157,8 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 								abort()  ;
 							   }
 
-						  so.cf.set(pos_cf) = 1. ;
-						  so.cf.set(pos_gal_r) = fact_r ;
+						  so.cf->set(pos_cf) = 1. ;
+						  so.cf->set(pos_gal_r) = fact_r ;
 						}
 						   conte ++ ;
 					}
@@ -192,10 +192,10 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 							  cerr << "Strange base in Domain_polar_nucleus::affecte_one_coef_val_domain" << endl ;
 							  abort()  ;
 						}  
-						 so.cf.set(pos_cf) = 1. ;
-						 so.cf.set(pos_gal_r) = fact_r ;
-					         so.cf.set(pos_gal_t) = fact_t ;
-						 so.cf.set(pos_gal_rt) = fact_rt ;
+						 so.cf->set(pos_cf) = 1. ;
+						 so.cf->set(pos_gal_r) = fact_r ;
+					         so.cf->set(pos_gal_t) = fact_t ;
+						 so.cf->set(pos_gal_rt) = fact_rt ;
 						  }
 						  conte ++ ;
 						}
@@ -208,7 +208,7 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 						if ((mquant<=1) && (lquant<=llim)) {
 						    if (conte==cc) {
 								      found = true ;
-								      so.cf.set(pos_cf) = 1. ;
+								      so.cf->set(pos_cf) = 1. ;
 								      }
 						    conte ++ ;
 						}
@@ -233,8 +233,8 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 								  cerr << "Strange base in Domain_polar_nucleus::affecte_tau_val_domain" << endl ;
 								  abort()  ;
 								}	  
-							    so.cf.set(pos_cf) = 1. ;
-								so.cf.set(pos_gal_r) = fact_r ;
+							    so.cf->set(pos_cf) = 1. ;
+								so.cf->set(pos_gal_r) = fact_r ;
 								}
 							    conte ++ ;
 							}
@@ -271,10 +271,10 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 									  cerr << "Strange base in Domain_polar_nucleus::affecte_tau_val_domain" << endl ;
 									  abort()  ;
 								}  
-							      so.cf.set(pos_cf) = 1 ;
-							      so.cf.set(pos_gal_r) = fact_r ;
-							      so.cf.set(pos_gal_t) = fact_t ;
-							      so.cf.set(pos_gal_rt) = fact_rt ;
+							      so.cf->set(pos_cf) = 1 ;
+							      so.cf->set(pos_gal_r) = fact_r ;
+							      so.cf->set(pos_gal_t) = fact_t ;
+							      so.cf->set(pos_gal_rt) = fact_rt ;
 								}
 							      conte ++ ;
 							}
@@ -288,7 +288,7 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 							      if ((mquant<=1) && (lquant<=llim+1)) {
 								  if (conte==cc) {
 								      found = true ;
-								      so.cf.set(pos_cf) = 1. ;
+								      so.cf->set(pos_cf) = 1. ;
 								      }
 								  conte++  ;
 							      }
@@ -313,8 +313,8 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 									abort()  ;
 								      }
 
-								  so.cf.set(pos_cf) = 1. ;
-								  so.cf.set(pos_gal_r) = fact_r ;
+								  so.cf->set(pos_cf) = 1. ;
+								  so.cf->set(pos_gal_r) = fact_r ;
 								}
 							       conte ++ ;
 							}
@@ -348,10 +348,10 @@ void Domain_polar_nucleus::affecte_tau_one_coef_val_domain (Val_domain& so, int 
 									  cerr << "Strange base in Domain_polar_nucleus::affecte_one_coef_val_domain" << endl ;
 									  abort()  ;
 								}  
-							      so.cf.set(pos_cf) = 1. ;
-							      so.cf.set(pos_gal_r) = fact_r ;
-							      so.cf.set(pos_gal_t) = fact_t ;
-							      so.cf.set(pos_gal_rt) = fact_rt ;
+							      so.cf->set(pos_cf) = 1. ;
+							      so.cf->set(pos_gal_r) = fact_r ;
+							      so.cf->set(pos_gal_t) = fact_t ;
+							      so.cf->set(pos_gal_rt) = fact_rt ;
 							      }
 							      conte ++ ;
 							}

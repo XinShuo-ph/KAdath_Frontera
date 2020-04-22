@@ -102,7 +102,7 @@ void Domain_shell_symphi::export_tau_val_domain (const Val_domain& so, int order
 						case COS_EVEN :
 							// No galerkin 
 							if (mquant==0) {
-								sec.set(pos_sec) = (so.cf)(pos_cf) ;
+								sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 								pos_sec ++ ;
 							}
 							else if (j!=0) {
@@ -110,7 +110,7 @@ void Domain_shell_symphi::export_tau_val_domain (const Val_domain& so, int order
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -2. ;
-							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_t*(so.cf)(pos_gal_t) ;
+							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_t*(*so.cf)(pos_gal_t) ;
 							    pos_sec++ ;
 							    }
 						break ;
@@ -119,7 +119,7 @@ void Domain_shell_symphi::export_tau_val_domain (const Val_domain& so, int order
 						if (j!=nbr_coefs(1)-1)  {
 							if (mquant==0) {
 							  // No Galerkin :
-							  sec.set(pos_sec) = (so.cf)(pos_cf) ;
+							  sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 							  pos_sec ++ ;
 							}
 						      else if (j!=0) {
@@ -127,7 +127,7 @@ void Domain_shell_symphi::export_tau_val_domain (const Val_domain& so, int order
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -1. ;
-							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_t*(so.cf)(pos_gal_t)  ;
+							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_t*(*so.cf)(pos_gal_t)  ;
 							    pos_sec++ ;
 							}
 						}
@@ -136,7 +136,7 @@ void Domain_shell_symphi::export_tau_val_domain (const Val_domain& so, int order
 						if ((j!=0) && (j!=nbr_coefs(1)-1)) {
 							if (mquant<=1) {
 							      // No Galerkin
-							      sec.set(pos_sec) = (so.cf)(pos_cf) ;
+							      sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 							      pos_sec ++ ;
 							} 
 							else if (j!=1) {
@@ -144,7 +144,7 @@ void Domain_shell_symphi::export_tau_val_domain (const Val_domain& so, int order
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 1 ;
 							    fact_t = -j ;
-							     sec.set(pos_sec) = (so.cf)(pos_cf) + fact_t*(so.cf)(pos_gal_t) ;
+							     sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_t*(*so.cf)(pos_gal_t) ;
 							    pos_sec++ ;
 						 }
 						}
@@ -154,7 +154,7 @@ void Domain_shell_symphi::export_tau_val_domain (const Val_domain& so, int order
 						if (j!=nbr_coefs(1)-1)  {
 							if (mquant<=1)  {
 							  // No Galerkin :
-							  sec.set(pos_sec) = (so.cf)(pos_cf) ;
+							  sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 							  pos_sec ++ ;
 							}
 						      else if (j!=0) {
@@ -162,7 +162,7 @@ void Domain_shell_symphi::export_tau_val_domain (const Val_domain& so, int order
 							    pos_gal_t = pos_cf ;
 							    pos_gal_t.set(1) = 0 ;
 							    fact_t = -(2*j+1) ;
-							    sec.set(pos_sec) = (so.cf)(pos_cf) + fact_t*(so.cf)(pos_gal_t) ;
+							    sec.set(pos_sec) = (*so.cf)(pos_cf) + fact_t*(*so.cf)(pos_gal_t) ;
 							    pos_sec++ ;
 							}
 						}

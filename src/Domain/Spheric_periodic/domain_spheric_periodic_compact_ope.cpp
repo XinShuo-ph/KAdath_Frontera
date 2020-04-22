@@ -31,7 +31,7 @@ Val_domain Domain_spheric_periodic_compact::mult_xm1 (const Val_domain& so) cons
 
 	res.base= so.base ;
 	
-	res.cf = (so.base.ope_1d(mult_xm1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(mult_xm1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }
@@ -42,7 +42,7 @@ Val_domain Domain_spheric_periodic_compact::div_xm1 (const Val_domain& so) const
 
 	res.base = so.base ;	
 	
-	res.cf = (so.base.ope_1d(div_xm1_1d, 0, so.cf, res.base)) ;
+	res.cf = new Array<double> (so.base.ope_1d(div_xm1_1d, 0, *so.cf, res.base)) ;
 	res.in_coef = true ;
 	return res ;
 }

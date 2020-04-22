@@ -89,7 +89,7 @@ void Domain_polar_periodic_shell::export_tau_val_domain (const Val_domain& so, i
 			pos_cf.set(0) = i ;
 
 			// No garlekin
-			sec.set(pos_sec) = (so.cf)(pos_cf) ;
+			sec.set(pos_sec) = (*so.cf)(pos_cf) ;
 				pos_sec ++ ;
 		} // end loop i 
 		} // end loop j

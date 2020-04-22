@@ -193,7 +193,7 @@ void Domain_shell_outer_adapted::affecte_coef(int& conte, int cc, bool& found) c
     auxi.std_base() ;
     auxi.set_in_coef() ;
     auxi.allocate_coef() ;
-    auxi.cf = 0 ;
+    *auxi.cf = 0 ;
     
     found = false ;
     
@@ -208,16 +208,16 @@ void Domain_shell_outer_adapted::affecte_coef(int& conte, int cc, bool& found) c
 		  pos_cf.set(0) = 0 ;
 		  pos_cf.set(1) = j ;
 		  pos_cf.set(2) = k ;
-		  auxi.cf.set(pos_cf) = 1 ;
+		  auxi.cf->set(pos_cf) = 1 ;
 		  if ((jmin==1) && (mm%2==0)) {
 		    // Galerkin base COS EVEN
 		   pos_cf.set(1) = 0 ;
-		   auxi.cf.set(pos_cf) = -1 ;
+		   auxi.cf->set(pos_cf) = -1 ;
 		  }
 		 if ((jmin==1) && (mm%2==1)) {
 		    // Galerkin base SIN ODD
 		   pos_cf.set(1) = 0 ;
-		   auxi.cf.set(pos_cf) = -(2*j+1) ;
+		   auxi.cf->set(pos_cf) = -(2*j+1) ;
 		  }
 		  found = true ;
 	      }
@@ -239,7 +239,7 @@ void Domain_shell_outer_adapted::affecte_coef(int& conte, int cc, bool& found) c
 void Domain_shell_outer_adapted::xx_to_vars_from_adapted(Val_domain& new_outer_radius, const Array<double>& xx, int& pos) const {
 
     new_outer_radius.allocate_coef() ;
-    new_outer_radius.cf = 0 ;
+    *new_outer_radius.cf = 0 ;
     
     Index pos_cf (nbr_coefs) ;	    
     pos_cf.set(0) = 0 ;
@@ -252,16 +252,16 @@ void Domain_shell_outer_adapted::xx_to_vars_from_adapted(Val_domain& new_outer_r
 	  int jmin = (k>=4) ? 1 : 0 ;
 	  for (int j=jmin ; j<jmax ; j++) {
 	    pos_cf.set(1)=  j ;
-	    new_outer_radius.cf.set(pos_cf) -= xx(pos) ;
+	    new_outer_radius.cf->set(pos_cf) -= xx(pos) ; 
 	    if ((jmin==1) && (mm%2==0)) {
 	      // Galerkin basis COS EVEN
 	      pos_cf.set(1) = 0 ;
-	      new_outer_radius.cf.set(pos_cf) += xx(pos) ;
+	      new_outer_radius.cf->set(pos_cf) += xx(pos) ;
 	    }
 	    if ((jmin==1) && (mm%2==1)) {
 	      // Galerkin basis SIN ODD
 	      pos_cf.set(1) = 0 ;
-	      new_outer_radius.cf.set(pos_cf) += (2*j+1)*xx(pos) ;
+	      new_outer_radius.cf->set(pos_cf) += (2*j+1)*xx(pos) ;
 	    }
 
 	    pos ++ ;
@@ -332,7 +332,7 @@ void Domain_shell_outer_adapted::xx_to_ders_from_adapted(const Array<double>& xx
     auxi.std_base() ;
     auxi.set_in_coef() ;
     auxi.allocate_coef() ;
-    auxi.cf = 0 ;
+    *auxi.cf = 0 ;
     
     Index pos_cf (nbr_coefs) ;	    
     pos_cf.set(0) = 0 ;
@@ -345,17 +345,17 @@ void Domain_shell_outer_adapted::xx_to_ders_from_adapted(const Array<double>& xx
 	  int jmin = (k>=4) ? 1 : 0 ;
 	  for (int j=jmin ; j<jmax ; j++) {
 	    pos_cf.set(1)=  j ;
-	    auxi.cf.set(pos_cf) = xx(pos) ;
+	    auxi.cf->set(pos_cf) = xx(pos) ;
 
 	     if ((jmin==1) && (mm%2==0)) {
 	      // Galerkin basis COS EVEN
 	      pos_cf.set(1) = 0 ;
-	      auxi.cf.set(pos_cf) = -xx(pos) ;
+	      auxi.cf->set(pos_cf) = -xx(pos) ;
 	    }
 	    if ((jmin==1) && (mm%2==1)) {
 	      // Galerkin basis SIN ODD
 	      pos_cf.set(1) = 0 ;
-	      auxi.cf.set(pos_cf) = -(2*j+1)*xx(pos) ;
+	      auxi.cf->set(pos_cf) = -(2*j+1)*xx(pos) ;
 	    }
 	    pos ++ ;
 	  }
@@ -862,7 +862,7 @@ void Domain_shell_outer_adapted::set_legendre_base_p_spher(Base_spectral& base) 
 }
 
 // Computes the derivatives with respect to XYZ as a function of the numerical ones.
-void Domain_shell_outer_adapted::do_der_abs_from_der_var(const Val_domain_ptr_array &der_var, Val_domain_ptr_array &der_abs) const {
+void Domain_shell_outer_adapted::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
     
 	Val_domain rr (get_radius()) ;
 	Val_domain dr (*der_var[0] / (*der_rad_term_eq->val_t)()(num_dom)) ;
