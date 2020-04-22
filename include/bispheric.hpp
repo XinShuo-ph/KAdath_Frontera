@@ -287,7 +287,7 @@ class Domain_bispheric_rect : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const ;
   
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
@@ -709,7 +709,7 @@ class Domain_bispheric_chi_first : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;  
+     virtual void do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ; 
      virtual double integ (const Val_domain&, int) const ;
 
@@ -1118,7 +1118,7 @@ class Domain_bispheric_eta_first : public Domain {
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
      */
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ; 
+     virtual void do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
   public:     

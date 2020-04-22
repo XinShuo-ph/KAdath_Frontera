@@ -665,7 +665,7 @@ void Domain_nucleus::set_legendre_base_p_mtz(Base_spectral& base) const {
 }
 
 // Computes the derivativeswith respect to XYZ as a function of the numerical ones.
-void Domain_nucleus::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_nucleus::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
 
 	// d/dx :
 	Val_domain sintdr (der_var[0]->mult_sin_theta()/alpha) ;

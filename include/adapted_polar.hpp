@@ -166,7 +166,7 @@ class Domain_polar_shell_inner_adapted : public Domain {
      virtual Point get_center () const {return center ;} ;
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const ;
    
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
@@ -448,7 +448,7 @@ class Domain_polar_shell_outer_adapted : public Domain {
    
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;    
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ; 
+     virtual void do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const ;
     
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 

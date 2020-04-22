@@ -722,7 +722,7 @@ void Domain_compact_symphi::set_val_inf (Val_domain& so, double x) const {
 }
 
 // Computes the derivatives with respect to XYZ as function of the numerical ones.
-void Domain_compact_symphi::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_compact_symphi::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
 
 	// d/dx :
 	Val_domain dr (-der_var[0]->mult_xm1()) ;

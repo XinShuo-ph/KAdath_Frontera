@@ -83,7 +83,7 @@ class Domain_spheric_time_nucleus : public Domain {
   public:
      virtual bool is_in(const Point&xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
     /**
      * @returns : the \f$ \alpha \f$ of the mapping.
@@ -238,7 +238,7 @@ class Domain_spheric_time_shell : public Domain {
   public:     
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const ;
    
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
  	/**
@@ -390,7 +390,7 @@ class Domain_spheric_time_compact : public Domain {
   public:     
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+     virtual void do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const ;
    
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 	/**

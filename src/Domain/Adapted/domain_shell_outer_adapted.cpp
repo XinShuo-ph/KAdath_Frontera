@@ -862,7 +862,7 @@ void Domain_shell_outer_adapted::set_legendre_base_p_spher(Base_spectral& base) 
 }
 
 // Computes the derivatives with respect to XYZ as a function of the numerical ones.
-void Domain_shell_outer_adapted::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_shell_outer_adapted::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
     
 	Val_domain rr (get_radius()) ;
 	Val_domain dr (*der_var[0] / (*der_rad_term_eq->val_t)()(num_dom)) ;
