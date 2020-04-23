@@ -1501,25 +1501,25 @@ Point Domain::get_center () const {
 	abort() ;
 }
 
-Val_domain Domain::get_chi() const {
+const Val_domain & Domain::get_chi() const {
 	cerr << "No chi for" << endl ;
 	cerr << *this << endl  ;
 	abort() ;
 }
 
-Val_domain Domain::get_eta() const {
+const Val_domain & Domain::get_eta() const {
 	cerr << "No eta for" << endl ;
 	cerr << *this << endl  ;
 	abort() ;
 }
 
-Val_domain Domain::get_X() const {
+const Val_domain & Domain::get_X() const {
 	cerr << "No X for" << endl ;
 	cerr << *this << endl  ;
 	abort() ;
 }
 
-Val_domain Domain::get_T() const {
+const Val_domain & Domain::get_T() const {
 	cerr << "No T for" << endl ;
 	cerr << *this << endl  ;
 	abort() ;

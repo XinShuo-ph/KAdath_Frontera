@@ -98,10 +98,10 @@ namespace Kadath  {
         int get_type_base() const {return type_base ;}
         Array<double> const & get_coloc (int) const ; ///< Returns the colocation points for a given variable.
         virtual Point get_center() const ; ///< Returns the center.
-        virtual Val_domain get_chi() const ; ///< Returns the variable \f$ \chi \f$.
-        virtual Val_domain get_eta() const ; ///< Returns the variable \f$ \eta \f$.
-        virtual Val_domain get_X() const ; ///< Returns the variable \f$ X \f$.
-        virtual Val_domain get_T() const ; ///< Returns the variable \f$ T \f$.
+        virtual const Val_domain & get_chi() const ; ///< Returns the variable \f$ \chi \f$.
+        virtual const Val_domain & get_eta() const ; ///< Returns the variable \f$ \eta \f$.
+        virtual const Val_domain & get_X() const ; ///< Returns the variable \f$ X \f$.
+        virtual const Val_domain & get_T() const ; ///< Returns the variable \f$ T \f$.
 
     public:
         Val_domain const & get_absol(int i) const ; ///<Returns the absolute coordinates

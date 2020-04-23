@@ -130,13 +130,13 @@ void Domain_critic_outer::do_T() const {
 
 
 
-Val_domain Domain_critic_outer::get_X() const {
+const Val_domain & Domain_critic_outer::get_X() const {
   if (p_X==nullptr)
 		do_X() ;
 	return *p_X ;
 }
 
-Val_domain Domain_critic_outer::get_T() const {
+const Val_domain & Domain_critic_outer::get_T() const {
   if (p_T==nullptr)
 		do_T() ;
 	return *p_T ;

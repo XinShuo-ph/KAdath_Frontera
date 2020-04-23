@@ -87,8 +87,8 @@ class Domain_critic_inner : public Domain {
      void do_T() const ; ///< Computes \f$ T\f$.
 
    public:
-     virtual Val_domain get_X() const ;
-     virtual Val_domain get_T() const ;
+     virtual const Val_domain & get_X() const ;
+     virtual const Val_domain & get_T() const ;
      virtual Val_domain div_x (const Val_domain&) const ;     
      
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;
@@ -233,8 +233,8 @@ class Domain_critic_outer : public Domain {
      void do_T() const ;///< Computes \f$ T\f$.
 
    public:
-     virtual Val_domain get_X() const ;
-     virtual Val_domain get_T() const ;
+     virtual const Val_domain & get_X() const ;
+     virtual const Val_domain & get_T() const ;
      
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point& xxx) const ;

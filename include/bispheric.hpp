@@ -200,8 +200,8 @@ class Domain_bispheric_rect : public Domain {
     void do_for_der() const ;
 
   public:    
-   virtual Val_domain get_chi() const ;
-   virtual Val_domain get_eta() const ; 
+   virtual const Val_domain & get_chi() const ;
+   virtual const Val_domain & get_eta() const ;
 
   private:
    /**
@@ -623,8 +623,8 @@ class Domain_bispheric_chi_first : public Domain {
     void do_for_der() const ;
 
   public: 
-   virtual Val_domain get_chi() const ;
-   virtual Val_domain get_eta() const ;
+   virtual const Val_domain & get_chi() const ;
+   virtual const Val_domain & get_eta() const ;
 
    private:
    /**
@@ -1032,8 +1032,8 @@ class Domain_bispheric_eta_first : public Domain {
     void do_for_der() const ;
 
   public: 
-   virtual Val_domain get_chi() const ;
-   virtual Val_domain get_eta() const ;
+   virtual const Val_domain & get_chi() const ;
+   virtual const Val_domain & get_eta() const ;
   
   private:
    /**

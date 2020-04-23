@@ -192,13 +192,13 @@ void Domain_bispheric_chi_first::do_phi() const {
 	while (index.inc()) ;
 }
 
-Val_domain Domain_bispheric_chi_first::get_chi() const {
+const Val_domain & Domain_bispheric_chi_first::get_chi() const {
 	if (p_chi==nullptr)
 		do_chi() ;
 	return *p_chi ;
 }
 
-Val_domain Domain_bispheric_chi_first::get_eta() const {
+const Val_domain & Domain_bispheric_chi_first::get_eta() const {
 	if (p_eta==nullptr)
 		do_eta() ;
 	return *p_eta ;
