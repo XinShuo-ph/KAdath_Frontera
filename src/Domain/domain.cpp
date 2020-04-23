@@ -18,74 +18,52 @@
 */
 
 #include "Kadath_point_h/kadath.hpp"
+
+//num_dom
+//        ndim
+//nbr_points
+//        nbr_coefs
+//type_base
+//        coloc
+//absol
+//        cart
+//radius
+//        cart_surr
 namespace Kadath {
-// standard constructor
-Domain::Domain (int num, int ttype, const Dim_array& res) : num_dom(num), ndim(res.get_ndim()), nbr_points(res), nbr_coefs(ndim),type_base(ttype) {
-	
-	for (int i=0 ; i<ndim ; i++)
-		nbr_coefs.set(i) = 0 ;
-	coloc = new Array<double>* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		coloc[i] = nullptr ;	
-	absol = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		absol[i] = nullptr ;
-	cart = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		cart[i] = nullptr ;
-	cart_surr = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		cart_surr[i] = nullptr ;
-	radius = nullptr ;
-}
+
 
 // Constructor by copy
-Domain::Domain (const Domain& so) : num_dom (so.num_dom), ndim(so.ndim), nbr_points(so.nbr_points), nbr_coefs(so.nbr_coefs),
-		type_base(so.type_base)  {
-	coloc = new Array<double>* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		coloc[i] = (so.coloc[i] == nullptr) ? nullptr : new Array<double>(*so.coloc[i]) ;
-	absol = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		absol[i] = (so.absol[i]==nullptr) ? nullptr : new Val_domain (*so.absol[i]) ;
-	cart = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		cart[i] = (so.cart[i]==nullptr) ? nullptr : new Val_domain (*so.cart[i]) ;
-	cart_surr = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		cart_surr[i] = (so.cart_surr[i]==nullptr) ? nullptr : new Val_domain (*so.cart_surr[i]) ;
-	radius = (so.radius==nullptr) ? nullptr : new Val_domain(*so.radius) ;
+Domain::Domain (const Domain& so) :
+        num_dom{so.num_dom}, ndim{so.ndim}, nbr_points{so.nbr_points}, nbr_coefs{so.nbr_coefs}, type_base{so.type_base},
+        coloc{ndim,do_not_initialize}, absol{ndim,do_not_initialize}, cart{ndim,do_not_initialize},
+        radius{so.radius ? new Val_domain{*so.radius} : nullptr}, cart_surr{ndim,do_not_initialize}
+{
+	for (int i=0 ; i<ndim ; i++) coloc[i] = (so.coloc[i] ? new Array<double>{*so.coloc[i]} : nullptr) ;
+	for (int i=0 ; i<ndim ; i++) absol[i] = (so.absol[i] ? new Val_domain{*so.absol[i]} : nullptr) ;
+	for (int i=0 ; i<ndim ; i++) cart[i] = (so.cart[i] ? new Val_domain{*so.cart[i]} : nullptr) ;
+	for (int i=0 ; i<ndim ; i++) cart_surr[i] = (so.cart_surr[i] ? new Val_domain {*so.cart_surr[i]} : nullptr) ;
 }
 
 
-Domain::Domain (int num, FILE* fd) : num_dom(num), nbr_points(fd), nbr_coefs(fd) {
+Domain::Domain (int num, FILE* fd) :
+    num_dom(num), ndim{}, nbr_points(fd), nbr_coefs(fd), type_base{}, coloc{}, absol{}, cart{}, radius{nullptr},
+    cart_surr{}
+{
 	fread_be (&ndim, sizeof(int), 1, fd) ;
 	fread_be (&type_base, sizeof(int), 1, fd) ;
 	assert (ndim==nbr_points.get_ndim()) ;
 	assert (ndim==nbr_coefs.get_ndim()) ;
-	coloc = new Array<double>* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		coloc[i] = nullptr ;	
-	absol = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		absol[i] = nullptr ;
-	cart = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		cart[i] = nullptr ;
-	cart_surr = new Val_domain* [ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-		cart_surr[i] = nullptr ;
-	radius = nullptr ;
+	coloc.resize(ndim) ;
+	for (auto & x : coloc) x = nullptr;
+	absol.resize(ndim) ;
+	for (auto & x : absol) x = nullptr ;
+	cart.resize(ndim) ;
+	for (auto & x : cart) x = nullptr ;
+	cart_surr.resize(ndim) ;
+	for (auto & x : cart_surr) x = nullptr ;
 }
 
-// Destructor
-Domain::~Domain() {
-	del_deriv() ;
-	delete [] absol ;
-	delete [] cart ;
-	delete [] coloc ;
-	delete [] cart_surr ;
-}
+
 
 void Domain::save (FILE* fd) const {
 	nbr_points.save(fd) ;

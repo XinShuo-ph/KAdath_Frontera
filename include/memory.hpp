@@ -144,13 +144,20 @@ namespace Kadath {
         }
     };
 
+    struct Initialize {};
+    static constexpr Initialize initialize{};
+    struct Do_not_initialize {};
+    static constexpr Do_not_initialize do_not_initialize{};
+    template<typename T> struct Default_initializer {
+        static constexpr T value {};
+    };
+    template<typename T> struct Default_initializer<T*> {
+        static constexpr T * value {nullptr};
+    };
+
 
     template<typename T,typename S=int> class Memory_mapped_array : public Memory_mapped {
     public:
-        struct Initialize {};
-        static constexpr Initialize initialize{};
-        struct Do_not_initialize {};
-        static constexpr Do_not_initialize do_not_initialize{};
         using value_type = T;
         using value_read_only_type = typename std::conditional< (sizeof(T)<sizeof(T*)),T,T const &>::type;
         using size_type = S;
@@ -214,7 +221,7 @@ namespace Kadath {
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(size_type const _size,Initialize const)
     : size{_size}, data{Memory_mapper::get_memory<T>(static_cast<std::size_t>(size))}
     {
-        for(auto & x:(*this)) x = T{};
+        for(auto & x:(*this)) x = Default_initializer<T>::value;
     }
 
     template<typename T,typename S> inline Memory_mapped_array<T,S>::Memory_mapped_array(Memory_mapped_array const & source)
