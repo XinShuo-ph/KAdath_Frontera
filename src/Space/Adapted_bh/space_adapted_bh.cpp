@@ -66,8 +66,8 @@ Space_adapted_bh::Space_adapted_bh (FILE* fd) {
 }
 
 Space_adapted_bh::~Space_adapted_bh() {
-  const Domain_shell_inner_adapted* pshell_inner = dynamic_cast<const Domain_shell_inner_adapted*> (domains[0]) ;
-  pshell_inner->del_deriv() ;
+    Domain_shell_inner_adapted* pshell_inner = dynamic_cast<Domain_shell_inner_adapted*> (domains[0]) ;
+    pshell_inner->del_deriv() ;
 }
 
 void Space_adapted_bh::save (FILE* fd) const  {

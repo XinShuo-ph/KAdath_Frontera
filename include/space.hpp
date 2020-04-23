@@ -89,14 +89,14 @@ namespace Kadath  {
         //! Returns the index of the curent domain.
         int get_num() const {return num_dom ;}
         //! Returns the number of points.
-        Dim_array get_nbr_points() const {return nbr_points ;}
+        Dim_array const & get_nbr_points() const {return nbr_points ;}
         //! Returns the number of coefficients.
-        Dim_array get_nbr_coefs() const {return nbr_coefs ;}
+        Dim_array const & get_nbr_coefs() const {return nbr_coefs ;}
         //! Returns the number of dimensions.
         int get_ndim() const {return ndim; }
         //! Returns the type of the basis.
         int get_type_base() const {return type_base ;}
-        Array<double> get_coloc (int) const ; ///< Returns the colocation points for a given variable.
+        Array<double> const & get_coloc (int) const ; ///< Returns the colocation points for a given variable.
         virtual Point get_center() const ; ///< Returns the center.
         virtual Val_domain get_chi() const ; ///< Returns the variable \f$ \chi \f$.
         virtual Val_domain get_eta() const ; ///< Returns the variable \f$ \eta \f$.
@@ -104,32 +104,33 @@ namespace Kadath  {
         virtual Val_domain get_T() const ; ///< Returns the variable \f$ T \f$.
 
     public:
-        Val_domain get_absol(int i) const ; ///<Returns the absolute coordinates
-        Val_domain get_radius() const ; ///< Returns the generalized radius.
+        Val_domain const & get_absol(int i) const ; ///<Returns the absolute coordinates
+        Val_domain const & get_radius() const ; ///< Returns the generalized radius.
         /**
         * Returns a Cartesian coordinates.
         * @param i [input] : composant (\f$ 0 \leq i < \f$ \c ndim).
         */
-        Val_domain get_cart(int i) const ;
+        Val_domain const & get_cart(int i) const ;
         /**
         * Returns a Cartesian coordinates divided by the radius
         * @param i [input] : composant (\f$ 0 \leq i < \f$ \c ndim).
         */
-        Val_domain get_cart_surr(int i) const ;
+        Val_domain const & get_cart_surr(int i) const ;
 
     protected:
         /**
         * Destroys the derivated members (like \c coloc, \c cart and \c radius),
         * when changing the type of colocation points.
         */
-        virtual void del_deriv() const ;
+        virtual void del_deriv() ;
         virtual void do_radius () const ; ///< Computes the generalized radius.
         virtual void do_cart () const ; ///< Computes the Cartesian coordinates.
         virtual void do_cart_surr () const ; ///< Computes the Cartesian coordinates over the radius
         virtual void do_absol() const ; ///< Computes the absolute coordinates
 
     public:
-         void operator= (const Domain&) ; ///< Assignement operator.
+         void operator= (const Domain&) = delete;
+         Domain& operator=(Domain &&) noexcept;
 
     private:
         /**
@@ -1429,5 +1430,56 @@ namespace Kadath  {
     {
         so.radius = nullptr;
     }
+
+    inline Domain & Domain::operator=(Domain && so) noexcept {
+        num_dom = so.num_dom;
+        ndim = so.ndim;
+        nbr_points = std::move(so.nbr_points);
+        nbr_coefs = std::move(so.nbr_coefs);
+        type_base = so.type_base;
+        coloc = std::move(so.coloc);
+        absol = std::move(so.absol);
+        cart = std::move(so.cart);
+        std::swap(radius,so.radius);
+        cart_surr = std::move(so.cart_surr);
+        return *this;
+    }
+
+// Returns absolute coordinates
+    inline Val_domain const & Domain::get_absol(int i) const {
+        assert ((i>0) && (i<=ndim)) ;
+        if (absol[i-1]== nullptr)
+            do_absol() ;
+        return *absol[i-1] ;
+    }
+
+// Returns the generalized radius
+    inline Val_domain const & Domain::get_radius() const {
+        if (radius == nullptr)
+            do_radius() ;
+        return *radius ;
+    }
+// Returns cartesian coordinate
+    inline Val_domain const & Domain::get_cart(int i) const {
+        assert ((i>0) && (i<=ndim)) ;
+        if (cart[i-1]== nullptr)
+            do_cart() ;
+        return *cart[i-1] ;
+    }
+
+// Returns cartesian coordinate over radius
+    inline Val_domain const & Domain::get_cart_surr(int i) const {
+        assert ((i>0) && (i<=ndim)) ;
+        if (cart_surr[i-1]== nullptr)
+            do_cart_surr() ;
+        return *cart_surr[i-1] ;
+    }
+
+    inline Array<double> const & Domain::get_coloc (int i) const {
+        assert ((i>0) && (i<=ndim)) ;
+        assert (coloc[i-1] !=nullptr) ;
+        return *coloc[i-1] ;
+    }
+
 }
 #endif

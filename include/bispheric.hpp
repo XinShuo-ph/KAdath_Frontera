@@ -187,7 +187,7 @@ class Domain_bispheric_rect : public Domain {
     virtual void do_absol ()  const ;
     virtual void do_radius () const ;
     virtual void do_cart () const ; 
-    virtual void del_deriv() const ; 
+    void del_deriv() override;
     void do_eta() const ; ///< Computes \f$ \eta \f$ in \c *p_eta
     void do_chi() const ; ///< Computes \f$ \chi \f$ in \c *p_chi
     void do_phi() const ; ///< Computes \f$ \varphi \f$ in \c *p_phi    
@@ -606,7 +606,7 @@ class Domain_bispheric_chi_first : public Domain {
     virtual void do_absol ()  const ;
     virtual void do_radius () const ;   
     virtual void do_cart () const ; 
-    virtual void del_deriv() const ;
+    void del_deriv() override;
     /**
      * Computes \f$ f(\chi) \f$ and its first derivative stored respectively in 
      * \f$ *p_bound_eta \f$ and \f$ *_bound_eta_der \f$.
@@ -1016,7 +1016,7 @@ class Domain_bispheric_eta_first : public Domain {
     virtual void do_absol ()  const ;
     virtual void do_radius () const ;  
     virtual void do_cart () const ;
-    virtual void del_deriv() const ;
+    void del_deriv() override;
     /**
      * Computes \f$ g(\eta) \f$ and its first derivative stored respectively in 
      * \f$ *p_bound_chi \f$ and \f$ *_bound_chi_der \f$.

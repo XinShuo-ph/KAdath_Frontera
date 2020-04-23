@@ -76,10 +76,10 @@ Space_spheric_adapted::Space_spheric_adapted (FILE* fd) {
 }
 
 Space_spheric_adapted::~Space_spheric_adapted() {
-  const Domain_shell_outer_adapted* pshell_outer = dynamic_cast<const Domain_shell_outer_adapted*> (domains[1]) ;
-  pshell_outer->del_deriv() ;
-  const Domain_shell_inner_adapted* pshell_inner = dynamic_cast<const Domain_shell_inner_adapted*> (domains[2]) ;
-  pshell_inner->del_deriv() ;
+    Domain_shell_outer_adapted* pshell_outer = dynamic_cast<Domain_shell_outer_adapted*> (domains[1]) ;
+    pshell_outer->del_deriv() ;
+    Domain_shell_inner_adapted* pshell_inner = dynamic_cast<Domain_shell_inner_adapted*> (domains[2]) ;
+    pshell_inner->del_deriv() ;
 }
 
 void Space_spheric_adapted::save (FILE* fd) const  {

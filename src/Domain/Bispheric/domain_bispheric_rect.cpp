@@ -26,8 +26,8 @@
 #include "val_domain.hpp"
 namespace Kadath {
 // standard constructor
-Domain_bispheric_rect::Domain_bispheric_rect (int num, int ttype, double a, double rr, double etamin, double etapl, double chimin, const Dim_array& nbr) :  Domain(num, ttype, nbr), aa(a), r_ext(rr), eta_minus(etamin), eta_plus(etapl), chi_min(chimin), p_eta(0x0), p_chi(0x0), p_phi(0x0),
-p_detadx(0x0), p_detady(0x0), p_detadz(0x0), p_dchidx(0x0), p_dchidy(0x0), p_dchidz(0x0), p_dphidy(0x0), p_dphidz(0x0), p_dsint(0x0) {
+Domain_bispheric_rect::Domain_bispheric_rect (int num, int ttype, double a, double rr, double etamin, double etapl, double chimin, const Dim_array& nbr) :  Domain(num, ttype, nbr), aa(a), r_ext(rr), eta_minus(etamin), eta_plus(etapl), chi_min(chimin), p_eta(nullptr), p_chi(nullptr), p_phi(nullptr),
+p_detadx(nullptr), p_detady(nullptr), p_detadz(nullptr), p_dchidx(nullptr), p_dchidy(nullptr), p_dchidz(nullptr), p_dphidy(nullptr), p_dphidz(nullptr), p_dsint(nullptr) {
 
      assert (nbr.get_ndim()==3) ;
      do_coloc() ;
@@ -36,18 +36,18 @@ p_detadx(0x0), p_detady(0x0), p_detadz(0x0), p_dchidx(0x0), p_dchidy(0x0), p_dch
 // Copy constructor
 Domain_bispheric_rect::Domain_bispheric_rect (const Domain_bispheric_rect& so) : Domain(so), aa(so.aa), 
 		eta_minus(so.eta_minus), eta_plus(so.eta_plus), chi_min(so.chi_min) {
-	p_eta = (so.p_eta!=0x0) ? new Val_domain(*so.p_eta) : 0x0 ;
-	p_chi = (so.p_chi!=0x0) ? new Val_domain(*so.p_chi) : 0x0 ;
-	p_phi = (so.p_phi!=0x0) ? new Val_domain(*so.p_phi) : 0x0 ;
-	p_detadx = (so.p_detadx!=0x0) ? new Val_domain(*so.p_detadx) : 0x0 ;
-	p_detady = (so.p_detady!=0x0) ? new Val_domain(*so.p_detady) : 0x0 ;
-	p_detadz = (so.p_detadz!=0x0) ? new Val_domain(*so.p_detadz) : 0x0 ;
-	p_dchidx = (so.p_dchidx!=0x0) ? new Val_domain(*so.p_dchidx) : 0x0 ;
-	p_dchidy = (so.p_dchidy!=0x0) ? new Val_domain(*so.p_dchidy) : 0x0 ;
-	p_dchidz = (so.p_dchidz!=0x0) ? new Val_domain(*so.p_dchidz) : 0x0 ;
-	p_dphidy = (so.p_dphidy!=0x0) ? new Val_domain(*so.p_dphidy) : 0x0 ;
-        p_dphidz = (so.p_dphidz!=0x0) ? new Val_domain(*so.p_dphidz) : 0x0 ;  
-	p_dsint = (so.p_dsint!=0x0) ? new Val_domain(*so.p_dsint) : 0x0 ;
+	p_eta = (so.p_eta!=nullptr) ? new Val_domain(*so.p_eta) : nullptr ;
+	p_chi = (so.p_chi!=nullptr) ? new Val_domain(*so.p_chi) : nullptr ;
+	p_phi = (so.p_phi!=nullptr) ? new Val_domain(*so.p_phi) : nullptr ;
+	p_detadx = (so.p_detadx!=nullptr) ? new Val_domain(*so.p_detadx) : nullptr ;
+	p_detady = (so.p_detady!=nullptr) ? new Val_domain(*so.p_detady) : nullptr ;
+	p_detadz = (so.p_detadz!=nullptr) ? new Val_domain(*so.p_detadz) : nullptr ;
+	p_dchidx = (so.p_dchidx!=nullptr) ? new Val_domain(*so.p_dchidx) : nullptr ;
+	p_dchidy = (so.p_dchidy!=nullptr) ? new Val_domain(*so.p_dchidy) : nullptr ;
+	p_dchidz = (so.p_dchidz!=nullptr) ? new Val_domain(*so.p_dchidz) : nullptr ;
+	p_dphidy = (so.p_dphidy!=nullptr) ? new Val_domain(*so.p_dphidy) : nullptr ;
+        p_dphidz = (so.p_dphidz!=nullptr) ? new Val_domain(*so.p_dphidz) : nullptr ;  
+	p_dsint = (so.p_dsint!=nullptr) ? new Val_domain(*so.p_dsint) : nullptr ;
 }
 
 Domain_bispheric_rect::Domain_bispheric_rect (int num, FILE* fd) : Domain(num, fd) {
@@ -56,18 +56,18 @@ Domain_bispheric_rect::Domain_bispheric_rect (int num, FILE* fd) : Domain(num, f
 	fread_be (&eta_plus, sizeof(double), 1, fd) ;
 	fread_be (&chi_min, sizeof(double), 1, fd) ;
 
-	p_eta = 0x0 ;
-	p_chi = 0x0 ;
-	p_phi = 0x0 ;
-	p_detadx = 0x0 ;
-	p_detady = 0x0 ;
-	p_detadz = 0x0 ;
-	p_dchidx = 0x0 ;
-	p_dchidy = 0x0 ;
-	p_dchidz = 0x0 ;
-	p_dphidy = 0x0 ;
-	p_dphidz = 0x0 ;
-	p_dsint = 0x0 ;
+	p_eta = nullptr ;
+	p_chi = nullptr ;
+	p_phi = nullptr ;
+	p_detadx = nullptr ;
+	p_detady = nullptr ;
+	p_detadz = nullptr ;
+	p_dchidx = nullptr ;
+	p_dchidy = nullptr ;
+	p_dchidz = nullptr ;
+	p_dphidy = nullptr ;
+	p_dphidz = nullptr ;
+	p_dsint = nullptr ;
 	do_coloc() ;
 }
 
@@ -88,53 +88,24 @@ void Domain_bispheric_rect::save (FILE* fd) const {
 }
 
 // Deletes the derived members
-void Domain_bispheric_rect::del_deriv() const  {
+void Domain_bispheric_rect::del_deriv() {
 	for (int l=0 ; l<ndim ; l++) {
-		if (coloc[l] !=0x0) delete coloc[l] ;
-		if (cart[l] !=0x0) delete cart[l] ;
-		coloc[l] = 0x0 ;
-		cart[l] = 0x0 ;
+		safe_delete(coloc[l]);
+		safe_delete(cart[l]);
 	}
-	
-	if (radius !=0x0)
-	    delete radius ;
-	radius = 0x0 ;
-	if (p_eta !=0x0)
-	    delete p_eta ;
-	p_eta = 0x0 ;
-	if (p_chi !=0x0)
-	    delete p_chi ;
-	p_chi = 0x0 ;
-	if (p_phi !=0x0)
-	    delete p_phi ;
-	p_phi = 0x0 ;
-	if (p_detadx !=0x0)
-	    delete p_detadx ;
-	p_detadx = 0x0 ;
-	if (p_detady !=0x0)
-	    delete p_detady ;
-	p_detady = 0x0 ;
-	if (p_detadz !=0x0)
-	    delete p_detadz ;
-	p_detadz = 0x0 ;
-	if (p_dchidx !=0x0)
-	    delete p_dchidx ;
-	p_dchidx = 0x0 ;
-	if (p_dchidy !=0x0)
-	    delete p_dchidy ;
-	p_dchidy = 0x0 ;
-        if (p_dchidz !=0x0)
-	    delete p_dchidz ;
-	p_dchidz = 0x0 ;
-	if (p_dphidy !=0x0)
-	    delete p_dphidy ;
-	p_dphidy = 0x0 ;
-	if (p_dphidz !=0x0)
-	    delete p_dphidz ;
-	p_dphidz = 0x0 ;	
-	if (p_dsint !=0x0)
-	    delete p_dsint ;
-	p_dsint = 0x0 ;
+	safe_delete(radius);
+	safe_delete(p_eta);
+	safe_delete(p_chi);
+	safe_delete(p_phi);
+	safe_delete(p_detadx);
+	safe_delete(p_detady);
+	safe_delete(p_detadz);
+	safe_delete(p_dchidx);
+	safe_delete(p_dchidy);
+    safe_delete(p_dchidz);
+	safe_delete(p_dphidy);
+	safe_delete(p_dphidz);
+	safe_delete(p_dsint);
 }
 
 // Display
@@ -152,8 +123,8 @@ ostream& operator<< (ostream& o, const Domain_bispheric_rect& so) {
 // Computes eta from eta star
 void Domain_bispheric_rect::do_eta() const {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
-	assert (p_eta==0x0) ;
+	   assert (coloc[i] != nullptr) ;
+	assert (p_eta==nullptr) ;
 	p_eta= new Val_domain(this) ;
 	p_eta->allocate_conf() ;
 	Index index (nbr_points) ;
@@ -165,8 +136,8 @@ void Domain_bispheric_rect::do_eta() const {
 // Computes chi from chi star
 void Domain_bispheric_rect::do_chi() const {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
-	assert (p_chi==0x0) ;
+	   assert (coloc[i] != nullptr) ;
+	assert (p_chi==nullptr) ;
 	p_chi= new Val_domain(this) ;
 	p_chi->allocate_conf() ;
 	Index index (nbr_points) ;
@@ -178,8 +149,8 @@ void Domain_bispheric_rect::do_chi() const {
 // Computes phi from phi star
 void Domain_bispheric_rect::do_phi() const {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
-	assert (p_phi==0x0) ;
+	   assert (coloc[i] != nullptr) ;
+	assert (p_phi==nullptr) ;
 	p_phi= new Val_domain(this) ;
 	p_phi->allocate_conf() ;
 	Index index (nbr_points) ;
@@ -189,32 +160,32 @@ void Domain_bispheric_rect::do_phi() const {
 }
 
 Val_domain Domain_bispheric_rect::get_chi() const {
-	if (p_chi==0x0)
+	if (p_chi==nullptr)
 		do_chi() ;
 	return *p_chi ;
 }
 
 Val_domain Domain_bispheric_rect::get_eta() const {
-	if (p_eta==0x0)
+	if (p_eta==nullptr)
 		do_eta() ;
 	return *p_eta ;
 }
 
 void Domain_bispheric_rect::do_absol () const  {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
+	   assert (coloc[i] != nullptr) ;
 	for (int i=0 ; i<3 ; i++)
-	   assert (absol[i] == 0x0) ;
+	   assert (absol[i] == nullptr) ;
 	for (int i=0 ; i<3 ; i++) {
 	   absol[i] = new Val_domain(this) ;
 	   absol[i]->allocate_conf() ;
 	   }
 
-	if (p_eta==0x0)
+	if (p_eta==nullptr)
 		do_eta() ;
-	if (p_chi==0x0)
+	if (p_chi==nullptr)
 		do_chi() ;
-	if (p_phi==0x0)
+	if (p_phi==nullptr)
 		do_phi() ;
 	
 	Index index (nbr_points) ;
@@ -239,27 +210,27 @@ void Domain_bispheric_rect::do_absol () const  {
 void Domain_bispheric_rect::do_radius () const  {
 
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
-	assert (radius == 0x0) ;
+	   assert (coloc[i] != nullptr) ;
+	assert (radius == nullptr) ;
 	radius = new Val_domain(sqrt (get_cart(1)*get_cart(1)+get_cart(2)*get_cart(2)+get_cart(3)*get_cart(3))) ;
 }
 
 // Computes the Cartesian coordinates
 void Domain_bispheric_rect::do_cart () const  {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
+	   assert (coloc[i] != nullptr) ;
 	for (int i=0 ; i<3 ; i++)
-	   assert (cart[i] == 0x0) ;
+	   assert (cart[i] == nullptr) ;
 	for (int i=0 ; i<3 ; i++) {
 	   cart[i] = new Val_domain(this) ;
 	   cart[i]->allocate_conf() ;
 	   }
 
-	if (p_eta==0x0)
+	if (p_eta==nullptr)
 		do_eta() ;
-	if (p_chi==0x0)
+	if (p_chi==nullptr)
 		do_chi() ;
-	if (p_phi==0x0)
+	if (p_phi==nullptr)
 		do_phi() ;
 	
 	Index index (nbr_points) ;
@@ -288,7 +259,7 @@ void Domain_bispheric_rect::do_dsint () const {
 	Val_domain xx (this) ;
 	xx = (xc<0) ? get_cart(1)-xc : xc-get_cart(1) ;
 	
-	assert (p_dsint==0x0) ;
+	assert (p_dsint==nullptr) ;
 	p_dsint = new Val_domain ((0.5*rho2.der_var(2)*xx - xx.der_var(2)*rho2)/rr) ;
 }
 
@@ -543,9 +514,9 @@ void Domain_bispheric_rect::set_anti_legendre_base(Base_spectral& base) const {
 // Computes the partial derivatives of the numerical coordinates with respect to the Cartesian ones.
 void Domain_bispheric_rect::do_for_der() const {
 
-	if (cart[0]==0x0)
+	if (cart[0]==nullptr)
 		do_cart() ;
-	if (radius==0x0)
+	if (radius==nullptr)
 		do_radius() ;
 
 	// Partial derivatives of eta 
@@ -582,7 +553,7 @@ void Domain_bispheric_rect::do_for_der() const {
 
 // Computes the derivatives with respect to the absolute coordinates with respect to the numerical ones.
 void Domain_bispheric_rect::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
-	if (p_detadx==0x0)
+	if (p_detadx==nullptr)
 		do_for_der() ;
 
 	// d/dx :
@@ -748,9 +719,9 @@ Base_spectral Domain_bispheric_rect::mult (const Base_spectral& a, const Base_sp
 		
 	if (!res_def) 
 		for (int dim=0 ; dim<a.ndim ; dim++)
-			if (res.bases_1d[dim]!= 0x0) {
+			if (res.bases_1d[dim]!= nullptr) {
 				delete res.bases_1d[dim] ;
-				res.bases_1d[dim] = 0x0 ;
+				res.bases_1d[dim] = nullptr ;
 				}
 	res.def = res_def ;
 	return res ;
@@ -797,7 +768,7 @@ double Domain_bispheric_rect::integ (const Val_domain& so, int bound) const {
 	else {
 		
 		// Multiply by the surface element :
-		if (p_dsint==0x0)
+		if (p_dsint==nullptr)
 			do_dsint() ;
 
 		Val_domain auxi (so*(*p_dsint)) ;

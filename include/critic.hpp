@@ -67,7 +67,7 @@ class Domain_critic_inner : public Domain {
   Domain_critic_inner (int num, FILE* ff) ;
 
   virtual ~Domain_critic_inner() ;
-  virtual void del_deriv() const ;
+  void del_deriv() override;
   virtual void save (FILE*) const ;
    
   private : 
@@ -218,7 +218,7 @@ class Domain_critic_outer : public Domain {
   Domain_critic_outer (int num, FILE* ff) ;
 
   virtual ~Domain_critic_outer() ;   
-  virtual void del_deriv() const ;
+  void del_deriv() override;
   virtual void save (FILE*) const ;
    
   private : 

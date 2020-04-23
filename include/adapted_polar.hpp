@@ -118,7 +118,7 @@ class Domain_polar_shell_inner_adapted : public Domain {
     * Returns the inner variable boundary.
     */
   Val_domain get_inner_radius() const {return *inner_radius;} ;
-  virtual void del_deriv() const ;
+  void del_deriv() override;
   
   private: 
     virtual void do_absol ()  const ;
@@ -391,7 +391,7 @@ class Domain_polar_shell_outer_adapted : public Domain {
 
   virtual ~Domain_polar_shell_outer_adapted () ; 
   
-  virtual void del_deriv() const ;
+  void del_deriv() override;
   
   virtual void save (FILE*) const ;
  /**

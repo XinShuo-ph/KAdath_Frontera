@@ -72,62 +72,16 @@ void Domain::save (FILE* fd) const {
 	fwrite_be (&type_base, sizeof(int), 1, fd) ;
 }
 
-// assignement operator : not implemented
-void Domain::operator= (const Domain&) {
-	cerr << "Domain::operator= not implemented..." << endl ;
-	abort() ;
-}
 
 // destructor of the derived quantities
-void Domain::del_deriv() const  {
+void Domain::del_deriv()  {
 	for (int l=0 ; l<ndim ; l++) {
-		if (coloc[l] !=nullptr) delete coloc[l] ;
-		if (absol[l] !=nullptr) delete absol[l] ;
-		if (cart[l] !=nullptr) delete cart[l] ;
-		if (cart_surr[l] !=nullptr) delete cart_surr[l] ;
-		coloc[l] = nullptr ;
-		absol[l] = nullptr ;
-		cart_surr[l] = nullptr ;
-		cart[l]=  nullptr ;
+	    safe_delete(coloc[l]);
+	    safe_delete(absol[l]);
+        safe_delete(cart[l]);
+        safe_delete(cart_surr[l]);
 	}
-	if (radius !=nullptr)
-	    delete radius ;
-	radius = nullptr ;
-}
-// Returns absolute coordinates
-Val_domain Domain::get_absol(int i) const {
-	assert ((i>0) && (i<=ndim)) ;
-	if (absol[i-1]== nullptr)
-	    do_absol() ;
-	return *absol[i-1] ;
-}
-
-// Returns the generalized radius
-Val_domain Domain::get_radius() const {
-	if (radius == nullptr)
-	    do_radius() ;
-	return *radius ;
-}
-// Returns cartesian coordinate
-Val_domain Domain::get_cart(int i) const {
-	assert ((i>0) && (i<=ndim)) ;
-	if (cart[i-1]== nullptr)
-	    do_cart() ;
-	return *cart[i-1] ;
-}
-
-// Returns cartesian coordinate over radius
-Val_domain Domain::get_cart_surr(int i) const {
-	assert ((i>0) && (i<=ndim)) ;
-	if (cart_surr[i-1]== nullptr)
-	    do_cart_surr() ;
-	return *cart_surr[i-1] ;
-}
-
-Array<double> Domain::get_coloc (int i) const {
-	assert ((i>0) && (i<=ndim)) ;
-	assert (coloc[i-1] !=nullptr) ;
-	return *coloc[i-1] ;
+	safe_delete(radius);
 }
 
 Val_domain Domain::laplacian (const Val_domain& so, int m) const {

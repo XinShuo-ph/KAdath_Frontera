@@ -25,23 +25,23 @@
 #include "val_domain.hpp"
 namespace Kadath {
 // Standard constructor
-Domain_critic_outer::Domain_critic_outer (int num, int ttype, const Dim_array& nbr, double xx) : Domain(num, ttype, nbr), p_X(0x0), p_T(0x0), xlim(xx) {
+Domain_critic_outer::Domain_critic_outer (int num, int ttype, const Dim_array& nbr, double xx) : Domain(num, ttype, nbr), p_X(nullptr), p_T(nullptr), xlim(xx) {
      do_coloc() ;
 }
 
 
 // Constructor by copy
 Domain_critic_outer::Domain_critic_outer (const Domain_critic_outer& so) : Domain(so) {
-  p_X = (so.p_X!=0x0) ? new Val_domain(*so.p_X) : 0x0 ;
-  p_T = (so.p_T!=0x0) ? new Val_domain(*so.p_T) : 0x0 ;
+  p_X = (so.p_X!=nullptr) ? new Val_domain(*so.p_X) : nullptr ;
+  p_T = (so.p_T!=nullptr) ? new Val_domain(*so.p_T) : nullptr ;
   xlim = so.xlim ;
 }
 
 
 Domain_critic_outer::Domain_critic_outer (int num, FILE* fd) : Domain(num, fd) {
 	do_coloc() ;
-	p_X = 0x0 ;
-	p_T = 0x0 ;
+	p_X = nullptr ;
+	p_T = nullptr ;
 	fread_be (&xlim, sizeof(double), 1, fd) ;
 }
 
@@ -50,15 +50,10 @@ Domain_critic_outer::~Domain_critic_outer() {
     del_deriv() ;
 }
 
-void Domain_critic_outer::del_deriv() const {
-      for (int l=0 ; l<ndim ; l++) {
-		if (coloc[l] !=0x0) delete coloc[l] ;
-		coloc[l] = 0x0 ;
-	}
-	  if (p_X!=0x0)
-	    delete p_X ;
-	  if (p_T!=0x0)
-	    delete p_T ;
+void Domain_critic_outer::del_deriv() {
+    for (int l=0 ; l<ndim ; l++) safe_delete(coloc[l]);
+    safe_delete(p_X);
+    safe_delete(p_T);
 }
 
 void Domain_critic_outer::save (FILE* fd) const {
@@ -111,8 +106,8 @@ void Domain_critic_outer::do_coloc () {
 
 void Domain_critic_outer::do_X() const {
 	for (int i=0 ; i<2 ; i++)
-	   assert (coloc[i] != 0x0) ;
-	assert (p_X==0x0) ;
+	   assert (coloc[i] != nullptr) ;
+	assert (p_X==nullptr) ;
 	p_X= new Val_domain(this) ;
 	p_X->allocate_conf() ;
 	Index index (nbr_points) ;
@@ -123,8 +118,8 @@ void Domain_critic_outer::do_X() const {
 
 void Domain_critic_outer::do_T() const {
 	for (int i=0 ; i<2 ; i++)
-	   assert (coloc[i] != 0x0) ;
-	assert (p_T==0x0) ;
+	   assert (coloc[i] != nullptr) ;
+	assert (p_T==nullptr) ;
 	p_T= new Val_domain(this) ;
 	p_T->allocate_conf() ;
 	Index index (nbr_points) ;
@@ -136,13 +131,13 @@ void Domain_critic_outer::do_T() const {
 
 
 Val_domain Domain_critic_outer::get_X() const {
-  if (p_X==0x0)
+  if (p_X==nullptr)
 		do_X() ;
 	return *p_X ;
 }
 
 Val_domain Domain_critic_outer::get_T() const {
-  if (p_T==0x0)
+  if (p_T==nullptr)
 		do_T() ;
 	return *p_T ;
 }
@@ -160,9 +155,9 @@ bool Domain_critic_outer::is_in (const Point& xx, double prec) const {
 
 void Domain_critic_outer::do_absol () const  {
 	for (int i=0 ; i<2 ; i++)
-	   assert (coloc[i] != 0x0) ;
+	   assert (coloc[i] != nullptr) ;
 	for (int i=0 ; i<2 ; i++)
-	   assert (absol[i] == 0x0) ;
+	   assert (absol[i] == nullptr) ;
 	for (int i=0 ; i<2 ; i++) {
 	   absol[i] = new Val_domain(this) ;
 	   absol[i]->allocate_conf() ;
@@ -312,9 +307,9 @@ Base_spectral Domain_critic_outer::mult (const Base_spectral& a, const Base_spec
 
 	if (!res_def) 
 		for (int dim=0 ; dim<a.ndim ; dim++)
-			if (res.bases_1d[dim]!= 0x0) {
+			if (res.bases_1d[dim]!= nullptr) {
 				delete res.bases_1d[dim] ;
-				res.bases_1d[dim] = 0x0 ;
+				res.bases_1d[dim] = nullptr ;
 				}
 	res.def = res_def ;
 	return res ;

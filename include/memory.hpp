@@ -301,16 +301,24 @@ namespace Kadath {
 
     template<typename T> struct Safe_deleter {
         using pointer = T*;
+        using const_pointer = T* const;
         static inline void apply(pointer & p) {if(p) {delete p; p = nullptr;}}
         inline void operator()(pointer & p) const {apply(p);}
+        static inline void apply(const_pointer & p) {if(p) {delete p; p = nullptr;}}
+        inline void operator()(const_pointer & p) const {apply(p);}
     };
     template<typename T> struct Safe_deleter<T[]> {
         using pointer = T*;
+        using const_pointer = T* const;
         static inline void apply(pointer & p) {if(p) {delete [] p; p = nullptr;}}
         inline void operator()(pointer & p) const {apply(p);}
+        static inline void apply(const_pointer & p) {if(p) {delete [] p; p = nullptr;}}
+        inline void operator()(const_pointer & p) const {apply(p);}
     };
 
     template<typename T> inline void safe_delete(T * & p) {Safe_deleter<T>::apply(p);}
+    template<typename T> inline void safe_delete(T * const & p) {Safe_deleter<T>::apply(p);}
+
 }
 
 

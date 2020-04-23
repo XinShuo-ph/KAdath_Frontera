@@ -118,7 +118,7 @@ class Domain_shell_inner_adapted : public Domain {
   Domain_shell_inner_adapted (const Space& sp, int num, FILE* fd) ;
 
   virtual ~Domain_shell_inner_adapted () ; ///< Destructor
-  virtual void del_deriv() const ;
+  void del_deriv() override;
   virtual void save (FILE*) const ;
    /**
     * Returns the inner variable boundary.
@@ -432,7 +432,7 @@ class Domain_shell_outer_adapted : public Domain {
   Domain_shell_outer_adapted (const Space& sp, int num, FILE* fr) ;
 
   virtual ~Domain_shell_outer_adapted () ;
-  virtual void del_deriv() const ;
+  void del_deriv() override;
   virtual void save (FILE*) const ;
    /**
     * Returns the outer variable boundary.

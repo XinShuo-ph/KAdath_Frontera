@@ -37,13 +37,13 @@ Domain_shell_outer_adapted::Domain_shell_outer_adapted (const Space& sss, int nu
      assert (cr.get_ndim()==3) ;
      
     
-     outer_radius_term_eq = 0x0 ;
-     rad_term_eq = 0x0 ;
-     der_rad_term_eq = 0x0 ; 
-     dt_rad_term_eq = 0x0 ;    
-     dp_rad_term_eq = 0x0 ;
-     normal_spher = 0x0 ;
-     normal_cart = 0x0 ;
+     outer_radius_term_eq = nullptr ;
+     rad_term_eq = nullptr ;
+     der_rad_term_eq = nullptr ; 
+     dt_rad_term_eq = nullptr ;    
+     dp_rad_term_eq = nullptr ;
+     normal_spher = nullptr ;
+     normal_cart = nullptr ;
      
      do_coloc() ; 
      outer_radius = new Val_domain (this) ;
@@ -57,13 +57,13 @@ Domain_shell_outer_adapted::Domain_shell_outer_adapted (const Space& sss, int nu
      assert (cr.get_ndim()==3) ;
      
     
-     outer_radius_term_eq = 0x0 ;
-     rad_term_eq = 0x0 ;
-     der_rad_term_eq = 0x0 ; 
-     dt_rad_term_eq = 0x0 ;    
-     dp_rad_term_eq = 0x0 ;
-     normal_spher = 0x0 ;
-     normal_cart = 0x0 ;
+     outer_radius_term_eq = nullptr ;
+     rad_term_eq = nullptr ;
+     der_rad_term_eq = nullptr ; 
+     dt_rad_term_eq = nullptr ;    
+     dp_rad_term_eq = nullptr ;
+     normal_spher = nullptr ;
+     normal_cart = nullptr ;
      
      do_coloc() ; 
      outer_radius = new Val_domain(rout) ;
@@ -74,19 +74,19 @@ Domain_shell_outer_adapted::Domain_shell_outer_adapted (const Domain_shell_outer
 		  inner_radius (so.inner_radius), center(so.center) {
   
   outer_radius = new Val_domain (*so.outer_radius) ;
-  if (so.outer_radius_term_eq != 0x0)
+  if (so.outer_radius_term_eq != nullptr)
       outer_radius_term_eq = new Term_eq (*so.outer_radius_term_eq) ;
-  if (so.rad_term_eq !=0x0)
+  if (so.rad_term_eq !=nullptr)
     rad_term_eq = new Term_eq (*so.rad_term_eq) ;
-  if (so.der_rad_term_eq !=0x0)
+  if (so.der_rad_term_eq !=nullptr)
     der_rad_term_eq = new Term_eq (*so.der_rad_term_eq) ; 
-  if (so.dt_rad_term_eq !=0x0)
+  if (so.dt_rad_term_eq !=nullptr)
     dt_rad_term_eq = new Term_eq (*so.dt_rad_term_eq) ;  
-  if (so.dp_rad_term_eq !=0x0)
+  if (so.dp_rad_term_eq !=nullptr)
     dp_rad_term_eq = new Term_eq (*so.dp_rad_term_eq) ;
-  if (so.normal_spher !=0x0)
+  if (so.normal_spher !=nullptr)
     normal_spher = new Term_eq (*so.normal_spher) ;  
-  if (so.normal_cart !=0x0)
+  if (so.normal_cart !=nullptr)
     normal_cart = new Term_eq (*so.normal_cart) ;
 }
 
@@ -94,21 +94,21 @@ Domain_shell_outer_adapted::Domain_shell_outer_adapted (const Space& sss, int nu
 	fread_be (&inner_radius, sizeof(double), 1, fd) ;
         outer_radius = new Val_domain(this, fd) ;
     
-	outer_radius_term_eq = 0x0 ;
-	rad_term_eq = 0x0 ;
-	der_rad_term_eq = 0x0 ;  
-	dt_rad_term_eq = 0x0 ;    
-        dp_rad_term_eq = 0x0 ;
-	normal_spher = 0x0 ;
-	normal_cart = 0x0 ;
+	outer_radius_term_eq = nullptr ;
+	rad_term_eq = nullptr ;
+	der_rad_term_eq = nullptr ;  
+	dt_rad_term_eq = nullptr ;    
+        dp_rad_term_eq = nullptr ;
+	normal_spher = nullptr ;
+	normal_cart = nullptr ;
      
 	do_coloc() ;
 }
 
 void Domain_shell_outer_adapted::do_radius () const  {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
-	assert (radius == 0x0) ;
+	   assert (coloc[i] != nullptr) ;
+	assert (radius == nullptr) ;
 	radius = new Val_domain(this) ;
 	radius->allocate_conf() ;
 	Index index (nbr_points) ;
@@ -122,45 +122,30 @@ void Domain_shell_outer_adapted::do_radius () const  {
 Domain_shell_outer_adapted::~Domain_shell_outer_adapted() {
 
   delete outer_radius ;
-  if (outer_radius_term_eq != 0x0)
+  if (outer_radius_term_eq != nullptr)
       delete outer_radius_term_eq ;
-  if (rad_term_eq != 0x0)
+  if (rad_term_eq != nullptr)
       delete rad_term_eq ;
-  if (der_rad_term_eq != 0x0)
+  if (der_rad_term_eq != nullptr)
       delete der_rad_term_eq ;  
-  if (normal_spher != 0x0)
+  if (normal_spher != nullptr)
       delete normal_spher ;
-    if (normal_cart != 0x0)
+    if (normal_cart != nullptr)
       delete normal_cart ;
-  if (dt_rad_term_eq != 0x0)
+  if (dt_rad_term_eq != nullptr)
       delete dt_rad_term_eq ;  
-  if (dp_rad_term_eq != 0x0)
+  if (dp_rad_term_eq != nullptr)
       delete dp_rad_term_eq ;  
 }
 
-void Domain_shell_outer_adapted::del_deriv() const {
-
-  if (outer_radius_term_eq != 0x0)
-      delete outer_radius_term_eq ;
-  outer_radius_term_eq = 0x0 ;
-  if (rad_term_eq != 0x0)
-      delete rad_term_eq ; 
-  rad_term_eq = 0x0 ;
-  if (der_rad_term_eq != 0x0)
-      delete der_rad_term_eq ;
-  der_rad_term_eq = 0x0 ;
-  if (normal_spher != 0x0)
-      delete normal_spher ;
-  normal_spher = 0x0 ;
-    if (normal_cart != 0x0)
-      delete normal_cart ;
-    normal_cart = 0x0 ;
-  if (dt_rad_term_eq != 0x0)
-      delete dt_rad_term_eq ;
-  dt_rad_term_eq = 0x0 ;
-  if (dp_rad_term_eq != 0x0)
-      delete dp_rad_term_eq ;
-  dp_rad_term_eq = 0x0 ;
+void Domain_shell_outer_adapted::del_deriv() {
+    safe_delete(outer_radius_term_eq);
+    safe_delete(rad_term_eq);
+    safe_delete(der_rad_term_eq);
+    safe_delete(normal_spher);
+    safe_delete(normal_cart);
+    safe_delete(dt_rad_term_eq);
+    safe_delete(dp_rad_term_eq);
 }
 int Domain_shell_outer_adapted::nbr_unknowns_from_adapted() const {
  
@@ -178,7 +163,7 @@ int Domain_shell_outer_adapted::nbr_unknowns_from_adapted() const {
 
 void Domain_shell_outer_adapted::vars_to_terms() const {
  
-  if (outer_radius_term_eq != 0x0)
+  if (outer_radius_term_eq != nullptr)
       delete outer_radius_term_eq ;
   Scalar val (sp) ;
   val.set_domain(num_dom) = *outer_radius ;
@@ -275,16 +260,16 @@ void Domain_shell_outer_adapted::update_mapping (const Val_domain& cor) {
  
   *outer_radius += cor ;
   for (int l=0 ; l<ndim ; l++) {
-		if (absol[l] !=0x0) delete absol[l] ;
-		if (cart[l] !=0x0) delete cart[l] ;
-		if (cart_surr[l] !=0x0) delete cart_surr[l] ;
-		absol[l] = 0x0 ;
-		cart_surr[l] = 0x0 ;
-		cart[l]=  0x0 ;
+		if (absol[l] !=nullptr) delete absol[l] ;
+		if (cart[l] !=nullptr) delete cart[l] ;
+		if (cart_surr[l] !=nullptr) delete cart_surr[l] ;
+		absol[l] = nullptr ;
+		cart_surr[l] = nullptr ;
+		cart[l]=  nullptr ;
 	}
-	if (radius !=0x0)
+	if (radius !=nullptr)
 	    delete radius ;
-	radius = 0x0 ;
+	radius = nullptr ;
   update() ;
 }
 
@@ -292,16 +277,16 @@ void Domain_shell_outer_adapted::set_mapping (const Val_domain& cor) const {
  
   *outer_radius = cor ;
   for (int l=0 ; l<ndim ; l++) {
-		if (absol[l] !=0x0) delete absol[l] ;
-		if (cart[l] !=0x0) delete cart[l] ;
-		if (cart_surr[l] !=0x0) delete cart_surr[l] ;
-		absol[l] = 0x0 ;
-		cart_surr[l] = 0x0 ;
-		cart[l]=  0x0 ;
+		if (absol[l] !=nullptr) delete absol[l] ;
+		if (cart[l] !=nullptr) delete cart[l] ;
+		if (cart_surr[l] !=nullptr) delete cart_surr[l] ;
+		absol[l] = nullptr ;
+		cart_surr[l] = nullptr ;
+		cart[l]=  nullptr ;
 	}
-	if (radius !=0x0)
+	if (radius !=nullptr)
 	    delete radius ;
-	radius = 0x0 ;
+	radius = nullptr ;
   vars_to_terms() ;
 }
 
@@ -369,13 +354,13 @@ void Domain_shell_outer_adapted::xx_to_ders_from_adapted(const Array<double>& xx
 
 void Domain_shell_outer_adapted::update() const {
   
-  if (rad_term_eq != 0x0)
+  if (rad_term_eq != nullptr)
       delete rad_term_eq ;
-  if (der_rad_term_eq != 0x0)
+  if (der_rad_term_eq != nullptr)
       delete der_rad_term_eq ;  
-  if (dt_rad_term_eq != 0x0)
+  if (dt_rad_term_eq != nullptr)
       delete dt_rad_term_eq ;
-  if (dp_rad_term_eq != 0x0)
+  if (dp_rad_term_eq != nullptr)
       delete dp_rad_term_eq ;  
   
   // Computation of rad_term_eq
@@ -389,7 +374,7 @@ void Domain_shell_outer_adapted::update() const {
 	while (index.inc())  ;
   val_res.set_domain(num_dom).std_r_base() ;
 
-  bool doder = (outer_radius_term_eq->der_t ==0x0) ? false : true ;
+  bool doder = (outer_radius_term_eq->der_t ==nullptr) ? false : true ;
   if (doder) {
       Scalar der_res (sp) ; 
       if ((*outer_radius_term_eq->der_t)()(num_dom).check_if_zero()) {
@@ -472,9 +457,9 @@ Val_domain Domain_shell_outer_adapted::der_normal (const Val_domain&, int) const
 // Computes the cartesian coordinates
 void Domain_shell_outer_adapted::do_absol () const {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
+	   assert (coloc[i] != nullptr) ;
 	for (int i=0 ; i<3 ; i++)
-	   assert (absol[i] == 0x0) ;
+	   assert (absol[i] == nullptr) ;
 	for (int i=0 ; i<3 ; i++) {
 	   absol[i] = new Val_domain(this) ;
 	   absol[i]->allocate_conf() ;
@@ -497,9 +482,9 @@ void Domain_shell_outer_adapted::do_absol () const {
 // Computes the cartesian coordinates
 void Domain_shell_outer_adapted::do_cart () const {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
+	   assert (coloc[i] != nullptr) ;
 	for (int i=0 ; i<3 ; i++)
-	   assert (cart[i] == 0x0) ;
+	   assert (cart[i] == nullptr) ;
 	for (int i=0 ; i<3 ; i++) {
 	   cart[i] = new Val_domain(this) ;
 	   cart[i]->allocate_conf() ;
@@ -522,9 +507,9 @@ void Domain_shell_outer_adapted::do_cart () const {
 // Computes the cartesian coordinates over the radius 
 void Domain_shell_outer_adapted::do_cart_surr () const {
 	for (int i=0 ; i<3 ; i++)
-	   assert (coloc[i] != 0x0) ;
+	   assert (coloc[i] != nullptr) ;
 	for (int i=0 ; i<3 ; i++)
-	   assert (cart_surr[i] == 0x0) ;
+	   assert (cart_surr[i] == nullptr) ;
 	for (int i=0 ; i<3 ; i++) {
 	   cart_surr[i] = new Val_domain(this) ;
 	   cart_surr[i]->allocate_conf() ;
@@ -1043,9 +1028,9 @@ Base_spectral Domain_shell_outer_adapted::mult (const Base_spectral& a, const Ba
 		
 	if (!res_def) 
 		for (int dim=0 ; dim<a.ndim ; dim++)
-			if (res.bases_1d[dim]!= 0x0) {
+			if (res.bases_1d[dim]!= nullptr) {
 				delete res.bases_1d[dim] ;
-				res.bases_1d[dim] = 0x0 ;
+				res.bases_1d[dim] = nullptr ;
 				}
 	res.def = res_def ;
 	return res ;

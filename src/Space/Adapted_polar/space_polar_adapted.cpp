@@ -76,10 +76,10 @@ Space_polar_adapted::Space_polar_adapted (FILE* fd) {
 }
 
 Space_polar_adapted::~Space_polar_adapted() {
-  const Domain_polar_shell_outer_adapted* pshell_outer = dynamic_cast<const Domain_polar_shell_outer_adapted*> (domains[1]) ;
-  pshell_outer->del_deriv() ;
-  const Domain_polar_shell_inner_adapted* pshell_inner = dynamic_cast<const Domain_polar_shell_inner_adapted*> (domains[2]) ;
-  pshell_inner->del_deriv() ;
+    Domain_polar_shell_outer_adapted* pshell_outer = dynamic_cast<Domain_polar_shell_outer_adapted*> (domains[1]) ;
+    pshell_outer->del_deriv() ;
+    Domain_polar_shell_inner_adapted* pshell_inner = dynamic_cast<Domain_polar_shell_inner_adapted*> (domains[2]) ;
+pshell_inner->del_deriv() ;
 }
 
 void Space_polar_adapted::save (FILE* fd) const  {

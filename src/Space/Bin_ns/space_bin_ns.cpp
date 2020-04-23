@@ -239,13 +239,13 @@ Space_bin_ns::Space_bin_ns (FILE* fd) {
 }
 
 Space_bin_ns::~Space_bin_ns() {
-    const Domain_shell_outer_adapted* pouter_1 = dynamic_cast<const Domain_shell_outer_adapted*> (domains[1]) ;
+    Domain_shell_outer_adapted* pouter_1 = dynamic_cast<Domain_shell_outer_adapted*> (domains[1]) ;
     pouter_1->del_deriv() ;
-    const Domain_shell_inner_adapted* pinner_1 = dynamic_cast<const Domain_shell_inner_adapted*> (domains[2]) ;
+    Domain_shell_inner_adapted* pinner_1 = dynamic_cast<Domain_shell_inner_adapted*> (domains[2]) ;
     pinner_1->del_deriv() ;
-    const Domain_shell_outer_adapted* pouter_2 = dynamic_cast<const Domain_shell_outer_adapted*> (domains[4]) ;
+    Domain_shell_outer_adapted* pouter_2 = dynamic_cast<Domain_shell_outer_adapted*> (domains[4]) ;
     pouter_2->del_deriv() ;
-    const Domain_shell_inner_adapted* pinner_2 = dynamic_cast<const Domain_shell_inner_adapted*> (domains[5]) ;
+    Domain_shell_inner_adapted* pinner_2 = dynamic_cast<Domain_shell_inner_adapted*> (domains[5]) ;
     pinner_2->del_deriv() ;
 }
 

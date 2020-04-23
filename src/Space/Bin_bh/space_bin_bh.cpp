@@ -153,13 +153,13 @@ Space_bin_bh::Space_bin_bh (FILE* fd) {
 }
 
 Space_bin_bh::~Space_bin_bh() {
-   const Domain_shell_outer_homothetic* pouter_1 = dynamic_cast<const Domain_shell_outer_homothetic*> (domains[1]) ;
+    Domain_shell_outer_homothetic* pouter_1 = dynamic_cast<Domain_shell_outer_homothetic*> (domains[1]) ;
     pouter_1->del_deriv() ;
-    const Domain_shell_inner_homothetic* pinner_1 = dynamic_cast<const Domain_shell_inner_homothetic*> (domains[2]) ;
+    Domain_shell_inner_homothetic* pinner_1 = dynamic_cast<Domain_shell_inner_homothetic*> (domains[2]) ;
     pinner_1->del_deriv() ;
-    const Domain_shell_outer_homothetic* pouter_2 = dynamic_cast<const Domain_shell_outer_homothetic*> (domains[4]) ;
+    Domain_shell_outer_homothetic* pouter_2 = dynamic_cast<Domain_shell_outer_homothetic*> (domains[4]) ;
     pouter_2->del_deriv() ;
-    const Domain_shell_inner_homothetic* pinner_2 = dynamic_cast<const Domain_shell_inner_homothetic*> (domains[5]) ;
+    Domain_shell_inner_homothetic* pinner_2 = dynamic_cast<Domain_shell_inner_homothetic*> (domains[5]) ;
     pinner_2->del_deriv() ;
 }
 
