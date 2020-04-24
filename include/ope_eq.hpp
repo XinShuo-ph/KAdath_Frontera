@@ -100,9 +100,9 @@ class Ope_id : public Ope_eq {
 		* @param so : The input \c Term_eq
 		*/
 		Ope_id (const System_of_eqs*, const Term_eq*) ;
-		virtual ~Ope_id() ; ///< Destructor.
+		~Ope_id() override; ///< Destructor.
 	public:
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 
@@ -122,9 +122,9 @@ class Ope_pow : public Ope_eq {
 		* @param so : the source.
 		*/
 		Ope_pow(const System_of_eqs* syst, int pow, Ope_eq* so) ;
-		virtual ~Ope_pow() ; ///< Destructor.
+		~Ope_pow() override ; ///< Destructor.
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -140,9 +140,9 @@ class Ope_minus : public Ope_eq {
 		* @param so : the source.
 		*/
 		Ope_minus(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_minus() ; ///< Destructor
+		~Ope_minus() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -159,9 +159,9 @@ class Ope_add : public Ope_eq {
 		* @param bb : second term.
 		*/
 		Ope_add(const System_of_eqs*, Ope_eq* aa, Ope_eq* bb) ;
-		virtual ~Ope_add() ; ///< Destructor
+		~Ope_add() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -178,9 +178,9 @@ class Ope_sub : public Ope_eq {
 		* @param bb : second term.
 		*/
 		Ope_sub(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
-		virtual ~Ope_sub() ;///< Destructor
+		~Ope_sub() override ;///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -198,9 +198,9 @@ class Ope_mult : public Ope_eq {
 		* @param bb : second term.
 		*/
 		Ope_mult(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
-		virtual ~Ope_mult() ;///< Destructor
+		~Ope_mult() override ;///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -218,9 +218,9 @@ class Ope_div: public Ope_eq {
 		* @param bb : second term.
 		*/
 		Ope_div(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
-		virtual ~Ope_div() ;///< Destructor
+		~Ope_div() override ;///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -237,9 +237,9 @@ class Ope_lap: public Ope_eq {
 		* @param so : the target.
 		*/
 		Ope_lap(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_lap() ; ///< Destructor
+		~Ope_lap() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -256,9 +256,9 @@ class Ope_dtime: public Ope_eq {
 		* @param so : the target.
 		*/
 		Ope_dtime(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_dtime() ; ///< Destructor
+		~Ope_dtime() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -276,9 +276,9 @@ class Ope_ddtime: public Ope_eq {
 		* @param so : the target
 		*/
 		Ope_ddtime(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_ddtime() ; ///< Destructor
+		~Ope_ddtime() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -295,9 +295,9 @@ class Ope_lap2: public Ope_eq {
 		* @param so : the target.
 		*/
 		Ope_lap2(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_lap2() ;///< Destructor
+		~Ope_lap2() override ;///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -318,9 +318,9 @@ class Ope_dn: public Ope_eq {
 		* @param so : the target.
 		*/
 		Ope_dn(const System_of_eqs* syst, int bb, Ope_eq* so) ;
-		virtual ~Ope_dn() ;///< Destructor
+		~Ope_dn() override ;///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -337,9 +337,9 @@ class Ope_grad: public Ope_eq {
 		* @param so : the target.
 		*/
 		Ope_grad(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_grad() ; ///< Destructor
+		~Ope_grad() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -357,9 +357,9 @@ class Ope_scal: public Ope_eq {
 		* @param bb : second vector.
 		*/
 		Ope_scal(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
-		virtual ~Ope_scal() ; ///< Destructor
+		~Ope_scal() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -382,9 +382,9 @@ class Ope_der: public Ope_eq {
 		* @param so : target
 		*/
 		Ope_der(const System_of_eqs* syst, int typeder, char indder, Ope_eq* so) ;
-		virtual ~Ope_der() ; ///< Destructor
+		~Ope_der() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -407,9 +407,9 @@ class Ope_der_flat: public Ope_eq {
 		* @param so : target
 		*/
 		Ope_der_flat(const System_of_eqs* syst, int typeder, char indder, Ope_eq* so) ;
-		virtual ~Ope_der_flat() ; ///< Destructor
+		~Ope_der_flat() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -432,9 +432,9 @@ class Ope_der_background: public Ope_eq {
 		* @param so : target
 		*/
 		Ope_der_background(const System_of_eqs* syst, int typeder, char indder, Ope_eq* so) ;
-		virtual ~Ope_der_background() ; ///< Destructor
+		~Ope_der_background() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -454,9 +454,9 @@ class Ope_int: public Ope_eq {
 		* @param so : target
 		*/
 		Ope_int(const System_of_eqs* syst, int bb, Ope_eq* so) ;
-		virtual ~Ope_int() ; ///< Destructor
+		~Ope_int() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -472,9 +472,9 @@ class Ope_int_volume: public Ope_eq {
 		* @param so : target
 		*/
 		Ope_int_volume (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_int_volume() ; ///< Destructor
+		~Ope_int_volume() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -496,8 +496,8 @@ class Ope_def: public Ope_eq {
 		* @param ttype : type of the various indices (COV or CON).		
 		*/
 		Ope_def (const System_of_eqs* syst, Ope_eq* so, int val, char* name, Array<int>* ttype) ;
-		virtual ~Ope_def() ;
-		virtual Term_eq action() const ;
+		~Ope_def() override ;
+		Term_eq action() const override;
 		Term_eq* get_res() ; ///< Returns the result.
 		void compute_res() ; ///< Forces the computation of the result (when things have changed).
 } ;
@@ -515,9 +515,9 @@ class Ope_mult_r: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_mult_r (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_mult_r() ; ///< Destructor.
+		~Ope_mult_r() override ; ///< Destructor.
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -533,9 +533,9 @@ class Ope_mult_x: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_mult_x (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_mult_x() ; ///< Destructor
+		~Ope_mult_x() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -551,9 +551,9 @@ class Ope_srdr: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_srdr (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_srdr() ; ///< Destructor
+		~Ope_srdr() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 
@@ -571,9 +571,9 @@ class Ope_ddr: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_ddr (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_ddr() ; ///< Destructor
+		~Ope_ddr() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -589,9 +589,9 @@ class Ope_dr: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_dr (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_dr() ; ///< Destructor
+		~Ope_dr() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -607,9 +607,9 @@ class Ope_ddp: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_ddp (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_ddp() ; ///< Destructor
+		~Ope_ddp() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -625,9 +625,9 @@ class Ope_dt: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_dt (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_dt() ; ///< Destructor
+		~Ope_dt() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -643,9 +643,9 @@ class Ope_ddt: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_ddt (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_ddt() ; ///< Destructor
+		~Ope_ddt() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -661,9 +661,9 @@ class Ope_div_r: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_div_r (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_div_r() ; ///< Destructor
+		~Ope_div_r() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -679,9 +679,9 @@ class Ope_div_rsint: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_div_rsint (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_div_rsint() ; ///< Destructor
+		~Ope_div_rsint() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -697,9 +697,9 @@ class Ope_mult_rsint: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_mult_rsint (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_mult_rsint() ; ///< Destructor
+		~Ope_mult_rsint() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -715,9 +715,9 @@ class Ope_div_cost: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_div_cost (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_div_cost() ; ///< Destructor
+		~Ope_div_cost() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 
@@ -735,9 +735,9 @@ class Ope_div_xpone: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_div_xpone (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_div_xpone() ; ///< Destructor
+		~Ope_div_xpone() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -753,9 +753,9 @@ class Ope_div_1mx2: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_div_1mx2 (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_div_1mx2() ; ///< Destructor
+		~Ope_div_1mx2() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -771,9 +771,9 @@ class Ope_div_1mrsL: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_div_1mrsL (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_div_1mrsL() ; ///< Destructor
+		~Ope_div_1mrsL() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -789,9 +789,9 @@ class Ope_mult_1mrsL: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_mult_1mrsL (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_mult_1mrsL() ; ///< Destructor
+		~Ope_mult_1mrsL() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -807,9 +807,9 @@ class Ope_mult_sint: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_mult_sint (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_mult_sint() ; ///> Destructor
+		~Ope_mult_sint() override ; ///> Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -825,9 +825,9 @@ class Ope_div_sint: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_div_sint (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_div_sint() ; ///> Destructor
+		~Ope_div_sint() override ; ///> Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 
@@ -846,9 +846,9 @@ class Ope_partial : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_partial (const System_of_eqs* syst, char name, Ope_eq* so) ;
-		virtual ~Ope_partial() ; ///< Destructor
+		~Ope_partial() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -863,9 +863,9 @@ class Ope_determinant : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_determinant (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_determinant() ; ///< Destructor
+		~Ope_determinant() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -880,9 +880,9 @@ class Ope_inverse : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_inverse (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_inverse() ; ///< Destructor
+		~Ope_inverse() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -898,9 +898,9 @@ class Ope_inverse_nodet : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_inverse_nodet (const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_inverse_nodet() ; ///< Destructor
+		~Ope_inverse_nodet() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -918,9 +918,9 @@ class Ope_partial_var : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_partial_var (const System_of_eqs* syst, int, Ope_eq* so) ;
-		virtual ~Ope_partial_var() ; ///< Destructor
+		~Ope_partial_var() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -947,9 +947,9 @@ class Ope_mode : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_mode (const System_of_eqs*, int bb, const Index& ind, double val, Ope_eq* so) ;
-		virtual ~Ope_mode() ; ///< Destructor
+		~Ope_mode() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -970,9 +970,9 @@ class Ope_val_mode : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_val_mode (const System_of_eqs* syst, const Index& ind, double val, Ope_eq* so) ;
-		virtual ~Ope_val_mode() ; ///< Destructor
+		~Ope_val_mode() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -991,9 +991,9 @@ class Ope_val : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_val(const System_of_eqs* syst, const Index& ind, Ope_eq* so) ;
-		virtual ~Ope_val() ; ///< Destructor
+		~Ope_val() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1012,9 +1012,9 @@ class Ope_point : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_point(const System_of_eqs* syst, const Point& pp, Ope_eq* so) ;
-		virtual ~Ope_point() ; ///< Destructor
+		~Ope_point() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1031,9 +1031,9 @@ class Ope_val_ori : public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_val_ori(const System_of_eqs* syst, int dd, Ope_eq* so) ;
-		virtual ~Ope_val_ori() ; ///< Destructor
+		~Ope_val_ori() override ; ///< Destructor
 
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1049,9 +1049,9 @@ class Ope_sqrt: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_sqrt(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_sqrt() ; ///< Destructor
+		~Ope_sqrt() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1067,9 +1067,9 @@ class Ope_sqrt_anti: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_sqrt_anti(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_sqrt_anti() ; ///< Destructor
+		~Ope_sqrt_anti() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1086,9 +1086,9 @@ class Ope_sqrt_nonstd: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_sqrt_nonstd(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_sqrt_nonstd() ; ///< Destructor
+		~Ope_sqrt_nonstd() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1104,9 +1104,9 @@ class Ope_exp: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_exp(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_exp() ; ///< Destructor
+		~Ope_exp() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1122,9 +1122,9 @@ class Ope_log: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_log(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_log() ; ///< Destructor.
+		~Ope_log() override ; ///< Destructor.
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1140,9 +1140,9 @@ class Ope_cosh: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_cosh(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_cosh() ; ///< Destructor.
+		~Ope_cosh() override ; ///< Destructor.
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1158,9 +1158,9 @@ class Ope_sinh: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_sinh(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_sinh() ; ///< Destructor.
+		~Ope_sinh() override ; ///< Destructor.
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 
@@ -1177,9 +1177,9 @@ class Ope_atanh: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_atanh(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_atanh() ; ///< Destructor.
+		~Ope_atanh() override ; ///< Destructor.
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1195,9 +1195,9 @@ class Ope_cos: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_cos(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_cos() ; ///< Destructor.
+		~Ope_cos() override ; ///< Destructor.
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1213,9 +1213,9 @@ class Ope_sin: public Ope_eq {
 		* @param so : target		
 		*/
 		Ope_sin(const System_of_eqs* syst, Ope_eq* so) ;
-		virtual ~Ope_sin() ; ///< Destructor.
+		~Ope_sin() override ; ///< Destructor.
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1231,9 +1231,9 @@ class Ope_fit_waves : public Ope_eq {
 		* @param ome : the orbital frequency (assumes an helical Killing vector).
 		*/
 	    Ope_fit_waves (const System_of_eqs* syst, Ope_eq* so, Ope_eq* ome) ;
-	    virtual ~Ope_fit_waves() ; ///< Destructor
+	    ~Ope_fit_waves() override ; ///< Destructor
       
-	    virtual Term_eq action() const ;
+	    Term_eq action() const override;
 } ;
 
 /**
@@ -1255,8 +1255,8 @@ class Ope_user: public Ope_eq {
 		* @param so : the argument.
 		*/
 		Ope_user (const System_of_eqs* syst, Term_eq (*zeope) (const Term_eq&, Param*), Param* par, Ope_eq* so) ;
-		virtual ~Ope_user() ; ///< Destructor
-		virtual Term_eq action() const ;
+		~Ope_user() override ; ///< Destructor
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1279,8 +1279,8 @@ class Ope_user_bin: public Ope_eq {
 		* @param bb : the second argument.
 		*/
 		Ope_user_bin (const System_of_eqs* syst, Term_eq (*zeope) (const Term_eq&, const Term_eq&, Param*), Param* par, Ope_eq* aa, Ope_eq* bb) ;
-		virtual ~Ope_user_bin() ; ///< Destructor.
-		virtual Term_eq action() const ;
+		~Ope_user_bin() override ; ///< Destructor.
+		Term_eq action() const override;
 } ;
 
 
@@ -1308,9 +1308,9 @@ class Ope_import: public Ope_eq {
 		* @param field : the quantity to be imported.
 		*/
 		Ope_import(const System_of_eqs* syst, int dd, int bb, const char* field) ;
-		virtual ~Ope_import() ; ///< Destructor
+		~Ope_import() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1330,9 +1330,9 @@ class Ope_change_basis: public Ope_eq {
 		* @param so : the target field.
 		*/
 		Ope_change_basis(const System_of_eqs* syst, int target, Ope_eq* so) ;
-		virtual ~Ope_change_basis() ; ///< Destructor
+		~Ope_change_basis() override ; ///< Destructor
 	
-		virtual Term_eq action() const ;
+		Term_eq action() const override;
 } ;
 
 /**
@@ -1352,8 +1352,8 @@ class Ope_def_global : public Ope_eq {
 		* @param name_ope : the quantity (typically should contain things like integvolume)
 		*/
 		Ope_def_global (const System_of_eqs* syst, int dom, const char* name_ope) ;
-		virtual ~Ope_def_global() ;
-		virtual Term_eq action() const ;
+		~Ope_def_global() override ;
+		Term_eq action() const override;
 		Term_eq* get_res() ;///< Returns the result.
 		void compute_res() ; ///< Forces the computation of the result (when things have changed).
 } ;
