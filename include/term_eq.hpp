@@ -359,8 +359,8 @@ namespace Kadath {
             cerr << "val_t uninitialised in Term_eq" << endl ;
             abort() ;
         }
-        return *val_t ;
 #endif
+        return *val_t ;
     }
 
     inline Tensor Term_eq::get_der_t() const {
