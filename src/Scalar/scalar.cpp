@@ -81,17 +81,16 @@ namespace Kadath {
              abort() ;
         }
 #endif
+        if (val_zones[ld]->check_if_zero())
+            return 0. ;
         else {
-            if (val_zones[ld]->check_if_zero())
-                return 0. ;
-            else {
-                Point num(get_domain(ld)->absol_to_num(xx)) ;
+            Point num(get_domain(ld)->absol_to_num(xx)) ;
 
-                coef() ;
-                delete [] inside ;
-                return val_zones[ld]->base.summation(num, *val_zones[ld]->cf) ;
-            }
+            coef() ;
+            delete [] inside ;
+            return val_zones[ld]->base.summation(num, *val_zones[ld]->cf) ;
         }
+
     }
 
     double Scalar::val_point_zeronotdef(const Point& xx, int sens) const {

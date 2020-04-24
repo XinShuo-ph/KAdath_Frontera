@@ -27,7 +27,7 @@ Ope_import::Ope_import (const System_of_eqs* zesys, int dd, int bb, const char* 
   others(syst->get_space().get_indices_matching_non_std(dd, bb)) {
   
 	n_ope = others.get_size(1) ;
-	parts = new Ope_eq* [n_ope] ;
+	parts.resize(n_ope) ;
 	for (int i=0 ; i<n_ope ; i++)
 	  parts[i] = syst->give_ope (others(0, i), target, others(1, i)) ; 
 }

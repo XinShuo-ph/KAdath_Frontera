@@ -43,12 +43,6 @@ namespace Kadath {
             * @param np : number of terms.
             */
             Ope_eq (const System_of_eqs* syst, int dom, int np = 0) ;
-            /**
-            * Constructor. The number of terms is undefined.
-            * @param syst : the associated \c System_of_eqs.
-            * @param dom : the index of the \c Domain.
-            */
-            Ope_eq (const System_of_eqs* syst, int dom) ;
             Ope_eq (const Ope_eq&) = delete; ///< Copy constructor
         public:
             virtual ~Ope_eq() ; ///< Destructor
