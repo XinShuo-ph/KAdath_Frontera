@@ -23,47 +23,53 @@
 #include "term_eq.hpp"
 namespace Kadath {
 
-/**
- * Abstract class that describes the various operators that can appear in the equations.
- * It can not be instanciated and one must use the derived classes.
- * It works at the \c Term_eq level (i.e. on a given \c Domain and using the dual quantities required by the automatic differentiation technique). 
- * \ingroup systems
- */
-class Ope_eq {
+    /**
+     * Abstract class that describes the various operators that can appear in the equations.
+     * It can not be instanciated and one must use the derived classes.
+     * It works at the \c Term_eq level (i.e. on a given \c Domain and using the dual quantities required by the automatic differentiation technique).
+     * \ingroup systems
+     */
+    class Ope_eq : public Memory_mapped {
 
-	protected:
-		const System_of_eqs* syst ; ///< The associated \c System_of_eqs
-		int dom ; ///< Index of the \c Domain where the operator is defined.
-		int n_ope ; ///< Number of terms involved (2 for + for instance, only one for sqrt...)
-		Ope_eq** parts ; ///< Pointers of the various parts of the current operator.
-		/**
-		* Constructor. The various parts are uninitialized at this point.
-		* @param syst : the associated \c System_of_eqs.
-		* @param dom : the index of the \c Domain.
-		* @param np : number of terms.
-		*/
-		Ope_eq (const System_of_eqs* syst, int dom, int np) ;
-		/**
-		* Constructor. The number of terms is undefined.
-		* @param syst : the associated \c System_of_eqs.
-		* @param dom : the index of the \c Domain.
-		*/
-		Ope_eq (const System_of_eqs* syst, int dom) ; 
-		Ope_eq (const Ope_eq&) ; ///< Copy constructor
-	public:
-		virtual ~Ope_eq() ; ///< Destructor
-		
-		/**
-		* @return the index of the \c Domain.
-		*/
-		int get_dom() const {return dom; } ;
+        protected:
+            const System_of_eqs* syst ; ///< The associated \c System_of_eqs
+            int dom ; ///< Index of the \c Domain where the operator is defined.
+            int n_ope ; ///< Number of terms involved (2 for + for instance, only one for sqrt...)
+            MMPtr_array<Ope_eq> parts ; ///< Pointers of the various parts of the current operator.
+            /**
+            * Constructor. The various parts are uninitialized at this point.
+            * @param syst : the associated \c System_of_eqs.
+            * @param dom : the index of the \c Domain.
+            * @param np : number of terms.
+            */
+            Ope_eq (const System_of_eqs* syst, int dom, int np = 0) ;
+            /**
+            * Constructor. The number of terms is undefined.
+            * @param syst : the associated \c System_of_eqs.
+            * @param dom : the index of the \c Domain.
+            */
+            Ope_eq (const System_of_eqs* syst, int dom) ;
+            Ope_eq (const Ope_eq&) = delete; ///< Copy constructor
+        public:
+            virtual ~Ope_eq() ; ///< Destructor
 
-		/**
-		* Computes the action of the current \c Ope_eq using its various parts.
-		* @return the \c Term_eq containing the result.
-		*/
-		virtual Term_eq action() const = 0;
-} ;
+            /**
+            * @return the index of the \c Domain.
+            */
+            int get_dom() const {return dom; } ;
+
+            /**
+            * Computes the action of the current \c Ope_eq using its various parts.
+            * @return the \c Term_eq containing the result.
+            */
+            virtual Term_eq action() const = 0;
+    } ;
+
+    inline Ope_eq::Ope_eq(const System_of_eqs* zesys, int dd, int nn) :
+        syst{zesys}, dom{dd}, n_ope{nn}, parts{n_ope,initialize}
+    {}
+
+    inline Ope_eq::~Ope_eq() {for(auto & x : parts) safe_delete(x);}
 
 /**
  * The operator identity.

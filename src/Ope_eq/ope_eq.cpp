@@ -19,27 +19,6 @@
 
 #include "ope_eq.hpp"
 namespace Kadath {
-Ope_eq::Ope_eq(const System_of_eqs* zesys, int dd, int nn) : syst(zesys), dom(dd), n_ope(nn) {
-	parts = new Ope_eq* [n_ope] ;
-	for (int i=0 ; i<n_ope ; i++)
-		parts[i] = 0x0 ;
-}
-
-
-Ope_eq::Ope_eq(const System_of_eqs* zesys, int dd) : syst(zesys), dom(dd) {
-}
-
-Ope_eq::Ope_eq (const Ope_eq&) {
-	cerr << "Copy constructor not defined for Ope_eq" << endl ;
-	abort() ;
-}
-
-Ope_eq::~Ope_eq() {
-	for (int i=0 ; i<n_ope ; i++)
-		if (parts[i]!=0x0)
-			delete parts[i] ;
-	delete [] parts ;
-}
 
 
 }
