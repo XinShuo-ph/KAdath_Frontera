@@ -55,10 +55,12 @@ Val_domain Domain_spheric_time_shell::dt (const Val_domain& so) const {
 
 Val_domain Domain_spheric_time_shell::laplacian (const Val_domain& so, int m) const {
 
+#ifndef REMOVE_ALL_CHECKS
   if (m!=0) {
       cerr << "Laplacian only defiend for m=0 for Domain_spheric_shell" << endl ;
       abort() ;
   }
+#endif
   Val_domain dr (so.der_var(1)/alpha) ;
 
   Val_domain res (dr.der_var(1)/alpha + div_r(2*dr)) ;

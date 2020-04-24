@@ -132,10 +132,12 @@ void Domain_shell_outer_adapted::affecte_tau_one_coef (Tensor& tt, int dom, int 
 				affecte_tau_one_coef_val_domain (tt.set(3).set_domain(dom), 1, cc, pos_cf) ;
 				found = true ;
 			}
+#ifndef REMOVE_ALL_CHECKS
 			if (!found) {
 				cerr << "Unknown type of vector Domain_shell_outer_adapted::affecte_tau_one_coef" << endl ;
 				abort() ;
 			}
+#endif
 		}
 			break ;
 		case 2 : {
@@ -186,10 +188,12 @@ void Domain_shell_outer_adapted::affecte_tau_one_coef (Tensor& tt, int dom, int 
 				affecte_tau_one_coef_val_domain (tt.set(3,3).set_domain(dom), 2, cc, pos_cf) ;
 				found = true ;
 			}
+#ifndef REMOVE_ALL_CHECKS
 			if (!found) {
 				cerr << "Unknown type of 2-tensor Domain_shell_outer_adapted::affecte_tau_one_coef" << endl ;
 				abort() ;
 			}
+#endif
 		}
 			break ;
 		default :

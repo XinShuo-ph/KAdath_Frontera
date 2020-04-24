@@ -612,39 +612,32 @@ void Val_domain::std_base_odd() {
 
 
 void Val_domain::coef() const {
-	if ((in_coef) || (is_zero)) {
-		return ;
-    	}
-	else {
+	if ((!in_coef) && (!is_zero)) {
+#ifndef REMOVE_ALL_CHECKS
 	    if (base.is_def()==false) {
-		cout << "Base not defined in Val_domain::coef" << endl ;
-		abort() ;
+		    cout << "Base not defined in Val_domain::coef" << endl ;
+		    abort() ;
 		}
-	    else {
+#endif
    	    assert(in_conf) ;
-            if (cf !=nullptr)
-	        delete cf ;
+        if (cf !=nullptr) delete cf ;
 	    cf = new Array<double>(base.coef(zone->get_nbr_coefs(), *c)) ;
-	    }
 	    in_coef = true ;
 	}
 }
 
 void Val_domain::coef_i() const {
-	if ((in_conf) || (is_zero)) {
-		return ;
-    	}
-	else {
+	if ((!in_conf) && (!is_zero)) {
+#ifndef REMOVE_ALL_CHECKS
 	    if (base.is_def()==false) {
-		cout << "Base not defined in Val_domain::coef" << endl ;
-		abort() ;
+            cout << "Base not defined in Val_domain::coef" << endl ;
+            abort() ;
 		}
-	    else {
+#endif
    	    assert(in_coef) ;
-            if (c !=nullptr)
-	        delete c ;
+        if (c !=nullptr)
+        delete c ;
 	    c = new Array<double>(base.coef_i(zone->get_nbr_points(), *cf)) ;
-	    }
     	in_conf = true ;
 	}
 }
@@ -712,11 +705,13 @@ Val_domain Val_domain::der_spher(int var) const
          return this->der_t();
       else if (var == 0)
          return this->der_p();
+#ifndef REMOVE_ALL_CHECKS
       else
       {
          cerr << "bad index in der_spher" << endl;
          abort();
       }
+#endif
    }
 }
 

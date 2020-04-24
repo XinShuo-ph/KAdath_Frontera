@@ -95,10 +95,12 @@ void Space_bin_bh::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 
 	// Check the last domain is of the right type :
 	const Domain_compact* pcomp = dynamic_cast <const Domain_compact*> (domains[nbr_domains-1]) ;
-	if (pcomp==0x0) {
+#ifndef REMOVE_ALL_CHECKS
+	if (pcomp==nullptr) {
 		cerr << "add_eq_int_inf requires a compactified domain" << endl ;
 		abort() ;
 	}
+#endif
 	int dom = nbr_domains-1 ;
 
 	// Get the lhs and rhs

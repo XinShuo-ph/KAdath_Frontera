@@ -64,11 +64,13 @@ int Domain_polar_shell_inner_adapted::nbr_conditions_val_domain_boundary (const 
 
 Array<int> Domain_polar_shell_inner_adapted::nbr_conditions_boundary (const Tensor& tt, int dom, int bound, int n_cmp, Array<int>** ) const {
 
+#ifndef REMOVE_ALL_CHECKS
 	// Check boundary
 	if ((bound!=INNER_BC) && (bound!=OUTER_BC)) {
 		cerr << "Unknown boundary in Domain_polar_shell_inner_adapted::nbr_conditions_boundary" << endl ;
 		abort() ;
 	}
+#endif
 
 	int size = (n_cmp==-1) ? tt.get_n_comp() : n_cmp ;
 	Array<int> res (size) ;

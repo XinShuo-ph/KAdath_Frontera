@@ -60,19 +60,23 @@ Val_domain Domain_spheric_periodic_shell::fitschwarz (const Val_domain& so,  int
 
 // Term_eq version
 Term_eq Domain_spheric_periodic_shell::fitschwarz (const Term_eq& so, int dim) const {
- 
+
+#ifndef REMOVE_ALL_CHECKS
     // Check it is a tensor
     if (so.get_type_data() != TERM_T) {
 		cerr << "fitschwarz only defined with respect for a tensor" << endl ;
 		abort() ;
     }
+#endif
   
     // Right domain ?
     int dom = so.get_dom() ;
+#ifndef REMOVE_ALL_CHECKS
     if (this != so.get_val_t().get_space().get_domain(dom)) {
-	cerr << "Domain mismatch in Domain_spheric_periodic_shell::fitschwarz (Term_eq version)" << endl ;
-	abort() ;
+        cerr << "Domain mismatch in Domain_spheric_periodic_shell::fitschwarz (Term_eq version)" << endl ;
+        abort() ;
     }
+#endif
 
     Tensor resval (so.get_val_t(), false) ;
     for (int i=0 ; i<so.get_val_t().get_n_comp() ; i++) {

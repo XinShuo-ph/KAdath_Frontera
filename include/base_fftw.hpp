@@ -33,9 +33,8 @@ struct fftw_precomp_t
     fftw_plan plan;
 
   fftw_precomp_t(int const n, fftw_r2r_kind FFTW_TRANSFORM) :
-                                                              size{n},
-                                                            buffer(fftw_alloc_real(n)),
-                                                              plan(fftw_plan_r2r_1d(n, buffer, buffer, FFTW_TRANSFORM, FFTW_MEASURE)) {}
+      size{n}, buffer(fftw_alloc_real(n)),
+      plan(fftw_plan_r2r_1d(n, buffer, buffer, FFTW_TRANSFORM, FFTW_MEASURE)) {}
   ~fftw_precomp_t() {
     fftw_destroy_plan(plan);
     fftw_free(buffer);

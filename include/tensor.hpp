@@ -780,18 +780,22 @@ namespace Kadath {
     };
 
     inline int Param_tensor::get_m_order() const {
+#ifndef REMOVE_ALL_CHECKS
         if (!m_order_affected) {
             cerr << "m_order not affected in Param_tensor" << endl;
             abort();
         } else
+#endif
             return m_order;
     }
 
     inline int Param_tensor::get_m_quant() const {
+#ifndef REMOVE_ALL_CHECKS
         if (!m_quant_affected) {
             cerr << "m_quant not affected in Param_tensor" << endl;
             abort();
         } else
+#endif
             return m_quant;
     }
 

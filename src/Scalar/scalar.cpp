@@ -75,11 +75,12 @@ namespace Kadath {
            for (int l=0 ; l<ndom ; l++)
               if ((ld==-1) && (inside[l])) ld = l ;
         }
-
+#ifndef REMOVE_ALL_CHECKS
         if (ld==-1) {
              cout << "Point " << xx << "not found in the computational space..." << endl ;
              abort() ;
         }
+#endif
         else {
             if (val_zones[ld]->check_if_zero())
                 return 0. ;

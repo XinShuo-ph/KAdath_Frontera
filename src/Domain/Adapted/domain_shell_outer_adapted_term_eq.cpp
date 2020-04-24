@@ -325,6 +325,7 @@ Term_eq Domain_shell_outer_adapted::der_normal_term_eq (const Term_eq& so, int b
 }
 
 Term_eq Domain_shell_outer_adapted::lap_term_eq (const Term_eq& so, int mm) const {
+#ifndef REMOVE_ALL_CHECKS
     if (mm!=0) {
       cerr << "Domain_shell_outer_adapted::lap_term_eq not defined for m != 0 (for now)" << endl ;
       abort() ;
@@ -334,6 +335,7 @@ Term_eq Domain_shell_outer_adapted::lap_term_eq (const Term_eq& so, int mm) cons
       cerr << "Domain_shell_outer_adapted::lap_term_eq only defined for scalars" << endl ;
       abort() ;
   }
+#endif
   
   // Angular part :
   Term_eq dert (derive_t(so));
@@ -726,6 +728,7 @@ Term_eq Domain_shell_outer_adapted::integ_volume_term_eq (const Term_eq& target)
  
 	int dom = target.get_dom() ;
 	// Check it is a tensor
+#ifndef REMOVE_ALL_CHECKS
 	if (target.type_data != TERM_T) {
 		cerr << "Ope_int_volume only defined with respect for a tensor" << endl ;
 		abort() ;
@@ -735,6 +738,7 @@ Term_eq Domain_shell_outer_adapted::integ_volume_term_eq (const Term_eq& target)
 		cerr << "Ope_int_volume only defined with respect to a scalar" << endl ;
 		abort() ;
 	}
+#endif
 
 	Term_eq integrant (do_comp_by_comp(mult_r_term_eq(mult_r_term_eq(target))*(*der_rad_term_eq), &Domain::mult_sin_theta)) ;
   

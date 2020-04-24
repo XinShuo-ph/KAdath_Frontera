@@ -26,12 +26,14 @@
 #include "tensor.hpp"
 namespace Kadath {
 Tensor Domain_shell_symphi::change_basis_spher_to_cart (int dd, const Tensor& so) const {
-  
+
+#ifndef REMOVE_ALL_CHECKS
   // Lust start from spherical tensorial basis
   if (so.get_basis().get_basis(dd) != SPHERICAL_BASIS) {
       cerr << "The input tensorial basis must be spherical in Domain_shell_symphi::change_basis_spher_to_cart" << endl ;
       abort() ;
   }
+#endif
   
   // Need to remove the symetry :
   int val = so.get_valence() ;
@@ -92,11 +94,13 @@ Tensor Domain_shell_symphi::change_basis_spher_to_cart (int dd, const Tensor& so
 }  
      
 Tensor Domain_shell_symphi::change_basis_cart_to_spher (int dd, const Tensor& so) const {
+#ifndef REMOVE_ALL_CHECKS
   // Must start from spherical tensorial basis
   if (so.get_basis().get_basis(dd) != CARTESIAN_BASIS) {
       cerr << "The input tensorial basis must be cartesian in Domain_shell_symphi::change_basis_cart_to_spher" << endl ;
       abort() ;
   }
+#endif
    // Need to remove the symetry :
   int val = so.get_valence() ;
   Array<int> type_ind (so.get_index_type()) ;

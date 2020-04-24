@@ -74,13 +74,13 @@ void Param::add_int(int ti, int index){
 	}
 	else {
 	
-	    if (p_int[index] != 0x0) {
-		cout << "Param::add_int : the position " << index 
-		     << " is already occupied !" << endl ; 
-		abort() ; 
+	    if (p_int[index] != 0) {
+            cout << "Param::add_int : the position " << index
+                 << " is already occupied !" << endl ;
+            abort() ;
 	    }
-	    else{
-		p_int[index] = ti ; 
+        else{
+            p_int[index] = ti ;
 	    }
 	    
 	}   
@@ -131,18 +131,15 @@ void Param::add_double(double ti, int index){
 	    n_double = n_double_nouveau ;
 	}
 	else {
-	
-	    if (p_double[index] != 0x0) {
-		cout << "Param::add_double : the position " << index 
-		     << " is already occupied !" << endl ; 
-		abort() ; 
+	    if (p_double[index] != 0) {
+            cout << "Param::add_double : the position " << index
+                 << " is already occupied !" << endl ;
+            abort() ;
 	    }
 	    else{
-		p_double[index] = ti ; 
+		    p_double[index] = ti ;
 	    }
-	    
-	}   
-    
+	}
 }
 
 // Extraction 

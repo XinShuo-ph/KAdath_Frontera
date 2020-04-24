@@ -415,10 +415,12 @@ namespace Kadath {
                   cmp[2]->std_base_p_mtz_domain(d) ;
                   done = true ;
                   }
+#ifndef REMOVE_ALL_CHECKS
                 if (!done) {
                     cerr << "Tensor::std_base not yet implemented for " << basis << endl ;
                     abort() ;
                 }
+#endif
                 break ;
                 }
             default : {

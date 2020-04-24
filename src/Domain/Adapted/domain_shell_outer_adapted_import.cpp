@@ -29,7 +29,8 @@
 namespace Kadath {
 // Tensorial parts :
 Tensor Domain_shell_outer_adapted::import (int numdom, int bound, int n_ope, const Array<int>& zedoms, Tensor** parts) const {
-  
+
+#ifndef REMOVE_ALL_CHECKS
   if (parts[0]->get_valence() !=0) {
   for (int i=0 ; i<n_ope ; i++) {
     if (parts[i]->get_basis().get_basis(zedoms(i)) != CARTESIAN_BASIS)  {
@@ -38,6 +39,7 @@ Tensor Domain_shell_outer_adapted::import (int numdom, int bound, int n_ope, con
     }
   }
   }
+#endif
   
   Tensor res (*parts[0], false);
     
@@ -92,10 +94,12 @@ Tensor Domain_shell_outer_adapted::import (int numdom, int bound, int n_ope, con
 	else 
 	  current ++ ;
       }
+#ifndef REMOVE_ALL_CHECKS
       if (!found) {
 	cerr << "Point " << MM << " not found in other domains, for Domain_shell_outer_adapted::import" << endl ;
 	abort() ;
       }
+#endif
       
       // Convert to numerical coordinates of the other domain
       Point num (parts[0]->get_space().get_domain(zedoms(current))->absol_to_num(MM)) ;

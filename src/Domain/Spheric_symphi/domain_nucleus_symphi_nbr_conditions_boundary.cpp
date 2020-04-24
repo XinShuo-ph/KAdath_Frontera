@@ -93,11 +93,13 @@ int Domain_nucleus_symphi::nbr_conditions_val_domain_boundary (const Val_domain&
 
 Array<int> Domain_nucleus_symphi::nbr_conditions_boundary (const Tensor& tt, int dom, int bound, int n_cmp, Array<int>** p_cmp) const {
 
+#ifndef REMOVE_ALL_CHECKS
 	// Check boundary
 	if (bound!=OUTER_BC) {
 		cerr << "Unknown boundary in Domain_nucleus_symphi::nbr_conditions_boundary" << endl ;
 		abort() ;
 	}
+#endif
 
 	int size = (n_cmp==-1) ? tt.get_n_comp() : n_cmp ;
 	Array<int> res (size) ;
@@ -125,11 +127,13 @@ Array<int> Domain_nucleus_symphi::nbr_conditions_boundary (const Tensor& tt, int
 				}
 				found = true ;
 			}
-			
+
+#ifndef REMOVE_ALL_CHECKS
 			if (!found) {
 				cerr << "Unknown type of vector Domain_nucleus_symphi::nbr_conditions_boundary" << endl ;
 				abort() ;
 			}
+#endif
 		}
 			break ;
 		case 2 : {
@@ -195,10 +199,12 @@ Array<int> Domain_nucleus_symphi::nbr_conditions_boundary (const Tensor& tt, int
 				}
 				found = true ;
 			}
+#ifndef REMOVE_ALL_CHECKS
 			if (!found) {
 				cerr << "Unknown type of 2-tensor Domain_nucleus_symphi::nbr_conditions_boundary" << endl ;
 				abort() ;
 			}
+#endif
 		}
 			break ;
 		default :

@@ -19,6 +19,7 @@ else()
     set(DEBUG_MODE OFF)
 endif()
 option(ENABLE_ASSERTS "Enables the assert preprocessor macro (useless in release build mode)" ON)
+option(REMOVE_ALL_CHECKS "Remove most of the runtime range or type/tag checks for increase performances." OFF)
 #User options :
 option(PAR_VERSION "Parallel version" ON)
 option(ENABLE_GTEST "Enable unit/functional tests using google-test." OFF)

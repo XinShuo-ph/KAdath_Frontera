@@ -93,11 +93,13 @@ void Domain_polar_periodic_shell::export_tau_val_domain_boundary (const Val_doma
 void Domain_polar_periodic_shell::export_tau_boundary (const Tensor& tt, int dom, int bound, Array<double>& res, int& pos_res, const Array<int>& ncond,
 										int n_cmp, Array<int>** p_cmp) const {
 
+#ifndef REMOVE_ALL_CHECKS
 	// Check boundary
 	if ((bound!=OUTER_BC) && (bound!=INNER_BC)) {
 		cerr << "Unknown boundary in Domain_polar_periodic_shell::export_tau_boundary" << endl ;
 		abort() ;
 	}
+#endif
 
 	int val = tt.get_valence() ;
 	switch (val) {

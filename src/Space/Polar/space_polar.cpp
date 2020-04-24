@@ -71,9 +71,11 @@ void Space_polar::save (FILE* fd) const  {
 double Space_polar::int_inf (const Scalar& so) const {
 
 	const Domain_polar_compact* p_cmp = dynamic_cast <const Domain_polar_compact*> (domains[nbr_domains-1]) ;
-	if (p_cmp==0x0) {
+#ifndef REMOVE_ALL_CHECKS
+	if (p_cmp==nullptr) {
 		cerr << "No compactified domain in Space_polar::int_inf" << endl ;
 		abort() ;
 	}
+#endif
 	return p_cmp->integ (so(nbr_domains-1), OUTER_BC) ;
 }}

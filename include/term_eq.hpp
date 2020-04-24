@@ -109,8 +109,8 @@ namespace Kadath {
         Term_eq (const Term_eq&) ; ///< Copy constructor.
         ~Term_eq() ; ///< Destructor
 
-        Term_eq(Term_eq&&); ///< Move constructor.
-        Term_eq & operator=(Term_eq &&); ///< Move assignment operator.
+        Term_eq(Term_eq&&) noexcept; ///< Move constructor.
+        Term_eq & operator=(Term_eq &&) noexcept; ///< Move assignment operator.
 
         double get_val_d() const ; ///< @return the double value.
         double get_der_d() const ; ///< @return the double variation.
@@ -296,5 +296,109 @@ namespace Kadath {
     inline Term_eq::Term_eq (int dd, double vx, double dx) :
         dom{dd}, val_d{new double{vx}}, der_d{new double{dx}} , val_t{nullptr}, der_t{nullptr}, type_data {TERM_D}
     {}
+
+    inline Term_eq::Term_eq(Kadath::Term_eq &&so) noexcept :
+            dom{so.dom},
+            val_d{so.val_d},
+            der_d{so.der_d},
+            val_t{so.val_t},
+            der_t{so.der_t},
+            type_data{so.type_data}
+    {
+        so.val_d = nullptr;
+        so.der_d = nullptr;
+        so.val_t = nullptr;
+        so.der_t = nullptr;
+    }
+
+    inline Term_eq& Term_eq::operator=(Term_eq && so) noexcept
+    {
+        assert(dom == so.dom && type_data == so.type_data);
+        std::swap(val_d,so.val_d);
+        std::swap(der_d,so.der_d);
+        std::swap(val_t,so.val_t);
+        std::swap(der_t,so.der_t);
+        return *this;
+    }
+
+    inline double Term_eq::get_val_d() const {
+#ifndef REMOVE_ALL_CHECKS
+        if (type_data!=TERM_D) {
+            cerr << "Wrong type of data in Term_eq" << endl ;
+            abort() ;
+        }
+        if (val_d ==nullptr) {
+            cerr << "val_d uninitialised in Term_eq" << endl ;
+            abort() ;
+        }
+#endif
+        return *val_d ;
+    }
+
+    inline double Term_eq::get_der_d() const {
+#ifndef REMOVE_ALL_CHECKS
+        if (type_data!=TERM_D) {
+            cerr << "Wrong type of data in Term_eq" << endl ;
+            abort() ;
+        }
+        if (der_d ==nullptr) {
+            cerr << "der_d uninitialised in Term_eq" << endl ;
+            abort() ;
+        }
+#endif
+        return *der_d ;
+    }
+
+    inline Tensor Term_eq::get_val_t() const {
+#ifndef REMOVE_ALL_CHECKS
+        if (type_data!=TERM_T) {
+            cerr << "Wrong type of data in Term_eq" << endl ;
+            abort() ;
+        }
+        if (val_t ==nullptr) {
+            cerr << "val_t uninitialised in Term_eq" << endl ;
+            abort() ;
+        }
+        return *val_t ;
+#endif
+    }
+
+    inline Tensor Term_eq::get_der_t() const {
+#ifndef REMOVE_ALL_CHECKS
+        if (type_data!=TERM_T) {
+            cerr << "Wrong type of data in Term_eq" << endl ;
+            abort() ;
+        }
+        if (der_t ==nullptr) {
+            cerr << "der_t uninitialised in Term_eq" << endl ;
+            abort() ;
+        }
+#endif
+        return *der_t ;
+    }
+
+    inline void Term_eq::set_val_d (double so) {
+#ifndef REMOVE_ALL_CHECKS
+        if (type_data!=TERM_D) {
+            cerr << "Wrong type of data in Term_eq" << endl ;
+            abort() ;
+        }
+#endif
+        if (val_d!=nullptr)
+            delete val_d ;
+        val_d = new double(so) ;
+    }
+
+    inline void Term_eq::set_der_d (double so) {
+#ifndef REMOVE_ALL_CHECKS
+        if (type_data!=TERM_D) {
+            cerr << "Wrong type of data in Term_eq" << endl ;
+            abort() ;
+        }
+#endif
+        if (der_d!=nullptr)
+            delete der_d ;
+        der_d = new double(so) ;
+    }
 }
 #endif

@@ -100,10 +100,12 @@ int Domain_shell::nbr_unknowns (const Tensor& tt, int dom) const {
 				res += nbr_unknowns_val_domain (tt(3)(dom), 1) ;
 				found = true ;
 			}
+#ifndef REMOVE_ALL_CHECKS
 			if (!found) {
 				cerr << "Unknown type of vector Domain_shell::nbr_unknowns" << endl ;
 				abort() ;
 			}
+#endif
 		}
 		    break ;
 		case 2 : {
@@ -171,10 +173,12 @@ int Domain_shell::nbr_unknowns (const Tensor& tt, int dom) const {
 				res += nbr_unknowns_val_domain (tt(3,3)(dom), 2) ;
 				found = true ;
 			}
+#ifndef REMOVE_ALL_CHECKS
 			if (!found) {
 				cerr << "Unknown type of 2-tensor Domain_shell::nbr_unknowns" << endl ;
 				abort() ;
 			}
+#endif
 		}
 		break ;
 		default :

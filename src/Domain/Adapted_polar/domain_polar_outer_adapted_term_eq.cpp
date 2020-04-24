@@ -272,11 +272,13 @@ Term_eq Domain_polar_shell_outer_adapted::der_normal_term_eq (const Term_eq& so,
 
 
 Term_eq Domain_polar_shell_outer_adapted::lap_term_eq (const Term_eq& so, int mm) const {
-   
+
+#ifndef REMOVE_ALL_CHECKS
    if (so.get_val_t().get_valence() != 0) {
       cerr << "Domain_polar_shell_outer_adapted::lap_term_eq only defined for scalars" << endl ;
       abort() ;
   }
+#endif
   
   // Angular part :
   
@@ -295,6 +297,7 @@ Term_eq Domain_polar_shell_outer_adapted::lap_term_eq (const Term_eq& so, int mm
 }
 
 Term_eq Domain_polar_shell_outer_adapted::lap2_term_eq (const Term_eq& so, int mm) const {
+#ifndef REMOVE_ALL_CHECKS
     if (mm!=0) {
       cerr << "Domain_polar_shell_outer_adapted::lap2_term_eq not defined for m != 0 (for now)" << endl ;
       abort() ;
@@ -304,6 +307,7 @@ Term_eq Domain_polar_shell_outer_adapted::lap2_term_eq (const Term_eq& so, int m
       cerr << "Domain_polar_shell_outer_adapted::lap2_term_eq only defined for scalars" << endl ;
       abort() ;
   }
+#endif
   
   // Angular part :
   Term_eq dert (derive_t(so));

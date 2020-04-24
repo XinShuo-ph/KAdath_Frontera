@@ -79,11 +79,13 @@ int Domain_polar_periodic_nucleus::nbr_conditions_val_domain_boundary (const Val
 
 Array<int> Domain_polar_periodic_nucleus::nbr_conditions_boundary (const Tensor& tt, int dom, int bound, int n_cmp, Array<int>** p_cmp) const {
 
+#ifndef REMOVE_ALL_CHECKS
 	// Check boundary
 	if (bound!=OUTER_BC) {
 		cerr << "Unknown boundary in Domain_polar_periodic_nucleus::nbr_conditions_boundary" << endl ;
 		abort() ;
 	}
+#endif
 
 	int size = (n_cmp==-1) ? tt.get_n_comp() : n_cmp ;
 	Array<int> res (size) ;
