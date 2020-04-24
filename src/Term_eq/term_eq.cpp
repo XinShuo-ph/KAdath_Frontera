@@ -24,22 +24,9 @@
 namespace Kadath {
 void affecte_one_dom (int, Tensor*, const Tensor*) ;
 
-Term_eq::Term_eq (int dd, int tipe) : dom(dd), val_d(0x0), der_d(0x0), val_t(0x0), der_t(0x0), type_data (tipe) {
-	assert ((tipe==TERM_D) || (tipe==TERM_T)) ;
-}
 
-Term_eq::Term_eq (int dd, double vx) : dom(dd), der_d(0x0), val_t(0x0), der_t(0x0), type_data (TERM_D) {
-
-	val_d = new double(vx) ;
-}
-
-Term_eq::Term_eq (int dd, double vx, double dx) : dom(dd), val_t(0x0), der_t(0x0), type_data (TERM_D) {
-	val_d = new double(vx) ;
-	der_d = new double(dx) ;
-}
-
-Term_eq::Term_eq (int dd, const Tensor& vx) : dom(dd), val_d(0x0), der_d(0x0), der_t(0x0), type_data (TERM_T) {
-	val_t = new Tensor(vx, false) ;
+Term_eq::Term_eq (int dd, const Tensor& vx) : dom{dd}, val_d{nullptr}, der_d{nullptr}, der_t{nullptr}, type_data {TERM_T} {
+	val_t = new Tensor{vx, false} ;
 	for (int i=0 ; i<val_t->get_n_comp() ; i++) {
 		Array<int> id (val_t->indices(i)) ;
 		val_t->set(id).set_domain(dom) = vx(id)(dom) ;
@@ -51,8 +38,10 @@ Term_eq::Term_eq (int dd, const Tensor& vx) : dom(dd), val_d(0x0), der_d(0x0), d
 	}
 }
 
-Term_eq::Term_eq (int dd, const Tensor& vx, const Tensor& dx) : dom(dd), val_d(0x0), der_d(0x0), type_data (TERM_T) {
-	val_t = new Tensor(vx, false) ;
+Term_eq::Term_eq (int dd, const Tensor& vx, const Tensor& dx) :
+    dom{dd}, val_d{nullptr}, der_d{nullptr}, val_t{new Tensor{vx, false}}, der_t{new Tensor{dx, false}},
+    type_data {TERM_T}
+{
 	for (int i=0 ; i<val_t->get_n_comp() ; i++) {
 		Array<int> id (val_t->indices(i)) ;
 		val_t->set(id).set_domain(dom) = vx(id)(dom) ;
@@ -64,7 +53,6 @@ Term_eq::Term_eq (int dd, const Tensor& vx, const Tensor& dx) : dom(dd), val_d(0
 			val_t->set_name_ind(i, vx.get_name_ind()[i]) ;
 	}
 
-	der_t = new Tensor(dx, false) ;
 	for (int i=0 ; i<der_t->get_n_comp() ; i++) {
 		Array<int> id (der_t->indices(i)) ;
 		der_t->set(id).set_domain(dom) = dx(id)(dom) ;
@@ -77,15 +65,15 @@ Term_eq::Term_eq (int dd, const Tensor& vx, const Tensor& dx) : dom(dd), val_d(0
 	}
 }
 
-Term_eq::Term_eq (const Term_eq& so) : dom(so.dom), val_d(0x0), der_d(0x0), val_t(0x0), der_t(0x0), 
-						type_data(so.type_data) {
+Term_eq::Term_eq (const Term_eq& so) : dom{so.dom}, val_d{nullptr}, der_d{nullptr}, val_t{nullptr}, der_t{nullptr},
+						type_data{so.type_data} {
 
-	if (so.val_d!=0x0)
-		val_d = new double(*so.val_d) ;
-	if (so.der_d!=0x0)
-		der_d = new double(*so.der_d) ;
-	if (so.val_t!=0x0) {
-		val_t = new Tensor (*so.val_t, false) ;
+	if (so.val_d!=nullptr)
+		val_d = new double{*so.val_d} ;
+	if (so.der_d!=nullptr)
+		der_d = new double{*so.der_d} ;
+	if (so.val_t!=nullptr) {
+		val_t = new Tensor {*so.val_t, false} ;
 		for (int i=0 ; i<val_t->get_n_comp() ; i++) {
 		Array<int> id (val_t->indices(i)) ;
 		val_t->set(id).set_domain(dom) = (*so.val_t)(id)(dom) ;
@@ -98,8 +86,8 @@ Term_eq::Term_eq (const Term_eq& so) : dom(so.dom), val_d(0x0), der_d(0x0), val_
 	}
 	}
 
-	if (so.der_t!=0x0) {
-		der_t = new Tensor (*so.der_t, false) ;
+	if (so.der_t!=nullptr) {
+		der_t = new Tensor {*so.der_t, false} ;
 		for (int i=0 ; i<der_t->get_n_comp() ; i++) {
 		Array<int> id (der_t->indices(i)) ;
 		der_t->set(id).set_domain(dom) = (*so.der_t)(id)(dom) ;
@@ -138,13 +126,13 @@ Term_eq& Term_eq::operator=(Term_eq && so)
 
 Term_eq::~Term_eq() {
 
-	if (val_d!=0x0)
+	if (val_d!=nullptr)
 		delete val_d ;
-	if (der_d!=0x0)
+	if (der_d!=nullptr)
 		delete der_d ;
-	if (val_t!=0x0)
+	if (val_t!=nullptr)
 		delete val_t ;
-	if (der_t!=0x0)
+	if (der_t!=nullptr)
 		delete der_t ;
 }
 
@@ -154,7 +142,7 @@ double Term_eq::get_val_d() const {
 		cerr << "Wrong type of data in Term_eq" << endl ;
 		abort() ;
 	}
-	if (val_d ==0x0) {
+	if (val_d ==nullptr) {
 		cerr << "val_d uninitialised in Term_eq" << endl ;
 		abort() ;
 	}
@@ -167,7 +155,7 @@ double Term_eq::get_der_d() const {
 		cerr << "Wrong type of data in Term_eq" << endl ;
 		abort() ;
 	}
-	if (der_d ==0x0) {
+	if (der_d ==nullptr) {
 		cerr << "der_d uninitialised in Term_eq" << endl ;
 		abort() ;
 	}
@@ -180,7 +168,7 @@ Tensor Term_eq::get_val_t() const {
 		cerr << "Wrong type of data in Term_eq" << endl ;
 		abort() ;
 	}
-	if (val_t ==0x0) {
+	if (val_t ==nullptr) {
 		cerr << "val_t uninitialised in Term_eq" << endl ;
 		abort() ;
 	}
@@ -193,7 +181,7 @@ Tensor Term_eq::get_der_t() const {
 		cerr << "Wrong type of data in Term_eq" << endl ;
 		abort() ;
 	}
-	if (der_t ==0x0) {
+	if (der_t ==nullptr) {
 		cerr << "der_t uninitialised in Term_eq" << endl ;
 		abort() ;
 	}
@@ -210,13 +198,13 @@ void Term_eq::operator= (const Term_eq& so) {
 	}
 
 	if (type_data==TERM_D) {
-		if (so.val_d!=0x0) {
-			if (val_d!=0x0)
+		if (so.val_d!=nullptr) {
+			if (val_d!=nullptr)
 				delete val_d ;
 			val_d = new double(*so.val_d) ;
 			}
-		if (so.der_d!=0x0) {
-			if (der_d!=0x0)
+		if (so.der_d!=nullptr) {
+			if (der_d!=nullptr)
 				delete der_d ;
 			der_d = new double(*so.der_d) ;
 			}
@@ -224,14 +212,14 @@ void Term_eq::operator= (const Term_eq& so) {
 
 	if (type_data==TERM_T) {
 		
-	if (so.val_t!=0x0) {
-	  if (val_t==0x0)
+	if (so.val_t!=nullptr) {
+	  if (val_t==nullptr)
 	    val_t = new Tensor(*so.val_t) ;
 	  else
 	    affecte_one_dom (dom, val_t, so.val_t) ;
 	}
-	if (so.der_t!=0x0) {
-	  if (der_t==0x0)
+	if (so.der_t!=nullptr) {
+	  if (der_t==nullptr)
 	    der_t = new Tensor(*so.der_t) ;
 	  else
 	  affecte_one_dom(dom, der_t, so.der_t) ;
@@ -245,7 +233,7 @@ void Term_eq::set_val_d (double so) {
 		cerr << "Wrong type of data in Term_eq" << endl ;
 		abort() ;
 	}
-	if (val_d!=0x0)
+	if (val_d!=nullptr)
 		delete val_d ;
 	val_d = new double(so) ;
 }
@@ -255,7 +243,7 @@ void Term_eq::set_der_d (double so) {
 		cerr << "Wrong type of data in Term_eq" << endl ;
 		abort() ;
 	}
-	if (der_d!=0x0)
+	if (der_d!=nullptr)
 		delete der_d ;
 	der_d = new double(so) ;
 }
@@ -265,7 +253,7 @@ void Term_eq::set_val_t (Tensor so) {
 		cerr << "Wrong type of data in Term_eq" << endl ;
 		abort() ;
 	}
-	if (val_t!=0x0)
+	if (val_t!=nullptr)
 		delete val_t ;
 	val_t = new Tensor(so, false) ;
 	for (int i=0 ; i<val_t->get_n_comp() ; i++) {
@@ -279,7 +267,7 @@ void Term_eq::set_der_t (Tensor so) {
 		cerr << "Wrong type of data in Term_eq" << endl ;
 		abort() ;
 	}
-	if (der_t!=0x0)
+	if (der_t!=nullptr)
 		delete der_t ;
 	der_t = new Tensor(so, false) ;
 	for (int i=0 ; i<val_t->get_n_comp() ; i++) {
@@ -292,13 +280,13 @@ void Term_eq::set_der_zero() {
 
 	switch (type_data) {
 		case (TERM_D) :
-			if (der_d!=0x0)
+			if (der_d!=nullptr)
 				delete der_d ;
 			der_d = new double(0.) ;
 			break ;
 		case (TERM_T) :
-			assert (val_t!=0x0) ;
-			if (der_t==0x0)
+			assert (val_t!=nullptr) ;
+			if (der_t==nullptr)
 				der_t = new Tensor(*val_t, false) ;
 			for (int i=0 ; i<der_t->get_n_comp() ; i++)
 				der_t->set(der_t->indices(i)).set_domain(dom).set_zero() ;
@@ -314,22 +302,22 @@ ostream& operator<< (ostream& flux, const Term_eq& so) {
 	switch (so.type_data) {
 		case (TERM_D) :
 			flux << "double data" << endl ;
-			if (so.val_d !=0x0)
+			if (so.val_d !=nullptr)
 				flux << "val = " << *so.val_d << endl ;
 			else
 				flux << "val undefined" << endl ;
-			if (so.der_d !=0x0)
+			if (so.der_d !=nullptr)
 				flux << "der = " << *so.der_d << endl ;
 			else
 				flux << "der undefined" << endl ;
 			break ;
 		case (TERM_T) :
 			flux << "tensorial data" << endl ;
-			if (so.val_t !=0x0)
+			if (so.val_t !=nullptr)
 				flux << "val = " << *so.val_t << endl ;
 			else
 				flux << "val undefined" << endl ;
-			if (so.der_t !=0x0)
+			if (so.der_t !=nullptr)
 				flux << "der = " << *so.der_t << endl ;
 			else
 				flux << "der undefined" << endl ;

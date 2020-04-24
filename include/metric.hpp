@@ -36,7 +36,7 @@ class Base_tensor ;
 * Purely abstract class for metric handling. Can not be instanciated directly. One must use the various derived classes.
 * \ingroup metric
 */
-class Metric {
+class Metric : public Memory_mapped {
 
 	protected:
 		const Space& espace ; ///< The associated \c Space
@@ -47,42 +47,42 @@ class Metric {
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto one component of the covariant representation of the \c Metric, in a given \c Domain.
 		*/
-		mutable Term_eq** p_met_cov ;
+		mutable MMPtr_array<Term_eq> p_met_cov ;
 		/**
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto one component of the contravariant representation of the \c Metric, in a given \c Domain.
 		*/
-		mutable Term_eq** p_met_con ;
+		mutable MMPtr_array<Term_eq> p_met_con ;
 		/**
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto one component of the Christoffel symbols, in a given \c Domain.
 		*/
-		mutable Term_eq** p_christo ;		
+		mutable MMPtr_array<Term_eq> p_christo ;
 		/**
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto one component of the Riemann tensor, in a given \c Domain.
 		*/
-		mutable Term_eq** p_riemann ;
+		mutable MMPtr_array<Term_eq> p_riemann ;
 		/**
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto one component of the Ricci tensor, in a given \c Domain.
 		*/
-		mutable Term_eq** p_ricci_tensor ;
+		mutable MMPtr_array<Term_eq> p_ricci_tensor ;
 		/**
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto the Ricci scalar, in a given \c Domain.
 		*/
-		mutable Term_eq** p_ricci_scalar ;
+		mutable MMPtr_array<Term_eq> p_ricci_scalar ;
 		/**
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto the potential of the Dirac gauge, in a given \c Domain.
 		*/
-		mutable Term_eq** p_dirac ;
+		mutable MMPtr_array<Term_eq> p_dirac ;
 		/**
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto determinant of the covariant representation, in a given \c Domain.
 		*/
-		mutable Term_eq** p_det_cov ;
+		mutable MMPtr_array<Term_eq> p_det_cov ;
 		int type_tensor ; ///< States if one works in the CON or COV representation.
 		
 	protected:

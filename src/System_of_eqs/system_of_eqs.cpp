@@ -24,285 +24,130 @@
 #include "tensor_impl.hpp"
 namespace Kadath {
 // Constructor
+
 System_of_eqs::System_of_eqs (const Space& sp) :
-        espace(sp), dom_min(0),
-		dom_max(espace.get_nbr_domains()-1), ndom(dom_max-dom_min+1),
-		nvar_double (0), nvar(0), nterm_double(0), assoc_var_double(VARMAX*ndom), nterm(0), assoc_var(VARMAX*ndom), 
-		ncst(0), nterm_cst(0), ncst_hard(0), val_cst_hard(VARMAX), ndef(0), ndef_glob(0),  nopeuser(0), nopeuser_bin(0),
-		met(0x0), name_met(0x0),
-		neq_int(0),
-		neq(0), nbr_unknowns(0), nbr_conditions(-1), which_coef(0x0) {
-
-	nbr_unknowns = sp.nbr_unknowns_from_variable_domains() ;
-		  
-	var_double = new double* [VARMAX] ;
-	names_var_double = new char*[VARMAX] ;
-
-	term_double = new Term_eq* [VARMAX*ndom] ;
-
-	var = new Tensor* [VARMAX] ;
-	names_var = new char*[VARMAX] ;
-	
-	term = new Term_eq* [VARMAX*ndom] ;
-
-	cst = new Term_eq* [VARMAX*ndom] ;
-	names_cst = new char*[VARMAX*ndom] ;
-
-	cst_hard = new Term_eq* [VARMAX] ;
-
-	def = new Ope_def* [VARMAX*ndom] ;
-	names_def = new char*[VARMAX*ndom] ;
-
-	def_glob = new Ope_def_global* [VARMAX*ndom] ;
-	names_def_glob = new char*[VARMAX*ndom] ;
-
-	names_opeuser = new char*[VARMAX] ;
-	paruser = new Param* [VARMAX] ;
-
-	names_opeuser_bin = new char*[VARMAX] ;
-	paruser_bin = new Param* [VARMAX] ;
-
-	eq_int = new Eq_int* [VARMAX] ;
-
-	eq = new Equation* [VARMAX] ;
-	results = new Term_eq* [VARMAX] ;
-
+    espace{sp}, dom_min{0}, dom_max{espace.get_nbr_domains()-1}, ndom{dom_max-dom_min+1},
+    nvar_double{0}, var_double{VARMAX}, names_var_double{VARMAX},
+    nvar{0}, var{VARMAX}, names_var{VARMAX},
+    nterm_double{0}, term_double{VARMAX * ndom}, assoc_var_double{VARMAX*ndom},
+    nterm{0}, term{VARMAX * ndom}, assoc_var(VARMAX*ndom),
+    ncst{0}, nterm_cst{0}, cst{VARMAX*ndom}, names_cst{VARMAX * ndom},
+    ncst_hard{0}, cst_hard{VARMAX}, val_cst_hard{VARMAX},
+    ndef{0}, def {VARMAX*ndom} , names_def {VARMAX*ndom},
+    ndef_glob{0}, def_glob {VARMAX*ndom}, names_def_glob {VARMAX*ndom},
+    nopeuser{0}, opeuser{}, paruser{VARMAX}, names_opeuser{VARMAX},
+    nopeuser_bin{0}, opeuser_bin{}, paruser_bin{VARMAX}, names_opeuser_bin{VARMAX},
+    met{nullptr}, name_met{nullptr},
+    neq_int{0}, eq_int{VARMAX}, neq{0}, eq{VARMAX}, results{VARMAX},
+    nbr_unknowns{sp.nbr_unknowns_from_variable_domains()}, nbr_conditions{-1}, which_coef{nullptr}
+{
+    // we may use the initialize tag in constructors, but it would restart a loop for each data member, better to make
+    //only one. That said, this constructor is not likely to be extensively called, so that won't matter much.
 	for (int i=0 ; i<VARMAX ; i++) {
-		var_double[i] = 0x0 ;
-		var[i]=0x0 ;
-		names_var[i]=0x0 ;
+		var_double[i] = nullptr ;
+		var[i]=nullptr ;
+		names_var[i]=nullptr ;
 		
-		cst_hard[i] = 0x0 ;
-		names_cst[i] = 0x0 ;
+		cst_hard[i] = nullptr ;
+		names_cst[i] = nullptr ;
 
-		opeuser[i] = 0x0 ;
-		paruser[i] = 0x0 ;
+		opeuser[i] = nullptr ;
+		paruser[i] = nullptr ;
 		
-		opeuser_bin[i] = 0x0 ;
-		paruser_bin[i] = 0x0 ;
+		opeuser_bin[i] = nullptr ;
+		paruser_bin[i] = nullptr ;
 		
-		eq_int[i] = 0x0 ;
+		eq_int[i] = nullptr ;
 		
-		eq[i] = 0x0 ;
-		results[i] = 0x0 ;
-		}		
+		eq[i] = nullptr ;
+		results[i] = nullptr ;
+    }
 	for (int i=0 ; i<VARMAX*ndom ; i++) {
-		term[i] = 0x0 ;
-		cst[i] = 0x0 ;
-		term_double[i] = 0x0 ;
+		term[i] = nullptr ;
+		cst[i] = nullptr ;
+		term_double[i] = nullptr ;
 	}
 }
 
 // same between two bounds
-System_of_eqs::System_of_eqs (const Space& sp, int dmin, int dmax) : espace(sp), dom_min(dmin), 
-		dom_max(dmax), ndom(dom_max-dom_min+1),
-		nvar_double(0), nvar(0), nterm_double(0), assoc_var_double(VARMAX*ndom),
-		nterm(0), assoc_var(VARMAX*ndom), 
-		ncst(0),nterm_cst(0), ncst_hard(0), 
-		val_cst_hard(VARMAX), ndef(0), ndef_glob(0), nopeuser(0), nopeuser_bin(0), met(0x0), name_met(0x0),
-		neq_int(0), neq(0), nbr_unknowns(0), nbr_conditions(-1), which_coef(0x0) {
-	nbr_unknowns = sp.nbr_unknowns_from_variable_domains() ;
-	var_double = new double* [VARMAX] ;
-	names_var_double = new char*[VARMAX] ;
+System_of_eqs::System_of_eqs (const Space& sp, int dmin, int dmax) :
+    espace{sp}, dom_min{dmin}, dom_max{dmax},ndom{dom_max-dom_min+1},
+    nvar_double{0}, var_double{VARMAX}, names_var_double{VARMAX},
+    nvar{0}, var{VARMAX}, names_var{VARMAX},
+    nterm_double{0}, term_double{VARMAX * ndom}, assoc_var_double{VARMAX*ndom},
+    nterm{0}, term{VARMAX * ndom}, assoc_var(VARMAX*ndom),
+    ncst{0}, nterm_cst{0}, cst{VARMAX*ndom}, names_cst{VARMAX * ndom},
+    ncst_hard{0}, cst_hard{VARMAX}, val_cst_hard{VARMAX},
+    ndef{0}, def {VARMAX*ndom} , names_def {VARMAX*ndom},
+    ndef_glob{0}, def_glob {VARMAX*ndom}, names_def_glob {VARMAX*ndom},
+    nopeuser{0}, opeuser{}, paruser{VARMAX}, names_opeuser{VARMAX},
+    nopeuser_bin{0}, opeuser_bin{}, paruser_bin{VARMAX}, names_opeuser_bin{VARMAX},
+    met{nullptr}, name_met{nullptr},
+    neq_int{0}, eq_int{VARMAX}, neq{0}, eq{VARMAX}, results{VARMAX},
+    nbr_unknowns{sp.nbr_unknowns_from_variable_domains()}, nbr_conditions{-1}, which_coef{nullptr}
+{
+    // we may use the initialize tag in constructors, but it would restart a loop for each data member, better to make
+    //only one. That said, this constructor is not likely to be extensively called, so that won't matter much.
+    for (int i=0 ; i<VARMAX ; i++) {
+        var_double[i] = nullptr ;
+        var[i]=nullptr ;
+        names_var[i]=nullptr ;
 
-	term_double = new Term_eq* [VARMAX*ndom] ;
-	
-	var = new Tensor* [VARMAX] ;
-	names_var = new char*[VARMAX] ;
+        cst_hard[i] = nullptr ;
+        names_cst[i] = nullptr ;
 
-	term = new Term_eq* [VARMAX*ndom] ;
+        opeuser[i] = nullptr ;
+        paruser[i] = nullptr ;
 
-	cst = new Term_eq* [VARMAX*ndom] ;
-	names_cst = new char*[VARMAX*ndom] ;
+        opeuser_bin[i] = nullptr ;
+        paruser_bin[i] = nullptr ;
 
-	cst_hard = new Term_eq* [VARMAX] ;
+        eq_int[i] = nullptr ;
 
-	def = new Ope_def* [VARMAX*ndom] ;
-	names_def = new char*[VARMAX*ndom] ;
-
-	def_glob = new Ope_def_global* [VARMAX*ndom] ;
-	names_def_glob = new char*[VARMAX*ndom] ;
-
-	names_opeuser = new char*[VARMAX] ;
-	paruser = new Param* [VARMAX] ;
-
-	names_opeuser_bin = new char*[VARMAX] ;
-	paruser_bin = new Param* [VARMAX] ;
-
-	eq_int = new Eq_int* [VARMAX] ;
-
-	eq = new Equation* [VARMAX] ;
-	results = new Term_eq* [VARMAX] ;
-
-	for (int i=0 ; i<VARMAX ; i++) {
-		var_double[i] = 0x0 ;
-		var[i]=0x0 ;
-		names_var[i]=0x0 ;
-		cst_hard[i] = 0x0 ;
-		names_cst[i] = 0x0 ;
-		opeuser[i] = 0x0 ;
-		paruser[i] = 0x0 ;
-		opeuser_bin[i] = 0x0 ;
-		paruser_bin[i] = 0x0 ;
-		eq_int[i] = 0x0 ;
-		eq[i] = 0x0 ;
-		results[i] = 0x0 ;
-		}		
-	for (int i=0 ; i<VARMAX*ndom ; i++) {
-		term[i] = 0x0 ;
-		cst[i] = 0x0 ;
-		term_double[i] = 0x0 ;
-	}	
+        eq[i] = nullptr ;
+        results[i] = nullptr ;
+    }
+    for (int i=0 ; i<VARMAX*ndom ; i++) {
+        term[i] = nullptr ;
+        cst[i] = nullptr ;
+        term_double[i] = nullptr ;
+    }
 }
 
-// In only one domain
-System_of_eqs::System_of_eqs (const Space& sp, int dd) : espace(sp), dom_min(dd), 
-		dom_max(dd), ndom(1),
-		nvar_double(0), nvar(0), nterm_double(0), assoc_var_double(VARMAX*ndom), 
-		nterm(0), assoc_var(VARMAX), 
-		ncst(0), nterm_cst(0), ncst_hard(0), val_cst_hard(VARMAX), ndef(0), ndef_glob(0), nopeuser(0),nopeuser_bin(0),
-		met(0x0), name_met(0x0),
-		neq_int(0), neq(0), nbr_unknowns(0), nbr_conditions(-1), which_coef(0x0) {
-nbr_unknowns = sp.nbr_unknowns_from_variable_domains() ;
-	var_double = new double* [VARMAX] ;
-	names_var_double = new char*[VARMAX] ;
 
-	term_double = new Term_eq* [VARMAX*ndom] ;
-
-	var = new Tensor* [VARMAX] ;
-	names_var = new char*[VARMAX] ;
-
-	term = new Term_eq* [VARMAX*ndom] ;
-
-	cst = new Term_eq* [VARMAX*ndom] ;
-	names_cst = new char*[VARMAX*ndom] ;
-
-	cst_hard = new Term_eq* [VARMAX] ;
-
-	def = new Ope_def* [VARMAX*ndom] ;
-	names_def = new char*[VARMAX*ndom] ;
-	
-	def_glob = new Ope_def_global* [VARMAX*ndom] ;
-	names_def_glob = new char*[VARMAX*ndom] ;
-
-	names_opeuser = new char* [VARMAX] ;
-	paruser = new Param* [VARMAX]  ;
-
-	names_opeuser_bin = new char* [VARMAX] ;
-	paruser_bin = new Param* [VARMAX]  ;
-
-	eq_int = new Eq_int* [VARMAX] ;
-
-	eq = new Equation* [VARMAX] ;
-	results = new Term_eq* [VARMAX] ;
-
-	for (int i=0 ; i<VARMAX ; i++) {
-		var_double[i]=0x0 ;
-		var[i]=0x0 ;
-		names_var[i]=0x0 ;
-		cst_hard[i] = 0x0 ;
-		names_cst[i] = 0x0 ;
-		opeuser[i] =  0x0 ;
-		paruser[i] = 0x0 ;
-		opeuser_bin[i] =  0x0 ;
-		paruser_bin[i] = 0x0 ;
-		eq_int[i] = 0x0 ;
-		eq[i] = 0x0 ;
-		results[i] = 0x0 ;
-		}		
-	for (int i=0 ; i<VARMAX*ndom ; i++) {
-		term[i] = 0x0 ;
-		cst[i] = 0x0 ;
-		term_double[i] = 0x0 ;
-	}	
-}
-
-System_of_eqs::System_of_eqs (const System_of_eqs& so) : espace(so.espace), assoc_var_double(0), assoc_var(0), val_cst_hard(0) {
-	cerr << "Copy constructor not implemented for System_of_eqs" << endl ;
-	abort() ;
-}
-
-System_of_eqs::~System_of_eqs() {	
-
-	delete [] var_double ;
-	for (int i=0 ; i<nvar_double ; i++)
-		delete [] names_var_double[i] ;
-	delete [] names_var_double ;
-
-	for (int i=0 ; i<nterm_double ; i++)
-		delete term_double[i] ;
-	delete [] term_double ;
-
-	delete [] var ;
-	for (int i=0 ; i<nvar ; i++)
-		delete [] names_var[i] ;
-	delete [] names_var ;
-
-	for (int i=0 ; i<nterm ; i++)
-		delete term[i] ;
-	delete [] term ;
-
-	for (int i=0 ; i<nterm_cst ; i++) {
-		delete cst[i] ;
-		cst[i] = 0x0 ;	
-	}
-	delete [] cst ;
-
-	for (int i=0 ; i<ncst ; i++)
-		delete [] names_cst[i] ;
-	delete [] names_cst ;
-
-	for (int i=0 ; i<ncst_hard ; i++)
-		delete cst_hard[i] ;
-	delete [] cst_hard ;
-	
-	for (int i=0 ; i<ndef ; i++)
-		delete def[i] ;
-	delete [] def ;
-
-	for (int i=0 ; i<ndef ; i++)
-		delete [] names_def[i] ;
-	delete [] names_def ;
-	
-      for (int i=0 ; i<ndef_glob ; i++)
-		delete def_glob[i] ;
-	delete [] def_glob ;
-
-	for (int i=0 ; i<ndef_glob ; i++)
-		delete [] names_def_glob[i] ;
-	delete [] names_def_glob ;
-      
-	for (int i=0 ; i<nopeuser ; i++)
-	    delete names_opeuser[i] ;
-	delete [] names_opeuser ;
-	delete [] paruser ;
-
-	for (int i=0 ; i<nopeuser_bin ; i++)
-	    delete names_opeuser_bin[i] ;
-	delete [] names_opeuser_bin ;
-	delete [] paruser_bin ;
-
-	if (name_met !=0x0)
-		delete [] name_met ;
-
-	for (int i=0 ; i<neq_int ; i++)
-		delete eq_int[i] ;
-	delete [] eq_int ;
-
-	for (int i=0 ; i<neq ; i++)
-		delete eq[i] ;
-	delete [] eq ;
-
-	for (int i=0 ; i<VARMAX ; i++)
-		if (results[i]!=0x0)
+System_of_eqs::~System_of_eqs() {
+//	delete [] var_double ;
+	for (int i=0 ; i<nvar_double ; i++) delete [] names_var_double[i] ;
+	for (int i=0 ; i<nterm_double ; i++) delete term_double[i] ;
+//	delete [] var ;
+	for (int i=0 ; i<nvar ; i++) delete [] names_var[i] ;
+	for (int i=0 ; i<nterm ; i++) delete term[i] ;
+	for (int i=0 ; i<nterm_cst ; i++) safe_delete(cst[i]);
+	for (int i=0 ; i<ncst ; i++) delete [] names_cst[i] ;
+	for (int i=0 ; i<ncst_hard ; i++) delete cst_hard[i] ;
+//	delete [] cst_hard ;
+	for (int i=0 ; i<ndef ; i++) delete def[i] ;
+//	delete [] def ;
+	for (int i=0 ; i<ndef ; i++) delete [] names_def[i] ;
+//	delete [] names_def ;
+    for (int i=0 ; i<ndef_glob ; i++) delete def_glob[i] ;
+//	delete [] def_glob ;
+	for (int i=0 ; i<ndef_glob ; i++) delete [] names_def_glob[i] ;
+//	delete [] names_def_glob ;
+	for (int i=0 ; i<nopeuser ; i++) delete names_opeuser[i] ;
+//	delete [] names_opeuser ;
+//	delete [] paruser ;
+	for (int i=0 ; i<nopeuser_bin ; i++) delete names_opeuser_bin[i] ;
+//	delete [] names_opeuser_bin ;
+//	delete [] paruser_bin ;
+	if (name_met !=nullptr) delete [] name_met ;
+	for (int i=0 ; i<neq_int ; i++) delete eq_int[i] ;
+//	delete [] eq_int ;
+	for (int i=0 ; i<neq ; i++) delete eq[i] ;
+//	delete [] eq ;
+	for (int i=0 ; i<VARMAX ; i++) if (results[i]!=nullptr)
 			delete results[i] ;
-	delete [] results ;
-
-	if (which_coef!=0x0) {
-		for (int i=0 ; i<nbr_conditions ; i++)
-			delete which_coef[i] ;
-		delete [] which_coef ;
-	}
+    if(!which_coef.empty()) for (int i=0 ; i<nbr_conditions ; i++) delete which_coef[i] ;
 }
 
 void System_of_eqs::display_do_newton_report_header(std::ostream &os, double precision)
@@ -339,7 +184,7 @@ void System_of_eqs::display_do_newton_iteration(std::ostream &os,const Newton_it
 }
 
 const Metric* System_of_eqs::get_met() const {
-	if (met==0x0) {
+	if (met==nullptr) {
 		cerr << "Undefined metric in System_of_eqs" << endl ;
 		abort() ;
 	}
@@ -442,7 +287,7 @@ void System_of_eqs::add_var (const char*nom, double& vv) {
 // Add an uknown
 void System_of_eqs::add_var (const char*nom, Tensor& tt) {
 
-	if (nom!=0x0) {
+	if (nom!=nullptr) {
 		if ((nbr_char(nom, '_')!=0) || (nbr_char(nom, '^')!=0)) {
 			cerr << "No indices allowed in names of variables" << endl ;
 			abort() ;
@@ -474,7 +319,7 @@ void System_of_eqs::add_var (const char*nom, Tensor& tt) {
 // Add a  constant
 void System_of_eqs::add_cst (const char*nom, const Tensor& so) {
 
-	if (nom!=0x0) {
+	if (nom!=nullptr) {
 	if ((nbr_char(nom, '_')!=0) || (nbr_char(nom, '^')!=0)) {
 		cerr << "No indices allowed in names of constants" << endl ;
 		abort() ;
@@ -550,15 +395,15 @@ void System_of_eqs::add_def (int dom, const char* nom) {
 	get_util (names_def[ndef], p1) ;
 	
 	int valence ;
-	char* indices = 0x0 ;
-	Array<int>* ttype = 0x0 ;
+	char* indices = nullptr ;
+	Array<int>* ttype = nullptr ;
 	bool auxi = is_tensor (p1, names_def[ndef], valence, indices, ttype) ;
 	assert (auxi) ;
 	
 	def[ndef] = new Ope_def (this, give_ope (dom, p2), valence, indices, ttype) ;
-	if (ttype!=0x0)
+	if (ttype!=nullptr)
 		delete ttype ;
-	if (indices!=0x0)
+	if (indices!=nullptr)
 		delete [] indices ;
 	ndef++ ;
 }
@@ -615,7 +460,7 @@ void System_of_eqs::xx_to_ders (const Array<double>& xx) {
 
 		// Check for symetric tensor : 
 		const Metric_tensor* pmet = dynamic_cast<const Metric_tensor*>(term[i]->val_t) ;
-		if (pmet==0x0) {
+		if (pmet==nullptr) {
 			Tensor auxi (term[i]->get_val_t(), false) ;
 	
 			int dom = term[i]->get_dom() ;
@@ -744,7 +589,7 @@ void System_of_eqs::newton_update_vars(Array<double> const &xx)
     int conte = 0;
     espace.xx_to_vars_variable_domains (this, xx, conte);
 
-    double* old_var_double = (nvar_double==0) ? 0x0 :new double[nvar_double];
+    double* old_var_double = (nvar_double==0) ? nullptr :new double[nvar_double];
     for (int i=0 ; i<nvar_double ; i++) old_var_double[i] = *var_double[i];
     Tensor** old_fields = new Tensor* [nvar];
     for (int i=0 ; i<nvar ; i++) old_fields[i] = new Tensor(*var[i]);
@@ -754,7 +599,7 @@ void System_of_eqs::newton_update_vars(Array<double> const &xx)
         *var[i] = *old_fields[i] - *var[i];
     }
     for (int i=0 ; i<nvar_double ; i++) *var_double[i] = old_var_double[i] - *var_double[i];
-    if (old_var_double!=0x0) delete [] old_var_double;
+    if (old_var_double!=nullptr) delete [] old_var_double;
     for (int i=0 ; i<nvar ; i++) delete old_fields[i];
     delete [] old_fields;
 }

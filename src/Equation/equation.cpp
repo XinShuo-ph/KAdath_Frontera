@@ -23,29 +23,33 @@
 #include "scalar.hpp"
 #include "tensor_impl.hpp"
 namespace Kadath {
-Equation::Equation (const Domain* zedom, int nd, int np, int nused, Array<int>** pused) : 
-	dom(zedom), ndom(nd), 
-	n_ope(np), called(false), n_cond(0x0), n_cmp_used(nused), p_cmp_used(pused) {
+//    const Domain* dom ;
+//    int ndom ;
+//    int n_ope ;
+//    Memory_mapped_array<Ope_eq*> parts ;
+//    bool called ;
+//    int n_comp ;
+//    int n_cond_tot ;
+//    Array<int>* n_cond ;
+//
+//    int n_cmp_used ;
+//    Memory_mapped_array<Array<int>*> p_cmp_used ;
 
-	parts = new Ope_eq*[n_ope] ;
-	for (int i=0 ; i<n_ope ; i++)
-		parts[i] = 0x0 ;
-}
+Equation::Equation (const Domain* zedom, int nd, int np, int nused, Array<int>** pused) :
+	dom{zedom}, ndom{nd}, n_ope{np}, parts{n_ope,initialize}, called{false}, n_cond{nullptr}, n_cond_tot{},
+	n_cmp_used{nused}, p_cmp_used{pused}
+{}
+
 
 Equation::~Equation() {
-	for (int i=0 ; i<n_ope ; i++)
-		if (parts[i] !=0x0)
-			delete parts[i] ;
-	delete [] parts ;
-
-	if (called) 	
-		delete n_cond ;
+    for(auto & p : parts) safe_delete(p);
+	if (called) delete n_cond ;
 }
 
 void Equation::apply(int& conte, Term_eq** res) {
 	int old_conte = conte ;
 	for (int i=0 ; i<n_ope ; i++) {
-		if (res[conte]!=0x0)
+		if (res[conte]!=nullptr)
 			*res[conte] = parts[i]->action() ; //NOT THREAD SAFE
 		else
 			res[conte] = new Term_eq (parts[i]->action()) ; //NOT THREAD SAFE

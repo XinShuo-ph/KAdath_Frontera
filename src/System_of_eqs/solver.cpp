@@ -58,7 +58,7 @@ void System_of_eqs::compute_nbr_of_conditions()
 
     int conte = 0 ;
     for (int i=0 ; i<neq ; i++)
-        eq[i]->apply(conte, results) ;
+        eq[i]->apply(conte, results.set_data()) ;
 
     // Need to assert the size :
     if (nbr_conditions==-1) {
@@ -86,7 +86,7 @@ Array<double> System_of_eqs::sec_member() {
 	}
 
 	for (int i=0 ; i<neq ; i++)
-	    eq[i]->export_val(conte, results, res, pos_res) ;
+	    eq[i]->export_val(conte, results.set_data(), res, pos_res) ;
 	return res ;
 }
 
@@ -102,7 +102,7 @@ Array<double> System_of_eqs::do_JX (const Array<double>& xx) {
 
 	int conte = 0 ;
 	for (int i=0 ; i<neq ; i++)  
-	    eq[i]->apply(conte, results) ;
+	    eq[i]->apply(conte, results.set_data()) ;
 	
 	if (nbr_conditions==-1) {
 		cerr << "Number of conditions unknown ; call sec_member first" << endl ;
@@ -119,7 +119,7 @@ Array<double> System_of_eqs::do_JX (const Array<double>& xx) {
 	}
 
 	for (int i=0 ; i<neq ; i++)
-	    eq[i]->export_der(conte, results, res, pos_res) ;
+	    eq[i]->export_der(conte, results.set_data(), res, pos_res) ;
 	return res ;
 }
 
@@ -185,7 +185,7 @@ Array<double> System_of_eqs::do_col_J (int cc) {
 	conte = 0 ;
 	for (int i=0 ; i<neq ; i++) {
 		if ((is_var_double) || (eq[i]->take_into_account(zedom)) || (eq[i]->take_into_account(zedoms(0))) || (eq[i]->take_into_account(zedoms(1)))) {
-			eq[i]->apply(conte, results) ;//NOT THREAD SAFE (but both eq and results are own by System_of_eqs)
+			eq[i]->apply(conte, results.set_data()) ;//NOT THREAD SAFE (but both eq and results are own by System_of_eqs)
 		}
 		else
 			conte += eq[i]->n_ope ;
@@ -207,7 +207,7 @@ Array<double> System_of_eqs::do_col_J (int cc) {
 	
 	for (int i=0 ; i<neq ; i++) {
 		if ((is_var_double) || (eq[i]->take_into_account(zedom))|| (eq[i]->take_into_account(zedoms(0))) || (eq[i]->take_into_account(zedoms(1)))) {
-		  eq[i]->export_der(conte, results, res, pos_res) ;
+		  eq[i]->export_der(conte, results.set_data(), res, pos_res) ;
 		}
 		else
 			{

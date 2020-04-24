@@ -319,6 +319,8 @@ namespace Kadath {
     template<typename T> inline void safe_delete(T * & p) {Safe_deleter<T>::apply(p);}
     template<typename T> inline void safe_delete(T * const & p) {Safe_deleter<T>::apply(p);}
 
+
+    template<typename T> using MMPtr_array = Memory_mapped_array<T*>;
 }
 
 

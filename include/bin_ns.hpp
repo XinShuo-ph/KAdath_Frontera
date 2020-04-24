@@ -34,10 +34,10 @@ namespace Kadath {
 
 class Space_bin_ns : public Space {
 
-     protected :
+ protected :
 	int nshells ; ///< Number of outer shells.
 
-     public: 
+ public:
     /**
      * Standard constructor ; stars are initial spherical.
      * @param ttype [input] : the type of basis.
