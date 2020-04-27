@@ -184,7 +184,7 @@ namespace Kadath {
     }
 
     inline void Tensor::set_name_ind (int pos, char name) {
-        assert ((pos>=0) && (pos<valence)) ;
+        assert((pos>=0) && (pos<valence)) ;
         if (!name_affected)
             name_affected = true ;
         name_indice[pos] = name ;

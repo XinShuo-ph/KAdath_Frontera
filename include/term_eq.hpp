@@ -22,6 +22,7 @@
 
 #include "tensor.hpp"
 #include "metric_tensor.hpp"
+#include "tensor_impl.hpp"
 
 #define TERM_D 0
 #define TERM_T 1
