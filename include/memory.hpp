@@ -3,6 +3,7 @@
 //
 
 #include "config.h"
+#include <experimental/memory_resource>
 
 #ifndef __MEMORY_HPP_
 #define __MEMORY_HPP_
@@ -45,15 +46,12 @@ namespace Kadath {
         }
     };
 
-
-    class Memory_mapper {
+    class Memory_mapper_prm : public std::experimental::pmr::memory_resource {
     private:
         struct Free_deleter {
             void operator()(void *raw_mem_ptr) { std::free(raw_mem_ptr); }
         };
-
         using ptr_vec_t = std::vector<void *>;
-
 #if MEMORY_MAP_TYPE == 0
         using mem_map_t = std::vector<ptr_vec_t>;
         using mem_sizes_t = std::vector<std::size_t>;
@@ -68,20 +66,19 @@ namespace Kadath {
         using raw_ptr_t = std::unique_ptr<void, Free_deleter>;
         using ptr_list_t = std::vector<raw_ptr_t>;
 
+        mem_map_t memory_map;
+        ptr_list_t ptr_list;
 
-        static mem_map_t memory_map;
-        static ptr_list_t ptr_list;
 
-    public:
 
-        static void *get_memory(std::size_t const sz) {
-            if (sz == 0) return nullptr;
+        void * do_allocate(std::size_t bytes,std::size_t alignment) override {
+            if (bytes == 0) return nullptr;
             else {
                 void *raw_mem_ptr;
 #ifdef MAP_MEMORY_WITH_VECTOR
-                auto pos = std::find(std::begin(mem_sizes), std::end(mem_sizes), sz);
+                auto pos = std::find(std::begin(mem_sizes), std::end(mem_sizes), bytes);
                 if (pos == mem_sizes.end()) {
-                    mem_sizes.push_back(sz);
+                    mem_sizes.push_back(bytes);
                     memory_map.resize(mem_sizes.size());
                     pos = --mem_sizes.end();
                 }
@@ -89,10 +86,10 @@ namespace Kadath {
                 std::size_t index = pos - mem_sizes.begin();
                 auto &mem = memory_map[index];
 #else
-                auto& mem = memory_map[sz];
+                auto& mem = memory_map[bytes];
 #endif
                 if (mem.empty()) {
-                    ptr_list.emplace_back(std::malloc(sz));
+                    ptr_list.emplace_back(std::malloc(bytes));
                     raw_mem_ptr = ptr_list.back().get();
                 } else {
                     raw_mem_ptr = mem.back();
@@ -103,22 +100,39 @@ namespace Kadath {
             }
         }
 
-        template<typename T>
-        static T *get_memory(std::size_t const sz) {
-            return static_cast<T *>(get_memory(sz * sizeof(T)));
-        }
-
-        static void release_memory(void *raw_mem_ptr, std::size_t const sz) {
-            if (raw_mem_ptr != nullptr) {
+        void do_deallocate(void *p,std::size_t bytes,std::size_t alignment) override {
+            if (p != nullptr) {
 #if MEMORY_MAP_TYPE == 0
-                auto pos = std::find(std::begin(mem_sizes), std::end(mem_sizes), sz);
+                auto pos = std::find(std::begin(mem_sizes), std::end(mem_sizes), bytes);
                 std::size_t index = pos - mem_sizes.begin();
-                memory_map[index].push_back(raw_mem_ptr);
+                memory_map[index].push_back(p);
 #else
-                memory_map[sz].push_back(raw_mem_ptr);
+                memory_map[bytes].push_back(p);
 #endif
             }
         }
+
+        bool do_is_equal(const std::experimental::pmr::memory_resource & other) const noexcept override {
+            return (&other == this);
+        }
+
+    public:
+        Memory_mapper_prm() : memory_map{}, ptr_list{} {}
+    };
+
+    class Memory_mapper {
+    private:
+        static Memory_mapper_prm memory_mapper;
+
+    public:
+
+        static inline void *get_memory(std::size_t const sz) {return memory_mapper.allocate(sz);}
+
+        template<typename T> static inline T *get_memory(std::size_t const sz) {
+            return static_cast<T *>(get_memory(sz * sizeof(T)));
+        }
+
+        static void release_memory(void *raw_mem_ptr, std::size_t const sz) {memory_mapper.deallocate(raw_mem_ptr,sz);}
 
         template<typename T>
         static void release_memory(void *raw_mem_ptr, std::size_t const sz) {
