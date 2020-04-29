@@ -14,8 +14,9 @@
 #include <map>
 #include <algorithm>
 #include <iostream>
-
+#ifdef HAVE_BOOST
 #include "boost/pool/pool.hpp"
+#endif
 
 #if MEMORY_MAP_TYPE == 1
 #include <unordered_map>
@@ -71,15 +72,18 @@ namespace Kadath {
 
         static mem_map_t memory_map;
         static ptr_list_t ptr_list;
+#ifdef HAVE_BOOST
         static boost::pool<> size_4_memory_pool;
-
+#endif
     public:
 
         static void *get_memory(std::size_t const sz) {
             if (sz == 0) return nullptr;
+#ifdef HAVE_BOOST
             else if(sz == 4) {
                 return size_4_memory_pool.malloc();
             }
+#endif
             else {
                 void *raw_mem_ptr;
                 //first find the entry of the size sz in the map (or create it if it doesn't exists)
@@ -115,10 +119,12 @@ namespace Kadath {
 
         static void release_memory(void *raw_mem_ptr, std::size_t const sz) {
             if (raw_mem_ptr != nullptr) {
+#ifdef HAVE_BOOST
                 if (sz == 4) {
                     size_4_memory_pool.free(raw_mem_ptr);
                 }
                 else {
+#endif //ifdef HAVE_BOOST
 #if MEMORY_MAP_TYPE == 0
                     auto pos = std::find_if(memory_map.begin(), memory_map.end(),
                                             [sz](std::pair<std::size_t, ptr_vec_t> const &x) { return x.first == sz; });
@@ -145,7 +151,9 @@ namespace Kadath {
                     memory_map[sz].push_back(raw_mem_ptr);
 #endif //ifdef ALL_CHECKS_ENABLED
 #endif //if MEMORY_MAP_TYPE == 0
+#ifdef HAVE_BOOST
                 }
+#endif //ifdef HAVE_BOOST
             }
         }
 
