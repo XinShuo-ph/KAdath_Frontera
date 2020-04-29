@@ -75,6 +75,10 @@
 
 #cmakedefine HAVE_LINUX
 
+// If cmake have found boost.
+
+#cmakedefine HAVE_BOOST
+
 
 // Enables the move constructors and assignment operators for tensorial objects (DOES NOT WORK at the moment, so this
 // has to be kept undefined)

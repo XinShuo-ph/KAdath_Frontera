@@ -11,13 +11,11 @@
 #include <array>
 #include <memory>
 #include <vector>
-
+#include <map>
 #include <algorithm>
 
 #if MEMORY_MAP_TYPE == 1
 #include <unordered_map>
-#elif MEMORY_MAP_TYPE == 2
-#include <map>
 #elif MEMORY_MAP_TYPE == 3
 #include "flat_hash_map.hpp"
 #endif
@@ -27,6 +25,7 @@
 #else
 #define MAP_MEMORY_WITH_MAP
 #endif
+
 
 namespace Kadath {
 
@@ -78,6 +77,7 @@ namespace Kadath {
             if (sz == 0) return nullptr;
             else {
                 void *raw_mem_ptr;
+                //first find the entry of the size sz in the map (or create it if it doesn't exists)
 #ifdef MAP_MEMORY_WITH_VECTOR
                 auto pos = std::find(std::begin(mem_sizes), std::end(mem_sizes), sz);
                 if (pos == mem_sizes.end()) {
@@ -98,7 +98,6 @@ namespace Kadath {
                     raw_mem_ptr = mem.back();
                     mem.pop_back();
                 }
-
                 return raw_mem_ptr;
             }
         }
@@ -124,6 +123,8 @@ namespace Kadath {
         static void release_memory(void *raw_mem_ptr, std::size_t const sz) {
             release_memory(raw_mem_ptr, sz * sizeof(T));
         }
+
+        static void display(std::ostream &os);
     };
 
     struct Memory_mapped {

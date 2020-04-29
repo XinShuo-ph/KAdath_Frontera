@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     int nb_iters_max {1}; //number of allowed iterations, -1 means all, change for debug or profiling, etc.
     if(argc>1) nb_iters_max = std::atoi(argv[1]);
     // Number of points
-    int nbr  = 11 ;
+    int nbr  = 17 ;
     int type_coloc = CHEB_TYPE ;
     Dim_array res (dim) ;
     res.set(0) = nbr ; res.set(1) = nbr ; res.set(2) = 1 ;

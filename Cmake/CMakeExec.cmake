@@ -5,7 +5,6 @@ endif()
 
 option(PAR_VERSION "Parallel version" ON)
 option(MKL_VERSION "MKL Parallel version" OFF)
-option(USE_MKL_FFTW3_INTERFACE "Use MKL interface for FFTW3 function (unsupported at the moment)" OFF)
 
 if (PAR_VERSION)
 	message ("Parallel version")

@@ -9,8 +9,6 @@ project(Kadath VERSION 2.3.0.0)
 
 message("Root directory : ${PROJECT_SOURCE_DIR}")
 
-#set(CMAKE_VERBOSE_MAKEFILE ON)
-
 #The following variable is just for the config.h file to trigger a debug macro flag.
 string(TOUPPER ${CMAKE_BUILD_TYPE} STR_DEBUG_MODE)
 if(STR_DEBUG_MODE MATCHES DEBUG)
@@ -41,8 +39,12 @@ elseif(MEMORY_MAP_TYPE STREQUAL flat_map)
 endif()
 message("Memory map container type : ${MEMORY_MAP_TYPE} (code ${MEMORY_MAP_TYPE_INDEX})")
 
-
-configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )
+find_package(Boost)
+if(Boost_FOUND)
+    set(HAVE_BOOST TRUE)
+else()
+    set(HAVE_BOOST FALSE)
+endif()
 
 if (EXISTS ${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
     include(${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
@@ -99,12 +101,15 @@ if (EXISTS ${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
 endif()
 include (${PROJECT_SOURCE_DIR}/Cmake/CMakeExec.cmake)
 
+configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )
+
 if(DEFINED CUDA_INCLUDE_DIRS)
     include_directories (${CUDA_INCLUDE_DIRS})
 endif()
 if(DEFINED MAGMA_INCLUDE_DIR)
     include_directories(${MAGMA_INCLUDE_DIR})
 endif()
+
 
 message("Libraries   (from CMakeLists.txt) :")
 message(" - threads   :  ${CMAKE_THREAD_LIBS_INIT}")
