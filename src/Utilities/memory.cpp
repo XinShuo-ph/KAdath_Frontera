@@ -7,9 +7,7 @@
 
 
 namespace Kadath {
-
-    Memory_mapper::mem_map_t Memory_mapper::memory_map;
-    Memory_mapper::ptr_list_t Memory_mapper::ptr_list;
-
+    Memory_mapper::mem_map_t Memory_mapper::memory_map{};
+    Memory_mapper::ptr_list_t Memory_mapper::ptr_list{};
 }
 

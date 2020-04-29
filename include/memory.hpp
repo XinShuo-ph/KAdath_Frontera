@@ -82,7 +82,7 @@ namespace Kadath {
                                         [sz](std::pair<std::size_t,ptr_vec_t> const & x){return x.first == sz;});
                 if(pos == memory_map.end()) {
                     memory_map.emplace_back(sz,ptr_vec_t{});
-                    pos = (memory_map.end()--);
+                    pos = std::prev(memory_map.end());
                 }
                 auto & mem = pos->second;
 //                if (pos == memory_map.end()) memory_map.emplace_back(sz,ptr_vec_t{});
