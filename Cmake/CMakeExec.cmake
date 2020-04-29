@@ -107,7 +107,7 @@ if(ENABLE_GPU_USE)
 			${CUDA_cusparse_LIBRARY} ${KADATH_DEPENDENCIES})
 endif()
 #need to use C++17
-add_definitions(-std=c++17)
+set(CMAKE_CXX_STANDARD 17)
 
 message("===========================================================================")
 message("Kadath dependencies : ${KADATH_DEPENDENCIES}")

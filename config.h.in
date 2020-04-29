@@ -42,9 +42,16 @@
 
 #cmakedefine DEBUG_MODE
 
-// Optimization level.
+// Remove all safety checks when defined :
 
 #cmakedefine REMOVE_ALL_CHECKS
+
+// Another checks enabling macro.
+#ifdef DEBUG_MODE
+#ifndef REMOVE_ALL_CHECKS
+#define ALL_CHECKS_ENABLED
+#endif
+#endif
 
 // If the following macro is not set, asserts are replaced with an empty statement as would NDEBUG would do
 

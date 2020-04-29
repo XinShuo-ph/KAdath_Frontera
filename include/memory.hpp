@@ -29,7 +29,7 @@
 
 namespace Kadath {
 
-    class Coef_mem {
+    /*class Coef_mem {
     private:
         static std::array<std::unique_ptr<double[]>, 2> mem_ptrs;
         static std::array<std::size_t, 2> lengths;
@@ -42,7 +42,7 @@ namespace Kadath {
             }
             return mem_ptrs[num].get();
         }
-    };
+    };*/
 
 
     class Memory_mapper {
@@ -54,9 +54,7 @@ namespace Kadath {
         using ptr_vec_t = std::vector<void *>;
 
 #if MEMORY_MAP_TYPE == 0
-        using mem_map_t = std::vector<ptr_vec_t>;
-        using mem_sizes_t = std::vector<std::size_t>;
-        static mem_sizes_t mem_sizes;
+        using mem_map_t = std::vector<std::pair<std::size_t,ptr_vec_t>>;
 #elif MEMORY_MAP_TYPE == 1
         using mem_map_t = std::unordered_map<std::size_t,ptr_vec_t>;
 #elif MEMORY_MAP_TYPE == 2
@@ -79,15 +77,12 @@ namespace Kadath {
                 void *raw_mem_ptr;
                 //first find the entry of the size sz in the map (or create it if it doesn't exists)
 #ifdef MAP_MEMORY_WITH_VECTOR
-                auto pos = std::find(std::begin(mem_sizes), std::end(mem_sizes), sz);
-                if (pos == mem_sizes.end()) {
-                    mem_sizes.push_back(sz);
-                    memory_map.resize(mem_sizes.size());
-                    pos = --mem_sizes.end();
-                }
-
-                std::size_t index = pos - mem_sizes.begin();
-                auto &mem = memory_map[index];
+                auto pos = std::find_if(memory_map.begin(), memory_map.end(),
+                                        [sz](std::pair<std::size_t,ptr_vec_t> const & x){return x.first == sz;});
+                auto & mem = pos == memory_map.end() ? memory_map.emplace_back(sz,ptr_vec_t{}).second : pos->second;
+//                if (pos == memory_map.end()) memory_map.emplace_back(sz,ptr_vec_t{});
+//                std::size_t index = pos - mem_sizes.begin();
+//                auto &mem = memory_map[index];
 #else
                 auto& mem = memory_map[sz];
 #endif
@@ -110,12 +105,31 @@ namespace Kadath {
         static void release_memory(void *raw_mem_ptr, std::size_t const sz) {
             if (raw_mem_ptr != nullptr) {
 #if MEMORY_MAP_TYPE == 0
-                auto pos = std::find(std::begin(mem_sizes), std::end(mem_sizes), sz);
-                std::size_t index = pos - mem_sizes.begin();
-                memory_map[index].push_back(raw_mem_ptr);
-#else
+                auto pos = std::find_if(memory_map.begin(), memory_map.end(),
+                                        [sz](std::pair<std::size_t,ptr_vec_t> const &x) {return x.first == sz;});
+#ifdef ALL_CHECKS_ENABLED
+                if (pos == memory_map.end()) {
+                    std::cerr << "Error : Memory_mapper::release_memory(p,s) with p = @" << raw_mem_ptr
+                              << " and s=" << sz <<".\n Attempting to free unallocated memory chunk.\n";
+                    abort();
+                }
+#endif // ifdef ALL_CHECKS_ENABLED
+                pos->second.push_back(raw_mem_ptr);
+#else //if MEMORY_MAP_TYPE == 0
+#ifdef ALL_CHECKS_ENABLED
+                auto pos = memory_map.find(sz);
+                if (pos == memory_map.end()) {
+                    std::cerr << "Error : Memory_mapper::release_memory(p,s) with p = @" << raw_mem_ptr
+                              << " and s=" << sz <<".\n Attempting to free unallocated memory chunk.\n";
+                    abort();
+                }
+                else {
+                    pos->second.push_back(raw_mem_ptr);
+                }
+#else  //ifdef ALL_CHECKS_ENABLED
                 memory_map[sz].push_back(raw_mem_ptr);
-#endif
+#endif //ifdef ALL_CHECKS_ENABLED
+#endif //if MEMORY_MAP_TYPE == 0
             }
         }
 

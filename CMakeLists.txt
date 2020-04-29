@@ -7,6 +7,8 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.1)
 endif()
 project(Kadath VERSION 2.3.0.0)
 
+set(CMAKE_CXX_STANDARD 17)
+
 message("Root directory : ${PROJECT_SOURCE_DIR}")
 
 #The following variable is just for the config.h file to trigger a debug macro flag.
@@ -85,9 +87,6 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 if (DEFINED FFTW_INCLUDE_DIR)
     include_directories (${FFTW_INCLUDE_DIR})
 endif()
-
-#need to use C++17
-add_definitions(-std=c++17)
 
 
 add_library(kadath ${KADATH_SOURCES} include/array_iterator.hpp)
