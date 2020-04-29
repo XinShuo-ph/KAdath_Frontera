@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "pool/pool.hpp"
+#include "boost/pool/pool.hpp"
 
 #if MEMORY_MAP_TYPE == 1
 #include <unordered_map>
