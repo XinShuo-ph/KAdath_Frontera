@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <iostream>
 
 #if MEMORY_MAP_TYPE == 1
 #include <unordered_map>
@@ -79,7 +80,11 @@ namespace Kadath {
 #ifdef MAP_MEMORY_WITH_VECTOR
                 auto pos = std::find_if(memory_map.begin(), memory_map.end(),
                                         [sz](std::pair<std::size_t,ptr_vec_t> const & x){return x.first == sz;});
-                auto & mem = pos == memory_map.end() ? memory_map.emplace_back(sz,ptr_vec_t{}).second : pos->second;
+                if(pos == memory_map.end()) {
+                    memory_map.emplace_back(sz,ptr_vec_t{});
+                    pos = (memory_map.end()--);
+                }
+                auto & mem = pos->second;
 //                if (pos == memory_map.end()) memory_map.emplace_back(sz,ptr_vec_t{});
 //                std::size_t index = pos - mem_sizes.begin();
 //                auto &mem = memory_map[index];
