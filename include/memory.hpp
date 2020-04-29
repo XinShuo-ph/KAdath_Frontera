@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include "pool/pool.hpp"
+
 #if MEMORY_MAP_TYPE == 1
 #include <unordered_map>
 #elif MEMORY_MAP_TYPE == 3
@@ -69,11 +71,15 @@ namespace Kadath {
 
         static mem_map_t memory_map;
         static ptr_list_t ptr_list;
+        static boost::pool<> size_4_memory_pool;
 
     public:
 
         static void *get_memory(std::size_t const sz) {
             if (sz == 0) return nullptr;
+            else if(sz == 4) {
+                return size_4_memory_pool.malloc();
+            }
             else {
                 void *raw_mem_ptr;
                 //first find the entry of the size sz in the map (or create it if it doesn't exists)
@@ -109,32 +115,37 @@ namespace Kadath {
 
         static void release_memory(void *raw_mem_ptr, std::size_t const sz) {
             if (raw_mem_ptr != nullptr) {
-#if MEMORY_MAP_TYPE == 0
-                auto pos = std::find_if(memory_map.begin(), memory_map.end(),
-                                        [sz](std::pair<std::size_t,ptr_vec_t> const &x) {return x.first == sz;});
-#ifdef ALL_CHECKS_ENABLED
-                if (pos == memory_map.end()) {
-                    std::cerr << "Error : Memory_mapper::release_memory(p,s) with p = @" << raw_mem_ptr
-                              << " and s=" << sz <<".\n Attempting to free unallocated memory chunk.\n";
-                    abort();
-                }
-#endif // ifdef ALL_CHECKS_ENABLED
-                pos->second.push_back(raw_mem_ptr);
-#else //if MEMORY_MAP_TYPE == 0
-#ifdef ALL_CHECKS_ENABLED
-                auto pos = memory_map.find(sz);
-                if (pos == memory_map.end()) {
-                    std::cerr << "Error : Memory_mapper::release_memory(p,s) with p = @" << raw_mem_ptr
-                              << " and s=" << sz <<".\n Attempting to free unallocated memory chunk.\n";
-                    abort();
+                if (sz == 4) {
+                    size_4_memory_pool.free(raw_mem_ptr);
                 }
                 else {
+#if MEMORY_MAP_TYPE == 0
+                    auto pos = std::find_if(memory_map.begin(), memory_map.end(),
+                                            [sz](std::pair<std::size_t, ptr_vec_t> const &x) { return x.first == sz; });
+#ifdef ALL_CHECKS_ENABLED
+                    if (pos == memory_map.end()) {
+                        std::cerr << "Error : Memory_mapper::release_memory(p,s) with p = @" << raw_mem_ptr
+                                  << " and s=" << sz << ".\n Attempting to free unallocated memory chunk.\n";
+                        abort();
+                    }
+#endif // ifdef ALL_CHECKS_ENABLED
                     pos->second.push_back(raw_mem_ptr);
-                }
+#else //if MEMORY_MAP_TYPE == 0
+#ifdef ALL_CHECKS_ENABLED
+                    auto pos = memory_map.find(sz);
+                    if (pos == memory_map.end()) {
+                        std::cerr << "Error : Memory_mapper::release_memory(p,s) with p = @" << raw_mem_ptr
+                                  << " and s=" << sz <<".\n Attempting to free unallocated memory chunk.\n";
+                        abort();
+                    }
+                    else {
+                        pos->second.push_back(raw_mem_ptr);
+                    }
 #else  //ifdef ALL_CHECKS_ENABLED
-                memory_map[sz].push_back(raw_mem_ptr);
+                    memory_map[sz].push_back(raw_mem_ptr);
 #endif //ifdef ALL_CHECKS_ENABLED
 #endif //if MEMORY_MAP_TYPE == 0
+                }
             }
         }
 
