@@ -44,6 +44,8 @@ message("Memory map container type : ${MEMORY_MAP_TYPE} (code ${MEMORY_MAP_TYPE_
 find_package(Boost)
 if(Boost_FOUND)
     set(HAVE_BOOST TRUE)
+    include_directories(${Boost_INCLUDE_DIRS})
+    message("Boost include directory : ${Boost_INCLUDE_DIRS}")
 else()
     set(HAVE_BOOST FALSE)
 endif()
