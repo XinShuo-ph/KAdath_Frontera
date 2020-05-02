@@ -1342,15 +1342,16 @@ class Space_bispheric : public Space {
      * @param nshells [input] : number of outer shells.
      * @param rr [input] : radiii of the outer shells.
      * @param type_r [input] : types of the various outer shells.
-     * @param nr [input] : number of points in each dimension 
+     * @param nr [input] : number of points in each dimension      
+     * @param withnuc [input] : states wheather a nucleus is present or not
      *(\f$ nr-1 \f$ for coordinates of the type \f$ \varphi \f$)
      *
      *
      * The various domains are then :
-     * \li One \c Domain_nucleus centered at \f$ x_1 \f$.
+     * \li One \c Domain_nucleus centered at \f$ x_1 \f$. (if present)
      * \li nminus-1 \c Domain_shell centered at \f$ x_1 \f$.
      * \li One \c Domain_nucleus centered at \f$ x_2 \f$.
-     * \li nplus-2 \c Domain_shell centered at \f$ x_2 \f$.
+     * \li nplus-2 \c Domain_shell centered at \f$ x_2 \f$.(if present)
      * \li One \c Domain_bispheric_chi_first near the first sphere.
      * \li One \c Domain_bispheric_rect near the first sphere.
      * \li One \c Domain_bispheric_eta_first inbetween the two spheres.
@@ -1359,7 +1360,7 @@ class Space_bispheric : public Space {
      * \li nshells shells outside the bispheric region, centered on the origin They can be \c Domain_shell, \c Domain_shell_log or \c Domain_shell_surr
      * \li One \c Domain_compact centered on the origin.
      */
-	Space_bispheric (int ttype, double dist, int nminus, const Array<double>& rminus, int nplus, const Array<double>& rplus, int nshells, const Array<double>& rr, const Array<int>& type_r, int nr) ;
+	Space_bispheric (int ttype, double dist, int nminus, const Array<double>& rminus, int nplus, const Array<double>& rplus, int nshells, const Array<double>& rr, const Array<int>& type_r, int nr, bool withnuc = true) ;
 
 
 	/**
