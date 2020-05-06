@@ -12,15 +12,14 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <algorithm>
 #include <iostream>
 #ifdef ENABLE_BOOST_MEMORY_POOLS
 #include "boost/pool/pool.hpp"
 #endif
 
-#if MEMORY_MAP_TYPE == 1
-#include <unordered_map>
-#elif MEMORY_MAP_TYPE == 3
+#if MEMORY_MAP_TYPE == 3
 #include "flat_hash_map.hpp"
 #endif
 
