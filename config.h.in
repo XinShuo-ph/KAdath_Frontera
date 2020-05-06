@@ -38,15 +38,18 @@
 
 #define KADATH_VERSION_TWEAK @Kadath_VERSION_TWEAK@
 
+
 // Debug flag to enable some debug-only instructions and piece of codes.
 
 #cmakedefine DEBUG_MODE
+
 
 // Remove all safety checks when defined :
 
 #cmakedefine REMOVE_ALL_CHECKS
 
-// Another checks enabling macro.
+
+// Another check enabling macro.
 #ifdef DEBUG_MODE
 #ifndef REMOVE_ALL_CHECKS
 #define ALL_CHECKS_ENABLED
@@ -57,9 +60,11 @@
 
 #cmakedefine ENABLE_ASSERTS
 
+
 // Enables the MPI version of Kadath
 
 #cmakedefine PAR_VERSION
+
 
 // Code defining which container is used to handle the memory map
 // 0 : STL vector   1 : STL unordered map   2 : STL map     3 : flat map
@@ -82,9 +87,15 @@
 
 #cmakedefine HAVE_LINUX
 
+
 // If cmake have found boost.
 
 #cmakedefine HAVE_BOOST
+
+
+// If user has enabled boost memory pools.
+
+#cmakedefine ENABLE_BOOST_MEMORY_POOLS
 
 
 // Enables the move constructors and assignment operators for tensorial objects (DOES NOT WORK at the moment, so this
