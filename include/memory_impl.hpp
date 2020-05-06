@@ -68,7 +68,7 @@ template<Map_type_tag mtt> void Memory_mapper<mtt,Memory_pools_use::disabled>::r
     }
 }
 
-#ifdef HAVE_BOOST
+#ifdef ENABLE_BOOST_MEMORY_POOLS
 
 template<Map_type_tag mtt> void * Memory_mapper<mtt,Memory_pools_use::enabled>::get_memory(std::size_t const sz) {
 #ifdef MAP_MEMORY_WITH_VECTOR
@@ -113,5 +113,5 @@ template<Map_type_tag mtt> void Memory_mapper<mtt,Memory_pools_use::enabled>::re
 #endif
 }
 
-#endif //ifdef HAVE_BOOST
+#endif //ifdef ENABLE_BOOST_MEMORY_POOLS
 

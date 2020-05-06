@@ -107,7 +107,7 @@ namespace Kadath {
                 Memory_mapper_data_base<ska::flat_hash_map<std::size_t, std::vector<void*>>> {};
 #endif
 
-#ifdef HAVE_BOOST
+#ifdef ENABLE_BOOST_MEMORY_POOLS
         using Memory_pool = std::unique_ptr<boost::pool<>>;
         template<> struct Memory_mapper_data<stl_vector,Memory_pools_use::enabled> :
                 Memory_mapper_data_base<std::vector<std::pair<std::size_t,Memory_pool>>> {};
@@ -121,7 +121,7 @@ namespace Kadath {
         template<> struct Memory_mapper_data<stl_unordered_map,Memory_pools_use::enabled> :
                 Memory_mapper_data_base<ska::flat_hash_map<std::size_t, sMemory_pool>> {};
 #endif
-#endif //ifdef HAVE_BOOST
+#endif //ifdef ENABLE_BOOST_MEMORY_POOLS
 
         /**
          * Class encapsulating a mapping beetween size and memory chunks of that size or memory pools of the size.
