@@ -1,10 +1,12 @@
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/Cmake)
-if(EXISTS ${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
-	include (${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
+if(EXISTS ${KADATH_SOURCES_DIRECTORY}/Cmake/CMakeLocal.cmake)
+	include (${KADATH_SOURCES_DIRECTORY}/Cmake/CMakeLocal.cmake)
 endif()
+set(CMAKE_MODULE_PATH ${KADATH_SOURCES_DIRECTORY}/Cmake)
 
 option(PAR_VERSION "Parallel version" ON)
 option(MKL_VERSION "MKL Parallel version" OFF)
+option(HAVE_LINUX "Build for linux" ON)
+option(ENABLE_GPU_USE "Enables the use of GPU(s) if available." OFF)
 
 if (PAR_VERSION)
 	message ("Parallel version")
@@ -22,11 +24,12 @@ if(ENABLE_GPU_USE)
 	message("GPU-based computation enabled.")
 endif()
 
-file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.hpp)
+file(GLOB_RECURSE KADATH_HEADERS ${CMAKE_SOURCE_DIR}/include/*.hpp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/include/Kadath_point_h)
+include_directories(${KADATH_SOURCES_DIRECTORY}/include)
+include_directories(${KADATH_SOURCES_DIRECTORY}/include/Kadath_point_h)
+include_directories(${KADATH_BUILD_DIRECTORY}/include)
 
 #If parallel need to use the PMI wrapper
 if(PAR_VERSION)
@@ -108,6 +111,8 @@ if(ENABLE_GPU_USE)
 endif()
 #need to use C++17
 set(CMAKE_CXX_STANDARD 17)
+
+set(KADATH_LIB ${KADATH_BUILD_DIRECTORY}/lib/libkadath.a)
 
 message("===========================================================================")
 message("Kadath dependencies : ${KADATH_DEPENDENCIES}")

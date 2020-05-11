@@ -62,7 +62,8 @@ else(PAR_VERSION)
     message ("Sequential version")
 endif(PAR_VERSION)
 
-set(CMAKE_MODULE_PATH ${PROJECT_BINARY_DIR})
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/Cmake)
+#set(CMAKE_MODULE_PATH ${PROJECT_BINARY_DIR})
 
 if(PAR_VERSION)
     #file(COPY ${PROJECT_SOURCE_DIR/src_par/do_newton.cpp DESTINATION ${PROJECT_SOURCE_DIR/src/System_of_eqs/)
@@ -80,20 +81,17 @@ endif(ENABLE_GPU_USE)
 
 #Get all the src files
 file(GLOB_RECURSE KADATH_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp )
-set(KADATH_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp )
 message ("Source files" : ${KADATH_SOURCES})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include/Kadath_point_h)
-#for templates in Array
-include_directories(${PROJECT_BINARY_DIR}/include)
 
 if (DEFINED FFTW_INCLUDE_DIR)
     include_directories (${FFTW_INCLUDE_DIR})
 endif()
 
 
-add_library(kadath ${KADATH_SOURCES} include/array_iterator.hpp)
+add_library(kadath ${KADATH_SOURCES})
 set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib COMPILE_FLAGS "-fPIC" $
         <$<CONFIG:Debug>:-O0>)
 
@@ -102,6 +100,8 @@ target_include_directories(kadath PUBLIC ${PROJECT_SOURCE_DIR}/include/Kadath_po
 if (EXISTS ${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
     include(${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
 endif()
+set(KADATH_SOURCES_DIRECTORY ${PROJECT_SOURCE_DIR})
+set(KADATH_BUILD_DIRECTORY ${PROJECT_BINARY_DIR})
 include (${PROJECT_SOURCE_DIR}/Cmake/CMakeExec.cmake)
 
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )
@@ -137,8 +137,6 @@ endif()
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fPIE -pie -g")
 #option to compile with google address-sanitizer
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -O1 -fno-omit-frame-pointer -g")
-
-add_subdirectory(tutorials)
 
 if(PAR_VERSION)
     add_subdirectory(codes/Par_version/)
