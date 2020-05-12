@@ -241,7 +241,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, double r1, double 
     domains[7+nshells] = new Domain_compact (7+nshells, ttype,rr(nshells), center, res) ;
 }
 
-Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const Array<double>& rminus, int nplus, const Array<double>& rplus, int nn, const Array<double>& rr, const Array<int>& type_r, int nr) {
+Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const Array<double>& rminus, int nplus, const Array<double>& rplus, int nn, const Array<double>& rr, const Array<int>& type_r, int nr, bool withnuc) {
 
     // Verif :
     ndim = 3 ;
@@ -250,7 +250,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     ndom_plus = nplus ;
     nshells = nn ;
     
-    nbr_domains = ndom_minus + ndom_plus + nshells + 6;
+    nbr_domains = (withnuc) ? ndom_minus + ndom_plus + nshells + 8 : ndom_minus + ndom_plus + nshells + 6  ;
     type_base = ttype ;
     domains = new Domain* [nbr_domains] ;
   
@@ -261,9 +261,9 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     
     // Bispheric :
     // Computation of aa
-    double r1 = rminus(nminus-1) ;
-    double r2 = rplus(nplus-1) ;
-    
+    double r1 = rminus(nminus) ;
+    double r2 = rplus(nplus) ;
+   
     if (fabs(r1-r2)>1e-12) {
       cerr << "Constructor of Space_bispheric not correct for different radii" << endl ;
       abort() ;
@@ -288,42 +288,55 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     double chi_lim = chi_lim_eta (eta_lim, rr(0), aa, chi_c) ;
    
     // The spheres  
+    int current = 0 ;    
     Point center_minus (ndim) ;
     center_minus.set(1) = aa*cosh(eta_minus)/sinh(eta_minus) ;
     a_minus = aa*cosh(eta_minus)/sinh(eta_minus) ;
-    domains[0] = new Domain_nucleus(0, ttype, rminus(0), center_minus, res) ;
-    
-    for (int i=1 ; i<ndom_minus ; i++)
-      domains[i] = new Domain_shell(i, ttype, rminus(i-1), rminus(i), center_minus, res) ;
-      
+    if (withnuc) {
+    	domains[current] = new Domain_nucleus(current, ttype, rminus(0), center_minus, res) ;
+    	current ++ ;
+    }
+
+    for (int i=0 ; i<ndom_minus ; i++) {
+      domains[current] = new Domain_shell(current, ttype, rminus(i), rminus(i+1), center_minus, res) ;
+      current ++ ;
+    }
+
     Point center_plus (ndim) ;
     center_plus.set(1) = aa*cosh(eta_plus)/sinh(eta_plus) ;
     a_plus = aa*cosh(eta_plus)/sinh(eta_plus) ;
-    domains[ndom_minus] = new Domain_nucleus(ndom_minus, ttype, rplus(0), center_plus, res) ;
-  
+    if (withnuc) {
+  	domains[current] = new Domain_nucleus(current, ttype, rplus(0), center_plus, res) ;
+  	current ++ ;
+    }
  
-    for (int i=1 ; i<ndom_plus ; i++)
-       domains[i+ndom_minus] = new Domain_shell(i+ndom_minus, ttype, rplus(i-1), rplus(i), center_plus, res) ;
-    
+    for (int i=0 ; i<ndom_plus ; i++) {
+       domains[current] = new Domain_shell(current, ttype, rplus(i), rplus(i+1), center_plus, res) ;
+       current ++ ;
+    }
+
     // Bispherical domains antitrigo order: 
-    domains[ndom_minus+ndom_plus] = new Domain_bispheric_chi_first(ndom_minus+ndom_plus, ttype, aa, eta_minus, rr(0), chi_lim, res_bi) ;
-    domains[ndom_minus+ndom_plus+1] = new Domain_bispheric_rect(ndom_minus+ndom_plus+1, ttype, aa, rr(0), eta_minus, -eta_lim, chi_lim, res_bi) ;
-    domains[ndom_minus+ndom_plus+2] = new Domain_bispheric_eta_first(ndom_minus+ndom_plus+2, ttype, aa, rr(0), -eta_lim, eta_lim, res_bi) ;
-    domains[ndom_minus+ndom_plus+3] = new Domain_bispheric_rect(ndom_minus+ndom_plus+3,ttype, aa, rr(0), eta_plus, eta_lim, chi_lim, res_bi) ;
-    domains[ndom_minus+ndom_plus+4] = new Domain_bispheric_chi_first(ndom_minus+ndom_plus+4,ttype, aa, eta_plus, rr(0), chi_lim, res_bi) ;
-    
+    domains[current] = new Domain_bispheric_chi_first(current, ttype, aa, eta_minus, rr(0), chi_lim, res_bi) ;
+    domains[current+1] = new Domain_bispheric_rect(current+1, ttype, aa, rr(0), eta_minus, -eta_lim, chi_lim, res_bi) ;
+    domains[current+2] = new Domain_bispheric_eta_first(current+2, ttype, aa, rr(0), -eta_lim, eta_lim, res_bi) ;
+    domains[current+3] = new Domain_bispheric_rect(current+3,ttype, aa, rr(0), eta_plus, eta_lim, chi_lim, res_bi) ;
+    domains[current+4] = new Domain_bispheric_chi_first(current+4,ttype, aa, eta_plus, rr(0), chi_lim, res_bi) ;
+    current += 5 ;
     // Shells     
     Point center(3) ;
     for (int i=0 ; i<nshells ; i++) {
 	switch (type_r(i)) {
 	  case STD_TYPE: 
-	    domains[ndom_plus+ndom_minus+5+i] = new Domain_shell (ndom_plus+ndom_minus+5+i, ttype, rr(i), rr(i+1), center, res) ;
+	    domains[current] = new Domain_shell (current, ttype, rr(i), rr(i+1), center, res) ;
+	    current ++ ;
 	    break ;
 	  case LOG_TYPE:
-	    domains[ndom_plus+ndom_minus+5+i] = new Domain_shell_log (ndom_plus+ndom_minus+5+i, ttype, rr(i), rr(i+1), center, res) ;
+	    domains[current] = new Domain_shell_log (current, ttype, rr(i), rr(i+1), center, res) ;
+	    current ++ ;
 	    break ;
 	  case SURR_TYPE:
-	    domains[ndom_plus+ndom_minus+5+i] = new Domain_shell_surr (ndom_plus+ndom_minus+5+i, ttype, rr(i), rr(i+1), center, res) ;
+	    domains[current] = new Domain_shell_surr (current, ttype, rr(i), rr(i+1), center, res) ;
+            current ++ ;
 	    break ;
 	  default:
 	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
@@ -332,7 +345,146 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     }
     
     // ZEC
-    domains[nbr_domains-1] = new Domain_compact (nbr_domains-1, ttype,rr(nshells), center, res) ;
+    domains[current] = new Domain_compact (current, ttype,rr(nshells), center, res) ;
+}
+
+Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const Array<double>& rminus, const Array<int>& type_r_minus, int nplus, const Array<double>& rplus, const Array<int>& type_r_plus, int nn, const Array<double>& rr, const Array<int>& type_r, int nr, bool withnuc) {
+
+    // Verif :
+    ndim = 3 ;
+    
+    ndom_minus = nminus ;
+    ndom_plus = nplus ;
+    nshells = nn ;
+    
+    nbr_domains = (withnuc) ? ndom_minus + ndom_plus + nshells + 8 : ndom_minus + ndom_plus + nshells + 6  ;
+    type_base = ttype ;
+    domains = new Domain* [nbr_domains] ;
+  
+    Dim_array res (ndim) ;
+    res.set(0) = nr ; res.set(1) = nr ; res.set(2) = nr-1 ;
+    Dim_array res_bi(ndim) ;
+    res_bi.set(0) = nr ; res_bi.set(1) = nr ; res_bi.set(2) = nr ;
+    
+    // Bispheric :
+    // Computation of aa
+    double r1 = rminus(nminus) ;
+    double r2 = rplus(nplus) ;
+   
+    if (fabs(r1-r2)>1e-12) {
+      cerr << "Constructor of Space_bispheric not correct for different radii" << endl ;
+      abort() ;
+    }
+    
+    Param par_a ;
+    par_a.add_double(r1,0) ;
+    par_a.add_double(r2,1) ;
+    par_a.add_double(distance,2) ;
+    double a_min = 0 ;
+    double a_max = distance/2. ;
+    double precis = PRECISION ;
+    int nitermax = 500 ;
+    int niter ;
+    double aa = zerosec(func_a, par_a, a_min, a_max, precis, nitermax, niter) ;
+    double eta_plus = asinh(aa/r2) ;
+    double eta_minus = -asinh(aa/r1) ;
+
+    double chi_c = 2*atan(aa/rr(0)) ;
+    double eta_c = log((1+rr(0)/aa)/(rr(0)/aa-1)) ;
+    double eta_lim = eta_c/2. ;
+    double chi_lim = chi_lim_eta (eta_lim, rr(0), aa, chi_c) ;
+   
+    // The spheres  
+    int current = 0 ;    
+    Point center_minus (ndim) ;
+    center_minus.set(1) = aa*cosh(eta_minus)/sinh(eta_minus) ;
+    a_minus = aa*cosh(eta_minus)/sinh(eta_minus) ;
+    if (withnuc) {
+    	domains[current] = new Domain_nucleus(current, ttype, rminus(0), center_minus, res) ;
+    	current ++ ;
+    }
+
+    for (int i=0 ; i<ndom_minus ; i++) {
+	switch (type_r_minus(i)) {
+	  case STD_TYPE: 
+	    domains[current] = new Domain_shell (current, ttype, rminus(i), rminus(i+1), center_minus, res) ;
+	    current ++ ;
+	    break ;
+	  case LOG_TYPE:
+	    domains[current] = new Domain_shell_log (current, ttype, rminus(i), rminus(i+1), center_minus, res) ;
+	    current ++ ;
+	    break ;
+	  case SURR_TYPE:
+	    domains[current] = new Domain_shell_surr (current, ttype, rminus(i), rminus(i+1), center_minus, res) ;
+            current ++ ;
+	    break ;
+	  default:
+	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
+	     abort() ;
+	}
+
+    }
+
+    Point center_plus (ndim) ;
+    center_plus.set(1) = aa*cosh(eta_plus)/sinh(eta_plus) ;
+    a_plus = aa*cosh(eta_plus)/sinh(eta_plus) ;
+    if (withnuc) {
+  	domains[current] = new Domain_nucleus(current, ttype, rplus(0), center_plus, res) ;
+  	current ++ ;
+    }
+     
+     for (int i=0 ; i<ndom_plus ; i++) {
+	switch (type_r_minus(i)) {
+	  case STD_TYPE: 
+	    domains[current] = new Domain_shell (current, ttype, rplus(i), rplus(i+1), center_plus, res) ;
+	    current ++ ;
+	    break ;
+	  case LOG_TYPE:
+	    domains[current] = new Domain_shell_log (current, ttype, rplus(i), rplus(i+1), center_plus, res) ;
+	    current ++ ;
+	    break ;
+	  case SURR_TYPE:
+	    domains[current] = new Domain_shell_surr (current, ttype, rplus(i), rplus(i+1), center_plus, res) ;
+            current ++ ;
+	    break ;
+	  default:
+	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
+	     abort() ;
+	}
+    }
+    
+
+    // Bispherical domains antitrigo order: 
+    domains[current] = new Domain_bispheric_chi_first(current, ttype, aa, eta_minus, rr(0), chi_lim, res_bi) ;
+    domains[current+1] = new Domain_bispheric_rect(current+1, ttype, aa, rr(0), eta_minus, -eta_lim, chi_lim, res_bi) ;
+    domains[current+2] = new Domain_bispheric_eta_first(current+2, ttype, aa, rr(0), -eta_lim, eta_lim, res_bi) ;
+    domains[current+3] = new Domain_bispheric_rect(current+3,ttype, aa, rr(0), eta_plus, eta_lim, chi_lim, res_bi) ;
+    domains[current+4] = new Domain_bispheric_chi_first(current+4,ttype, aa, eta_plus, rr(0), chi_lim, res_bi) ;
+    current += 5 ;
+    // Shells     
+    Point center(3) ;
+    for (int i=0 ; i<nshells ; i++) {
+	switch (type_r(i)) {
+	  case STD_TYPE: 
+	    domains[current] = new Domain_shell (current, ttype, rr(i), rr(i+1), center, res) ;
+	    current ++ ;
+	    break ;
+	  case LOG_TYPE:
+	    domains[current] = new Domain_shell_log (current, ttype, rr(i), rr(i+1), center, res) ;
+	    current ++ ;
+	    break ;
+	  case SURR_TYPE:
+	    domains[current] = new Domain_shell_surr (current, ttype, rr(i), rr(i+1), center, res) ;
+            current ++ ;
+	    break ;
+	  default:
+	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
+	     abort() ;
+	}
+    }
+    
+    // ZEC
+    domains[current] = new Domain_compact (current, ttype,rr(nshells), center, res) ;
 }
 
 Space_bispheric::Space_bispheric (int ttype, double distance, double rhor1, double rshell1, double rhor2, double rshell2, double rext, int nr) {
@@ -514,6 +666,112 @@ Space_bispheric::Space_bispheric (FILE*fd, int type_shells, bool old) {
 	  domains[current] = new Domain_shell(current, fd) ;
 	  current ++ ;
  	}
+
+    	// Bispherical domains antitrigo order: 
+    	domains[current] = new Domain_bispheric_chi_first(current, fd) ;
+	current ++ ;
+    	domains[current] = new Domain_bispheric_rect(current, fd) ;
+	current ++ ;
+    	domains[current] = new Domain_bispheric_eta_first(current, fd) ;
+	current ++ ;
+    	domains[current] = new Domain_bispheric_rect(current, fd) ;
+	current ++ ;
+    	domains[current] = new Domain_bispheric_chi_first(current, fd) ;
+	current ++ ;
+
+	// Shells :
+	for (int i=0 ; i<nshells ; i++)
+	  switch (type_shells) {
+	    case STD_TYPE :
+	      domains[current] = new Domain_shell(current, fd) ;
+		current ++ ;
+	      break ;
+	    case LOG_TYPE :
+	      domains[current] = new Domain_shell_log(current, fd) ;
+		current ++ ;
+	      break ;
+	    case SURR_TYPE :
+	      domains[current] = new Domain_shell_surr(current, fd) ;
+		current ++ ;
+	      break ;
+	   default:
+	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
+	     abort() ;
+	}
+
+	// Compact
+	domains[current] = new Domain_compact(current, fd) ;
+	current ++ ;
+}
+
+Space_bispheric::Space_bispheric (FILE*fd, int type_minus, int type_plus, int type_shells) {
+  
+	fread_be (&nbr_domains, sizeof(int), 1, fd) ;
+	fread_be (&ndim, sizeof(int), 1, fd) ;
+	fread_be (&type_base, sizeof(int), 1, fd) ;	
+	fread_be (&a_minus, sizeof(double), 1, fd) ;
+	fread_be (&a_plus, sizeof(double), 1, fd) ;
+	
+	fread_be (&ndom_minus, sizeof(int), 1, fd) ;
+	fread_be (&ndom_plus, sizeof(int), 1, fd) ;
+	fread_be (&nshells, sizeof(int), 1, fd) ;
+
+	// Check whether one has nucleii or not
+	double nnuc = nbr_domains - 1 - nshells - ndom_minus - ndom_plus - 5;
+	bool nucleus = (nnuc>=2) ? true : false ;
+		
+	domains = new Domain* [nbr_domains] ;
+
+	int current = 0 ;
+	if (nucleus) {
+		domains[current] = new Domain_nucleus(current, fd) ;
+		current ++ ;
+	}
+
+	for (int i=0 ; i<ndom_minus ; i++)
+	  switch (type_minus) {
+	    case STD_TYPE :
+	      domains[current] = new Domain_shell(current, fd) ;
+		current ++ ;
+	      break ;
+	    case LOG_TYPE :
+	      domains[current] = new Domain_shell_log(current, fd) ;
+		current ++ ;
+	      break ;
+	    case SURR_TYPE :
+	      domains[current] = new Domain_shell_surr(current, fd) ;
+		current ++ ;
+	      break ;
+	   default:
+	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
+	     abort() ;
+	}
+
+       
+	
+	if (nucleus) {
+		domains[current] = new Domain_nucleus(current, fd) ;
+		current ++ ;
+	}
+
+	for (int i=0 ; i<ndom_plus ; i++)
+	  switch (type_plus) {
+	    case STD_TYPE :
+	      domains[current] = new Domain_shell(current, fd) ;
+		current ++ ;
+	      break ;
+	    case LOG_TYPE :
+	      domains[current] = new Domain_shell_log(current, fd) ;
+		current ++ ;
+	      break ;
+	    case SURR_TYPE :
+	      domains[current] = new Domain_shell_surr(current, fd) ;
+		current ++ ;
+	      break ;
+	   default:
+	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
+	     abort() ;
+	}
 
     	// Bispherical domains antitrigo order: 
     	domains[current] = new Domain_bispheric_chi_first(current, fd) ;

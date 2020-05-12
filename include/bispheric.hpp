@@ -1332,7 +1332,7 @@ class Space_bispheric : public Space {
 	
 	/**
      * Constructor with several outer shells possibly of various types (log or \f$ 1/r\f$ mappings).
-     * Each sphere can be described by several shells.
+     * Each hole can be described by several shells.
      * @param ttype [input] : the type of basis.
      * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
      * @param nminus [input] : number of domains inside the first sphere.
@@ -1342,14 +1342,15 @@ class Space_bispheric : public Space {
      * @param nshells [input] : number of outer shells.
      * @param rr [input] : radiii of the outer shells.
      * @param type_r [input] : types of the various outer shells.
-     * @param nr [input] : number of points in each dimension 
+     * @param nr [input] : number of points in each dimension      
+     * @param withnuc [input] : states wheather a nucleus is present or not
      *(\f$ nr-1 \f$ for coordinates of the type \f$ \varphi \f$)
      *
      *
      * The various domains are then :
-     * \li One \c Domain_nucleus centered at \f$ x_1 \f$.
+     * \li One \c Domain_nucleus centered at \f$ x_1 \f$. (if present)
      * \li nminus-1 \c Domain_shell centered at \f$ x_1 \f$.
-     * \li One \c Domain_nucleus centered at \f$ x_2 \f$.
+     * \li One \c Domain_nucleus centered at \f$ x_2 \f$. (if present)
      * \li nplus-2 \c Domain_shell centered at \f$ x_2 \f$.
      * \li One \c Domain_bispheric_chi_first near the first sphere.
      * \li One \c Domain_bispheric_rect near the first sphere.
@@ -1359,8 +1360,41 @@ class Space_bispheric : public Space {
      * \li nshells shells outside the bispheric region, centered on the origin They can be \c Domain_shell, \c Domain_shell_log or \c Domain_shell_surr
      * \li One \c Domain_compact centered on the origin.
      */
-	Space_bispheric (int ttype, double dist, int nminus, const Array<double>& rminus, int nplus, const Array<double>& rplus, int nshells, const Array<double>& rr, const Array<int>& type_r, int nr) ;
+	Space_bispheric (int ttype, double dist, int nminus, const Array<double>& rminus, int nplus, const Array<double>& rplus, int nshells, const Array<double>& rr, const Array<int>& type_r, int nr, bool withnuc = true) ;
 
+	/**
+     * Constructor with several outer shells possibly of various types (log or \f$ 1/r\f$ mappings).
+     * Each hole can be described by several shells also possibly with various types of mappings
+     * @param ttype [input] : the type of basis.
+     * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
+     * @param nminus [input] : number of domains inside the first sphere.
+     * @param rminus [input] : radii  of the domains inside the first sphere.
+     * @param type_r_minus [input] : types of the various shells around the first hole.
+     * @param nplus [input] : number of domains inside the second sphere.
+     * @param rplus [input] : radii  of the domains inside the second sphere. 
+     * @param type_r_plus [input] : types of the various shells around the second hole.
+     * @param nshells [input] : number of outer shells.
+     * @param rr [input] : radiii of the outer shells.
+     * @param type_r [input] : types of the various outer shells.
+     * @param nr [input] : number of points in each dimension      
+     * @param withnuc [input] : states wheather a nucleus is present or not
+     *(\f$ nr-1 \f$ for coordinates of the type \f$ \varphi \f$)
+     *
+     *
+     * The various domains are then :
+     * \li One \c Domain_nucleus centered at \f$ x_1 \f$. (if present)
+     * \li nminus-1 \c Shells centered at \f$ x_1 \f$. They can be \c Domain_shell, \c Domain_shell_log or \c Domain_shell_surr
+     * \li One \c Domain_nucleus centered at \f$ x_2 \f$ (if present)
+     * \li nplus-2 \c Shells centered at \f$ x_2 \f$. They can be \c Domain_shell, \c Domain_shell_log or \c Domain_shell_surr	
+     * \li One \c Domain_bispheric_chi_first near the first sphere.
+     * \li One \c Domain_bispheric_rect near the first sphere.
+     * \li One \c Domain_bispheric_eta_first inbetween the two spheres.
+     * \li One \c Domain_bispheric_rect near the second sphere.
+     * \li One \c Domain_bispheric_chi_first near the second sphere.
+     * \li nshells shells outside the bispheric region, centered on the origin. They can be \c Domain_shell, \c Domain_shell_log or \c Domain_shell_surr
+     * \li One \c Domain_compact centered on the origin.
+     */
+	Space_bispheric (int ttype, double dist, int nminus, const Array<double>& rminus, const Array<int>& type_r_minus, int nplus, const Array<double>& rplus, const Array<int>& type_r_plus, int nshells, const Array<double>& rr, const Array<int>& type_r, int nr, bool withnuc = true) ;
 
 	/**
      * Constructor without nucleus and one shell around each holes ; a compactified outer domain
@@ -1403,7 +1437,15 @@ class Space_bispheric : public Space {
 	Space_bispheric (FILE*, int shell_type = STD_TYPE, bool old = false) ;
      
 
-	
+	/**
+	* Constructor from a file where the types of shelles are passed as integers
+	* @param fd : the file
+	* @param type_minus : type of the shells around hole 1(assumed to be the same for each one).
+	* @param type_plus : type of the shells around hole 2 (assumed to be the same for each one).
+	* @param shell_type : type of the outer shells (assumed to be the same for each one).
+	*/
+	Space_bispheric (FILE*, int type_minus, int type_plus, int shell_type) ;
+    
 	/**
 	* Sets a boundary condition at the inner radius of the first sphere.
 	* @param syst : the \c System_of_eqs.
