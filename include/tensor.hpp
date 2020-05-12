@@ -636,146 +636,82 @@ namespace Kadath {
 
         friend ostream &operator<<(ostream &, const Tensor &); ///< Display
 
-
         // Friend classes
         // ---------------
         friend class Index;
-
         friend class Domain;
-
         friend class Scalar;
-
         friend class Vector;
-
         friend class System_of_eqs;
-
         friend class Eq_matching_non_std;
-
         friend class Ope_id;
-
         friend class Metric_tensor;
-
         friend class Space_spheric_adapted;
-
         friend class Space_polar_adapted;
-
         friend class Space_bin_ns;
-
         friend class Space_bin_bh;
-
         friend class Space_polar_periodic;
-
         friend class Space_adapted_bh;
 
         // Mathematical operators
         // ----------------------
         friend Tensor operator+(const Tensor &);
-
         friend Tensor operator-(const Tensor &);
-
         friend Tensor operator+(const Tensor &, const Tensor &);
-
         friend Scalar operator+(const Tensor &, const Scalar &);
-
         friend Scalar operator+(const Scalar &, const Tensor &);
-
         friend Tensor operator+(const Tensor &, double);
-
         friend Tensor operator+(double, const Tensor &);
-
         friend Tensor operator-(const Tensor &, const Tensor &);
-
         friend Scalar operator-(const Tensor &, const Scalar &);
-
         friend Scalar operator-(const Scalar &, const Tensor &);
-
         friend Tensor operator-(const Tensor &, double);
-
         friend Tensor operator-(double, const Tensor &);
-
         friend Tensor operator*(const Scalar &, const Tensor &);
-
         friend Tensor operator*(const Tensor &, const Scalar &);
-
         friend Tensor operator*(double, const Tensor &);
-
         friend Tensor operator*(const Tensor &, double);
-
         friend Tensor operator*(int, const Tensor &);
-
         friend Tensor operator*(const Tensor &, int);
-
         friend Tensor
         operator*(const Tensor &, const Tensor &); ///< Tensor multiplication ; if need be contractions are performed.
         friend Tensor operator/(const Tensor &, const Scalar &);
-
         friend Tensor operator/(const Tensor &, double);
-
         friend Tensor operator/(const Tensor &, int);
-
         friend double
         maxval(const Tensor &); ///< Gives the maximum value amongst all the components, at all the collocation points.
         friend double
         minval(const Tensor &);///< Gives the minimum value amongst all the components, at all the collocation points.
 
         friend void affecte_one_dom(int, Tensor *, const Tensor *);
-
         friend Tensor add_one_dom(int, const Tensor &, const Tensor &);
-
         friend Tensor add_one_dom(int, const Tensor &, double);
-
         friend Tensor add_one_dom(int, double, const Tensor &);
-
         friend Tensor sub_one_dom(int, const Tensor &, const Tensor &);
-
         friend Tensor sub_one_dom(int, const Tensor &, double);
-
         friend Tensor sub_one_dom(int, double, const Tensor &);
-
         friend Tensor mult_one_dom(int, const Tensor &, const Tensor &);
-
         friend Tensor mult_one_dom(int, const Tensor &, double);
-
         friend Tensor mult_one_dom(int, double, const Tensor &);
-
         friend Tensor mult_one_dom(int, const Tensor &, int);
-
         friend Tensor mult_one_dom(int, int, const Tensor &);
-
         friend Tensor div_one_dom(int, const Tensor &, const Tensor &);
-
         friend Tensor div_one_dom(int, const Tensor &, double);
-
         friend Tensor div_one_dom(int, double, const Tensor &);
-
         friend Tensor scal_one_dom(int, const Tensor &, const Tensor &);
-
         friend Tensor partial_one_dom(int, char, const Tensor &);
-
         friend Tensor sqrt_one_dom(int, const Tensor &);
-
         friend class Domain_nucleus;
-
         friend class Domain_shell;
-
         friend class Domain_bispheric_chi_first;
-
         friend class Domain_bispheric_rect;
-
         friend class Domain_bispheric_eta_first;
-
         friend class Domain_shell_outer_adapted;
-
         friend class Domain_shell_inner_adapted;
-
         friend class Domain_polar_shell_outer_adapted;
-
         friend class Domain_polar_shell_inner_adapted;
-
         friend class Domain_compact;
-
         friend class Domain_polar_periodic_nucleus;
-
         friend class Domain_polar_periodic_shell;
     };
 

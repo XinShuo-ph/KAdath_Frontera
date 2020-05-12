@@ -354,7 +354,7 @@ namespace Kadath {
 #endif //#ifdef TENSOR_MOVE_SEMANTIC
 
     inline Scalar::~Scalar () {
-        for(auto & v : val_zones) if(v != nullptr) delete v;
+        for(auto & v : val_zones) safe_delete(v);
         cmp[0] = nullptr ;
     }
 

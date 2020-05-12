@@ -321,7 +321,7 @@ namespace Kadath {
 
 
     Tensor::~Tensor () {
-        for(auto & v : cmp) if(v != nullptr) delete v;
+        for(auto & v : cmp) safe_delete(v);
     }
 
     void Tensor::save (FILE* fd) const {
