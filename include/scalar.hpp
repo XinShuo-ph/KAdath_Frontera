@@ -355,7 +355,7 @@ namespace Kadath {
 
     inline Scalar::~Scalar () {
         for(auto & v : val_zones) safe_delete(v);
-        cmp[0] = nullptr ;
+        if(!cmp.empty()) cmp[0] = nullptr ;
     }
 
     inline Scalar & Scalar::operator= (double xx) {
