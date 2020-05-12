@@ -39,8 +39,8 @@ Val_domain::Val_domain (const Val_domain& so, bool const copie) :
         cf = (so.cf ? new Array<double> {*so.cf} : nullptr);
     }
 	for (int i=0 ; i<zone->get_ndim() ; i++) {
-	     p_der_var[i] = ((so.p_der_var[i]!=nullptr) && copie) ? new Val_domain(*so.p_der_var[i]) : nullptr ;
-	     p_der_abs[i] = ((so.p_der_abs[i]!=nullptr) && copie) ? new Val_domain(*so.p_der_abs[i]) : nullptr ;
+	     p_der_var[i] = (copie && (so.p_der_var[i]!=nullptr)) ? new Val_domain{*so.p_der_var[i]} : nullptr ;
+	     p_der_abs[i] = (copie && (so.p_der_abs[i]!=nullptr)) ? new Val_domain{*so.p_der_abs[i]} : nullptr ;
      }
 }
 
