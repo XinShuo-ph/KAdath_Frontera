@@ -115,8 +115,8 @@ namespace Kadath {
 
         double get_val_d() const ; ///< @return the double value.
         double get_der_d() const ; ///< @return the double variation.
-        Tensor get_val_t() const ; ///< @return the tensorial value.
-        Tensor get_der_t() const ; ///< @return the tensorial variation.
+        Tensor const & get_val_t() const ; ///< @return the tensorial value.
+        Tensor const & get_der_t() const ; ///< @return the tensorial variation.
         /**
         * @return a pointer on the tensorial value.
         */
@@ -350,7 +350,7 @@ namespace Kadath {
         return *der_d ;
     }
 
-    inline Tensor Term_eq::get_val_t() const {
+    inline Tensor const & Term_eq::get_val_t() const {
 #ifndef REMOVE_ALL_CHECKS
         if (type_data!=TERM_T) {
             cerr << "Wrong type of data in Term_eq" << endl ;
@@ -364,7 +364,7 @@ namespace Kadath {
         return *val_t ;
     }
 
-    inline Tensor Term_eq::get_der_t() const {
+    inline Tensor const & Term_eq::get_der_t() const {
 #ifndef REMOVE_ALL_CHECKS
         if (type_data!=TERM_T) {
             cerr << "Wrong type of data in Term_eq" << endl ;
