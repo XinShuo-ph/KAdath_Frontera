@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     // 3D :
     bool const save_to_file{false};
     int dim = 3 ;
-    int nb_iters_max {2}; //number of allowed iterations, -1 means all, change for debug or profiling, etc.
+    int nb_iters_max {1}; //number of allowed iterations, -1 means all, change for debug or profiling, etc.
     if(argc>1) nb_iters_max = std::atoi(argv[1]);
     // Number of points
     int nbr  = 11 ;
