@@ -1242,6 +1242,12 @@ class Space_bispheric : public Space {
 	int ndom_plus ; ///< Number of spherical domains inside the second sphere.
 	int nshells ; ///< Number of shells outside the bispheric region.
 
+     public:
+	int get_ndom_minus() const {return ndom_minus ;} ; /// Accessor ndom_minus
+	int get_ndom_plus() const {return ndom_plus ;} ; /// Accessor ndom_minus
+	int get_nshells() const {return nshells ;} ; /// Accessor ndom_minus
+
+	
      public: 
      /**
      * Standard constructor    
