@@ -65,10 +65,8 @@ namespace Kadath {
         Vector & operator=(double) override;
         void annule_hard() override;
 
-#ifdef TENSOR_MOVE_SEMANTIC
         Vector(Vector && so) : Tensor{std::move(so)} {}
         Vector & operator=(Vector && so) {this->Tensor::operator=(std::move(so)); return *this;}
-#endif //#ifdef TENSOR_MOVE_SEMANTIC
 
         // Accessors
         // ---------

@@ -227,13 +227,9 @@ namespace Kadath {
         Tensor(const Space &sp, int dim, FILE *); ///< Constructor from a file with explicit passing of the dimension
 
         void swap(Tensor &) noexcept; ///< Swap method.
-#ifdef TENSOR_MOVE_SEMANTIC
-
         void do_move(Tensor &&so, bool move_cmp) noexcept;
-
         Tensor(Tensor &&so) noexcept;///< Move constructor.
         virtual Tensor &operator=(Tensor &&) noexcept;///<Move assignment.
-#endif
 
     protected:
         /**

@@ -47,7 +47,6 @@ namespace Kadath {
         return *this;
     }
 
-#ifdef TENSOR_MOVE_SEMANTIC
     Scalar & Scalar::operator=(Tensor && so) noexcept
     {
         assert(so.valence==0);
@@ -57,7 +56,6 @@ namespace Kadath {
         assert(cmp[0] == this);
         return *this;
     }
-#endif
 
     double Scalar::val_point(const Point& xx, int sens) const {
         assert ((sens==+1) || (sens==-1)) ;

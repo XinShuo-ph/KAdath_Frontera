@@ -78,10 +78,9 @@ public:
 	*/
 	Base_tensor (const Space& sp, FILE* fd) : space{sp}, basis{fd} {}
 
-#ifdef TENSOR_MOVE_SEMANTIC
     Base_tensor(Base_tensor && so) : space{so.space}, basis{std::move(so.basis)} {}
     Base_tensor & operator=(Base_tensor && so) {assert(&space == &so.space); basis =  std::move(so.basis); return *this;}
-#endif
+
 	virtual ~Base_tensor() = default;			///< Destructor
 
 public:
