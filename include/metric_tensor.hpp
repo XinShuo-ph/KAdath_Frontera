@@ -59,8 +59,10 @@ namespace Kadath {
             Metric_tensor & operator= (const Tensor& a) override ;
             Metric_tensor & operator= (double xx) override ;
 
+#ifdef TENSOR_MOVE_SEMANTIC
             Metric_tensor(Metric_tensor &&s) noexcept : Tensor{std::move(s)} {}
             Metric_tensor & operator=(Metric_tensor &&s) noexcept {this->Tensor::operator=(std::move(s)); return *this;}
+#endif
 
             /**
             * Computes the inverse of the current objetc.

@@ -284,6 +284,7 @@ namespace Kadath {
         std::swap(give_indices,so.give_indices);
     }
 
+#ifdef TENSOR_MOVE_SEMANTIC
     Tensor::Tensor(Tensor&& so) noexcept: espace{so.espace}, ndom{so.ndom}, ndim{so.ndim}, valence{so.valence},
     basis{std::move(so.basis)}, type_indice{std::move(so.type_indice)}, name_affected{so.name_affected},
     name_indice{std::move(so.name_indice)}, n_comp{so.n_comp}, cmp{std::move(so.cmp)},
@@ -313,7 +314,7 @@ namespace Kadath {
         this->do_move(std::move(so),true);
         return *this;
     }
-
+#endif //#ifdef TENSOR_MOVE_SEMANTIC
                 //--------------//
                 //  Destructor  //
                 //--------------//

@@ -97,9 +97,11 @@ namespace Kadath {
          */
         Scalar (const Space& sp, FILE* fd) ;
 
+#ifdef TENSOR_MOVE_SEMANTIC
         Scalar(Scalar &&) noexcept; ///<Move constructor.
         Scalar & operator=(Tensor &&) noexcept override; ///< Move assignment from a \c Scalar typed as  a \c Tensor.
         Scalar & operator=(Scalar &&) noexcept; ///<Move assignment.
+#endif //#ifdef TENSOR_MOVE_SEMANTIC
 
         ~Scalar () override ; ///< Destructor.
 
@@ -334,6 +336,7 @@ namespace Kadath {
         cmp[0] = this ;
     }
 
+#ifdef TENSOR_MOVE_SEMANTIC
     inline Scalar::Scalar(Scalar && so) noexcept : Tensor{std::move(so)}, val_zones{std::move(so.val_zones)}
     {
         cmp[0]=this;
@@ -348,6 +351,7 @@ namespace Kadath {
         assert(cmp[0] == this && so.cmp[0] == &so);
         return *this;
     }
+#endif //#ifdef TENSOR_MOVE_SEMANTIC
 
     inline Scalar::~Scalar () {
         for(auto & v : val_zones) safe_delete(v);
