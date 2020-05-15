@@ -506,7 +506,7 @@ namespace Kadath {
 
     template<class C> void profiling_report(C const & c,std::ostream & os)
     {
-#if ENABLE_INTERNAL_PROFILER
+#ifdef ENABLE_INTERNAL_PROFILER
         os << "=======================================================================" << std::endl;
         os << "Profiling report : " << std::endl;
         os << "=======================================================================" << std::endl << std::endl;
