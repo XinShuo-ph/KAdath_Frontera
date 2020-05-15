@@ -61,31 +61,29 @@ namespace Kadath {
             }
         }
         else {
-            int nn = second.get_size(0);
-            if (nn!=nbr_unknowns) {
+            int second_member_size = second.get_size(0);
+            if (second_member_size != nbr_unknowns) {
                 cerr << "Number of unknowns is different from the number of equations" << endl;
-                cerr << "nbr equations = " << nn << endl;
+                cerr << "nbr equations = " << second_member_size << endl;
                 cerr << "nbr unknowns  = " << nbr_unknowns << endl;
                 abort();
             }
 
             // Computation in a 1D distributed matrice
-            int zero = 0;
+            int zero_i {0}; double zero_d {0.};
+            int one_i {1}; double one_d {1.};
             int ictxt_in;
             int nprow_in = 1;
             int npcol_in = nproc;
             sl_init_ (&ictxt_in, &nprow_in, &npcol_in);
 
-            // Get my row and mycol
-            int myrow_in, mycol_in;
-            blacs_gridinfo_ (&ictxt_in, &nprow_in, &npcol_in, &myrow_in, &mycol_in);
-            int nblock_per_proc {(nn/bsize)/nproc};
-            int remain_block {(nn/bsize) % nproc};
+            // Get local processor row and mycol
+            int proc_row_in, proc_col_in;
+            blacs_gridinfo_ (&ictxt_in, &nprow_in, &npcol_in, &proc_row_in, &proc_col_in);
+            int nblock_per_proc {(second_member_size / bsize) / nproc};
+            int remain_block {(second_member_size / bsize) % nproc};
 
-            while (bsize*nproc>nn)
-            {
-                bsize = div(bsize,2).quot;
-            }
+            while (bsize*nproc > second_member_size) bsize /= 2;
             if (bsize<1) {
                 cerr << "Too many processors in do_newton" << endl;
                 abort();
@@ -97,8 +95,8 @@ namespace Kadath {
             {
                 bsize = div(bsize,2).quot;
                 if(bsize != 0) {
-                    remain_block = (nn / bsize) % nproc;
-                    nblock_per_proc = (nn / bsize) / nproc;
+                    remain_block = (second_member_size / bsize) % nproc;
+                    nblock_per_proc = (second_member_size / bsize) / nproc;
                     if (remain_block > best_remain_workload) {
                         best_remain_workload = remain_block;
                         best_bsize = bsize;
@@ -108,22 +106,22 @@ namespace Kadath {
             //if no suitable block size has been found, the best found is chosen.
             if(bsize<1) bsize = best_bsize;
 	    //if(rank==0 && default_block_size != bsize) std::cout << "block size adjusted down to " << bsize << std::endl;
-            int nrowloc_in = numroc_ (&nn, &bsize, &myrow_in, &zero, &nprow_in);
-            int ncolloc_in = numroc_ (&nn, &bsize, &mycol_in, &zero, &npcol_in);
+            int nrow_in = numroc_ (&second_member_size, &bsize, &proc_row_in, &zero_i, &nprow_in);
+            int ncol_in = numroc_ (&second_member_size, &bsize, &proc_col_in, &zero_i, &npcol_in);
 
 //            Array<double> matloc_in (ncolloc_in, nrowloc_in);
-            Array<double> matloc_in (nrowloc_in, ncolloc_in);
+            Array<double> matloc_in (nrow_in, ncol_in);
             int start = bsize*rank;
 
             Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-                                                     nn," | matrix computation ");
+                                                     second_member_size, " | matrix computation ");
 
-            compute_matrix_cyclic(matloc_in,nn,start,bsize,nproc,DO_NOT_TRANSPOSE);
+            compute_matrix_cyclic(matloc_in, second_member_size, start, bsize, nproc, DO_NOT_TRANSPOSE);
 
             // Descriptor of the matrix :
             Array<int> descamat_in(9);
             int info;
-            descinit_ (descamat_in.set_data(), &nn, &nn, &bsize, &bsize, &zero, &zero, &ictxt_in, &nrowloc_in, &info);
+            descinit_ (descamat_in.set_data(), &second_member_size, &second_member_size, &bsize, &bsize, &zero_i, &zero_i, &ictxt_in, &nrow_in, &info);
 
             // Wait for everybody
             MPI_Barrier(MPI_COMM_WORLD);
@@ -131,7 +129,7 @@ namespace Kadath {
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
 
             chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-                                            nn," | matrix translation ");
+                                            second_member_size, " | matrix translation ");
             // Now translate to a 2D cyclic decomposition
             int npcol, nprow;
             split_two_d (nproc, npcol, nprow);
@@ -141,20 +139,20 @@ namespace Kadath {
             int myrow, mycol;
             blacs_gridinfo_ (&ictxt, &nprow, &npcol, &myrow, &mycol);
 
-            int nrowloc = numroc_ (&nn, &bsize, &myrow, &zero, &nprow);
-            int ncolloc = numroc_ (&nn, &bsize, &mycol, &zero, &npcol);
+            int nrowloc = numroc_ (&second_member_size, &bsize, &myrow, &zero_i, &nprow);
+            int ncolloc = numroc_ (&second_member_size, &bsize, &mycol, &zero_i, &npcol);
 
             Array<double> matloc (ncolloc, nrowloc);
             Array<int> descamat(9);
-            descinit_ (descamat.set_data(), &nn, &nn, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
+            descinit_ (descamat.set_data(), &second_member_size, &second_member_size, &bsize, &bsize, &zero_i, &zero_i, &ictxt, &nrowloc, &info);
 
-            Cpdgemr2d (nn, nn, matloc_in.set_data(), 1, 1, descamat_in.set_data(), matloc.set_data(), 1, 1, descamat.set_data(), ictxt);
+            Cpdgemr2d (second_member_size, second_member_size, matloc_in.set_data(), 1, 1, descamat_in.set_data(), matloc.set_data(), 1, 1, descamat.set_data(), ictxt);
 
             matloc_in.delete_data();
 
             // Translate the second member :
             Array<double> secloc (nrowloc);
-            for (int row=0 ; row<nn ; row++) {
+            for (int row=0 ; row < second_member_size ; row++) {
                 int pi = div(row/bsize, nprow).rem;
                 int li = int(row/(nprow*bsize));
                 int xi = div(row, bsize).rem;
@@ -165,21 +163,21 @@ namespace Kadath {
             // Descriptor of the second member
             Array<int> descsec(9);
             int one = 1;
-            descinit_ (descsec.set_data(), &nn, &one, &bsize, &bsize, &zero, &zero, &ictxt, &nrowloc, &info);
+            descinit_ (descsec.set_data(), &second_member_size, &one, &bsize, &bsize, &zero_i, &zero_i, &ictxt, &nrowloc, &info);
             Duration const t_trans_matrix {this->stop_chrono(chrono_key)};
 
             // Inversion
-            Array<int> ipiv (nn);
+            Array<int> ipiv (second_member_size);
             chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-                                            nn," | matrix inversion ");
-            pdgesv_ (&nn, &one, matloc.set_data(), &one, &one, descamat.set_data(), ipiv.set_data(), secloc.set_data(), &one, &one, descsec.set_data(), &info);
+                                            second_member_size, " | matrix inversion ");
+            pdgesv_ (&second_member_size, &one, matloc.set_data(), &one, &one, descamat.set_data(), ipiv.set_data(), secloc.set_data(), &one, &one, descsec.set_data(), &info);
             Duration const t_inv_matrix {this->stop_chrono(chrono_key)};
 
-            chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", nn, " | update ");
+            chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", second_member_size, " | update ");
             // Get the global solution
-            Array<double> auxi(nn);
+            Array<double> auxi(second_member_size);
             auxi = 0.;
-            for (int row=0 ; row<nn ; row++) {
+            for (int row=0 ; row < second_member_size ; row++) {
                 int pi = div(row/bsize, nprow).rem;
                 int li = int(row/(nprow*bsize));
                 int xi = div(row, bsize).rem;
@@ -187,8 +185,8 @@ namespace Kadath {
                     auxi.set(row) = secloc(li*bsize+xi);
             }
 
-            Array<double> xx (nn);
-            MPI_Allreduce (auxi.set_data(), xx.set_data(), nn, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+            Array<double> xx (second_member_size);
+            MPI_Allreduce (auxi.set_data(), xx.set_data(), second_member_size, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
             blacs_gridexit_ (&ictxt);
             blacs_gridexit_ (&ictxt_in);
@@ -198,7 +196,7 @@ namespace Kadath {
             Duration const t_newton_update {this->stop_chrono(chrono_key)};
             if (rank == 0 && display_newton_data) {
                 display_do_newton_iteration(os,
-                        {niter,nn,error,t_load_matrix,t_trans_matrix,t_inv_matrix,t_newton_update});
+                        {niter, second_member_size, error, t_load_matrix, t_trans_matrix, t_inv_matrix, t_newton_update});
             }
             res = false;
         }

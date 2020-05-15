@@ -67,11 +67,16 @@ if (PAR_VERSION)
 	endif(MKL_VERSION)
 endif(PAR_VERSION)
 
-if(NOT PAR_VERSION)
-    if (NOT DEFINED PGPLOT_LIBRARIES)
-	    find_package(PGPLOT REQUIRED) #pgplot probably only used in sequential mode
-    endif()
 
+if (NOT DEFINED PGPLOT_LIBRARIES)
+	if(NOT PAR_VERSION)
+		find_package(PGPLOT REQUIRED) #pgplot probably only used in sequential mode
+	else()
+		find_package(PGPLOT) #in this case, the pgplot lib is not directly used by the lib
+	endif()
+endif()
+
+if(NOT PAR_VERSION)
     if (NOT DEFINED SUNDIALS_LIBRARIES)
 	    include(FindSUNDIALS) #SUNDIAL probably only used in sequential mode	
     endif()

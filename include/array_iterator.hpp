@@ -12,7 +12,9 @@
 
 namespace Kadath {
 
-
+    /**
+     * Version of the \c Index class optimized for incremental access to Array components.
+     */
     class Array_iterator : public Memory_mapped
     {
     protected:
