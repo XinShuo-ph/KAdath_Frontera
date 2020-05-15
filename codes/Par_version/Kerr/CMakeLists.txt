@@ -12,7 +12,7 @@ if(PGPLOT_FOUND)
     target_link_libraries(${KERR_READER} kadath ${KADATH_DEPENDENCIES})
     set(KERR_TARGETS ${KERR} ${KERR_READER})
 else()
-    message("PGPLOT unavailable : the ${KERR_READER} target will be skipped.")
+    message("-- PGPLOT unavailable : the ${KERR_READER} target will be skipped.")
     set(KERR_TARGETS ${KERR})
 endif()
 

@@ -18,7 +18,7 @@ if(PGPLOT_FOUND)
     target_link_libraries(${BOSON_READER} kadath ${KADATH_DEPENDENCIES})
     set(BOSON_TARGETS ${BOSON_INIT} ${BOSON_SEQUENCE} ${BOSON_READER})
 else()
-    message("PGPLOT unavailable : the ${BOSON_READER} target will be skipped.")
+    message("-- PGPLOT unavailable : the ${BOSON_READER} target will be skipped.")
     set(BOSON_TARGETS ${BOSON_INIT} ${BOSON_SEQUENCE})
 endif()
 
