@@ -72,6 +72,7 @@ message(" - ENABLE_INTERNAL_PROFILER (dev) .: ${ENABLE_INTERNAL_PROFILER}")
 message(" - ENABLE_BOOST_MEMORY_POOLS (dev) : ${ENABLE_BOOST_MEMORY_POOLS}")
 message(" - TENSOR_MOVE_SEMANTIC (dev) .....: ${TENSOR_MOVE_SEMANTIC}")
 message(" - MEMORY_MAP_TYPE (dev) ..........: ${MEMORY_MAP_TYPE} (code ${MEMORY_MAP_TYPE_INDEX})")
+message("  ")
 
 find_package(Boost)
 if(Boost_FOUND)
