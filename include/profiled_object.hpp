@@ -91,7 +91,12 @@ namespace Kadath {
     };
 
     //! Convert the cmake option value into a static boolean value.
-    constexpr bool auto_profiling_enabled {ENABLE_PROFILING == 1};
+    constexpr bool auto_profiling_enabled =
+#ifdef ENABLE_INTERNAL_PROFILER
+        true;
+#else
+        false;
+#endif
     //! Dumny type used to pass as undefined type template parameter.
     struct UndefinedType {};
 
@@ -501,7 +506,7 @@ namespace Kadath {
 
     template<class C> void profiling_report(C const & c,std::ostream & os)
     {
-#if ENABLE_PROFILING==1
+#if ENABLE_INTERNAL_PROFILER
         os << "=======================================================================" << std::endl;
         os << "Profiling report : " << std::endl;
         os << "=======================================================================" << std::endl << std::endl;
