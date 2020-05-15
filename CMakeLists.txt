@@ -113,8 +113,8 @@ if(DEFINED MAGMA_INCLUDE_DIR)
     include_directories(${MAGMA_INCLUDE_DIR})
 endif()
 
-
-message("Libraries   (from CMakeLists.txt) :")
+message("  ")
+message("External libraries summary :")
 message(" - threads   :  ${CMAKE_THREAD_LIBS_INIT}")
 message(" - GSL       :  ${GSL_LIBRARIES}")
 message(" - PGPLOT    :  ${PGPLOT_LIBRARIES}")
@@ -132,6 +132,7 @@ if(ENABLE_GPU_USE)
     message("            # MAGMA_LIB_DIR = ${MAGMA_LIB_DIR}")
     message("            # MAGMA_LIBRARIES = ${MAGMA_LIBRARIES}")
 endif()
+message("  ")
 
 #option to compile with google thread-sanitizer
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fPIE -pie -g")
