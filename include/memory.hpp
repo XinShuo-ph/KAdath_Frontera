@@ -301,7 +301,7 @@ namespace Kadath {
             //! Non static deletion function.
             inline void operator()(pointer &p) const { apply(p); }
             //! Deletion of a pointer to const.
-            static inline void apply(const_pointer &p) {if (p) {delete[] p; /*p = nullptr;*/}}
+            static inline void apply(const_pointer &p) {if (p) {delete[] p;p = nullptr;}}
             //! Non static deletion of a pointer to const.
             inline void operator()(const_pointer &p) const { apply(p); }
         };

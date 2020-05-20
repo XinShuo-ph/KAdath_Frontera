@@ -38,13 +38,13 @@ Array<double> Base_spectral::ope_1d (int (*func) (int, Array<double>&),
 
 	int nbr = in.get_size(var) ;
 	    
-	Array_iterator index_base {*bases_1d[var]} ;
+	Array_iterator index_base (bases_1d[var]->get_dimensions()) ;
 
-	Array_iterator demarre{in} ;
-	Array_iterator loop_before{in} ;
+	Array_iterator demarre(in.get_dimensions()) ;
+	Array_iterator loop_before (in.get_dimensions()) ;
 	
-	Array_iterator lit{in} ;
-	Array_iterator put{in} ;
+	Array_iterator lit (in.get_dimensions()) ;
+	Array_iterator put (in.get_dimensions()) ;
 	
 	Array<double> tab_1d (nbr) ;
 
