@@ -21,7 +21,7 @@
 #include "dim_array.hpp"
 namespace Kadath {
 
-Dim_array::Dim_array (FILE* fd) : Data_type{} {
+Dim_array::Dim_array (FILE* fd) : Data_type{}, steps{nullptr} {
     int read_size{};
 	fread_be(&read_size, sizeof(int), 1, fd) ;
 	this->resize(read_size) ;
