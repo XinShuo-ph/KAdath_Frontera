@@ -1417,6 +1417,21 @@ class Space_bispheric : public Space {
      */
 	Space_bispheric (int ttype, double dist, double rhor1, double rshell1, double rhor2, double rshell2, double rext, int nr) ;
 
+	/**
+     * Constructor without nucleus and one shell around each holes ; a compactified outer domain.
+     * The resolution of each domain is speceified by hand
+     * @param ttype [input] : the type of basis.
+     * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
+     * @param rhor1 [input] : radius  of the first horizon.
+     * @param rshell1 [input] : radius  of the first shell.
+     * @param rhor2 [input] : radius  of the second horizon.
+     * @param rshell2 [input] : radius  of the second shell.
+     * @param rext [input] : radius  of the bispherical domains.
+     * @param resol [input] : resolution in each domains
+     *
+     */
+	Space_bispheric (int ttype, double dist, double rhor1, double rshell1, double rhor2, double rshell2, double rext, Dim_array** resol) ;
+
 /**
      * Constructor without nucleus and one shell around each holes ; a compactified outer domain
      * @param ttype [input] : the type of basis.
