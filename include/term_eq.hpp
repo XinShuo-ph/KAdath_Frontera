@@ -277,7 +277,8 @@ class Term_eq {
 	friend class Domain_polar_periodic_nucleus ;	
 	friend class Domain_polar_periodic_shell ;
 	friend class Space_polar_periodic ;
-	friend class Space_adapted_bh ;
+	friend class Space_adapted_bh ;	
+ 	friend class Space_bbh ;
 } ;
 }
 #endif
