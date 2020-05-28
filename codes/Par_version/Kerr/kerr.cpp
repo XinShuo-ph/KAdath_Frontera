@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 	int dim = 3 ;
 	int nbr{17},nomegamax{-1};
 	if(argc>1) nbr = std::atoi(argv[1]);
-	if(argc>2) nomegamax = std::atoi(argv[2]);
+	if(argc>2) {nomegamax = std::atoi(argv[2]); nomegamax--;}
 	// Number of points
 	//int nbr  = 17 ;
 	int type_coloc = CHEB_TYPE ;
