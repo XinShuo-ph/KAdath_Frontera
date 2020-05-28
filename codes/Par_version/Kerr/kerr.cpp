@@ -18,9 +18,9 @@ int main(int argc, char** argv) {
 #endif
 	// 3D :
 	int dim = 3 ;
-	int nbr{17},nitermax{-1};
+	int nbr{17},nomegamax{-1};
 	if(argc>1) nbr = std::atoi(argv[1]);
-	if(argc>2) nitermax = std::atoi(argv[2]);
+	if(argc>2) nomegamax = std::atoi(argv[2]);
 	// Number of points
 	//int nbr  = 17 ;
 	int type_coloc = CHEB_TYPE ;
@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
     
     // Loop for omega :
     double step = 0.005 ;
-    int nbr_ome = 40 ;
+    int nbr_ome = nomegamax == -1 ? 40 : nomegamax ;
 
   // Associated metric 
     Metric_tensor gmet(gfixed) ;
@@ -256,7 +256,7 @@ int main(int argc, char** argv) {
         int ite = 1 ;
         char name[100] ;
         sprintf(name, "kerr_%d_%f.dat", nbr, ome) ;
-        while (!endloop && (nitermax == -1 || ite <= nitermax)) {
+        while (!endloop) {
             endloop = syst.do_newton(1e-8, conv) ;
             ite++ ;
             // Save
