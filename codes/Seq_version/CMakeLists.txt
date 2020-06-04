@@ -20,4 +20,4 @@ target_link_libraries(${KERR_SEQ} kadath ${KADATH_DEPENDENCIES})
 target_include_directories(${KERR_SEQ} PUBLIC ${PROJECT_SOURCE_DIR}/codes/include)
 
 
-set_target_properties(${MISNER_SEQ} ${SCHWARZ_SEQ} ${KERR_SEQ} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set_target_properties(${MISNER_SEQ} ${SCHWARZ_SEQ} ${KERR_SEQ} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/sequential)
