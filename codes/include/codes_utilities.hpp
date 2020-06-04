@@ -9,53 +9,20 @@
 #ifndef __KADATH_CODES_UTILITY_HPP_
 #define __KADATH_CODES_UTILITY_HPP_
 
-/****************************************************************************************
- *  Some usefull preprocessor macros for class with a lot of data members.
- ****************************************************************************************/
+//! Macro to declare a pointer data member with associated trivial accessors.
+#define ptr_data_member(type,identifier) \
+protected:\
+    std::unique_ptr<type> identifier;\
+public:\
+    std::unique_ptr<type> const & get_##identifier() const {return identifier;}\
+    std::unique_ptr<type> & get_##identifier() {return identifier;}
 
-#define decl_data_member_with_accessor_and_mutator_by_val(type,identifier) \
-protected: \
-    type identifier; \
-public: \
-    type get_##identifier () const {return identifier;} \
-    void set_##identifier(type new_value) { \
-        identifier = new_value; \
-    }
-
-#define decl_data_member_with_accessor_by_val(type,identifier) \
-protected: \
-    type identifier; \
-public: \
-    type get_##identifier () const {return identifier;}
-
-
-#define decl_data_member_with_accessor_and_mutator_by_ref(type,identifier) \
-protected: \
-    type identifier; \
-public: \
-    type const & get_##identifier () const {return identifier;} \
-    void set_##identifier(type const & new_value) { \
-        identifier = new_value; \
-    }
-
-#define decl_data_member_with_accessor_by_ref(type,identifier) \
-protected: \
-    type identifier; \
-public: \
-    type const & get_##identifier () const {return identifier;}
-
-#define decl_ptr_member_with_rw_accessor(type,identifier) \
-protected: \
-    std::unique_ptr<type> identifier; \
-public: \
-    std::unique_ptr<type> const & get_##identifier () const {return identifier;} \
-    std::unique_ptr<type> & get_##identifier () {return identifier;}
-
-#define decl_ptr_member_with_r_accessor(type,identifier) \
-protected: \
-    std::unique_ptr<type> identifier; \
-public: \
-    std::unique_ptr<type> const & get_##identifier () const {return identifier;}
+//! Macro to declare internal variable with a read-only trivial accessor.
+#define internal_variable(type,identifier) \
+protected:\
+    type identifier;\
+public:\
+    optimal_access_type<type> get_##identifier () const {return identifier;}
 
 
 

@@ -1,7 +1,7 @@
 //
 // Created by sauliac on 29/05/2020.
 //
-#include "utility.hpp"
+#include "codes_utilities.hpp"
 #include "kadath_spheric.hpp"
 
 #ifndef __KADATH_CODES_KERR_HPP_
@@ -15,47 +15,46 @@ public:
     //! Overall dimension.
     static constexpr int dimension {3};
 
-protected:
+public:
     //! Resolution for each coordinate.
-    decl_data_member_with_accessor_and_mutator_by_ref(Dim_array,number_of_points);
+    Dim_array number_of_points;
     //! Center of the coordinates
-    decl_data_member_with_accessor_and_mutator_by_ref(Point,center);
+    Point center;
     //! Number of domains  :
-    decl_data_member_with_accessor_and_mutator_by_val(int,number_of_domains);
+    int number_of_domains;
     //! boundaries
-    decl_data_member_with_accessor_and_mutator_by_ref(Array<double>,bounds) ;
+    Array<double> bounds;
     //! Radius of the BH !
-    decl_data_member_with_accessor_and_mutator_by_val(double,bh_radius) ;
+    double bh_radius ;
     //! Coloc point.
-    decl_data_member_with_accessor_and_mutator_by_val(int,type_coloc) ;
+    int type_coloc ;
     //! Lapse value on horizon.
-    decl_data_member_with_accessor_and_mutator_by_val(double,n0);
-    decl_data_member_with_accessor_and_mutator_by_val(double,omega);
+    double n0;
+    double omega;
 
     //! Solving space.
-    decl_ptr_member_with_rw_accessor(Space_spheric,space);
+    ptr_data_member(Space_spheric,space);
     //! Tensorial basis
-    decl_ptr_member_with_rw_accessor(Base_tensor,basis);
+    ptr_data_member(Base_tensor,basis);
     //! Solution in the conformal space.
-    decl_ptr_member_with_rw_accessor(Scalar,conformal);
+    ptr_data_member(Scalar,conformal);
     //! Lapse.
-    decl_ptr_member_with_rw_accessor(Scalar,lapse);
+    ptr_data_member(Scalar,lapse);
     //! Shift.
-    decl_ptr_member_with_rw_accessor(Vector,shift);
+    ptr_data_member(Vector,shift);
     //! Pointer toward the system of equations object.
-    decl_ptr_member_with_rw_accessor(System_of_eqs,system);
-
+    ptr_data_member(System_of_eqs,system);
 
     //! Current residue in the Newton-Rapthson algorithm
-    decl_data_member_with_accessor_by_val(double,newton_residue);
+    internal_variable(double,newton_residue);
     //! Current number of iterations done in the NR algorithm.
-    decl_data_member_with_accessor_by_val(int,newton_nbr_iterations);
+    internal_variable(int,newton_nbr_iterations);
     //! Maximum allowed number of iterations (unlimited if zero or less).
-    decl_data_member_with_accessor_and_mutator_by_val(int,newton_max_iterations);
+    int newton_max_iterations;
     //! Tolerance for error checking.
-    decl_data_member_with_accessor_and_mutator_by_val(double,tolerance);
-
-    decl_data_member_with_accessor_and_mutator_by_val(int,mpi_rank);
+    double tolerance;
+    //! MPI rank (0 if sequential).
+    int mpi_rank;
 
 public:
 
@@ -180,8 +179,8 @@ class Kerr;
 class Kerr_init : public Kerr_base {
     friend class Kerr;
 protected:
-    decl_ptr_member_with_rw_accessor(Vector,stilde);
-    decl_ptr_member_with_rw_accessor(Metric_flat,fmet);
+    ptr_data_member(Vector,stilde);
+    ptr_data_member(Metric_flat,fmet);
 
 public:
     Kerr_init(int nbr = 17,int ndom=3,double _bh_radius = 1.,int _type_coloc=CHEB_TYPE) :
@@ -238,20 +237,20 @@ public:
     static constexpr int n_evol {5};
     static constexpr int n_dirac {1};
 
-protected:
+public:
     //! Steps for the increment of \c omega.
-    decl_data_member_with_accessor_and_mutator_by_val(double,omega_step);
+    double omega_step;
     //! Maximum number of increment for \c omega.
-    decl_data_member_with_accessor_and_mutator_by_val(int,nbr_max_omega_val);
-    decl_data_member_with_accessor_by_val(int,count_omega_val);
-    decl_ptr_member_with_rw_accessor(Metric_tensor,gfixed);
-    decl_data_member_with_accessor_and_mutator_by_val(bool,save_to_file);
+    int nbr_max_omega_val;
+    internal_variable(int,count_omega_val);
+    ptr_data_member(Metric_tensor,gfixed);
+    bool save_to_file;
 
-    decl_ptr_member_with_rw_accessor(Metric_tensor,gmet);
-    decl_ptr_member_with_rw_accessor(Metric_dirac,met);
-    decl_ptr_member_with_rw_accessor(Vector,scov);
-    decl_ptr_member_with_rw_accessor(Vector,er);
-    decl_ptr_member_with_rw_accessor(Vector,mm);
+    ptr_data_member(Metric_tensor,gmet);
+    ptr_data_member(Metric_dirac,met);
+    ptr_data_member(Vector,scov);
+    ptr_data_member(Vector,er);
+    ptr_data_member(Vector,mm);
 
     Array<int> ** p_evol_inner;
     Array<int> ** p_evol;

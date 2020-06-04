@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "utility.hpp"
+#include "codes_utilities.hpp"
 #include "schwarz.hpp"
 #include "mpi.h"
 #include "magma_interface.hpp"

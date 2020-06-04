@@ -3,6 +3,7 @@
 //
 
 #include "kadath_spheric.hpp"
+#include "codes_utilities.hpp"
 
 #ifndef __KADATH_CODES_SCHWARZ_HPP_
 #define __KADATH_CODES_SCHWARZ_HPP_
@@ -15,75 +16,48 @@ public:
     //! Overall dimension.
     static constexpr int dimension {3};
 
-private:
+public:
     //! Resolution for each coordinate.
     Dim_array number_of_points;
     //! Center of the coordinates
     Point center;
+protected:
     //! Number of domains  :
-    int number_of_domains;
+    int number_of_domains; //special treatment, because setting it must resize the bounds array
+
+public:
     //! boundaries
     Array<double> bounds ;
     //! Radius of the BH !
-    double bh_radius ;
+    double bh_radius;
     //! Coloc point.
-    int type_coloc ;
+    int type_coloc;
 
     //! Solving space.
-    std::unique_ptr<Space_spheric> space;
+    ptr_data_member(Space_spheric, space);
     //! Solution in the conformal space.
-    std::unique_ptr<Scalar> conformal;
+    ptr_data_member(Scalar, conformal);
     //! Pointer toward the system of equations object.
-    std::unique_ptr<System_of_eqs> system;
+    ptr_data_member(System_of_eqs, system);
 
     //! Current residue in the Newton-Rapthson algorithm
-    double newton_residue;
+    internal_variable(double,newton_residue);
     //! Current number of iterations done in the NR algorithm.
-    int newton_nbr_iterations;
+    internal_variable(int,newton_nbr_iterations);
     //! Maximum allowed number of iterations (unlimited if zero or less).
     int newton_max_iterations;
 
     //! Difference between the approximated and analytical solutions in L-infinity norm.
-    double error_l_infinity;
+    internal_variable(double,error_l_infinity);
     //! Difference between the approximated and analytical solutions in L-2 norm.
-    double error_l_2;
+    internal_variable(double,error_l_2);
 
     //! Tolerance for error checking.
     double tolerance;
 
 public:
-    // Accessors and mutators for parameters :
-    int get_number_of_points(int i) const {return number_of_points(i);}
-    Schwarz & set_number_of_points(int i,int new_val) {number_of_points.set(i) = new_val; return *this;}
-    Point const & get_center() const {return center;}
-    Schwarz & set_center(Point const & new_center) {center = new_center; return *this;}
     int get_number_of_domains() const {return number_of_domains;}
-    Schwarz & set_number_of_domains(int new_value) ;
-    Array<double> const & get_bounds() const {return bounds;}
-    Array<double> & get_bounds() {return bounds;}
-    double get_bh_radius() const {return bh_radius;}
-    Schwarz & set_bh_radius(double new_val) {bh_radius = new_val;return *this;}
-    int get_type_coloc() const {return type_coloc;}
-    Schwarz & set_type_coloc(int new_val) {type_coloc = new_val; return *this;}
-    int get_newton_max_iterations() const {return newton_max_iterations;}
-    Schwarz & set_newton_max_iterations(int new_val) {newton_max_iterations = new_val; return *this;}
-    double get_tolerance() const {return tolerance;}
-    Schwarz & set_tolerance(double new_val) {tolerance = new_val; return *this;}
-
-    // Accessor for internal read only values :
-    double get_newton_residue() const {return newton_residue;}
-    int get_newton_nbr_iterations() const {return newton_nbr_iterations;}
-    double get_error_l_infinity() const {return error_l_infinity;}
-    double get_error_l_2() const {return error_l_2;}
-
-    // Accessors for Kadath space, system and solution objects :
-    std::unique_ptr<Space_spheric> & get_space() {return space;}
-    std::unique_ptr<Space_spheric> const & get_space() const {return space;}
-    std::unique_ptr<Scalar> & get_conformal() {return conformal;}
-    std::unique_ptr<Scalar> const & get_conformal() const {return conformal;}
-    std::unique_ptr<System_of_eqs> & get_system() {return system;}
-    std::unique_ptr<System_of_eqs> const & get_system() const {return system;}
-
+    void set_number_of_domains(int new_val);
 
     // Simple constructor, just set the default values for all parameters.
     Schwarz(int nbr = 13,int ndom=4,double _bh_radius = 1.323,int _type_coloc=CHEB_TYPE) :
@@ -192,11 +166,10 @@ public:
     void profiling_log(std::ostream & os) {profiling_report(*system,os);}
 };
 
-inline Schwarz & Schwarz::set_number_of_domains(int new_value) {
-    assert(new_value > 0);
-    number_of_domains = new_value;
+inline void Schwarz::set_number_of_domains(int new_val) {
+    assert(new_val > 0);
+    number_of_domains = new_val;
     bounds.resize(number_of_domains-1);
-    return *this;
 }
 
 #endif //__KADATH_CODES_SCHWARZ_HPP_

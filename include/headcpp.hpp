@@ -21,6 +21,7 @@
 #define __HEADCPP_HPP_
 
 #include "config.h"
+#include <type_traits>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -90,6 +91,14 @@ namespace Kadath {
       return c == Computational_model::sequential ? "sequential" :
                 (c == Computational_model::mpi_parallel ? "mpi_parallel" : "gpu_mpi_parallel");
     }
+
+    /**
+     * Template alias to select the (usually) optimal access type, either to pass an argument
+     * or to return an object. \c cutoff_factor allows to let bigger objects be passed or
+     * returned by value instead of reference to const.
+     */
+    template<typename T,std::size_t cutoff_factor=1> using optimal_access_type =
+        typename std::conditional<(sizeof(T) <= cutoff_factor*sizeof(T*)),T,T const &>::type;
 
 
 #ifdef PAR_VERSION
