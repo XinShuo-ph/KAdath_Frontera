@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     if(!nb_points.second) nb_points.first = 11;
 
     Kerr_init kerr_init{nb_points.first};
-    if(max_iterations.second) kerr_init.set_newton_max_iterations(max_iterations.first);
+    if(max_iterations.second) kerr_init.newton_max_iterations = max_iterations.first;
 
     // build all internal data.
     kerr_init.build_space_and_system();
@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 
     Kerr kerr{kerr_init};
     // this sequential demo is slow, so by default, we'll just make one iteration
-    kerr.set_nbr_max_omega_val(max_nb_omega.second ? max_nb_omega.first : 1);
+    kerr.nbr_max_omega_val = max_nb_omega.second ? max_nb_omega.first : 1;
     // Computes initial guess from kerr_init data (the space is moved from kerr_init):
     kerr.reset_initial_guess();
 

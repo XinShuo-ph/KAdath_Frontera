@@ -41,7 +41,7 @@ int main(int argc,char** argv) {
     if(!nb_points.second) nb_points.first = 13;
 
     Schwarz schwarz_solver{nb_points.first};
-    if(max_iterations.second) schwarz_solver.set_newton_max_iterations(max_iterations.first);
+    if(max_iterations.second) schwarz_solver.newton_max_iterations = max_iterations.first;
 
     schwarz_solver.build_space_and_system();
 

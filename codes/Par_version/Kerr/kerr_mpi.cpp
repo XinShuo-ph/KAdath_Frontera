@@ -22,8 +22,8 @@ int main(int argc, char** argv) {
     if(!nb_points.second) nb_points.first = 17;
 
     Kerr_init kerr_init{nb_points.first};
-    kerr_init.set_mpi_rank(rank);
-    if(max_iterations.second) kerr_init.set_newton_max_iterations(max_iterations.first);
+    kerr_init.mpi_rank = rank;
+    if(max_iterations.second) kerr_init.newton_max_iterations = max_iterations.first;
 
     // build all internal data.
     kerr_init.build_space_and_system();
@@ -34,9 +34,9 @@ int main(int argc, char** argv) {
     kerr_init.profiling_log(std::cout);
 
     Kerr kerr{kerr_init};
-    kerr.set_mpi_rank(rank);
+    kerr.mpi_rank = rank;
 
-    kerr.set_nbr_max_omega_val(max_nb_omega.second ? max_nb_omega.first : 40);
+    kerr.nbr_max_omega_val = max_nb_omega.second ? max_nb_omega.first : 40;
     kerr.reset_initial_guess();
 
     while(kerr.increment_omega())
