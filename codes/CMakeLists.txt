@@ -1,15 +1,9 @@
-cmake_minimum_required(VERSION 2.8)
-project(myproject)
-
-#Executable 1
-set (PROG1 myprog1)
-set (SOURCES1 src/${PROG1}.cpp)
-add_executable(${PROG1} ${SOURCES1} ${HEADERS})
-target_link_libraries(${PROG1} kadath ${PGPLOT_LIBRARIES} ${GSL_LIBRARIES} ${FFTW_LIBRARIES} ${LAPACK_LIBRARIES} ${SCALAPACK_LIBRARIES})
-
-#Executable 2
-set (PROG2 myprog2)
-set (SOURCES2 src/${PROG2}.cpp)
-add_executable(${PROG2} ${SOURCES2} ${HEADERS})
-target_link_libraries(${PROG2} kadath ${PGPLOT_LIBRARIES} ${GSL_LIBRARIES} ${FFTW_LIBRARIES} ${LAPACK_LIBRARIES} ${SCALAPACK_LIBRARIES})
-
+file(GLOB_RECURSE CODES_HEADER_FILES include/*.hpp)
+#file(GLOB_RECURSE CODES_SOURCE_FILES src/*.cpp)
+if(PAR_VERSION)
+    message("Including sources for parallel executables of the codes directory...")
+    add_subdirectory(Par_version/)
+else()
+    message("Including sources for sequential executables of the codes directory...")
+    add_subdirectory(Seq_version)
+endif()

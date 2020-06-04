@@ -180,13 +180,7 @@ message("  ")
 #option to compile with google address-sanitizer
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -O1 -fno-omit-frame-pointer -g")
 
-if(PAR_VERSION)
-    message("Including sources for parallel executables of the codes directory...")
-    add_subdirectory(codes/Par_version/)
-else()
-    message("Including sources for sequential executables of the codes directory...")
-    add_subdirectory(codes/Seq_version)
-endif()
+add_subdirectory(codes)
 
 #add the tests directory
 message("   ")

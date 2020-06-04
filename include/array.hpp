@@ -133,6 +133,17 @@ template <typename T> class Array : public Memory_mapped {
 
 	    void delete_data() {data.clear();} ///< Logical destructor (kills the data)
 
+	    /**
+	     * Resize the array by reallocating its ressource. All values are invalidated.
+	     * @param new_dim new \c Dim_array object enumerating dimensions.
+	     */
+	    void resize(Dim_array const & new_dim) {this->operator=(std::move(Array<T>{new_dim}));}
+	    /**
+	     * Resize overload for the one-dimension array case.
+	     * @param new_size new size of the array.
+	     */
+	    void resize(int new_size) {this->operator=(std::move(Array<T>{new_size}));}
+
 		/**
 	    * Save in a file.
 	    * The file can then been used by the constructor from a file.
