@@ -35,11 +35,11 @@ public:
     int type_coloc;
 
     //! Solving space.
-    ptr_data_member(Space_spheric, space);
+    ptr_data_member(Space_spheric, space, unique);
     //! Solution in the conformal space.
-    ptr_data_member(Scalar, conformal);
+    ptr_data_member(Scalar, conformal, unique);
     //! Pointer toward the system of equations object.
-    ptr_data_member(System_of_eqs, system);
+    ptr_data_member(System_of_eqs, system, unique);
 
     //! Current residue in the Newton-Rapthson algorithm
     internal_variable(double,newton_residue);

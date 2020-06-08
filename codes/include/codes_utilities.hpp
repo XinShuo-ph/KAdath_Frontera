@@ -13,12 +13,12 @@
 #define __KADATH_CODES_UTILITY_HPP_
 
 //! Macro to declare a pointer data member with associated trivial accessors.
-#define ptr_data_member(type,identifier) \
+#define ptr_data_member(type,identifier,smart_ptr_type) \
 protected:\
-    std::unique_ptr<type> identifier;\
+    std:: smart_ptr_type##_ptr<type> identifier;\
 public:\
-    std::unique_ptr<type> const & get_##identifier() const {return identifier;}\
-    std::unique_ptr<type> & get_##identifier() {return identifier;}
+    std:: smart_ptr_type##_ptr<type> const & get_##identifier() const {return identifier;}\
+    std:: smart_ptr_type##_ptr<type> & get_##identifier() {return identifier;}
 
 //! Macro to declare internal variable with a read-only trivial accessor.
 #define internal_variable(type,identifier) \

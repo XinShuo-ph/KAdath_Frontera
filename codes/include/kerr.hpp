@@ -35,17 +35,17 @@ public:
     double omega;
 
     //! Solving space.
-    ptr_data_member(Space_spheric,space);
+    ptr_data_member(Space_spheric,space,shared);
     //! Tensorial basis
-    ptr_data_member(Base_tensor,basis);
+    ptr_data_member(Base_tensor,basis,shared);
     //! Solution in the conformal space.
-    ptr_data_member(Scalar,conformal);
+    ptr_data_member(Scalar,conformal,shared);
     //! Lapse.
-    ptr_data_member(Scalar,lapse);
+    ptr_data_member(Scalar,lapse,shared);
     //! Shift.
-    ptr_data_member(Vector,shift);
+    ptr_data_member(Vector,shift,shared);
     //! Pointer toward the system of equations object.
-    ptr_data_member(System_of_eqs,system);
+    ptr_data_member(System_of_eqs,system,shared);
 
     //! Current residue in the Newton-Rapthson algorithm
     internal_variable(double,newton_residue);
@@ -187,8 +187,8 @@ class Kerr;
 class Kerr_init : public Kerr_base {
     friend class Kerr;
 protected:
-    ptr_data_member(Vector,stilde);
-    ptr_data_member(Metric_flat,fmet);
+    ptr_data_member(Vector,stilde,unique);
+    ptr_data_member(Metric_flat,fmet,unique);
 
 public:
     Kerr_init(int nbr = 17,int ndom=3,double _bh_radius = 1.,int _type_coloc=CHEB_TYPE) :
@@ -251,14 +251,14 @@ public:
     //! Maximum number of increment for \c omega.
     int nbr_max_omega_val;
     internal_variable(int,count_omega_val);
-    ptr_data_member(Metric_tensor,gfixed);
+    ptr_data_member(Metric_tensor,gfixed,unique);
     bool save_to_file;
 
-    ptr_data_member(Metric_tensor,gmet);
-    ptr_data_member(Metric_dirac,met);
-    ptr_data_member(Vector,scov);
-    ptr_data_member(Vector,er);
-    ptr_data_member(Vector,mm);
+    ptr_data_member(Metric_tensor,gmet,unique);
+    ptr_data_member(Metric_dirac,met,unique);
+    ptr_data_member(Vector,scov,unique);
+    ptr_data_member(Vector,er,unique);
+    ptr_data_member(Vector,mm,unique);
 
     Array<int> ** p_evol_inner;
     Array<int> ** p_evol;
@@ -285,12 +285,12 @@ public:
         n0 = kerr_init.n0;
         omega = kerr_init.omega;
         // pointers are swapped, since kerr_init is now useless.
-        space.swap(kerr_init.space);
-        basis.swap(kerr_init.basis);
-        conformal.swap(kerr_init.conformal);
-        lapse.swap(kerr_init.lapse);
-        shift.swap(kerr_init.shift);
-        system.swap(kerr_init.system);
+        space = kerr_init.space;
+        basis = kerr_init.basis;
+        conformal = kerr_init.conformal;
+        lapse = kerr_init.lapse;
+        shift = kerr_init.shift;
+        system = kerr_init.system;
 
         newton_nbr_iterations = kerr_init.newton_max_iterations;
         tolerance = kerr_init.tolerance;
