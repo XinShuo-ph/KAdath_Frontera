@@ -68,7 +68,7 @@ public:
             number_of_points{dimension}, center{dimension}, number_of_domains{ndom},
             bounds{number_of_domains-1}, bh_radius{_bh_radius}, type_coloc{_type_coloc},
             space{nullptr}, conformal{nullptr}, system{nullptr},
-            newton_residue{HUGE_VAL}, newton_nbr_iterations{0}, newton_max_iterations{0},
+            newton_residue{HUGE_VAL}, newton_nbr_iterations{0}, newton_max_iterations{-1},
             error_l_infinity{0.}, error_l_2{0.}, tolerance{1.e-8}
     {
         number_of_points.set(0) = nbr; number_of_points.set(1) = 5;
@@ -121,7 +121,7 @@ public:
      */
     bool do_newton() {
         bool newton_success {false};
-        bool const do_not_check_iter {newton_max_iterations <= 0};
+        bool const do_not_check_iter {newton_max_iterations < 0};
         while(!newton_success &&
                 (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
             newton_success = system->do_newton(tolerance,newton_residue);

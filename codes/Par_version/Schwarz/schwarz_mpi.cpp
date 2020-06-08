@@ -39,8 +39,8 @@ int main(int argc,char** argv) {
     auto max_iterations = arg_parser.get_option_value<int>("-niter","Sets the maximum number of iteration for Newton-Raphson method. A null or negative sets this limit to infinity.",0);
     auto nb_points = arg_parser.get_option_value<int>("-npts","Sets the number of collocation points (note that this value is constraint by the spectral method).",13);
     bool const show_help {arg_parser.find_option("-h","Display this help message.")};
-    if(show_help && rank==0) {
-        arg_parser.display(std::cout);
+    if(show_help) {
+        if(rank == 0) arg_parser.display(std::cout);
         return 0;
     }
 

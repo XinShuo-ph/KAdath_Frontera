@@ -20,8 +20,8 @@ int main(int argc, char** argv) {
     auto max_nb_omega = arg_parser.get_option_value<int>("-nomega","Sets the number of increments toward Omega to perform.", 40);
     auto nb_points = arg_parser.get_option_value<int>("-npts","Sets the number of collocation points (note that this value is constraint by the spectral method).",17);
     bool const show_help {arg_parser.find_option("-h","Display this help message.")};
-    if(show_help && rank==0) {
-        arg_parser.display(std::cout);
+    if(show_help) {
+        if(rank == 0) arg_parser.display(std::cout);
         return 0;
     }
 

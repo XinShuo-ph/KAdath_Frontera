@@ -71,7 +71,7 @@ public:
         number_of_points{dimension}, center{dimension}, number_of_domains{ndom},
         bounds{number_of_domains-1}, bh_radius{_bh_radius}, type_coloc{_type_coloc}, n0{0.5},
         omega{0.}, space{nullptr}, basis{nullptr}, conformal{nullptr}, system{nullptr},
-        newton_residue{HUGE_VAL}, newton_nbr_iterations{0}, newton_max_iterations{0},
+        newton_residue{HUGE_VAL}, newton_nbr_iterations{0}, newton_max_iterations{-1},
         tolerance{1.e-6}, mpi_rank{0}
     {
         number_of_points.set(0) = nbr; number_of_points.set(1) = nbr;
@@ -159,7 +159,7 @@ public:
      */
     virtual bool do_newton() {
         bool newton_success {false};
-        bool const do_not_check_iter {newton_nbr_iterations <= 0};
+        bool const do_not_check_iter {newton_max_iterations < 0};
         if(mpi_rank==0) std::cout << "Computation with omega = " << omega << std::endl;
         while(!newton_success &&
               (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
@@ -449,7 +449,7 @@ public:
         bool newton_success {false};
         char name[100] ;
         sprintf(name, "kerr_%d_%f.dat", number_of_points(0), omega) ;
-        bool const do_not_check_iter {newton_max_iterations <= 0};
+        bool const do_not_check_iter {newton_max_iterations < 0};
         if(mpi_rank==0) std::cout << "Computation with omega = " << omega << std::endl;
         while(!newton_success &&
               (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
