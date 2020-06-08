@@ -16,10 +16,14 @@ int main(int argc, char** argv) {
 	}
 #endif
     Arguments_parser arg_parser{argc,argv};
-    auto max_iterations = arg_parser.get_option_value<int>("-iter");
-    auto max_nb_omega = arg_parser.get_option_value<int>("-nomega");
-    auto nb_points = arg_parser.get_option_value<int>("-npts");
-    if(!nb_points.second) nb_points.first = 17;
+    auto max_iterations = arg_parser.get_option_value<int>("-niter","Sets the maximum number of iteration for Newton-Raphson method. A null or negative sets this limit to infinity.",0);
+    auto max_nb_omega = arg_parser.get_option_value<int>("-nomega","Sets the number of increments toward Omega to perform.", 40);
+    auto nb_points = arg_parser.get_option_value<int>("-npts","Sets the number of collocation points (note that this value is constraint by the spectral method).",17);
+    bool const show_help {arg_parser.find_option("-h","Display this help message.")};
+    if(show_help && rank==0) {
+        arg_parser.display(std::cout);
+        return 0;
+    }
 
     Kerr_init kerr_init{nb_points.first};
     kerr_init.mpi_rank = rank;

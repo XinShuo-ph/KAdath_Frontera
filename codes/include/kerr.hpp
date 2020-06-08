@@ -15,9 +15,11 @@ public:
     //! Overall dimension.
     static constexpr int dimension {3};
 
-public:
+protected:
     //! Resolution for each coordinate.
     Dim_array number_of_points;
+
+public:
     //! Center of the coordinates
     Point center;
     //! Number of domains  :
@@ -57,6 +59,12 @@ public:
     int mpi_rank;
 
 public:
+    Dim_array const & get_number_of_points() const {return number_of_points;}
+    Dim_array & get_number_of_points() {return number_of_points;}
+    void set_number_of_points(int new_value) {
+        number_of_points.set(0) = new_value;
+        number_of_points.set(1) = new_value;
+    }
 
     // Simple constructor, just set the default values for all parameters.
     Kerr_base(int nbr = 17,int ndom=3,double _bh_radius = 1.,int _type_coloc=CHEB_TYPE) :

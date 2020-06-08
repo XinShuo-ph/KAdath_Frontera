@@ -16,9 +16,10 @@ public:
     //! Overall dimension.
     static constexpr int dimension {3};
 
-public:
+protected:
     //! Resolution for each coordinate.
     Dim_array number_of_points;
+public:
     //! Center of the coordinates
     Point center;
 protected:
@@ -56,6 +57,9 @@ public:
     double tolerance;
 
 public:
+    Dim_array const & get_number_of_points() const {number_of_points;}
+    Dim_array & get_number_of_points() {number_of_points;}
+    void set_number_of_points(int new_val) {number_of_points.set(0) = new_val;}
     int get_number_of_domains() const {return number_of_domains;}
     void set_number_of_domains(int new_val);
 
@@ -80,7 +84,7 @@ public:
      * the parameter values (this should be re-called before solving if parameters are
      * changed through there mutators).
      */
-    Schwarz & build_space_and_system() {
+    Schwarz & initialize() {
         // Sherical space :
         space.reset(new Space_spheric{type_coloc,center,number_of_points,bounds});
 

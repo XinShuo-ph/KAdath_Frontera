@@ -345,8 +345,7 @@ class Metric_flat : public Metric {
 	Term_eq derive_with_other_cart (int tder, char indder, const Term_eq& so, const Metric* othermet) const ;
 	
 	public:
-		virtual ~Metric_flat() ;	
-		virtual void update() ;	
+		virtual void update() ;
 		virtual void update(int) ;
 		virtual void manipulate_ind (Term_eq&, int) const ;
 		virtual Term_eq derive_partial (int, char, const Term_eq&) const ;

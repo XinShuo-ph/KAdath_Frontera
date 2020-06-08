@@ -2,9 +2,11 @@
 // Created by sauliac on 29/05/2020.
 //
 #include <string>
+#include <map>
 #include <vector>
 #include <algorithm>
 #include <sstream>
+#include <iomanip>
 
 #ifndef __KADATH_CODES_UTILITY_HPP_
 #define __KADATH_CODES_UTILITY_HPP_
@@ -41,6 +43,16 @@ template<> struct is_admissible_option_type<double> {static constexpr bool value
 template<> struct is_admissible_option_type<std::string> {static constexpr bool value = true;};
 template<> struct is_admissible_option_type<char*> {static constexpr bool value = true;};
 
+template<typename T> struct option_type_name {static std::string get() {return typeid(T).name();}};
+template<> struct option_type_name<bool> {static std::string get() {return "bool";}};
+template<> struct option_type_name<int> {static std::string get() {return "int";}};
+template<> struct option_type_name<long> {static std::string get() {return "long";}};
+template<> struct option_type_name<long long> {static std::string get() {return "long long";}};
+template<> struct option_type_name<double> {static std::string get() {return "double";}};
+template<> struct option_type_name<std::string> {static std::string get() {return "string";}};
+template<> struct option_type_name<char*> {static std::string get() {return "char*";}};
+
+
 template<typename T> inline T from_string(std::string const & s) {
     std::stringstream sss{s};
     T t_from_s{};
@@ -50,15 +62,131 @@ template<typename T> inline T from_string(std::string const & s) {
 template<> inline std::string from_string<std::string>(std::string const & s) {return s;}
 template<> inline char const * from_string<char const *>(std::string const & s) {return s.c_str();}
 
+std::vector<std::string> inline part_string(std::string str,std::size_t part_size) {
+    std::vector<std::string> parts{};
+    while(!str.empty()) {
+        auto pos = str.find_first_of(" ",part_size);
+//        auto pos = std::find(str.cbegin()+part_size,str.cend(),' ');
+        parts.push_back(str.substr(0,pos));
+        str.erase(0,pos);
+        pos = str.find_first_not_of(" ");
+        str.erase(0,pos);
+    }
+    return std::move(parts);
+}
+
+struct Option_base {
+    static constexpr std::size_t tab_size{4};
+    static constexpr std::size_t max_key_size{15};
+    static constexpr std::size_t max_type_name_size{15};
+    static constexpr std::size_t description_tab_size{3*tab_size + max_key_size + max_type_name_size};
+    static constexpr std::size_t description_column_size {100};
+    std::string key;
+    std::string type_name;
+    std::string description;
+    Option_base() = default;
+    Option_base(std::string const & _key, std::string const & _type_name,std::string const & _description) :
+        key{_key}, type_name{_type_name}, description{_description} {}
+    virtual ~Option_base() = default;
+    virtual Option_base & set(std::string const & input) = 0;
+    virtual void display(std::ostream &os) const {
+        auto const parted_descr = part_string(description,description_column_size);
+        os << "    " << std::setw(max_key_size) << key
+           << "    " << std::setw(max_type_name_size) << type_name << "    ";
+        bool first_line {true};
+        for(auto const & line : parted_descr) {
+            if(!first_line) {
+                os << std::setw(description_tab_size ) << " " << line << '\n';
+            }
+            else {
+                os << line << '\n';
+                first_line = false;
+            }
+        }
+    }
+};
+std::ostream & operator<<(std::ostream & os,Option_base const & option) {option.display(os); return os;}
+
+template<typename T> struct Option : Option_base {
+    T value;
+    T default_value;
+    Option(std::string const & key,std::string const & description,T _default_value,std::string const & input)
+        : Option_base{key,option_type_name<T>::get(),description}, value{}, default_value{_default_value}
+    {
+        this->set(input);
+    }
+    Option() = default;
+    Option & set(std::string const & input) override {
+        if(input.empty()) value = default_value;
+        else value = from_string<T>(input);
+        return *this;
+    }
+    void display(std::ostream & os) const override {
+        this->Option_base::display(os);
+        os << std::setw(description_tab_size) << ' ';
+        os << "Default value : " << default_value << std::endl;
+    }
+};
+
+template<> struct Option<bool> : Option_base {
+    bool value;
+    Option(std::string const & key,std::string const & description,bool _value) :
+        Option_base{key,"bool",description}, value{_value}
+    {}
+    Option() = default;
+    Option & set(std::string const & ) override {value = true;return *this;}
+};
+
 
 class Arguments_parser{
+public:
 private:
+    std::string executable;
     std::vector<std::string> command_line;
+    std::map<std::string,std::unique_ptr<Option_base>> option_list;
 
 public:
-    Arguments_parser (int &argc, char **argv){
+    Arguments_parser (int &argc, char **argv,std::string const &_executable="") :
+        executable{_executable}, command_line{}, option_list{} {
+        if(executable.empty()) executable = argv[0];
         for (int i=1; i < argc; ++i)
             this->command_line.push_back(std::string(argv[i]));
+    }
+
+    std::string const & get_executable() const {return executable;}
+    Arguments_parser & set_executable(std::string const & new_executable) {executable = new_executable; return *this;}
+
+    template<typename T> void reference_option(std::string const &key,std::string const &description,T default_value,
+                                                std::string const & input= "") {
+        static_assert(!std::is_same<T,bool>::value);
+        std::unique_ptr<Option_base> opt{new Option<T>{key,description,default_value,input}};
+        option_list.try_emplace(key,std::move(opt));
+    }
+    void reference_option(std::string const &key,std::string const &description,bool value) {
+        std::unique_ptr<Option_base> opt{new Option<bool>{key,description,value}};
+        option_list.try_emplace(key,std::move(opt));
+    }
+
+    bool find_option(const std::string &option,std::string const &description) {
+        auto itr = std::find(command_line.cbegin(),command_line.cend(),option);
+        bool const found{itr != command_line.end()};
+        reference_option(option,description,found);
+        return found;
+    }
+
+    template<typename OT>
+    std::pair<typename std::enable_if<
+            is_admissible_option_type<OT>::value,
+            OT
+    >::type,bool>
+    get_option_value(const std::string &option,std::string const &description,OT default_value)  {
+        std::vector<std::string>::const_iterator itr;
+        itr =  std::find(this->command_line.begin(), this->command_line.end(), option);
+        reference_option(option,description,default_value,(itr != command_line.end() ? *itr : "" ));
+        if (itr != this->command_line.end() && ++itr != this->command_line.end()){
+            return {from_string<OT>(*itr),true};
+        }
+        else return {default_value,false};
     }
 
     template<typename OT>
@@ -74,7 +202,23 @@ public:
         }
         else return {OT{},false};
     }
+
+    virtual void display(std::ostream & os) const {
+        os << executable << " executable, usage : " << executable << " [options] " << '\n';
+        os << "Available options descriptions : " << std::endl;
+        os << "    " << std::setw(Option_base::max_key_size) << "   Option Key  "
+           << "    " << std::setw(Option_base::max_type_name_size) << "  Option Type  "
+           << "    " << std::setw(Option_base::description_column_size/2 + 6) << "Description" << std::endl;
+        for(auto const & option : option_list) {
+            option.second->display(os);
+
+        }
+    }
 };
+std::ostream& operator<<(std::ostream& os,Arguments_parser const & arguments_parser) {
+    arguments_parser.display(os);
+    return os;
+}
 
 
 

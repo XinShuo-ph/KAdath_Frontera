@@ -33,9 +33,6 @@ Metric_flat::Metric_flat (const Space& sp, const Base_tensor& bb) : Metric(sp), 
 Metric_flat::Metric_flat (const Metric_flat& so) : Metric (so), basis(so.basis) {
 }
 
-Metric_flat::~Metric_flat() {
-}
-
 void Metric_flat::update() {
 	// Nothing to do everything is constant
 }
