@@ -3,6 +3,7 @@
 //
 #include <string>
 #include <map>
+#include <memory>
 #include <vector>
 #include <algorithm>
 #include <sstream>
@@ -160,11 +161,13 @@ public:
                                                 std::string const & input= "") {
         static_assert(!std::is_same<T,bool>::value);
         std::unique_ptr<Option_base> opt{new Option<T>{key,description,default_value,input}};
-        option_list.try_emplace(key,std::move(opt));
+        auto pos = option_list.find(key);
+	if(pos == option_list.end()) option_list.emplace(key,std::move(opt));
     }
     void reference_option(std::string const &key,std::string const &description,bool value) {
         std::unique_ptr<Option_base> opt{new Option<bool>{key,description,value}};
-        option_list.try_emplace(key,std::move(opt));
+        auto pos = option_list.find(key);
+	if(pos == option_list.end()) option_list.emplace(key,std::move(opt));
     }
 
     bool find_option(const std::string &option,std::string const &description) {
