@@ -34,9 +34,9 @@
 
 namespace Kadath {
     template<>
-    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,std::ostream &os,
-            Array<double> * copy_matrix)
+    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,MPI_Communicator_ptr /*not used*/)
     {
+        auto & os = *output_stream;
 #ifdef PAR_VERSION
         int rank;
         MPI_Comm_rank (MPI_COMM_WORLD, &rank);
@@ -68,7 +68,6 @@ namespace Kadath {
                 Hash_key chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix computation ");
                 Matrice ope(nn, nn);
                 compute_matrix_adjacent(ope.get_array(), nn);
-                if(copy_matrix && niter==1) *copy_matrix = ope.get_array();
                 Duration const
                         t_load_matrix{this->stop_chrono(chrono_key)};
 

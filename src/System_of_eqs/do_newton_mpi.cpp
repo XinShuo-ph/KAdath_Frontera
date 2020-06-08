@@ -17,23 +17,18 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "config.h"
-
-#ifdef PAR_VERSION
-#include "mpi.h"
-#endif
-
 #include "system_of_eqs.hpp"
 #include "matrice.hpp"
 #include "scalar.hpp"
 #include "tensor_impl.hpp"
-#include "metric.hpp"
 #include "array_math.hpp"
 
 namespace Kadath {
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error, std::ostream & os,
-            Array<double> */*not used*/ ) {
+    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error,
+                                                                     MPI_Communicator_ptr mpi_comm) {
+        auto & os = *output_stream;
         bool res;
 #ifdef PAR_VERSION
         int bsize  {static_cast<int>(default_block_size)};
@@ -41,8 +36,8 @@ namespace Kadath {
 
         // rank and nproc from MPI :
         int rank, nproc;
-        MPI_Comm_rank (MPI_COMM_WORLD, &rank);
-        MPI_Comm_size (MPI_COMM_WORLD, &nproc);
+        MPI_Comm_rank (mpi_comm, &rank);
+        MPI_Comm_size (mpi_comm, &nproc);
 
         if(rank==0 && niter==1 && display_newton_data)
         {
@@ -124,7 +119,7 @@ namespace Kadath {
             descinit_ (descamat_in.set_data(), &second_member_size, &second_member_size, &bsize, &bsize, &zero_i, &zero_i, &ictxt_in, &nrow_in, &info);
 
             // Wait for everybody
-            MPI_Barrier(MPI_COMM_WORLD);
+            MPI_Barrier(mpi_comm);
 
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
 
@@ -186,7 +181,7 @@ namespace Kadath {
             }
 
             Array<double> xx (second_member_size);
-            MPI_Allreduce (auxi.set_data(), xx.set_data(), second_member_size, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+            MPI_Allreduce (auxi.set_data(), xx.set_data(), second_member_size, MPI_DOUBLE, MPI_SUM, mpi_comm);
 
             blacs_gridexit_ (&ictxt);
             blacs_gridexit_ (&ictxt_in);
@@ -316,8 +311,6 @@ namespace Kadath {
     void System_of_eqs::update_fields<Computational_model::mpi_parallel>(double lambda, vector<double> const& old_var_double, vector<Tensor> const& old_var_fields, vector<double> const& p_var_double, vector<Tensor> const& p_var_fields)
     {
 #ifdef PAR_VERSION
-        int rank;
-        MPI_Comm_rank (MPI_COMM_WORLD, &rank);
         if (nvar_double > 0) for (int i(0) ; i < nvar_double ; ++i) *var_double[i] = old_var_double[i] - lambda*p_var_double[i];
         for (int i(0) ; i < nvar ; ++i) *var[i] = old_var_fields[i] - lambda*p_var_fields[i];
 #else
@@ -328,6 +321,7 @@ namespace Kadath {
     template<>
     void System_of_eqs::compute_old_and_var<Computational_model::mpi_parallel>(Array<double> const& xx, vector<double>& old_var_double, vector<Tensor>& old_var_fields, vector<double>& p_var_double, vector<Tensor>& p_var_fields)
     {
+        auto & os = *output_stream;
 #ifdef PAR_VERSION
         int rank;
         MPI_Comm_rank (MPI_COMM_WORLD, &rank);
@@ -346,6 +340,7 @@ namespace Kadath {
     template<>
     void System_of_eqs::compute_p<Computational_model::mpi_parallel>(Array<double>& xx, Array<double> const& second, int nn)
     {
+        auto & os = *output_stream;
 #ifdef PAR_VERSION
         int bsize(64);
         // rank and nproc from MPI :
@@ -419,8 +414,9 @@ namespace Kadath {
 
     template<>
     bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double precision, double& error,
-                                                                         int ntrymax, double stepmax, std::ostream & os)
+                                                                         int ntrymax, double stepmax)
     {
+        auto & os = *output_stream;
 #ifdef PAR_VERSION
         // Numerical recipes 2007, section 9.7.1
         bool res(false);

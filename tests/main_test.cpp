@@ -35,7 +35,6 @@ public:
     std::unique_ptr<Space_spheric> p_space;
     std::unique_ptr<Scalar> p_conf;
     std::unique_ptr<System> p_syst;
-    std::unique_ptr<Array<double>> p_mat;
     bool converged;
     double newton_error;
     double error_l_infinity,error_l_2;
@@ -50,7 +49,7 @@ public:
 
     Schwarz_test(std::size_t num_threads = 1,bool compute = COMPUTE)
         : res{dim}, bounds{ndom-1}, p_space{nullptr}, p_conf{nullptr},
-                                                p_syst{nullptr}, p_mat{nullptr}, converged{false}, newton_error{-1.}
+                                                p_syst{nullptr}, converged{false}, newton_error{-1.}
     {
         initialize(num_threads);
         if(compute) {
@@ -59,10 +58,7 @@ public:
         }
     }
 
-
-
     bool has_converged() const {return converged;}
-    Array<double> const *  get_matrix() const {return p_mat.get();}
 
 };
 
@@ -88,10 +84,9 @@ template<class System,int A,int B,int C> bool Schwarz_test<System,A,B,C>::initia
 template<class System,int A,int B,int C>
 void Schwarz_test<System,A,B,C>::do_newton()
 {
-    p_mat.reset(new Array<double>{0,0});
     unsigned short niter{0};
     while (!converged && niter<2) {
-        converged = p_syst->do_newton(newton_tol, newton_error, std::cout, p_mat.get());
+        converged = p_syst->do_newton(newton_tol, newton_error);
         niter++;
     }
 }

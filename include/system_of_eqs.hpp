@@ -20,6 +20,15 @@
 #ifndef __SYSTEM_OF_EQS_HPP_
 #define __SYSTEM_OF_EQS_HPP_
 
+#ifdef PAR_VERSION
+#include "mpi.h"
+#define MPI_Communicator_ptr MPI_Comm
+#define do_newton_comm_world MPI_COMM_WORLD
+#else
+#define MPI_Communicator_ptr void *
+#define do_newton_comm_world nullptr
+#endif
+
 #include "headcpp.hpp"
 #include "tensor.hpp"
 #include "ope_eq.hpp"
@@ -61,6 +70,7 @@ namespace Kadath {
 		enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
 		
 	protected:
+	    std::ostream * output_stream; ///< Default output stream for log messages.
 		const Space& espace ; ///< Associated \c Space
 		int dom_min ; ///< Smallest domain number
 		int dom_max ; ///< Highest domain number
@@ -157,6 +167,14 @@ namespace Kadath {
 		const Metric* get_met() const ; ///< Returns a pointer on the \c Metric.
 
 		// Accessors
+		/**
+		 * Returns the default output stream reference.
+		 */
+		std::ostream & get_output_stream() const {return *output_stream;}
+		/**
+		 * Sets a new output stream reference.
+		 */
+		void set_output_stream(std::ostream & new_output_stream) {output_stream = &new_output_stream;}
 		/**
 		* Returns the space.
 		*/
@@ -867,7 +885,7 @@ namespace Kadath {
 		* @return true if the required precision is achieved, false otherwise.
 		*/
 		template<Computational_model computational_model = default_computational_model>
-		bool do_newton (double, double&,std::ostream & os = std::cout,Array<double> * copy_matrix = nullptr) ;
+		bool do_newton (double, double&,MPI_Communicator_ptr mpi_comm = do_newton_comm_world) ;
 
 		/**
 		 * Update the values of \c var and \c var_double from the solution of the linear system of the last Newton
@@ -893,8 +911,7 @@ namespace Kadath {
 		* @return true if the required precision is achieved, false otherwise.
 		*/
 		template<Computational_model computational_model = default_computational_model>
-		bool do_newton_with_linesearch (double precision, double& error, int ntrymax = 10, double stepmax = 1.0,
-				std::ostream & os = std::cout);
+		bool do_newton_with_linesearch (double precision, double& error, int ntrymax = 10, double stepmax = 1.0);
 
 
 		// Parts for implementing gmres
@@ -1655,16 +1672,16 @@ namespace Kadath {
 
     }
 
-    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &, std::ostream &,Array<double>*);
-    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &, std::ostream &,Array<double>*);
-    template<> bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &, std::ostream &,Array<double>*);
-    template<> bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double, double &, std::ostream &,Array<double>*);
-    template<> bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double , double &, int , double , std::ostream &);
+    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &,MPI_Communicator_ptr);
+    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &,MPI_Communicator_ptr);
+    template<> bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &,MPI_Communicator_ptr);
+    template<> bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double, double &,MPI_Communicator_ptr);
+    template<> bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double , double &, int , double );
 
 // default : not implemented - the implemention is made through the specializations (see the seq_do_newton.cpp,
 // mpi_do_newton.cpp... files).
     template<Computational_model computational_model>
-    bool System_of_eqs::do_newton(double, double &, std::ostream &os,Array<double>*)
+    bool System_of_eqs::do_newton(double, double &, MPI_Communicator_ptr)
     {
         cerr << "Error: System_of_eq::do_newton is not implemented for the "
              << computational_model_name(computational_model)
@@ -1673,8 +1690,7 @@ namespace Kadath {
     }
 
     template<Computational_model computational_model>
-    bool System_of_eqs::do_newton_with_linesearch(double precision, double &error, int ntrymax, double stepmax,
-            std::ostream &os)
+    bool System_of_eqs::do_newton_with_linesearch(double precision, double &error, int ntrymax, double stepmax)
     {
         cerr << "Error: System_of_eq::do_newton is not implemented for the "
              << computational_model_name(computational_model)
