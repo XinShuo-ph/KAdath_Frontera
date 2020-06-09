@@ -206,11 +206,11 @@ namespace Kadath {
     /**
      * Class used to evaluate the total Duration of multiple calls of some parts of the methods within its derived class,
      * store it in a map with a string keys and perform time units conversions. The profiling operation are deactivated
-     * and turned into zero-cost do-nothing methods when the ENABLED boolean template parameter is false. Keep in mind
-     * this profiler class is NOT THREAD SAFE (though it should work with the non-threaded MPI parallel versions of
-     * the library).
+     * and turned into simple chronometer, without time recording and referencing of the timed pieces of code, when the
+     * ENABLED boolean template parameter is false. This profiler class is NOT THREAD SAFE (though it should work with
+     * the non-threaded MPI parallel versions of the library).
      * @tparam Derived When defining a class as derived from Profiled_object, pass the type of that class.
-     * @tparam ENABLED boolean value used to activate or deacivate the profiling operations.
+     * @tparam ENABLED boolean value used to activate or deactivate the profiling operations.
      */
     template<   class Derived = UndefinedType,
                 typename OutputDuration = std::chrono::duration<double>,
