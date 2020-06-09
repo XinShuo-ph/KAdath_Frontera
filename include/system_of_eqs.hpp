@@ -38,7 +38,6 @@
 #include "matrice.hpp"
 #include "list_comp.hpp"
 
-
 #include <vector>
 using std::vector;
 
@@ -68,7 +67,7 @@ namespace Kadath {
 		//! Dummy names for the purpose of better readability.
 		enum : bool { DO_NOT_TRANSPOSE = false, TRANSPOSE = true};
 		enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
-		
+
 	protected:
 	    std::ostream * output_stream; ///< Default output stream for log messages.
 		const Space& espace ; ///< Associated \c Space
@@ -997,6 +996,7 @@ namespace Kadath {
 		friend class Space_bin_fake ;
 		friend class Space_polar_periodic ;
 		friend class Space_adapted_bh ;
+		friend class Space_bbh ;
 		friend class Metric ;
 		friend class Metric_general ;
 		friend class Metric_flat ;

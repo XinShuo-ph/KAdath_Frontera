@@ -652,7 +652,7 @@ namespace Kadath {
         friend class Space_bin_bh;
         friend class Space_polar_periodic;
         friend class Space_adapted_bh;
-
+friend class Space_bbh ;
         // Mathematical operators
         // ----------------------
         friend Tensor operator+(const Tensor &);
