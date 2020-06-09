@@ -148,13 +148,13 @@ Space_bbh::Space_bbh (FILE* fd) {
 }
 
 Space_bbh::~Space_bbh() {
-   const Domain_shell_outer_adapted* pouter_1 = dynamic_cast<const Domain_shell_outer_adapted*> (domains[0]) ;
+    Domain_shell_outer_adapted* pouter_1 = dynamic_cast<Domain_shell_outer_adapted*> (domains[0]) ;
     pouter_1->del_deriv() ;
-    const Domain_shell_inner_adapted* pinner_1 = dynamic_cast<const Domain_shell_inner_adapted*> (domains[1]) ;
+    Domain_shell_inner_adapted* pinner_1 = dynamic_cast<Domain_shell_inner_adapted*> (domains[1]) ;
     pinner_1->del_deriv() ;
-    const Domain_shell_outer_adapted* pouter_2 = dynamic_cast<const Domain_shell_outer_adapted*> (domains[2]) ;
+    Domain_shell_outer_adapted* pouter_2 = dynamic_cast<Domain_shell_outer_adapted*> (domains[2]) ;
     pouter_2->del_deriv() ;
-    const Domain_shell_inner_adapted* pinner_2 = dynamic_cast<const Domain_shell_inner_adapted*> (domains[3]) ;
+    Domain_shell_inner_adapted* pinner_2 = dynamic_cast<Domain_shell_inner_adapted*> (domains[3]) ;
     pinner_2->del_deriv() ;
 }
 
