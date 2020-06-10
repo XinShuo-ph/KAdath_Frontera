@@ -28,6 +28,7 @@ int main(int argc, char** argv) {
 
     Kerr_init kerr_init{nb_points.first};
     kerr_init.mpi_rank = rank;
+    kerr_init.set_verbosity(verbosity_level.first);
     if(max_iterations.second) kerr_init.newton_max_iterations = max_iterations.first;
 
     // build all internal data.
@@ -36,7 +37,7 @@ int main(int argc, char** argv) {
     kerr_init.do_newton();
 
     kerr_init.finalize();
-    if(verbosity_level.first > 0) kerr_init.profiling_log(std::cout);
+    kerr_init.profiling_log(std::cout);
 
     Kerr kerr{kerr_init};
     kerr.mpi_rank = rank;
@@ -52,7 +53,7 @@ int main(int argc, char** argv) {
         kerr.do_newton();
     }
     kerr.finalize();
-    if(verbosity_level.first > 0) kerr.profiling_log(std::cout);
+    kerr.profiling_log(std::cout);
 #ifdef ENABLE_GPU_USE
 	if(rank==0)
 	{

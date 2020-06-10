@@ -18,6 +18,8 @@ public:
 protected:
     //! Resolution for each coordinate.
     Dim_array number_of_points;
+    //! Verbosity level.
+    int verbosity;
 
 public:
     //! Center of the coordinates
@@ -59,6 +61,15 @@ public:
     int mpi_rank;
 
 public:
+    int get_verbosity() const {return verbosity;}
+    Kerr_base & set_verbosity(int new_value) {
+        verbosity = new_value;
+        if(system) {
+            if (verbosity <= 0) system->disable_data_display();
+            else system->enable_data_display();
+        }
+        return *this;
+    }
     Dim_array const & get_number_of_points() const {return number_of_points;}
     Dim_array & get_number_of_points() {return number_of_points;}
     void set_number_of_points(int new_value) {
@@ -68,6 +79,7 @@ public:
 
     // Simple constructor, just set the default values for all parameters.
     Kerr_base(int nbr = 17,int ndom=3,double _bh_radius = 1.,int _type_coloc=CHEB_TYPE) :
+        verbosity{2},
         number_of_points{dimension}, center{dimension}, number_of_domains{ndom},
         bounds{number_of_domains-1}, bh_radius{_bh_radius}, type_coloc{_type_coloc}, n0{0.5},
         omega{0.}, space{nullptr}, basis{nullptr}, conformal{nullptr}, system{nullptr},
@@ -133,6 +145,7 @@ public:
             system->add_var("bet", *shift);
             system->add_cst ("a", bh_radius) ;
             system->add_cst ("n0", n0) ;
+            this->set_verbosity(verbosity);//just to call the system setting without duplicating its code. The overhead is reasonable...
         } else initialization_order_error(std::cerr,__FILE__,__LINE__);
         return *this;
     }
@@ -160,7 +173,7 @@ public:
     virtual bool do_newton() {
         bool newton_success {false};
         bool const do_not_check_iter {newton_max_iterations < 0};
-        if(mpi_rank==0) std::cout << "Computation with omega = " << omega << std::endl;
+        if(mpi_rank==0 && verbosity > 0) std::cout << "Computation with omega = " << omega << std::endl;
         while(!newton_success &&
               (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
             newton_success = system->do_newton(tolerance,newton_residue);
@@ -171,7 +184,8 @@ public:
     //! Computes profiling datas (if enabled).
     Kerr_base & finalize() {system->finalize_profiling(); return *this;}
     //! Sends the profiling datas in the passed output stream.
-    void profiling_log(std::ostream & os) {if(mpi_rank==0) profiling_report(*system,os);}
+    void profiling_log(std::ostream & os) {
+        if(mpi_rank==0 && verbosity>1) profiling_report(*system,os);}
 
     void initialization_order_error(std::ostream & os,std::string const & file,int line) const {
         if(mpi_rank==0) {
@@ -276,6 +290,7 @@ public:
                                   p_evol{new Array<int>* [n_evol] },
                                   p_dirac{new Array<int>* [n_dirac] }
     {
+        verbosity = kerr_init.verbosity;
         number_of_points = kerr_init.number_of_points;
         center = kerr_init.center;
         number_of_domains = kerr_init.number_of_domains;
@@ -284,7 +299,7 @@ public:
         type_coloc = kerr_init.type_coloc;
         n0 = kerr_init.n0;
         omega = kerr_init.omega;
-        // pointers are swapped, since kerr_init is now useless.
+
         space = kerr_init.space;
         basis = kerr_init.basis;
         conformal = kerr_init.conformal;
@@ -363,6 +378,7 @@ public:
     Kerr & reset_system() override {
         // Solve the equation in space outside the nucleus
         system.reset(new System_of_eqs{*space, 1, number_of_domains-1}) ;
+        this->set_verbosity(verbosity);
         // Unknowns
         system->add_var ("P", *conformal) ;
         system->add_var ("N", *lapse) ;
@@ -450,7 +466,7 @@ public:
         char name[100] ;
         sprintf(name, "kerr_%d_%f.dat", number_of_points(0), omega) ;
         bool const do_not_check_iter {newton_max_iterations < 0};
-        if(mpi_rank==0) std::cout << "Computation with omega = " << omega << std::endl;
+        if(mpi_rank==0 && verbosity > 0) std::cout << "Computation with omega = " << omega << std::endl;
         while(!newton_success &&
               (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
             newton_success = system->do_newton(tolerance,newton_residue);

@@ -162,7 +162,7 @@ namespace Kadath {
 		**/
 		System_of_eqs (const Space& so, int i) : System_of_eqs{so,i,i} {}
 		System_of_eqs (const System_of_eqs&) = delete ; ///< Constructor by copy.
-		~System_of_eqs() ; ///< Destuctor
+		~System_of_eqs() ; ///< Destructor.
 
 		const Metric* get_met() const ; ///< Returns a pointer on the \c Metric.
 
@@ -881,7 +881,6 @@ namespace Kadath {
 		* @tparam computational_model template parameter for the computational model (mpi/sequential/GPU) selection.
 		* @param prec : required precision.
 		* @param error : achieved precision.
-		* @param os : output stream for displaying messages.
 		* @return true if the required precision is achieved, false otherwise.
 		*/
 		template<Computational_model computational_model = default_computational_model>
@@ -907,7 +906,6 @@ namespace Kadath {
 		* @param error : achieved precision.
 		* @param ntrymax : first linesearch parameter.
 		* @param stepmax : second linesearch parameter.
-		* @param os : output stream for displaying messages.
 		* @return true if the required precision is achieved, false otherwise.
 		*/
 		template<Computational_model computational_model = default_computational_model>
