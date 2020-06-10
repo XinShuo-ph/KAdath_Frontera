@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     kerr_init.do_newton();
 
     kerr_init.finalize();
-    kerr_init.profiling_log(std::cout);
+    if(verbosity_level.first > 0) kerr_init.profiling_log(std::cout);
 
     Kerr kerr{kerr_init};
     kerr.mpi_rank = rank;
