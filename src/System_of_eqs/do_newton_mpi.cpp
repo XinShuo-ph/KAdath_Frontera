@@ -31,7 +31,6 @@ namespace Kadath {
         auto & os = *output_stream;
         bool res;
 #ifdef PAR_VERSION
-        int bsize  {static_cast<int>(default_block_size)};
         niter++;
 
         // rank and nproc from MPI :
@@ -46,6 +45,14 @@ namespace Kadath {
         //vars_to_terms();
         Array<double> second (sec_member());
         error = max(fabs(second));
+        int second_member_size = second.get_size(0);
+        int bsize{};
+        {
+            double const dsms{static_cast<double>(second_member_size)}, dncpn{static_cast<double>(nb_core_per_node)};
+            int bsexp {static_cast<int>(std::floor(std::log2(dsms/dncpn)))};
+            bsexp = std::max(0,bsexp);
+            bsize = std::min(static_cast<int>(default_block_size),static_cast<int>(std::pow(2,bsexp)));
+        }
 
         if (error<precision) {
             res = true;
@@ -56,7 +63,6 @@ namespace Kadath {
             }
         }
         else {
-            int second_member_size = second.get_size(0);
             if (second_member_size != nbr_unknowns) {
                 cerr << "Number of unknowns is different from the number of equations" << endl;
                 cerr << "nbr equations = " << second_member_size << endl;
@@ -75,14 +81,14 @@ namespace Kadath {
             // Get local processor row and mycol
             int proc_row_in, proc_col_in;
             blacs_gridinfo_ (&ictxt_in, &nprow_in, &npcol_in, &proc_row_in, &proc_col_in);
-            int nblock_per_proc {(second_member_size / bsize) / nproc};
-            int remain_block {(second_member_size / bsize) % nproc};
 
             while (bsize*nproc > second_member_size) bsize /= 2;
             if (bsize<1) {
                 cerr << "Too many processors in do_newton" << endl;
                 abort();
             }
+            int nblock_per_proc {(second_member_size / bsize) / nproc};
+            int remain_block {(second_member_size / bsize) % nproc};
             //adjust block size to avoid idle process when the remaining workload is still significant
             int best_bsize {bsize};
             int best_remain_workload {remain_block};

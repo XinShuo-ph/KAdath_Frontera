@@ -62,6 +62,7 @@ namespace Kadath {
 	class System_of_eqs : public Profiled_object<System_of_eqs> {
 	public:
 		static constexpr std::size_t default_block_size {64};
+		static constexpr std::size_t nb_core_per_node{24};
 		//! Dummy variable for the purpose of better readability.
 		static constexpr int ALL_COLUMNS {-1};
 		//! Dummy names for the purpose of better readability.

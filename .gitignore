@@ -5,6 +5,7 @@
 lib
 bin
 build*
+scaladat
 tutorials/build*
 cmake-build*
 .idea/workspace.xml
