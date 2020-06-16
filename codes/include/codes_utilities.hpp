@@ -131,11 +131,21 @@ template<typename T> struct Option : Option_base {
 
 template<> struct Option<bool> : Option_base {
     bool value;
-    Option(std::string const & key,std::string const & description,bool _value) :
-        Option_base{key,"bool",description}, value{_value}
+    bool default_value;
+    Option(std::string const & key,std::string const & description,bool _default_value,
+            std::string const & input = "") :
+        Option_base{key,"bool",description}, value{}, default_value{_default_value}
     {}
     Option() = default;
-    Option & set(std::string const & ) override {value = true;return *this;}
+    Option & set(std::string const & s) override {
+        if(s.empty()) value = default_value;
+        else value = from_string<bool>(s);
+        return *this;}
+    void display(std::ostream & os) const override {
+        this->Option_base::display(os);
+        os << std::setw(description_tab_size) << ' ';
+        os << "Default value : " << (default_value ? "true" : "false") << std::endl;
+    }
 };
 
 
@@ -159,15 +169,14 @@ public:
 
     template<typename T> void reference_option(std::string const &key,std::string const &description,T default_value,
                                                 std::string const & input= "") {
-        static_assert(!std::is_same<T,bool>::value);
         std::unique_ptr<Option_base> opt{new Option<T>{key,description,default_value,input}};
         auto pos = option_list.find(key);
-	if(pos == option_list.end()) option_list.emplace(key,std::move(opt));
+	    if(pos == option_list.end()) option_list.emplace(key,std::move(opt));
     }
     void reference_option(std::string const &key,std::string const &description,bool value) {
         std::unique_ptr<Option_base> opt{new Option<bool>{key,description,value}};
         auto pos = option_list.find(key);
-	if(pos == option_list.end()) option_list.emplace(key,std::move(opt));
+	    if(pos == option_list.end()) option_list.emplace(key,std::move(opt));
     }
 
     bool find_option(const std::string &option,std::string const &description) {

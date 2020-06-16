@@ -23,6 +23,10 @@
 #include "scalar.hpp"
 #include "tensor_impl.hpp"
 namespace Kadath {
+
+    template<> Profiled_object_base<std::chrono::duration<double>>::Stat_map
+            Profiled_object_base<std::chrono::duration<double>>::statistic_map{};
+
 // Constructor
 
 System_of_eqs::System_of_eqs (const Space& sp) : output_stream{&std::cout},

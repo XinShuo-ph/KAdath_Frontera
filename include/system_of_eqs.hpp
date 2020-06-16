@@ -20,16 +20,8 @@
 #ifndef __SYSTEM_OF_EQS_HPP_
 #define __SYSTEM_OF_EQS_HPP_
 
-#ifdef PAR_VERSION
-#include "mpi.h"
-#define MPI_Communicator_ptr MPI_Comm
-#define do_newton_comm_world MPI_COMM_WORLD
-#else
-#define MPI_Communicator_ptr void *
-#define do_newton_comm_world nullptr
-#endif
-
 #include "headcpp.hpp"
+#include "profiled_object.hpp"
 #include "tensor.hpp"
 #include "ope_eq.hpp"
 #include "term_eq.hpp"
@@ -884,7 +876,7 @@ namespace Kadath {
 		* @return true if the required precision is achieved, false otherwise.
 		*/
 		template<Computational_model computational_model = default_computational_model>
-		bool do_newton (double, double&,MPI_Communicator_ptr mpi_comm = do_newton_comm_world) ;
+		bool do_newton (double, double&) ;
 
 		/**
 		 * Update the values of \c var and \c var_double from the solution of the linear system of the last Newton
@@ -1671,16 +1663,16 @@ namespace Kadath {
 
     }
 
-    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &,MPI_Communicator_ptr);
-    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &,MPI_Communicator_ptr);
-    template<> bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &,MPI_Communicator_ptr);
-    template<> bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double, double &,MPI_Communicator_ptr);
+    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &);
+    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &);
+    template<> bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &);
+    template<> bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double, double &);
     template<> bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double , double &, int , double );
 
 // default : not implemented - the implemention is made through the specializations (see the seq_do_newton.cpp,
 // mpi_do_newton.cpp... files).
     template<Computational_model computational_model>
-    bool System_of_eqs::do_newton(double, double &, MPI_Communicator_ptr)
+    bool System_of_eqs::do_newton(double, double &)
     {
         cerr << "Error: System_of_eq::do_newton is not implemented for the "
              << computational_model_name(computational_model)

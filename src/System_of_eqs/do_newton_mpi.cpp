@@ -16,6 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "mpi.h"
 #include "config.h"
 #include "system_of_eqs.hpp"
 #include "matrice.hpp"
@@ -26,17 +27,17 @@
 namespace Kadath {
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error,
-                                                                     MPI_Communicator_ptr mpi_comm) {
+    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error) {
         auto & os = *output_stream;
         bool res;
 #ifdef PAR_VERSION
         niter++;
 
         // rank and nproc from MPI :
-        int rank, nproc;
-        MPI_Comm_rank (mpi_comm, &rank);
-        MPI_Comm_size (mpi_comm, &nproc);
+        int rank, nproc,mpi_world_size;
+        MPI_Comm_size (MPI_COMM_WORLD, &mpi_world_size);
+        MPI_Comm_rank (MPI_COMM_WORLD, &rank);
+        MPI_Comm_size (MPI_COMM_WORLD, &nproc);
 
         if(rank==0 && niter==1 && display_newton_data)
         {
@@ -114,8 +115,8 @@ namespace Kadath {
             Array<double> matloc_in (nrow_in, ncol_in);
             int start = bsize*rank;
 
-            Hash_key chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-                                                     second_member_size, " | matrix computation ");
+            Hash_key chrono_key = this->start_chrono("mpi_do_newton  problem_size ",
+                                                     second_member_size, "  matrix_computation");
 
             compute_matrix_cyclic(matloc_in, second_member_size, start, bsize, nproc, DO_NOT_TRANSPOSE);
 
@@ -125,12 +126,12 @@ namespace Kadath {
             descinit_ (descamat_in.set_data(), &second_member_size, &second_member_size, &bsize, &bsize, &zero_i, &zero_i, &ictxt_in, &nrow_in, &info);
 
             // Wait for everybody
-            MPI_Barrier(mpi_comm);
+            MPI_Barrier(MPI_COMM_WORLD);
 
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
 
-            chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-                                            second_member_size, " | matrix translation ");
+            chrono_key = this->start_chrono("mpi_do_newton  problem_size ",
+                                            second_member_size, "  matrix_translation");
             // Now translate to a 2D cyclic decomposition
             int npcol, nprow;
             split_two_d (nproc, npcol, nprow);
@@ -169,12 +170,12 @@ namespace Kadath {
 
             // Inversion
             Array<int> ipiv (second_member_size);
-            chrono_key = this->start_chrono("MPI parallel do_newton | problem size = ",
-                                            second_member_size, " | matrix inversion ");
+            chrono_key = this->start_chrono("mpi_do_newton  problem_size ",
+                                            second_member_size, "  matrix_inversion ");
             pdgesv_ (&second_member_size, &one, matloc.set_data(), &one, &one, descamat.set_data(), ipiv.set_data(), secloc.set_data(), &one, &one, descsec.set_data(), &info);
             Duration const t_inv_matrix {this->stop_chrono(chrono_key)};
 
-            chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", second_member_size, " | update ");
+            chrono_key = this->start_chrono("mpi_do_newton  problem_size ", second_member_size, "  newton_update ");
             // Get the global solution
             Array<double> auxi(second_member_size);
             auxi = 0.;
@@ -187,7 +188,7 @@ namespace Kadath {
             }
 
             Array<double> xx (second_member_size);
-            MPI_Allreduce (auxi.set_data(), xx.set_data(), second_member_size, MPI_DOUBLE, MPI_SUM, mpi_comm);
+            MPI_Allreduce (auxi.set_data(), xx.set_data(), second_member_size, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
             blacs_gridexit_ (&ictxt);
             blacs_gridexit_ (&ictxt_in);

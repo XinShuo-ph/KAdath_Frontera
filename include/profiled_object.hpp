@@ -114,15 +114,17 @@ namespace Kadath {
             double average_duration;
             double std_deviation;
         };
+        using Stat_map = std::map<Hash_key,Statistics>;
 
     protected:
         //! Map containing Statistics concerning each sequence of measures.
-        inline static std::map<Hash_key,Statistics> statistic_map{};
+        static Stat_map statistic_map;
 
     public:
         //! Read-only access to Statistics.
         static std::map<Hash_key,Statistics> const & get_statistic_map() {return statistic_map;}
-
+        //! Clear all computed statistics.
+        static void reset_statistics() {statistic_map.clear();}
         static constexpr char const * get_unit() {return Time_unit_traits<OutputDuration>::value;}
         static constexpr char const * get_complete_unit() {return Time_unit_traits<OutputDuration>::complete_value;}
 
@@ -322,6 +324,7 @@ namespace Kadath {
             return _stop_chrono(hash(name + "." + user_key));
         }
 
+        std::hash<std::string> const & get_hash() const {return hash;}
         //! Accessor for the \c name data member.
         const std::string & get_name() const {return name;}
         //! Mutator for the \c name data member.
@@ -330,9 +333,6 @@ namespace Kadath {
         std::map<Hash_key,Duration_deque> const & get_profiling_map() const {return profiling_map;}
         //! Read-only access to the user keys dictionnary.
         std::map<Hash_key,std::string> const & get_user_keys() const {return user_keys;}
-
-
-
 
 
     public:
@@ -440,21 +440,22 @@ namespace Kadath {
                 std::tie(stat_it,std::ignore) =
                     Base::statistic_map.emplace(key, Statistics{input_name, 0ul, 0., 0., 0.});
             }
-            unsigned long nsamples {stat_it->second.n_samples + static_cast<unsigned long>(i->second.size())};
-            double total {stat_it->second.total_duration};
-            double average {total};
-            double std_dev {stat_it->second.std_deviation * stat_it->second.n_samples};
-            total = std::accumulate(i->second.begin(),i->second.end(),total,[](double l, Duration const & r)
-                {return l + Base::template to<OD>(r);});
-            average = total;
-            average /= nsamples;
-            std_dev = std::accumulate(i->second.begin(),i->second.end(),std_dev,[average](double l, Duration const &r)
-                {double const _r{Base::template to<OD>(r)-average}; return l + _r*_r;});
-            std_dev /= nsamples;
-            stat_it->second.n_samples = nsamples;
-            stat_it->second.total_duration = total;
-            stat_it->second.average_duration = average;
-            stat_it->second.std_deviation = std_dev;
+            unsigned long const n1{stat_it->second.n_samples}, n2{static_cast<unsigned long>(i->second.size())};
+            double const total1 {stat_it->second.total_duration};
+            double const mu1 {stat_it->second.average_duration};
+            double const total2 {std::accumulate(i->second.begin(),i->second.end(),0.,
+                                        [](double l,Duration const & r){return l + Base::template to<OD>(r);})};
+            double const mu2 {total2 / n2};
+            double const sigma1_2 {stat_it->second.std_deviation};
+            double const n2_sigma2_2 {std::accumulate(i->second.begin(),i->second.end(),0.,
+                                            [mu2](double l,Duration const &r) {
+                                                double const d_r_mu2{Base::template to<OD>(r) - mu2};
+                                                return l + d_r_mu2 * d_r_mu2;})};
+            auto const ntot {n1 + n2};
+            stat_it->second.n_samples = ntot;
+            stat_it->second.total_duration = total1 + total2;
+            stat_it->second.average_duration = (n1*mu1 + n2*mu2) / ntot;
+            stat_it->second.std_deviation = (n1*sigma1_2 + n2_sigma2_2 + n1*n2*(mu1-mu2)*(mu1-mu2)/ntot) / ntot;
         }
         this->reset();
     }
@@ -470,7 +471,7 @@ namespace Kadath {
                 {
                     if( with_units)
                     {
-                        os << ' ' << std::setw(3) << get_unit();
+                        os << ' ' << std::left << std::setw(3) << get_unit();
                     } else {
                         os << "    ";
                     }
@@ -481,20 +482,20 @@ namespace Kadath {
         {
             std::string const id {data.second.user_key};
             if(id.size() < 60) {
-                os << std::setw(60) << data.second.user_key;
+                os << std::right << std::setw(60) << data.second.user_key;
             } else {
                 Hash_key const id_hk {std::hash<std::string>{}(id)};
                 too_long_id.push_back({id_hk,id});
-                os << std::setw(60) << id_hk;
+                os << std::right << std::setw(60) << id_hk;
             }
             os << " " << separator << ' ';
-            os << std::setw(10) << data.second.total_duration;
+            os << std::fixed << std::setprecision(9) << std::setw(10) << data.second.total_duration;
             insert_unit_and_separator();
-            os << std::setw(10) << data.second.average_duration;
+            os << std::fixed << std::setprecision(9) << std::setw(10) << data.second.average_duration;
             insert_unit_and_separator();
-            os << std::setw(10) << sqrt(data.second.std_deviation);
+            os << std::fixed << std::setprecision(9) << std::setw(10) << sqrt(data.second.std_deviation);
             insert_unit_and_separator();
-            os << std::setw(10) << data.second.n_samples << ' ';
+            os << std::fixed << std::setprecision(9) << std::setw(10) << data.second.n_samples << ' ';
             if(with_units) os << "sample(s) ";
             os << "\n";
         }
@@ -511,9 +512,9 @@ namespace Kadath {
         os << "Profiling report : " << std::endl;
         os << "=======================================================================" << std::endl << std::endl;
         os << "                            id                              " << " | ";
-        os << " total time    |  average time  |   std. dev.    |    N " << std::endl;
+        os << "  total time    |  average  time  |    std. dev.    |    N " << std::endl;
         os << "============================================================" << "=|=";
-        os << "===============|================|================|======================" << std::endl;
+        os << "================|=================|=================|======================" << std::endl;
 #endif
         c.display(std::cout);
     }

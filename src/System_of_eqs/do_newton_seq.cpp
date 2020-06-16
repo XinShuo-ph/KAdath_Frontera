@@ -34,7 +34,7 @@
 
 namespace Kadath {
     template<>
-    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,MPI_Communicator_ptr /*not used*/)
+    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error)
     {
         auto & os = *output_stream;
 #ifdef PAR_VERSION
@@ -65,20 +65,20 @@ namespace Kadath {
                     abort();
                 }
 
-                Hash_key chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix computation ");
+                Hash_key chrono_key = this->start_chrono("seq_do_newton  problem_size ", nn, "  matrix_computation ");
                 Matrice ope(nn, nn);
                 compute_matrix_adjacent(ope.get_array(), nn);
                 Duration const
                         t_load_matrix{this->stop_chrono(chrono_key)};
 
 
-                chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | matrix inversion ");
+                chrono_key = this->start_chrono("seq_do_newton  problem_size ", nn, "  matrix_inversion ");
                 ope.set_lu();
                 Array<double> xx(ope.solve(second));
                 Duration const
                         t_inv_matrix{this->stop_chrono(chrono_key)};
 
-                chrono_key = this->start_chrono("do_newton | problem size = ", nn, " | Newton update ");
+                chrono_key = this->start_chrono("seq_do_newton  problem_size ", nn, "  newton_update ");
                 newton_update_vars(xx);
                 Duration const t_newton_update
                         {this->stop_chrono(chrono_key)};

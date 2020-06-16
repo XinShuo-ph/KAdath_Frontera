@@ -37,7 +37,6 @@
 
 #include "stdlib.h"
 #include "memory.hpp"
-#include "profiled_object.hpp"
 
 
 using namespace std ;

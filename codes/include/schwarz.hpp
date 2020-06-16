@@ -128,7 +128,7 @@ public:
     }
 
     /**
-     * Performs the Newton-Rapthson method.
+     * Performs the Newton-Raphson method.
      * @return \c true if \c newton_residue went lower than the \c tolerance value, \c false if the maximum
      * number of iterations is reached.
      */

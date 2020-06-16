@@ -165,11 +165,12 @@ public:
 
         return *this;
     }
-    /**
-     * Performs the Newton-Rapthson method.
-     * @return \c true if \c newton_residue went lower than the \c tolerance value, \c false if the maximum
-     * number of iterations is reached.
-     */
+     /**
+      * Performs the Newton-Rapthson method.
+      * @param mpi_comm an optional MPI communicator (default is \c MPI_COMM_WORLD).
+      * @return \c true if \c newton_residue went lower than the \c tolerance value, \c false if the maximum
+      * number of iterations is reached.
+      */
     virtual bool do_newton() {
         bool newton_success {false};
         bool const do_not_check_iter {newton_max_iterations < 0};

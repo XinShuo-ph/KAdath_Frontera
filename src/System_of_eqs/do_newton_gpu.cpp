@@ -32,8 +32,7 @@ namespace Kadath {
 
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double precision, double& error,
-                                                                         MPI_Communicator_ptr mpi_comm)
+    bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double precision, double& error)
     {
         auto & os = *output_stream;
         bool res;
@@ -44,8 +43,8 @@ namespace Kadath {
 
         // rank and nproc from MPI :
         int rank, nproc;
-        MPI_Comm_rank (mpi_comm, &rank);
-        MPI_Comm_size (mpi_comm, &nproc);
+        MPI_Comm_rank (MPI_COMM_WORLD, &rank);
+        MPI_Comm_size (MPI_COMM_WORLD, &nproc);
 
         if(rank==0 && niter==1 && display_newton_data)
         {
@@ -100,9 +99,9 @@ namespace Kadath {
             assert(recvcount.at(rank) == nn*local_nb_cols);
             for(auto i = recvcount.begin();i!=recvcount.begin()+remaining_cols;i++) (*i) += nn;
             for(int i=1;i<nproc;i++) displs.at(i) = displs.at(i-1) + recvcount.at(i-1);
-            MPI_Barrier(mpi_comm);
+            MPI_Barrier(MPI_COMM_WORLD);
             MPI_Gatherv(local_matrix_slice.get_data(), nn * local_nb_cols, MPI_DOUBLE, (rank==0 ? full_matrix->set_data() : nullptr),
-                recvcount.data(),displs.data(),MPI_DOUBLE,0,mpi_comm);
+                recvcount.data(),displs.data(),MPI_DOUBLE,0,MPI_COMM_WORLD);
             
             Duration const t_load_matrix {this->stop_chrono(chrono_key)};
 
@@ -125,7 +124,7 @@ namespace Kadath {
             }
 
             chrono_key = this->start_chrono("MPI parallel do newton | problem size = ", nn, " | update ");
-            MPI_Bcast(xx.set_data(),nn,MPI_DOUBLE,0,mpi_comm);
+            MPI_Bcast(xx.set_data(),nn,MPI_DOUBLE,0,MPI_COMM_WORLD);
 
             newton_update_vars(xx);
 
@@ -147,13 +146,12 @@ namespace Kadath {
     }
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double precision, double& error,
-                                                                       MPI_Communicator_ptr mpi_comm)
+    bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double precision, double& error)
     {
         auto & os = *output_stream;
 #ifdef PAR_VERSION
         int rank;
-        MPI_Comm_rank (mpi_comm, &rank);
+        MPI_Comm_rank (MPI_COMM_WORLD, &rank);
         if(rank==0) {
 #endif
             std::cerr << "Not implemented yet." << std::endl;
