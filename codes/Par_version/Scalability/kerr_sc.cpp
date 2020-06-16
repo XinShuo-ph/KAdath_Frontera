@@ -189,7 +189,7 @@ void Stat_extractor::print(std::ostream &os,bool print_header,int size)  {
     for(auto const & data_map : extracted_stats) {
         if(print_header) os << std::endl;
         os << std::right;
-        auto const psize {data_map.first};
+        auto const psize = data_map.first;
         if(size == all_sizes || psize == size) {
             for (auto const &e : data_map.second) {
                 assert(e.second.problem_size == psize);
