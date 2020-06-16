@@ -171,7 +171,7 @@ void Stat_extractor::save() {
             }
             file.close();
         }
-        auto pos = data_files.try_emplace(problem_size,std::ofstream{file_name});
+        auto pos = data_files.emplace(problem_size,std::ofstream{file_name});
         this->print(pos.first->second,do_not_print_data_header,problem_size);
     }
 }
