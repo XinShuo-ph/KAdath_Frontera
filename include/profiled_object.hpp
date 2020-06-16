@@ -451,7 +451,7 @@ namespace Kadath {
                                             [mu2](double l,Duration const &r) {
                                                 double const d_r_mu2{Base::template to<OD>(r) - mu2};
                                                 return l + d_r_mu2 * d_r_mu2;})};
-            auto const ntot {n1 + n2};
+            unsigned long const ntot {n1 + n2};
             stat_it->second.n_samples = ntot;
             stat_it->second.total_duration = total1 + total2;
             stat_it->second.average_duration = (n1*mu1 + n2*mu2) / ntot;
