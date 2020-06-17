@@ -56,10 +56,10 @@ void Domain_oned_inf::save (FILE* fd) const {
 	fwrite_be (&alpha, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_oned_inf& so) {
+ostream& Domain_oned_inf::print (ostream& o) const {
   o << "One dimensional domain up to infinity" << endl ;
-  o << -0.5/so.alpha << " < X " << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << -0.5/alpha << " < X " << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

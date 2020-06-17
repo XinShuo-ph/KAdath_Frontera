@@ -301,8 +301,9 @@ class Domain_polar_shell_inner_adapted : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
 	      
-     friend ostream& operator<< (ostream& o, const Domain_polar_shell_inner_adapted& so) ; ///< Display
-     
+public:
+     virtual ostream& print (ostream& o) const ;
+          
      friend class Space_polar_adapted ;
 } ;
 
@@ -583,7 +584,8 @@ class Domain_polar_shell_outer_adapted : public Domain {
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int cf, int& pos_cf) const ;
 
 	    
-     friend ostream& operator<< (ostream& o, const Domain_polar_shell_outer_adapted& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
      
      friend class Space_polar_adapted ;
 } ;

@@ -452,13 +452,14 @@ void Domain_shell_outer_adapted::save (FILE* fd) const {
 	outer_radius->save(fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_shell_outer_adapted& so) {
+//ostream& operator<< (ostream& o, const Domain_shell_outer_adapted& so) {
+ostream& Domain_shell_outer_adapted::print (ostream& o) const {
   o << "Adapted shell on the outside boundary" << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
-  o << "Inner radius " << so.inner_radius << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
+  o << "Inner radius " << inner_radius << endl ;
   o << "Outer radius " << endl ;
-  o << *so.outer_radius << endl ;
+  o << *outer_radius << endl ;
   o << endl ;
   return o ;
 }

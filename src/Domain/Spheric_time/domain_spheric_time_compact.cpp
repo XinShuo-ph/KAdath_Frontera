@@ -59,11 +59,11 @@ void Domain_spheric_time_compact::save (FILE* fd) const {
 	fwrite_be (&tmax, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_spheric_time_compact& so) {
+ostream& Domain_spheric_time_compact::print (ostream& o) const {
   o << "Spheric-time compact" << endl ;
-  o << "time goes from " << so.tmin << " to " << so.tmax << endl ;
-  o << "Rmin    = " << -0.5/so.alpha << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "time goes from " << tmin << " to " << tmax << endl ;
+  o << "Rmin    = " << -0.5/alpha << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

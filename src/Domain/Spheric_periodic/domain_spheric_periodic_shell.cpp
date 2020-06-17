@@ -84,12 +84,12 @@ void Domain_spheric_periodic_shell::save (FILE* fd) const {
 	fwrite_be (&type_time, sizeof(int), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_spheric_periodic_shell& so) {
+ostream& Domain_spheric_periodic_shell::print (ostream& o) const {
   o << "Spheric-periodic shell" << endl ;
-  o <<  so.beta-so.alpha << " < r < " << so.beta+so.alpha << endl ; 
-  o << "time goes to " << so.maxt << endl ;
-  o << "Omega   = " << so.ome << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o <<  beta-alpha << " < r < " << beta+alpha << endl ; 
+  o << "time goes to " << maxt << endl ;
+  o << "Omega   = " << ome << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

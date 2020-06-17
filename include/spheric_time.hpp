@@ -174,7 +174,8 @@ class Domain_spheric_time_nucleus : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
 
-     friend ostream& operator<< (ostream& o, const Domain_spheric_time_nucleus& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -328,7 +329,8 @@ class Domain_spheric_time_shell : public Domain {
 	*/
     void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
   
-     friend ostream& operator<< (ostream& o, const Domain_spheric_time_shell& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -482,7 +484,8 @@ class Domain_spheric_time_compact : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
   
-     friend ostream& operator<< (ostream& o, const Domain_spheric_time_compact& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**

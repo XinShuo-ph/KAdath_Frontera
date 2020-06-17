@@ -56,10 +56,10 @@ void Domain_oned_ori::save (FILE* fd) const {
 	fwrite_be (&alpha, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_oned_ori& so) {
+ostream& Domain_oned_ori::print (ostream& o) const {
   o << "One dimensional domain containing 0" << endl ;
-  o << "Rmax    = " << so.alpha << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "Rmax    = " << alpha << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

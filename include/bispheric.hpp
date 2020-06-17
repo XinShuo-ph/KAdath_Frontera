@@ -416,7 +416,8 @@ class Domain_bispheric_rect : public Domain {
       virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
       virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
        
-     friend ostream& operator<< (ostream& o, const Domain_bispheric_rect& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -833,7 +834,8 @@ class Domain_bispheric_chi_first : public Domain {
      
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
      virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
-  friend ostream& operator<< (ostream& o, const Domain_bispheric_chi_first& so) ; ///< Display.
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -1227,7 +1229,8 @@ class Domain_bispheric_eta_first : public Domain {
    
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
      virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
-     friend ostream& operator<< (ostream& o, const Domain_bispheric_eta_first& so) ;
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**

@@ -369,12 +369,13 @@ void Domain_polar_shell_inner_adapted::save (FILE* fd) const {
 	inner_radius->save(fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_polar_shell_inner_adapted& so) {
+ostream& Domain_polar_shell_inner_adapted::print (ostream& o) const {
   o << "Adapted polar shell on the inside boundary" << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
-  o << "Outer radius " << so.outer_radius << endl ;
-  o << *so.inner_radius << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
+  o << "Outer radius " << outer_radius << endl ;
+  o << "Inner radius " << endl ;
+  o << *inner_radius << endl ;
   o << endl ;
   return o ;
 }

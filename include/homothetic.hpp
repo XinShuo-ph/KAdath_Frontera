@@ -77,8 +77,9 @@ class Domain_shell_inner_homothetic: public Domain_shell_inner_adapted {
    virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;   
    virtual Term_eq integ_term_eq (const Term_eq&, int) const ;
    
-   friend ostream& operator<< (ostream& o, const Domain_shell_inner_homothetic& so) ; ///< Display
-     
+public:
+     virtual ostream& print (ostream& o) const ;
+          
    friend class Space_spheric_adapted ;   
    friend class Space_bin_ns ;
 } ;
@@ -134,8 +135,9 @@ class Domain_shell_outer_homothetic: public Domain_shell_outer_adapted {
    virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
    virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;   
   
-   friend ostream& operator<< (ostream& o, const Domain_shell_outer_homothetic& so) ; ///< Display
-     
+public:
+     virtual ostream& print (ostream& o) const ;
+          
    friend class Space_spheric_adapted ;   
    friend class Space_bin_ns ;
 } ;

@@ -60,11 +60,11 @@ void Domain_shell::save (FILE* fd) const {
 	fwrite_be (&beta, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_shell& so) {
+ostream& Domain_shell::print (ostream& o) const {
   o << "Shell" << endl ;
-  o <<  so.beta-so.alpha << " < r < " << so.beta+so.alpha << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o <<  beta-alpha << " < r < " << beta+alpha << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

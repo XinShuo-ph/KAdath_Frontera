@@ -519,7 +519,8 @@ class Domain_nucleus : public Domain {
      virtual double integ(const Val_domain& so, int bound) const ;
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
  
-     friend ostream& operator<< (ostream& o, const Domain_nucleus& so) ; //< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 /**
 * Class for a spherical shell and a symmetry with respect to the plane \f$ z=0 \f$.
@@ -876,13 +877,11 @@ class Domain_shell : public Domain {
      virtual Term_eq derive_flat_mtz (int, char, const Term_eq&, const Metric*) const ;
      virtual double integ(const Val_domain& so, int bound) const ;
  
-     friend ostream& operator<< (ostream& o, const Domain_shell& so) ; ///< Display
-     
+public:
+     virtual ostream& print (ostream& o) const ;
+          
      friend class Domain_shell_log ;
      friend class Domain_shell_surr ;
-     
-     friend ostream& operator<< (ostream& o, const Domain_shell_log& so) ; ///< Display
-     friend ostream& operator<< (ostream& o, const Domain_shell_surr& so) ; ///< Display
 } ;
 
 /**
@@ -1176,7 +1175,8 @@ class Domain_compact : public Domain {
      virtual Term_eq derive_flat_spher (int, char, const Term_eq&, const Metric*) const ;
      virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
  
-   friend ostream& operator<< (ostream& o, const Domain_compact& so) ;
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -1403,7 +1403,8 @@ class Domain_shell_log : public Domain_shell {
      virtual Val_domain der_normal (const Val_domain&, int) const ;
    
      
-    
+public:
+     virtual ostream& print (ostream& o) const ;    
 } ;
 
 /**
@@ -1492,7 +1493,8 @@ class Domain_shell_surr : public Domain_shell {
      virtual Val_domain der_normal (const Val_domain&, int) const ;
    
      
-     
+public:
+     virtual ostream& print (ostream& o) const ;     
     
 } ;
 

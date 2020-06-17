@@ -69,10 +69,10 @@ void Domain_critic_inner::save (FILE* fd) const {
 	fwrite_be (&xlim, sizeof(double), 1, fd) ;	
 }
 
-ostream& operator<< (ostream& o, const Domain_critic_inner& so) {
+ostream& Domain_critic_inner::print (ostream& o) const {
   o << "Inner critic domain (cylindric)" << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
-  o << "X max   = " << so.xlim << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
+  o << "X max   = " << xlim << endl ;
   o << endl ;
   return o ;
 }

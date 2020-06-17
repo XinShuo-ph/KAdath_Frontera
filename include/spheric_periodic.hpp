@@ -182,7 +182,8 @@ class Domain_spheric_periodic_nucleus : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
 
-     friend ostream& operator<< (ostream& o, const Domain_spheric_periodic_nucleus& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -410,7 +411,8 @@ class Domain_spheric_periodic_shell : public Domain {
     Term_eq fitwaves_nonflat (const Term_eq& so, const Term_eq& field, const Array<double>& phases, int dim, double factor) const;
   
   
-     friend ostream& operator<< (ostream& o, const Domain_spheric_periodic_shell& so) ; //< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -578,7 +580,8 @@ class Domain_spheric_periodic_compact : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
 
-   friend ostream& operator<< (ostream& o, const Domain_spheric_periodic_compact& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**

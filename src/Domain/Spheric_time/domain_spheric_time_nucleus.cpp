@@ -60,11 +60,11 @@ void Domain_spheric_time_nucleus::save (FILE* fd) const {
 	fwrite_be (&tmax, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_spheric_time_nucleus& so) {
+ostream& Domain_spheric_time_nucleus::print (ostream& o) const {
   o << "Spheric-time nucleus" << endl ;
-  o << "time goes from " << so.tmin << " to " << so.tmax << endl ;
-  o << "Rmax    = " << so.alpha << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "time goes from " << tmin << " to " << tmax << endl ;
+  o << "Rmax    = " << alpha << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

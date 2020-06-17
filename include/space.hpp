@@ -1341,7 +1341,14 @@ class Domain {
 	*/
      virtual void filter (Tensor& tt, int dom, double treshold) const ;
 
-     friend ostream& operator<< (ostream& o, const Domain& so) ; ///< Display
+public:
+	/**
+	* Print function, to allow override in operator<<.
+	* @param out : the output stream.
+	*/
+     virtual ostream& print (ostream& o) const = 0 ;
+
+     friend ostream& operator<< (ostream& o, const Domain& so) {return so.print(o);}; ///< Display
      friend class Val_domain ;
      friend class Metric_ADS  ;
      friend class Metric_AADS ;

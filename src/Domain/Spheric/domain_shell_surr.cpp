@@ -62,11 +62,11 @@ void Domain_shell_surr::save (FILE* fd) const {
 	fwrite_be (&beta, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_shell_surr& so) {
+ostream& Domain_shell_surr::print (ostream& o) const {
   o << "Shell surr" << endl ;
-  o << 1./(so.beta - so.alpha)  << " < r < " << 1./(so.beta+so.alpha) << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << 1./(beta - alpha)  << " < r < " << 1./(beta+alpha) << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

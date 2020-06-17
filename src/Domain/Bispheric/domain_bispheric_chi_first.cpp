@@ -154,13 +154,12 @@ void Domain_bispheric_chi_first::del_deriv() const  {
 }
 
 // Display
-ostream& operator<< (ostream& o, const Domain_bispheric_chi_first& so) {
-
+ostream& Domain_bispheric_chi_first::print (ostream& o) const {
   o << "Bispherical domain, eta fonction of chi" << endl ;
-  o << "aa      = " << so.aa << endl ;
-  o << "Radius   = " << so.r_ext << endl ;
-  o << " 0 < chi < " << so.chi_max << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "aa      = " << aa << endl ;
+  o << "Radius   = " << r_ext << endl ;
+  o << " 0 < chi < " << chi_max << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

@@ -46,11 +46,11 @@ Domain_polar_compact::Domain_polar_compact (int num , FILE* fd) : Domain(num, fd
 // Destructor
 Domain_polar_compact::~Domain_polar_compact() {}
 
-ostream& operator<< (ostream& o, const Domain_polar_compact& so) {
+ostream& Domain_polar_compact::print (ostream& o) const {
   o << "Compactified polar domain" << endl ;
-  o << "Rmin    = " << -0.5/so.alpha << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "Rmin    = " << -0.5/alpha << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

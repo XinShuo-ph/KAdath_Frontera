@@ -119,13 +119,13 @@ void Domain_shell_inner_homothetic::xx_to_ders_from_adapted(const Array<double>&
 }
 
 
-ostream& operator<< (ostream& o, const Domain_shell_inner_homothetic& so) {
+ostream& Domain_shell_inner_homothetic::print (ostream& o) const {
   o << "Adapted homothetic shell on the inside boundary" << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
-  o << "Outer radius " << so.outer_radius << endl ;
-  Index pos (so.get_nbr_points()) ;
-  o << "Inner radius " << (*so.inner_radius)(pos) << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
+  o << "Outer radius " << outer_radius << endl ;
+  Index pos (nbr_points) ;
+  o << "Inner radius " << (*inner_radius)(pos) << endl ;
   o << endl ;
   return o ;
 }
