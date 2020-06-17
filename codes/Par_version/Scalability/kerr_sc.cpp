@@ -126,12 +126,11 @@ int main(int argc,char ** argv) {
     }
     kerr.finalize();
 
-
-    if(mpi_proc_rank == 0) System_of_eqs::display(std::cout);
     matrix_computation_time_extractor.extract();
     if(mpi_proc_rank == 0) {
-        std::cout << std::endl << std::endl;
-        matrix_computation_time_extractor.print(std::cout);
+        std::cout << std::endl;
+        if(verbosity_level.first>1) profiling_report(*kerr.get_system(),std::cout);
+        if(verbosity_level.first>0) matrix_computation_time_extractor.print(std::cout);
         if(save_to_file.first) matrix_computation_time_extractor.save();
     }
 
