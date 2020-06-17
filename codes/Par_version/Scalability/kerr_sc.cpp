@@ -45,7 +45,7 @@ private:
     std::string extraction_key;
     Complete_data_map extracted_stats;
     std::string data_file_name_prefix;
-    std::map<int,std::shared_ptr<std::ofstream>> data_files;
+    std::map<int,std::ofstream*> data_files; // beurk!
 
 public:
     int get_nb_mpi_process() const {return nb_mpi_process;}
@@ -60,6 +60,7 @@ public:
                     std::string const & file_name_prefix = "kerr_scal") :
             nb_mpi_process{mpi_comm_size}, extraction_key{key} ,
             extracted_stats{}, data_file_name_prefix{file_name_prefix}, data_files{} {}
+    ~Stat_extractor() {for(auto & e : data_files) if(e.second) delete e.second;}
 
     void print(std::ostream & os,bool print_header=print_data_header,int size = all_sizes);
     static void spwan_header(std::ostream & os);
