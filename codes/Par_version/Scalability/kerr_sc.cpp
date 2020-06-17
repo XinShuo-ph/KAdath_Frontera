@@ -45,7 +45,7 @@ private:
     std::string extraction_key;
     Complete_data_map extracted_stats;
     std::string data_file_name_prefix;
-    std::map<int,std::unique_ptr<std::ofstream>> data_files;
+    std::map<int,std::shared_ptr<std::ofstream>> data_files;
 
 public:
     int get_nb_mpi_process() const {return nb_mpi_process;}
