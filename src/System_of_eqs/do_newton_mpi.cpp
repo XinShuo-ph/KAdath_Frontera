@@ -93,7 +93,7 @@ namespace Kadath {
             //adjust block size to avoid idle process when the remaining workload is still significant
             int best_bsize {bsize};
             int best_remain_workload {remain_block};
-            while((remain_block <= (nproc/2) && nblock_per_proc<12))
+            while((remain_block <= (nproc/2) && nblock_per_proc<12) && bsize > 0)
             {
                 bsize = div(bsize,2).quot;
                 if(bsize != 0) {
