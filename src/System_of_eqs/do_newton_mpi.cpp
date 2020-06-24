@@ -16,10 +16,10 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "config.h"
 #ifdef PAR_VERSION
 #include "mpi.h"
 #endif
-#include "config.h"
 #include "system_of_eqs.hpp"
 #include "matrice.hpp"
 #include "scalar.hpp"
