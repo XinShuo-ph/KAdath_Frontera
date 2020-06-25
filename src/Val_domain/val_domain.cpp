@@ -144,11 +144,13 @@ void Val_domain::annule_hard() {
 
 double& Val_domain::set(const Index& index)  {
 	set_in_conf() ;
+	del_deriv() ;
 	return c->set(index) ;
 }
 
 double& Val_domain::set_coef(const Index& index)  {
 	set_in_coef() ;
+	del_deriv() ;
 	return cf->set(index) ;
 }
 
@@ -697,7 +699,7 @@ Val_domain Val_domain::der_spher(int var) const
          return this->der_r();
       else if (var == 2)
          return this->der_t();
-      else if (var == 0)
+      else if (var == 3)
          return this->der_p();
       else
       {
