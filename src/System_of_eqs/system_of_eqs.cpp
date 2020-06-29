@@ -71,6 +71,7 @@ System_of_eqs::System_of_eqs (const Space& sp) : output_stream{&std::cout},
 		cst[i] = nullptr ;
 		term_double[i] = nullptr ;
 	}
+	init_proc_data();
 }
 
 // same between two bounds
@@ -116,6 +117,7 @@ System_of_eqs::System_of_eqs (const Space& sp, int dmin, int dmax) : output_stre
         cst[i] = nullptr ;
         term_double[i] = nullptr ;
     }
+    init_proc_data();
 }
 
 

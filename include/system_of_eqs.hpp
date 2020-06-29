@@ -20,6 +20,10 @@
 #ifndef __SYSTEM_OF_EQS_HPP_
 #define __SYSTEM_OF_EQS_HPP_
 
+#ifdef PAR_VERSION
+#include "mpi.h"
+#endif
+
 #include "headcpp.hpp"
 #include "profiled_object.hpp"
 #include "tensor.hpp"
@@ -133,6 +137,14 @@ namespace Kadath {
 
 		unsigned niter{0u}; ///< Counter toward the number of times the \c do_newton method has been called.
 		bool display_newton_data{true};///< Boolean used to enable or disable the display of data during the Newton iterations.
+		int mpi_world_size{1};
+		int mpi_proc_rank{0};
+		void init_proc_data() {
+#ifdef PAR_VERSION
+            MPI_Comm_rank(MPI_COMM_WORLD,&mpi_proc_rank);
+            MPI_Comm_size(MPI_COMM_WORLD,&mpi_world_size);
+#endif
+		}
 
 	public:
 		/**
@@ -193,6 +205,8 @@ namespace Kadath {
 		unsigned get_niter() const {return niter;}
 		System_of_eqs & enable_data_display() {display_newton_data = true; return *this;}
 		System_of_eqs & disable_data_display() {display_newton_data = false; return *this;}
+        int get_mpi_proc_rank() const {return mpi_proc_rank;}
+        int get_mpi_world_size() const {return mpi_world_size;}
 
 		/**
 		* Returns a pointer on a \c Term_eq corresponding to an unknown number.
