@@ -20,11 +20,10 @@
 #ifndef __SYSTEM_OF_EQS_HPP_
 #define __SYSTEM_OF_EQS_HPP_
 
+#include "headcpp.hpp"
 #ifdef PAR_VERSION
 #include "mpi.h"
 #endif
-
-#include "headcpp.hpp"
 #include "profiled_object.hpp"
 #include "tensor.hpp"
 #include "ope_eq.hpp"
