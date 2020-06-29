@@ -112,3 +112,9 @@
 // Enables some light-weigth in-code profiling capabilities (developper only).
 
 #cmakedefine ENABLE_INTERNAL_PROFILER
+
+#ifdef ENABLE_INTERNAL_PROFILER
+#define ENABLE_PROFILING 1
+#else
+#define ENABLE_PROFILING 0
+#endif

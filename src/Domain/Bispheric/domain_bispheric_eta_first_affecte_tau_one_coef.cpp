@@ -82,7 +82,7 @@ void Domain_bispheric_eta_first::affecte_tau_one_coef_val_domain (Val_domain& so
 								valreg *= - double(2*i+1)/double(2*i+2) ;
 							break ;
 						default :
-							cerr << "Unknown base in Domain_bispheric_eta_first::affecte_one_coef_val_domain" << endl ;
+							cerr << "Unknown base in Domain_bispheric_eta_first::affecte_one_coef_val_domain (base code = "<< basechi << ")."  << endl ;
 							abort() ;
 						}
 					so.cf->set(pos_galerkin) = valreg ;
