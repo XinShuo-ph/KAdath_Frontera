@@ -23,6 +23,7 @@
 #include "scalar.hpp"
 #include "tensor_impl.hpp"
 #include "tensor.hpp"
+#include "exceptions.hpp"
 
 namespace Kadath {
 void Domain_bispheric_eta_first::affecte_tau_one_coef_val_domain (Val_domain& so,  int cc, int& conte) const {
@@ -82,8 +83,10 @@ void Domain_bispheric_eta_first::affecte_tau_one_coef_val_domain (Val_domain& so
 								valreg *= - double(2*i+1)/double(2*i+2) ;
 							break ;
 						default :
-							cerr << "Unknown base in Domain_bispheric_eta_first::affecte_one_coef_val_domain (base code = "<< basechi << ")."  << endl ;
-							abort() ;
+						    std::string where {"Domain_bispheric_eta_first::affecte_one_coef_val_domain (in file "};
+						    where += std::string{__FILE__} + " at line " + std::string{__LINE__} + ") ";
+							cerr << "Unknown base in "<< where << "(base code = "<< basechi << ")."  << endl ;
+							throw Unknown_base_error{basechi,where} ;
 						}
 					so.cf->set(pos_galerkin) = valreg ;
 					}

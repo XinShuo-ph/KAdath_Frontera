@@ -21,6 +21,7 @@
 #include "scalar.hpp"
 #include "tensor_impl.hpp"
 #include "metric.hpp"
+#include "exceptions.hpp"
 namespace Kadath {
 Array<double> System_of_eqs::check_equations() {
 
@@ -161,7 +162,18 @@ Array<double> System_of_eqs::do_col_J (int cc) {
 	for (int i=0 ; i<nterm ; i++) {
 		int dom = term[i]->get_dom() ;
 		Tensor auxi (term[i]->get_val_t(), false) ;
-		espace.get_domain(dom)->affecte_tau_one_coef(auxi, dom, cc, conte) ;
+		try {
+            espace.get_domain(dom)->affecte_tau_one_coef(auxi, dom, cc, conte);
+        }
+		catch(Unknown_base_error & e) {
+		    std::cerr << "Error in System_of_eqs[mpi_proc_rank=" << mpi_proc_rank << "]::do_col_J(cc = " << cc
+                     << ")\n";
+		    std::cerr << "affecte_tau_one_coef raised the following exception : " << e.what() << "\n";
+		    std::cerr << "while calling espace.get_domain(dom)->affecte_tau_one_coef(auxi, dom, cc, conte)\n";
+		    std::cerr << "with auxi=term[i]->get_val_t(), where i="<< i << " and *term[i] = \n" << *term[i];
+		    std::cerr << "\n dom=" << dom << "and conte=" << conte << std::endl;
+		    abort();
+		}
 		for (int j=0 ; j<auxi.get_n_comp() ; j++) {
 			// Si la base n'est pas affectee on la met
 			if ((!auxi(auxi.indices(j))(dom).check_if_zero()) && (!auxi(auxi.indices(j))(dom).get_base().is_def()))
