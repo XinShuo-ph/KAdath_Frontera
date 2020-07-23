@@ -339,7 +339,8 @@ class Domain_nucleus_symphi : public Domain {
      void filter_val_domain (Val_domain& so, double threshold) const ;
      virtual void filter (Tensor& tt, int dom, double threshold) const ;
 
-     friend ostream& operator<< (ostream& o, const Domain_nucleus_symphi& so) ;  ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -662,7 +663,8 @@ class Domain_shell_symphi : public Domain {
      virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
      virtual double integ(const Val_domain& so, int bound) const ;
  
-     friend ostream& operator<< (ostream& o, const Domain_shell_symphi& so) ;
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 
@@ -940,7 +942,8 @@ class Domain_compact_symphi : public Domain {
      virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
      virtual double integ(const Val_domain& so, int bound) const ;
  
-     friend ostream& operator<< (ostream& o, const Domain_compact_symphi& so) ;
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 

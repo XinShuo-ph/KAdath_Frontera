@@ -33,10 +33,10 @@ Term_eq Ope_pow::action() const {
 		return Term_eq (dom, 1., 0.) ;
 	else {
 		Term_eq res_p0 (parts[0]->action()) ;
-
-		// Check of valence :
-		int valence = res_p0.get_val_t().get_valence() ;
-		if (valence !=0) {
+		// Check of type and valence :
+		//int valence = res_p0.get_val_t().get_valence() ;
+		//if (valence !=0) {
+		if (res_p0.get_type_data()==TERM_T and res_p0.get_p_val_t()->get_valence() !=0) {
 			cerr << "Ope_pow only defined for scalars" << endl ;
 			abort() ;
 		}

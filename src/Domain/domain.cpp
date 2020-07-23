@@ -137,7 +137,6 @@ Term_eq Domain::import (int numdom, int bound, int n_ope, Term_eq** parts) const
     return Term_eq (numdom, res_val) ;
 }
 
-
 // Output operator
 ostream& operator<< (ostream& o, const Domain& so) {
        const Domain_nucleus* nuc = dynamic_cast<const Domain_nucleus*>(&so) ;

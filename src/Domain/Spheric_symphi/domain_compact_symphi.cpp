@@ -45,11 +45,11 @@ Domain_compact_symphi::Domain_compact_symphi (int num, FILE* fd) : Domain(num, f
 // Destructor
 Domain_compact_symphi::~Domain_compact_symphi() {}
 
-ostream& operator<< (ostream& o, const Domain_compact_symphi& so) {
+ostream& Domain_compact_symphi::print (ostream& o) const {
   o << "Compactified domain sym phi" << endl ;
-  o << "Rmin    = " << -0.5/so.alpha << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "Rmin    = " << -0.5/alpha << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

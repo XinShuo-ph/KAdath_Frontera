@@ -233,7 +233,8 @@ class Domain_polar_periodic_nucleus : public Domain {
       void affecte_tau_one_coef_val_domain (Val_domain& so, int llim, int cc, int& pos_cf) const ;
 
 
-     friend ostream& operator<< (ostream& o, const Domain_polar_periodic_nucleus& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -436,7 +437,8 @@ class Domain_polar_periodic_shell : public Domain {
       void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
 
 
-     friend ostream& operator<< (ostream& o, const Domain_polar_periodic_shell& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 

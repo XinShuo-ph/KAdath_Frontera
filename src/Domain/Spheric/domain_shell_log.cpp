@@ -63,11 +63,11 @@ void Domain_shell_log::save (FILE* fd) const {
 	fwrite_be (&beta, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_shell_log& so) {
+ostream& Domain_shell_log::print (ostream& o) const {
   o << "Shell log" << endl ;
-  o <<  exp(so.beta-so.alpha) << " < r < " << exp(so.beta+so.alpha) << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o <<  exp(beta-alpha) << " < r < " << exp(beta+alpha) << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

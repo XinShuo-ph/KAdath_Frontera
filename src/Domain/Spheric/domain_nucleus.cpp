@@ -58,11 +58,11 @@ void Domain_nucleus::save (FILE* fd) const {
 	fwrite_be (&alpha, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_nucleus& so) {
+ostream& Domain_nucleus::print (ostream& o) const {
   o << "Nucleus" << endl ;
-  o << "Rmax    = " << so.alpha << endl ;
-  o << "Center  = " << so.center << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "Rmax    = " << alpha << endl ;
+  o << "Center  = " << center << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

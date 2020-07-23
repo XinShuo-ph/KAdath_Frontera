@@ -194,7 +194,8 @@ class Domain_polar_nucleus : public Domain {
 	*/
       void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int llim, int cc, int& pos_cf) const ;
 
-     friend ostream& operator<< (ostream& o, const Domain_polar_nucleus& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 
@@ -365,7 +366,8 @@ class Domain_polar_shell : public Domain {
 	*/
     void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
 
-     friend ostream& operator<< (ostream& o, const Domain_polar_shell& so) ;  ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**
@@ -545,7 +547,8 @@ class Domain_polar_compact : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
 
-   friend ostream& operator<< (ostream& o, const Domain_polar_compact& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 

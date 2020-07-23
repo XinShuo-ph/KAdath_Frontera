@@ -82,12 +82,12 @@ void Domain_spheric_periodic_compact::save (FILE* fd) const {
 	fwrite_be (&type_time, sizeof(int), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_spheric_periodic_compact& so) {
+ostream& Domain_spheric_periodic_compact::print (ostream& o) const {
   o << "Spheric-periodic compact" << endl ;
-  o << "Rint    = " << -0.5/so.alpha << endl ;  
-  o << "time goes to " << so.maxt << endl ;
-  o << "Omega   = " << so.ome << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "Rint    = " << -0.5/alpha << endl ;  
+  o << "time goes to " << maxt << endl ;
+  o << "Omega   = " << ome << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

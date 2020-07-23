@@ -117,8 +117,8 @@ class Domain_fourD_periodic_nucleus : public Domain {
       */
      Val_domain translate (const Val_domain& so) const ;
      virtual Tensor change_basis_spher_to_cart (int dd, const Tensor&) const ;
-
-     friend ostream& operator<< (ostream& o, const Domain_fourD_periodic_nucleus& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 
@@ -227,8 +227,8 @@ class Domain_fourD_periodic_shell : public Domain {
      * @returns : an array being the time coefficients of the result (in case it is time dependant) 
      */
      Array<double> integ_outer_boundary (const Val_domain& so) const ;
-
-     friend ostream& operator<< (ostream& o, const Domain_fourD_periodic_shell& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**

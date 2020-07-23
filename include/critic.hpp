@@ -171,7 +171,8 @@ class Domain_critic_inner : public Domain {
      virtual int nbr_points_boundary (int, const Base_spectral&) const ;
      virtual void do_which_points_boundary (int, const Base_spectral&, Index**, int) const ;
 
-     friend ostream& operator<< (ostream& o, const Domain_critic_inner& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 
@@ -316,7 +317,9 @@ class Domain_critic_outer : public Domain {
      virtual int nbr_points_boundary (int, const Base_spectral&) const ;
      virtual void do_which_points_boundary (int, const Base_spectral&, Index**, int) const ;
 
-     friend ostream& operator<< (ostream& o, const Domain_critic_outer& so) ; ///< Display
+     //friend ostream& operator<< (ostream& o, const Domain_critic_outer& so) ; ///< Display
+public:
+     virtual ostream& print (ostream& o) const ;
 } ;
 
 /**

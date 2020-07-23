@@ -435,7 +435,7 @@ namespace Kadath  {
          * Division by \f$ (x-1)\f$.
          */
          virtual Val_domain div_xm1 (const Val_domain&) const ;
-     /**
+         /**
          * Division by \f$ (1-x^2)\f$.
          */
          virtual Val_domain div_1mx2 (const Val_domain&) const ;

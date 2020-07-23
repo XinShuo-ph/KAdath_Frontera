@@ -158,8 +158,9 @@ class Domain_oned_ori : public Domain {
       void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
 
      virtual double integrale(const Val_domain&) const ; 
-    
-     friend ostream& operator<< (ostream& o, const Domain_oned_ori& so) ; ///< Display
+
+public:
+     virtual ostream& print (ostream& o) const ;    
 } ;
 
 /**
@@ -297,8 +298,9 @@ class Domain_oned_qcq : public Domain {
 
      virtual Val_domain div_xp1 (const Val_domain&) const ;
      virtual double integrale(const Val_domain&) const ; 
-  
-     friend ostream& operator<< (ostream& o, const Domain_oned_qcq& so) ; ///< Display
+
+public:
+     virtual ostream& print (ostream& o) const ;  
 } ;
 
 /**
@@ -443,8 +445,9 @@ class Domain_oned_inf : public Domain {
      void affecte_tau_one_coef_val_domain (Val_domain& so, int cc, int& pos_cf) const ;
 
      virtual double integrale(const Val_domain&) const ; 
-  
-   friend ostream& operator<< (ostream& o, const Domain_oned_inf& so) ; ///< Display
+
+public:
+     virtual ostream& print (ostream& o) const ;  
 } ;
 
 

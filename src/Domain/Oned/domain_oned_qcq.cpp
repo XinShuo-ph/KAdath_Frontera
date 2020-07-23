@@ -58,10 +58,10 @@ void Domain_oned_qcq::save (FILE* fd) const {
 	fwrite_be (&beta, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_oned_qcq& so) {
+ostream& Domain_oned_qcq::print (ostream& o) const {
   o << "One dimensional domain qcq" << endl ;
-  o << so.beta-so.alpha << " < X < " << so.beta+so.alpha << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << beta-alpha << " < X < " << beta+alpha << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

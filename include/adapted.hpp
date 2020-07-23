@@ -334,8 +334,9 @@ class Domain_shell_inner_adapted : public Domain {
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
   
      virtual double integ_volume (const Val_domain&) const ;
-	      
-     friend ostream& operator<< (ostream& o, const Domain_shell_inner_adapted& so) ; ///< 
+	     
+public:
+     virtual ostream& print (ostream& o) const ;
      
      friend class Space_spheric_adapted ;   
      friend class Space_bin_ns ;
@@ -643,7 +644,8 @@ class Domain_shell_outer_adapted : public Domain {
      virtual double integ_volume (const Val_domain&) const ;
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
  
-     friend ostream& operator<< (ostream& o, const Domain_shell_outer_adapted& so) ; ///<  Display
+public:
+     virtual ostream& print (ostream& o) const ;
      
      friend class Space_spheric_adapted ;
      friend class Space_bin_ns ;   

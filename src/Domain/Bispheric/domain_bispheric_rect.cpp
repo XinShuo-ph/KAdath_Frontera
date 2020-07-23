@@ -109,13 +109,13 @@ void Domain_bispheric_rect::del_deriv() {
 }
 
 // Display
-ostream& operator<< (ostream& o, const Domain_bispheric_rect& so) {
+ostream& Domain_bispheric_rect::print (ostream& o) const {
 
   o << "Bispherical domain, rectangular part" << endl ;
-  o << "aa      = " << so.aa << endl ;
-  o << so.eta_minus << " < eta < " << so.eta_plus << endl ;
-  o << so.chi_min << " < chi < pi " << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "aa      = " << aa << endl ;
+  o << eta_minus << " < eta < " << eta_plus << endl ;
+  o << chi_min << " < chi < pi " << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

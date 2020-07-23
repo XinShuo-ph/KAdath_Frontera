@@ -61,11 +61,11 @@ void Domain_spheric_time_shell::save (FILE* fd) const {
 	fwrite_be (&tmax, sizeof(double), 1, fd) ;
 }
 
-ostream& operator<< (ostream& o, const Domain_spheric_time_shell& so) {
+ostream& Domain_spheric_time_shell::print (ostream& o) const {
   o << "Spheric-time shell" << endl ;
-  o << "time goes from " << so.tmin << " to " << so.tmax << endl ;
-  o << "R goes from " << -so.alpha+so.beta << " to " << so.alpha+so.beta << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
+  o << "time goes from " << tmin << " to " << tmax << endl ;
+  o << "R goes from " << -alpha+beta << " to " << alpha+beta << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
   o << endl ;
   return o ;
 }

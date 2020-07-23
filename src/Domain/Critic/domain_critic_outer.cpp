@@ -64,10 +64,10 @@ void Domain_critic_outer::save (FILE* fd) const {
 	fwrite_be (&xlim, sizeof(double), 1, fd) ;	
 }
 
-ostream& operator<< (ostream& o, const Domain_critic_outer& so) {
+ostream& Domain_critic_outer::print (ostream& o) const {
   o << "Outer critic domain (cylindric)" << endl ;
-  o << "Nbr pts = " << so.nbr_points << endl ;
-  o << "X max   = " << so.xlim << endl ;
+  o << "Nbr pts = " << nbr_points << endl ;
+  o << "X max   = " << xlim << endl ;
   o << endl ;
   return o ;
 }
