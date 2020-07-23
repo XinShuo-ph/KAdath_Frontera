@@ -1339,8 +1339,14 @@ namespace Kadath  {
         * @param treshold : all coefficients below this are set to zero.
         */
          virtual void filter (Tensor& tt, int dom, double treshold) const ;
-
-         friend ostream& operator<< (ostream& o, const Domain& so) ; ///< Display
+    public:
+        /**
+         * Delegate function to virtualize the << operator.
+         * @param o reference toward the output stream.
+         * @return the reference toward output stream that was passed as argument.
+         */
+         virtual ostream & print(ostream &o) const = 0;
+         friend inline ostream& operator<< (ostream& o, const Domain& so) {return so.print(o);} ///< Display
          friend class Val_domain ;
          friend class Metric_ADS  ;
          friend class Metric_AADS ;
