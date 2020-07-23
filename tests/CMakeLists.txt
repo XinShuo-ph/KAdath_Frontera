@@ -1,10 +1,9 @@
-if(NOT(PAR_VERSION) AND ENABLE_GTEST)
-    add_subdirectory(googletest)
-    include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-    add_executable(kadath_tests_run utils_test.cpp main_test.cpp ${HEADERS})
-    target_link_libraries(kadath_tests_run gtest_main kadath ${KADATH_DEPENDENCIES})
-    set_target_properties(kadath_tests_run  PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-endif(NOT(PAR_VERSION) AND ENABLE_GTEST)
+if(ENABLE_TESTING)
+#    add_test(NAME t-array_iterator)
+#    add_executable(kadath_tests_run utils_test.cpp main_test.cpp ${HEADERS})
+#    target_link_libraries(kadath_tests_run kadath ${KADATH_DEPENDENCIES})
+#    set_target_properties(kadath_tests_run  PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+endif(ENABLE_TESTING)
 
 #Executable kerr_testing
 if(PAR_VERSION)

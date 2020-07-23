@@ -554,10 +554,20 @@ void System_of_eqs::compute_matrix_cyclic(Array<double> &matrix, int n, int firs
     n_col = (n_col == ALL_COLUMNS ? n : n_col);
     bool done = false;
     int current = 0;
+    bool unable_to_compute{false};
     while (!done)
     {
         for (int i{0},k{first_col} ; i<n_col  && k < n; i++, k++) {
-                Array<double> column(do_col_J(k));
+                Array<double> column{n};
+                try {
+                    column = do_col_J(k);
+                }
+                catch(std::exception const & e) {
+                    std::cerr << "---> unable to compute column " << k << "/" << n << " (rank "
+                             << mpi_proc_rank << "/" << mpi_world_size << ")" << std::endl;
+                    unable_to_compute = true;
+                    column = 0.;
+                }
                 if(transpose){
                     for (int j = 0; j < n; j++) matrix.set(current, j) = column(j);
                 } else {
@@ -569,6 +579,7 @@ void System_of_eqs::compute_matrix_cyclic(Array<double> &matrix, int n, int firs
         if (first_col>=n)
             done = true;
     }
+    if(unable_to_compute) throw std::runtime_error{"Unable to compute the jacobian"};
 }
 
 void System_of_eqs::compute_matrix_adjacent(Array<double> &matrix, int n, int first_col, int n_col, int num_proc,

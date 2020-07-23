@@ -166,13 +166,13 @@ Array<double> System_of_eqs::do_col_J (int cc) {
             espace.get_domain(dom)->affecte_tau_one_coef(auxi, dom, cc, conte);
         }
 		catch(Unknown_base_error & e) {
-		    std::cerr << "Error in System_of_eqs[mpi_proc_rank=" << mpi_proc_rank << "]::do_col_J(cc = " << cc
-                     << ")\n";
-		    std::cerr << "affecte_tau_one_coef raised the following exception : " << e.what() << "\n";
-		    std::cerr << "while calling espace.get_domain(dom)->affecte_tau_one_coef(auxi, dom, cc, conte)\n";
-		    std::cerr << "with auxi=term[i]->get_val_t(), where i="<< i << " and *term[i] = \n" << *term[i];
-		    std::cerr << "\n dom=" << dom << "and conte=" << conte << std::endl;
-		    abort();
+		    std::cerr << "Error in System_of_eqs[rank=" << mpi_proc_rank << "]::do_col_J(cc = " << cc
+                     /*<< ")\n"*/;
+//		    std::cerr << "affecte_tau_one_coef raised the following exception : " << e.what() << "\n";
+//		    std::cerr << "while calling espace.get_domain(dom)->affecte_tau_one_coef(auxi, dom, cc, conte)\n";
+		    std::cerr << " with auxi=term[i]->get_val_t(), where i="<< i ;
+		    std::cerr << ", dom=" << dom << " and conte=" << conte << std::endl;
+		    throw e;
 		}
 		for (int j=0 ; j<auxi.get_n_comp() ; j++) {
 			// Si la base n'est pas affectee on la met

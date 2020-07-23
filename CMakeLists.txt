@@ -38,7 +38,7 @@ option(ENABLE_ASSERTS "Enables the assert preprocessor macro (useless in release
 option(REMOVE_ALL_CHECKS "Remove most of the runtime range or type/tag checks for increase performances." OFF)
 #User options :
 option(PAR_VERSION "Parallel version" ON)
-option(ENABLE_GTEST "Enable unit/functional tests using google-test." OFF)
+option(ENABLE_TESTING "Enable unit/functional tests using ctest." OFF)
 option(HAVE_LINUX "Build for linux" ON)
 option(ENABLE_INTERNAL_PROFILER "Enable auto-profiling functions." OFF)
 option(ENABLE_GPU_USE "Enables the use of GPU(s) if available." OFF)
@@ -184,10 +184,10 @@ add_subdirectory(codes)
 
 #add the tests directory
 message("   ")
-if(NOT(PAR_VERSION) AND ENABLE_GTEST)
+if(ENABLE_TESTING)
     message("Including the tests directory...")
     enable_testing()
-endif(NOT(PAR_VERSION) AND ENABLE_GTEST)
+endif(ENABLE_TESTING)
 add_subdirectory(tests)
 
 find_package(Doxygen)

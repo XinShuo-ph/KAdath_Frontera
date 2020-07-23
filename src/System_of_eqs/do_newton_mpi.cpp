@@ -119,9 +119,14 @@ namespace Kadath {
 
             Hash_key chrono_key = this->start_chrono("mpi_do_newton  problem_size ",
                                                      second_member_size, "  matrix_computation");
-
-            compute_matrix_cyclic(matloc_in, second_member_size, start, bsize, nproc, DO_NOT_TRANSPOSE);
-
+            try {
+                compute_matrix_cyclic(matloc_in, second_member_size, start, bsize, nproc, DO_NOT_TRANSPOSE);
+            }
+            catch(std::exception const & e) {
+                std::cerr << "Unable to compute the jacobian (size = " << second_member_size << "). \n";
+                std::cerr << "the computational routines raised the following exception : " << e.what() << std::endl;
+                abort();
+            }
             // Descriptor of the matrix :
             Array<int> descamat_in(9);
             int info;
