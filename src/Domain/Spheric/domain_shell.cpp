@@ -861,11 +861,7 @@ int Domain_shell::give_place_var (char* p) const {
 
 double Domain_shell::integ(const Val_domain& so, int bound) const // compute int (so sin(theta) dtheta dphi) in x = 1 (r = outer_bc)
 {
-   if (bound != OUTER_BC)
-   {
-     cerr << "Domain_shell::integ only defined for r=rmax yet..." << endl ;
-     abort() ;
-   }
+
    double res(0.0);
    int baset((*so.base.bases_1d[1])(0));
    if (baset != COS_EVEN) 
@@ -884,7 +880,10 @@ double Domain_shell::integ(const Val_domain& so, int bound) const // compute int
          for (int i(0) ; i < nbr_coefs(0) ; ++i) 
          {
             pos.set(0) = i;
-            res += fact_tet*(*so.cf)(pos);
+            if (bound==OUTER_BC)
+             res += fact_tet*(*so.cf)(pos);
+	    if (bound==INNER_BC)
+	    res += (i%2==0) ? fact_tet*(*so.cf)(pos) : -fact_tet*(*so.cf)(pos) ;
          }
       }
       return res*2.0*M_PI;

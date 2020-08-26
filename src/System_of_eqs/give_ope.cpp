@@ -107,7 +107,7 @@ bool System_of_eqs::isdef (int dd, const char* name, int& which, int& valence, c
 	bool res = false ;
 	for (int i=0 ; i<ndef ; i++) {
 
-		
+		res = false ;
 		if (name_ind !=0x0) {
 		    delete [] name_ind ;
 		    name_ind = 0x0 ;
