@@ -106,8 +106,6 @@ bool System_of_eqs::iscst (const char* name, int& which, int& valence, char*& na
 bool System_of_eqs::isdef (int dd, const char* name, int& which, int& valence, char*& name_ind, Array<int>*& type_ind) const {
 	bool res = false ;
 	for (int i=0 ; i<ndef ; i++) {
-
-		res = false ;
 		if (name_ind !=0x0) {
 		    delete [] name_ind ;
 		    name_ind = 0x0 ;
@@ -121,6 +119,7 @@ bool System_of_eqs::isdef (int dd, const char* name, int& which, int& valence, c
 			which = i ;
 			break ;
 		}
+		res = false ;
 	}
 	return res ;
 }
