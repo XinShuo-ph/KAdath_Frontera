@@ -1,8 +1,8 @@
 if(ENABLE_TESTING)
-#    add_test(NAME t-array_iterator)
-#    add_executable(kadath_tests_run utils_test.cpp main_test.cpp ${HEADERS})
-#    target_link_libraries(kadath_tests_run kadath ${KADATH_DEPENDENCIES})
-#    set_target_properties(kadath_tests_run  PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+    add_executable(t-array_iterator t-array_iterator.cpp)
+    target_link_libraries(t-array_iterator kadath ${KADATH_DEPENDENCIES})
+    set_target_properties(t-array_iterator PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/tests)
+    add_test(NAME t-array_iterator COMMAND ./t-array_iterator)
 endif(ENABLE_TESTING)
 
 #Executable kerr_testing

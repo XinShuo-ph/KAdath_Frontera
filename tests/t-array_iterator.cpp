@@ -44,7 +44,7 @@ int main(int argc,char *argv[])
         do {
             int const v1{test_array(index)};
             int const v2{test_array(array_index)};
-            EXPECT_EQ(v1, v2);
+            assert(v1 == v2);
             inc_ok = v1 == v2;
             inc_i = index.inc();
             inc_ai = array_index.inc();
@@ -61,7 +61,7 @@ int main(int argc,char *argv[])
             do {
                 int const v1{test_array(index)};
                 int const v2{test_array(array_index)};
-                EXPECT_EQ(v1, v2);
+                assert(v1 == v2);
                 inc1_ok = v1 == v2;
                 inc_i = index.inc1(var);
                 inc_ai = array_index.inc1(var);
@@ -70,22 +70,23 @@ int main(int argc,char *argv[])
         }
     }
     {
-    bool inc_i{true};
-    bool inc_ai{true};
-    for(int var=0;var<ndim;var++)
-        for(int step=2;step<d[var];step++) {
-            index.set_start();
-            array_index.set_start();
-            bool incstep_ok{true};
-            do {
-                int const v1{test_array(index)};
-                int const v2{test_array(array_index)};
-                EXPECT_EQ(v1, v2);
-                incstep_ok = v1 == v2;
-                inc_i = index.inc(step, var);
-                inc_ai = array_index.inc(step, var);
-            } while (incstep_ok && inc_i && inc_ai);
-            assert(incstep_ok);
-        }
-    return 0;
+        bool inc_i{true};
+        bool inc_ai{true};
+        for (int var = 0; var < ndim; var++)
+            for (int step = 2; step < d[var]; step++) {
+                index.set_start();
+                array_index.set_start();
+                bool incstep_ok{true};
+                do {
+                    int const v1{test_array(index)};
+                    int const v2{test_array(array_index)};
+                    assert(v1 == v2);
+                    incstep_ok = v1 == v2;
+                    inc_i = index.inc(step, var);
+                    inc_ai = array_index.inc(step, var);
+                } while (incstep_ok && inc_i && inc_ai);
+                assert(incstep_ok);
+            }
+        return 0;
+    }
 }
