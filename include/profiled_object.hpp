@@ -201,7 +201,7 @@ namespace Kadath {
             unsigned const hh_to_min {hh*60};
             unsigned const mm {to<std::chrono::minutes,unsigned>(d) - hh_to_min};
             double const ss {to<std::chrono::seconds>(d) - (hh_to_min + mm)*60.};
-            return {hh,mm,ss};
+            return std::tuple<unsigned,unsigned,double>(hh,mm,ss);
         }
     };
 

@@ -40,7 +40,7 @@ option(REMOVE_ALL_CHECKS "Remove most of the runtime range or type/tag checks fo
 option(PAR_VERSION "Parallel version" ON)
 option(ENABLE_TESTING "Enable unit/functional tests using ctest." ON)
 option(HAVE_LINUX "Build for linux" ON)
-option(ENABLE_INTERNAL_PROFILER "Enable auto-profiling functions." OFF)
+option(ENABLE_INTERNAL_PROFILER "Enable auto-profiling functions." ${ENABLE_TESTING})
 option(ENABLE_GPU_USE "Enables the use of GPU(s) if available." OFF)
 option(ENABLE_BOOST_MEMORY_POOLS "Enables the use of boost memory pools for the memory mapper instead of standard malloc call." OFF)
 option(TENSOR_MOVE_SEMANTIC "Enables/disables move ctor and operators fot the Tensor class hierarchy." OFF)
