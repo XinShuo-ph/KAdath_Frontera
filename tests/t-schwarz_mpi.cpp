@@ -20,7 +20,6 @@
 // Created by sauliac on 20/01/2020.
 //
 
-#include <utility>
 #include <random>
 #include "system_of_eqs.hpp"
 #include "kadath_spheric.hpp"
@@ -36,7 +35,7 @@ enum : bool
     COMPUTE = true
 };
 
-template<class System,int R1=13,int R2=5,int R3=4> class Schwarz_test
+template<int R1=13,int R2=5,int R3=4> class Schwarz_test
 {
 public:
     static constexpr int dim {3};
@@ -51,12 +50,12 @@ public:
     Array<double> bounds;
     std::unique_ptr<Space_spheric> p_space;
     std::unique_ptr<Scalar> p_conf;
-    std::unique_ptr<System> p_syst;
+    std::unique_ptr<System_of_eqs> p_syst;
     bool converged;
     double newton_error;
     double error_l_infinity,error_l_2;
-    bool initialize(std::size_t num_threads = 1);
-    bool init_syst(std::size_t num_threads = 1);
+    bool initialize();
+    bool init_syst();
     void do_newton();
     void check_solution();
 
@@ -64,11 +63,11 @@ public:
     double get_error_l_infinity() const {return error_l_infinity;}
     double get_error_l_2() const {return error_l_2;}
 
-    Schwarz_test(std::size_t num_threads = 1,bool compute = COMPUTE)
+    Schwarz_test(bool compute = COMPUTE)
             : res{dim}, bounds{ndom-1}, p_space{nullptr}, p_conf{nullptr},
               p_syst{nullptr}, converged{false}, newton_error{-1.}
     {
-        initialize(num_threads);
+        initialize();
         if(compute) {
             do_newton();
             check_solution();
@@ -79,7 +78,7 @@ public:
 
 };
 
-template<class System,int A,int B,int C> bool Schwarz_test<System,A,B,C>::initialize(std::size_t num_threads)
+template<int A,int B,int C> bool Schwarz_test<A,B,C>::initialize()
 {
     res.set(0) = resolution[0] ; res.set(1) = resolution[1] ; res.set(2) = resolution[2] ;
     bounds.set(0) = b_radius[0]*aa ; bounds.set(1) = b_radius[1]*aa ; bounds.set(2) = b_radius[2]*aa ;
@@ -87,7 +86,7 @@ template<class System,int A,int B,int C> bool Schwarz_test<System,A,B,C>::initia
     p_conf.reset(new Scalar{*p_space});
     *p_conf = 1.;
     p_conf->std_base();
-    bool const system_initialized {init_syst(num_threads)};
+    bool const system_initialized {init_syst()};
     assert(system_initialized);
     p_syst->add_var ("P", *p_conf) ;
     p_syst->add_cst ("a", aa) ;
@@ -98,8 +97,8 @@ template<class System,int A,int B,int C> bool Schwarz_test<System,A,B,C>::initia
     return system_initialized && p_space != nullptr && p_conf != nullptr ;
 }
 
-template<class System,int A,int B,int C>
-void Schwarz_test<System,A,B,C>::do_newton()
+template<int A,int B,int C>
+void Schwarz_test<A,B,C>::do_newton()
 {
     unsigned short niter{0};
     while (!converged && niter<2) {
@@ -108,7 +107,7 @@ void Schwarz_test<System,A,B,C>::do_newton()
     }
 }
 
-template<class System,int A,int B,int C> void Schwarz_test<System,A,B,C>::check_solution()
+template<int A,int B,int C> void Schwarz_test<A,B,C>::check_solution()
 {
     assert(p_conf);
     int resol = 100 ;
@@ -143,7 +142,7 @@ template<class System,int A,int B,int C> void Schwarz_test<System,A,B,C>::check_
     error_l_2 = sqrt(error_l_2);
 }
 
-template<> bool Schwarz_test<System_of_eqs>::init_syst(std::size_t num_threads)
+template<> bool Schwarz_test<>::init_syst()
 {
     if(p_space) {
         p_syst.reset(new System_of_eqs{*p_space,1,ndom-1});
@@ -151,42 +150,16 @@ template<> bool Schwarz_test<System_of_eqs>::init_syst(std::size_t num_threads)
     return p_syst != nullptr;
 }
 
-template<> bool Schwarz_test<System_of_eqs_threaded>::init_syst(std::size_t num_threads)
-{
-    if(p_space) {
-        p_syst.reset(new System_of_eqs_threaded{num_threads,*p_space,1,ndom-1});
-    }
-    return p_syst != nullptr;
-}
-
-
-class KadathSchwarzTest : public ::testing::Test, public Schwarz_test<System_of_eqs>
-{
-public:
-    KadathSchwarzTest() : Test{} , Schwarz_test<System_of_eqs>{} {}
-};
-
-class KadathSchwarzMultiThreadTest : public ::testing::Test
-{
-public:
-    static constexpr std::size_t num_threads {3};
-protected:
-    Schwarz_test<System_of_eqs_threaded> single_thread;
-    Schwarz_test<System_of_eqs_threaded> multi_thread;
-public:
-    KadathSchwarzMultiThreadTest() : Test{}, single_thread{1}, multi_thread{num_threads} {}
-};
-
-
-void checkErrorInLInfAndL2Norms()
-{
-    Schwarz_test<System_of_eqs> test{}
-    assert(test.converged);
-    assert(test.error_l_infinity <= TESTS_TOLERANCE);
-    assert(error_l_2 <= TESTS_TOLERANCE);
-}
-
 int main(int argc,char * argv[]) {
-    checkErrorInLInfAndL2Norms();
+    MPI_Init(&argc,&argv);
+    int rank{0};
+    MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+    Schwarz_test<> test{};
+    if(rank==0) {
+        assert(test.converged);
+        assert(test.error_l_infinity <= TESTS_TOLERANCE);
+        assert(test.error_l_2 <= TESTS_TOLERANCE);
+    }
+    MPI_Finalize();
     return 0;
 }

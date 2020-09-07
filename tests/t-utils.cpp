@@ -18,31 +18,13 @@
 */
 
 
-/*
-    Copyright 2020 sauliac
-
-    This file is part of Kadath.
-
-    Kadath is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Kadath is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /**
  * Unit tests for utilitary class.
  */
 
 #include <cassert>
 #include <type_traits>
+#include <thread>
 #include "profiled_object.hpp"
 
 using namespace Kadath;
@@ -61,8 +43,16 @@ typename std::enable_if<std::is_convertible<typename std::common_type<T1,T2>::ty
 
 template<typename T> inline bool is_small(T const &x,double _tol = tol) {return is_near(x,0,_tol);}
 
+class AutoProfilerTester : public Profiled_object<AutoProfilerTester> {
+public :
+    using Base = Profiled_object<AutoProfilerTester>;
+    using Base::Base;
 
-void checkTimeMeasurement()
+    void test_measurement();
+    void test_time_conversions();
+};
+
+void AutoProfilerTester::test_measurement()
 {
     constexpr unsigned short ncheck {10u};
     constexpr unsigned long small_sleep_duration {100}; // milliseconds
@@ -76,7 +66,7 @@ void checkTimeMeasurement()
         }
         else
         {
-            EXPECT_EQ(new_short_sleeps_key, short_sleeps_key);
+            assert(new_short_sleeps_key == short_sleeps_key);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(small_sleep_duration));
         stop_chrono(short_sleeps_key);
@@ -102,7 +92,7 @@ void checkTimeMeasurement()
 }
 
 
-void checkDurationConversions()
+void AutoProfilerTester::test_time_conversions()
 {
     std::chrono::hours hour{1};
     std::chrono::seconds zero{0};
@@ -166,14 +156,15 @@ void checkDurationConversions()
     assert(std::get<2>(zero_to_hh_mm_ss)==0.);
     assert(std::get<0>(h1_m1_s1)==1);
     assert(std::get<1>(h1_m1_s1)==1);
-    assert(std::get<2>(h1_m1_s1),==.);
+    assert(std::get<2>(h1_m1_s1)==1.);
     assert(std::get<0>(h1_11_13p666)==1);
     assert(std::get<1>(h1_11_13p666)==11);
     assert(is_near(std::get<2>(h1_11_13p666),13.666,1.e-12));
 }
 
 int main(int argc,char * argv[]) {
-    checkTimeMeasurement();
-    checkDurationConversions();
+    AutoProfilerTester auto_profiler_tester{};
+    auto_profiler_tester.test_measurement();
+    auto_profiler_tester.test_time_conversions();
     return 0;
 }
