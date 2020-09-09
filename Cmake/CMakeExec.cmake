@@ -123,6 +123,9 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 
 set(KADATH_LIB ${KADATH_BUILD_DIRECTORY}/lib/libkadath.a)
+#for backward compatibility
+set(LIB_KADATH ${KADATH_LIB})
+set(HEADERS ${KADATH_HEADERS})
 #message("  ")
 #message("===========================================================================")
 #message("Kadath dependencies : ${KADATH_DEPENDENCIES}")

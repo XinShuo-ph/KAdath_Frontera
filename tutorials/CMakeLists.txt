@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(myproject)
 
 set(KADATH_SOURCES_DIRECTORY $ENV{HOME_KADATH} CACHE PATH "Kadath sources directory")
-set(KADATH_BUILD_PATH_NAME build CACHE STRING "Relative path name for Kadath build directory")
+set(KADATH_RELATIVE_BUILD_PATH build CACHE STRING "Relative path name for Kadath build directory")
 set(KADATH_BUILD_DIRECTORY ${KADATH_SOURCES_DIRECTORY}/${KADATH_BUILD_PATH_NAME} CACHE PATH "Kadath directory")
 
 message("Kadath sources directory : ${KADATH_SOURCES_DIRECTORY}")

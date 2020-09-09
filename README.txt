@@ -1,5 +1,7 @@
 General purpose instructions :
 
+Compiling the library :
+
 Use cmake to generate a build system (better with version 3.1 or higher, but it should work with the later 2.x versions) :
   - Create a build directory where you want the library to be compiled, for exemple at the Kadath directory :
             cd Kadath
@@ -43,12 +45,59 @@ The available main cmake build options are the following (the value in parenthes
                                         cmake variable may be set directly in the CMakeLocal.cmake file with the
                                         following statement :
                                         set(CUDA_LIBRARIES "-L<path to cuda root dir> -lcublas -lcudart -lcusparse")
+                                        Note that in the actual state of the library, GPU are just involved in the
+                                        linear solver of the library while, depending on the hardware, the matrix
+                                        computation (which is CPU only) is the most expensive part by two order of
+                                        magnitude. Thus, one should not use a GPU-enabled Kadath unless he has access
+                                        to a node owning both a GPU and a decent amount of CPUs.
 
 When using the MKL, it is likely that the Intel compiler has to be used for the whole compilation process of the
 library. Cmake often doesn't set the MPI compiler consequently, thus one has to provide the path to the MPI wrapper
 manually with the -DMPI_CXX_COMPILER and -DMPI_C_COMPILER variables.
 
 Some other, developper-oriented, options are available and may be found in the documentation.
+
+
+Building an application using Kadath
+
+The easiest way is to use CMake in order to generate a build system for your own applications.
+A cmake "header" file with the required Kadath-related variables is provided in the Cmake directory of the library
+under the name CMakeExec.cmake. A template CMakeLists.txt file can be found in the tutorial directory, that shows how
+to include this CMakeExec.cmake file in your own project. When using this template, one just has to pass the location
+of the root directory of the Kadath source files (the Kadath directory if you got the repository from gitlab), as
+well as the build directory containing the binaries, using the two respective cmake option :
+
+-DKADATH_SOURCES_DIRECTORY
+-DKADATH_BUILD_DIRECTORY
+
+Another option, KADATH_RELATIVE_BUILD_PATH, may be used to specify the build directory using a relative path from the
+Kadath root directory.
+
+These can be ommited if you have set the HOME_KADATH environment variable to the Kadath root directory and compiled the
+library directly in the same location, using a subdirectory named "build". In the case were the HOME_KADATH environment
+variable is set but a custom build directory is used, either KADATH_BUILD_DIRECTORY or KADATH_RELATIVE_BUILD_PATH may
+be used respectively to set the absolute path or the relative one.
+
+The CMakeExec.cmake file defines the following variables :
+- KADATH_HEADERS : lists the header files of the Kadath library
+- KADATH_LIB : the Kadath library binary file
+- KADATH_DEPENDENCIES : the library Kadath from which Kadath depends
+The following locations are also set as include directory to the project :
+- KADATH_SOURCES_DIRECTORY/include
+- KADATH_BUILD_DIRECTORY/include
+The former is for the library header files, while the later contains a build-specific header with system-specific and
+several options that were chosen at the compilation of the library.
+
+Note that the CMakeExec.cmake file will require the same options as the one used for the Kadath library cmake file. One
+must then pass the same values that were used during the Kadath build generations for the following options :
+-DPAR_VERSION
+-DMKL_VERSION
+-DENABLE_GPU_USE
+
+At last, use the desired build-type and needed compiler-related options.
+
+Another way to build a custom executable without the CMakeExec.cmake file is to use one of the demonstration
+applications
 
 ========================================================================================================================
 Complementary instructions for MesoPSL
