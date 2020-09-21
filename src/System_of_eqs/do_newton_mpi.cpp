@@ -49,13 +49,14 @@ namespace Kadath {
         Array<double> second (sec_member());
         error = max(fabs(second));
         int second_member_size = second.get_size(0);
-        int bsize{};
+        int bsize{64};
+	/*int bsize{};
         {
             double const dsms{static_cast<double>(second_member_size)}, dncpn{static_cast<double>(nb_core_per_node)};
             int bsexp {static_cast<int>(std::floor(std::log2(dsms/dncpn)))};
             bsexp = std::max(0,bsexp);
             bsize = std::min(static_cast<int>(default_block_size),static_cast<int>(std::pow(2,bsexp)));
-        }
+        }*/
 
         if (error<precision) {
             res = true;
@@ -93,7 +94,7 @@ namespace Kadath {
             int nblock_per_proc {(second_member_size / bsize) / nproc};
             int remain_block {(second_member_size / bsize) % nproc};
             //adjust block size to avoid idle process when the remaining workload is still significant
-            int best_bsize {bsize};
+            /*int best_bsize {bsize};
             int best_remain_workload {remain_block};
             while((remain_block <= (nproc/2) && nblock_per_proc<12) && bsize > 0)
             {
@@ -108,7 +109,7 @@ namespace Kadath {
                 }
             }
             //if no suitable block size has been found, the best found is chosen.
-            if(bsize<1) bsize = best_bsize;
+            if(bsize<1) bsize = best_bsize;*/
 	    //if(rank==0 && default_block_size != bsize) std::cout << "block size adjusted down to " << bsize << std::endl;
             int nrow_in = numroc_ (&second_member_size, &bsize, &proc_row_in, &zero_i, &nprow_in);
             int ncol_in = numroc_ (&second_member_size, &bsize, &proc_col_in, &zero_i, &npcol_in);

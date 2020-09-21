@@ -101,6 +101,8 @@ if(ENABLE_GPU_USE)
 		set(MAGMA_LINKER_FLAGS -L${MAGMA_LIB_DIR})
 		set(MAGMA_LIBRARIES "${MAGMA_LINKER_FLAGS} -lmagma")
 	endif()
+	include_directories(${MAGMA_INCLUDE_DIR})
+	include_directories(${CUDA_INCLUDE_DIRS})
 endif(ENABLE_GPU_USE)
 
 SET(KADATH_DEPENDENCIES  Threads::Threads  ${GSL_LIBRARIES})
