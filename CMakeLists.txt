@@ -132,11 +132,11 @@ if (DEFINED FFTW_INCLUDE_DIR)
 endif()
 
 
-add_library(kadath ${KADATH_SOURCES})
-set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib COMPILE_FLAGS "-fPIC" $
-        <$<CONFIG:Debug>:-O0>)
+#add_library(kadath ${KADATH_SOURCES})
+#set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib COMPILE_FLAGS "-fPIC" $
+#        <$<CONFIG:Debug>:-O0>)
 
-target_include_directories(kadath PUBLIC ${PROJECT_SOURCE_DIR}/include/Kadath_point_h ${PROJECT_BINARY_DIR}/include/)
+#target_include_directories(kadath PUBLIC ${PROJECT_SOURCE_DIR}/include/Kadath_point_h ${PROJECT_BINARY_DIR}/include/)
 
 if (EXISTS ${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
     include(${PROJECT_SOURCE_DIR}/Cmake/CMakeLocal.cmake)
@@ -153,6 +153,13 @@ endif()
 if(DEFINED MAGMA_INCLUDE_DIR)
     include_directories(${MAGMA_INCLUDE_DIR})
 endif()
+
+add_library(kadath ${KADATH_SOURCES})
+set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib COMPILE_FLAGS "-fPIC" $
+        <$<CONFIG:Debug>:-O0>)
+
+target_include_directories(kadath PUBLIC ${PROJECT_SOURCE_DIR}/include/Kadath_point_h ${PROJECT_BINARY_DIR}/include/)
+
 
 message("  ")
 message("External libraries summary (empty if not found) :")
