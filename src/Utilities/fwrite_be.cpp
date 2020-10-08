@@ -19,13 +19,15 @@
 
 
 // C headers
-#include <stdio.h>
-#include <assert.h>
+#include <cstdio>
+#include <cstdint>
+#include <cassert>
+#include <type_traits>
+
 namespace Kadath {
 			//-------------------------//
 			//	int version 	   //
 			//-------------------------//
-			
 
 int fwrite_be(const int* aa, int size, int nb, FILE* fich) {
 
@@ -36,7 +38,7 @@ int fwrite_be(const int* aa, int size, int nb, FILE* fich) {
 	
 	int itest = 1 ;
 	bool little_endian =  ( *( reinterpret_cast<char*>(&itest) ) == 1)  ;
-	
+
 	if (little_endian) {
 
 		int size_tot = 4 * nb ;

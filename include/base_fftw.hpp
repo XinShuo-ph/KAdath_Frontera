@@ -28,6 +28,7 @@ namespace Kadath {
 // buffer and plan, keep them to save time
 struct fftw_precomp_t
 {
+    using Plan_type = fftw_plan;
     int size;
     double* buffer;
     fftw_plan plan;
