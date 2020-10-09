@@ -1,4 +1,10 @@
 if(ENABLE_TESTING)
+    set(TEST_ARRAY t-array)
+    add_executable(${TEST_ARRAY} ${TEST_ARRAY}.cpp)
+    target_link_libraries(${TEST_ARRAY} kadath ${KADATH_DEPENDENCIES})
+    set_target_properties(${TEST_ARRAY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/tests)
+    add_test(NAME ${TEST_ARRAY} COMMAND ./${TEST_ARRAY})
+
     set(TEST_ARRAY_ITERATOR t-array_iterator)
     add_executable(${TEST_ARRAY_ITERATOR} ${TEST_ARRAY_ITERATOR}.cpp)
     target_link_libraries(${TEST_ARRAY_ITERATOR} kadath ${KADATH_DEPENDENCIES})
@@ -16,6 +22,7 @@ if(ENABLE_TESTING)
     target_link_libraries(${TEST_SCHWARZ_SEQ} kadath ${KADATH_DEPENDENCIES})
     set_target_properties(${TEST_SCHWARZ_SEQ} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/tests)
     add_test(NAME ${TEST_SCHWARZ_SEQ} COMMAND ./${TEST_SCHWARZ_SEQ})
+
 
     if(PAR_VERSION)
         set(TEST_SCHWARZ_MPI t-schwarz_mpi)
