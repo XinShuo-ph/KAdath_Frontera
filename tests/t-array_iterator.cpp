@@ -36,24 +36,6 @@ int main(int argc,char *argv[])
     Array<int> test_array{dimensions};
     for(int i=0;i<nbr;i++) test_array.set_data()[i] = i;
 
-    for(int i=0;i<nbr;i++) {
-        int const ldmi{test_array.to_last_dim_major_index(i)};
-        int const fdmi{test_array.to_first_dim_major_index(i)};
-        int const fdm_from_ldmi{test_array.to_first_dim_major_index(ldmi)};
-        int const ldm_from_fdmi{test_array.to_last_dim_major_index(fdmi)};
-        if(fdm_from_ldmi != i ) {
-            std::cerr << "Error the Array::to_last_dim_major_index and to_first_dim_major_index are not one another "
-                         "inverse function. Different values were found for i=" << i << " (got ldmi="<< ldmi
-                         << " and fdm_from_ldmi=" << fdm_from_ldmi << ")." << std::endl;
-        }
-        if(ldm_from_fdmi != i ) {
-            std::cerr << "Error the Array::to_last_dim_major_index and to_first_dim_major_index are not one another "
-                         "inverse function. Different values were found for i=" << i << " (got fdmi="<< fdmi
-                      << " and ldm_from_fdmi=" << ldm_from_fdmi << ")." << std::endl;
-        }
-        assert(fdm_from_ldmi == i);
-    }
-
     Index index{dimensions};
     Array_iterator array_index{dimensions};
     {
