@@ -6,8 +6,8 @@
 #include <random>
 #include <type_traits>
 
-#ifndef __TEST_TOOLS_HPP_
-#define __TEST_TOOLS_HPP_
+#ifndef __KADATH_TESTS_TEST_TOOLS_HPP_
+#define __KADATH_TESTS_TEST_TOOLS_HPP_
 
 namespace tests {
     template<typename T> class Random_generator {
@@ -24,22 +24,21 @@ namespace tests {
                 >::type;
 
         static constexpr value_type min_val = std::numeric_limits<value_type>::min();
-        static constexpr value_type max_val = std::numeric_limits<value_type>::min();
+        static constexpr value_type max_val = std::numeric_limits<value_type>::max();
 
     private:
         distribution_type distribution;
         std::mt19937 generator;
+        value_type _min_val;
+        value_type _max_val;
 
     public:
-        Random_generator(arg_type a=min_val,arg_type b=max_val) : distribution{a,b}, generator{std::random_device{}()} {}
-
-        value_type operator()(arg_type a=min_val,arg_type b=max_val) {return distribution(generator, std::uniform_int_distribution<>::param_type{a, b});}
-        template<typename Array_type,
-                 typename R= typename
-                         std::enable_if<std::is_array<Array_type>::value,void>::type>
-         Array_type & operator()(Array_type & t) {return t;}
+        Random_generator(arg_type a=min_val,arg_type b=max_val) : distribution{a,b}, generator{std::random_device{}()},
+            _min_val{a}, _max_val{b} {}
+        value_type operator()() {return distribution(generator);}
+        value_type operator()(arg_type a,arg_type b) {return distribution(generator, std::uniform_int_distribution<>::param_type{a, b});}
 
     };
 }
 
-#endif //__TEST_TOOLS_HPP_
+#endif //__KADATH_TESTS_TEST_TOOLS_HPP_

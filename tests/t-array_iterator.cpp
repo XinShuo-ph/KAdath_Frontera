@@ -17,6 +17,7 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <cassert>
+#include "test_tools.hpp"
 #include "array.hpp"
 #include "index.hpp"
 
@@ -24,17 +25,17 @@ using namespace Kadath;
 
 int main(int argc,char *argv[])
 {
+    constexpr int max_size {15};
+    tests::Random_generator<int> dist{1,max_size};
     constexpr int const ndim{5};
-    std::array<int,ndim> d={10,9,8,11,13};
+    std::array<int,ndim> d;
+    for(auto & d_i : d) d_i = dist();
     Dim_array dimensions{ndim};
-    dimensions.set(0) = d[0];
-    dimensions.set(1) = d[1];
-    dimensions.set(2) = d[2];
-    dimensions.set(3) = d[3];
-    dimensions.set(4) = d[4];
-    int const nbr {d[0]*d[1]*d[2]*d[3]*d[4]};
+    for(int i{0};i<ndim;i++) dimensions.set(i) = d[i];
+    int  nbr {1};
+    for(auto d_i : d) nbr *= d_i;
     Array<int> test_array{dimensions};
-    for(int i=0;i<nbr;i++) test_array.set_data()[i] = i;
+    for(int i=0;i<nbr;i++) test_array.set_data()[i] = dist(dist.min_val,dist.max_val);
 
     Index index{dimensions};
     Array_iterator array_index{dimensions};

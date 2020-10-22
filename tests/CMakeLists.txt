@@ -1,4 +1,6 @@
 if(ENABLE_TESTING)
+    include_directories(include)
+
     set(TEST_ARRAY t-array)
     add_executable(${TEST_ARRAY} ${TEST_ARRAY}.cpp)
     target_link_libraries(${TEST_ARRAY} kadath ${KADATH_DEPENDENCIES})

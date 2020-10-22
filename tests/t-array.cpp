@@ -25,6 +25,7 @@
 
 #include <random>
 #include <string>
+#include "test_tools.hpp"
 #include "array.hpp"
 
 void save_array(Kadath::Array<int> const & array,std::string const &file_name,
@@ -33,18 +34,14 @@ Kadath::Array<int> read_array(std::string const & file_name,
                               Kadath::Array_ordering order = Kadath::last_index);
 bool operator==(Kadath::Array<int> const &l,Kadath::Array<int> const &r);
 
-class Array_tester {
+class Array_tester : public tests::Random_generator<int> {
 public:
     static constexpr int one_dim_array_max_size {1000};
     static constexpr int two_dim_array_max_size {100};
     static constexpr int multi_dim_array_max_size {10};
-    static constexpr int int_max {std::numeric_limits<int>::max()};
-private:
-    std::uniform_int_distribution<> distribution;
-    std::mt19937 generator;
 
 public:
-    Array_tester(int a=0,int b=int_max) : distribution{a,b}, generator{std::random_device{}()} {}
+    Array_tester(int a=0,int b=max_val) : tests::Random_generator<int>{a,b} {}
 
     bool test_1_1();
     bool test_1_x(unsigned nb_check = 1);
@@ -54,11 +51,9 @@ public:
     bool test_file_2_x(unsigned nb_check = 1);
     bool test_file_x_x(unsigned nb_check = 1,int ndim_max = 5);
 
-    int random() {return distribution(generator);}
-    int random(int a, int b=int_max) {return distribution(generator, std::uniform_int_distribution<>::param_type{a, b});}
     void random_fill(Kadath::Array<int> & array,int min_value = 0,
-                     int max_value = int_max)
-    {for(int k=0;k<array.get_nbr();k++) array.set_data()[k] = this->random(min_value,max_value);};
+                     int max_value = max_val)
+    {for(int k=0;k<array.get_nbr();k++) array.set_data()[k] = (*this)(min_value,max_value);};
     void sequence_fill(Kadath::Array<int> & array,int start = 0,int step=1)
     {for(int k=0;k<array.get_nbr();k++) array.set_data()[k] = start + k*step;}
 };
@@ -119,7 +114,7 @@ bool Array_tester::test_1_1() {
 bool Array_tester::test_1_x(unsigned nb_check) {
     bool success {true};
     for(int n=0;n<nb_check && success;n++) {
-        Kadath::Array<int> t{random(1,one_dim_array_max_size)};
+        Kadath::Array<int> t{(*this)(1,one_dim_array_max_size)};
         for(int i=0;i<t.get_nbr() && success;i++) {
             bool const cmo2rmo {t.to_last_dim_major_index(i) == i};
             bool const rmo2cmo {t.to_first_dim_major_index(i) == i};
@@ -131,7 +126,7 @@ bool Array_tester::test_1_x(unsigned nb_check) {
 
 bool Array_tester::test_2_x(unsigned int nb_check) {
     bool success {true};
-    auto rnd2d = [this]() -> int {return random(1,two_dim_array_max_size);};
+    auto rnd2d = [this]() -> int {return (*this)(1,two_dim_array_max_size);};
     for(int n=0;n<nb_check && success;n++) {
         int const M{rnd2d()}, N{rnd2d()};
         Kadath::Array<int> t{M,N};
@@ -150,9 +145,9 @@ bool Array_tester::test_2_x(unsigned int nb_check) {
 bool Array_tester::test_x_x(unsigned int nb_check, int ndim_max) {
     bool success {true};
     for(int n=0;n<nb_check && success;n++) {
-        int const ndim {random(3,ndim_max)};
+        int const ndim {(*this)(3,ndim_max)};
         Kadath::Dim_array dimensions {ndim};
-        for(int i=0;i<ndim;i++) dimensions.set(i) = random(1,multi_dim_array_max_size);
+        for(int i=0;i<ndim;i++) dimensions.set(i) = (*this)(1,multi_dim_array_max_size);
         Kadath::Array<int> t{dimensions};
         for(int i=0;i<t.get_nbr() && success;i++) {
             success = (t.to_last_dim_major_index(t.to_first_dim_major_index(i)) == i);
@@ -166,7 +161,7 @@ bool Array_tester::test_file_1_x(unsigned int nb_check) {
     for(int n=0;n<nb_check && success;n++)
     {
         std::string const fname_li{"t-array_1_x_li.dat"}, fname_fi{"t-array_1_x_fi.dat"};
-        Kadath::Array<int> array{random(1,one_dim_array_max_size)};
+        Kadath::Array<int> array{(*this)(1,one_dim_array_max_size)};
         random_fill(array);
         save_array(array,fname_li);
         save_array(array,fname_fi,Kadath::first_index);
@@ -184,8 +179,8 @@ bool Array_tester::test_file_2_x(unsigned int nb_check) {
     for(int n=0;n<nb_check && success;n++)
     {
         std::string const fname_li{"t-array_2_x_li.dat"}, fname_fi{"t-array_2_x_fi.dat"};
-        int const M{random(1,two_dim_array_max_size)},
-                  N{random(1,two_dim_array_max_size)};
+        int const M{(*this)(1,two_dim_array_max_size)},
+                  N{(*this)(1,two_dim_array_max_size)};
         Kadath::Array<int> array{M,N};
         random_fill(array);
         save_array(array,fname_li);
@@ -204,9 +199,9 @@ bool Array_tester::test_file_x_x(unsigned int nb_check,int ndim_max) {
     for(int n=0;n<nb_check && success;n++)
     {
         std::string const fname_li{"t-array_x_x_li.dat"}, fname_fi{"t-array_x_x_fi.dat"};
-        int const ndim {random(3,ndim_max)};
+        int const ndim {(*this)(3,ndim_max)};
         Kadath::Dim_array dimensions {ndim};
-        for(int i=0;i<ndim;i++) dimensions.set(i) = random(1,multi_dim_array_max_size);
+        for(int i=0;i<ndim;i++) dimensions.set(i) = (*this)(1,multi_dim_array_max_size);
         Kadath::Array<int> array{dimensions};
         random_fill(array);
         save_array(array,fname_li);
