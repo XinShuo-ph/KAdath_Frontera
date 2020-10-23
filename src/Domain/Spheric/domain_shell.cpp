@@ -859,34 +859,39 @@ int Domain_shell::give_place_var (char* p) const {
     return res ;
 }
 
-double Domain_shell::integ(const Val_domain& so, int bound) const // compute int (so sin(theta) dtheta dphi) in x = 1 (r = outer_bc)
+double Domain_shell::integ(const Val_domain& so, int bound) const
 {
+   Val_domain rrso (mult_r(mult_r(mult_sin_theta(so)))) ;
+	
+	double res = 0 ;
+	if (!so.check_if_zero())
+	{
 
-   double res(0.0);
-   int baset((*so.base.bases_1d[1])(0));
-   if (baset != COS_EVEN) 
-      return res;
-   else 
-   {
-      so.coef();
-      //Loop on theta :
-      Index pos(get_nbr_coefs());
-      pos.set(2) = 0;
-      for (int j(0) ; j < nbr_coefs(1) ; ++j) 
-      {
-         pos.set(1) = j;
-         double fact_tet(2.0/(1.0 - 4.0*j*j));
-         // Loop on r :
-         for (int i(0) ; i < nbr_coefs(0) ; ++i) 
-         {
-            pos.set(0) = i;
-            if (bound==OUTER_BC)
-             res += fact_tet*(*so.cf)(pos);
-	    if (bound==INNER_BC)
-	    res += (i%2==0) ? fact_tet*(*so.cf)(pos) : -fact_tet*(*so.cf)(pos) ;
-         }
-      }
-      return res*2.0*M_PI;
-   }
+	  int baset = (*rrso.get_base().bases_1d[1]) (0) ;
+	  Index pcf (nbr_coefs) ;
+	switch (baset) {
+	  case COS_ODD :
+	break ;
+	case SIN_EVEN :
+	  break ;
+	case COS_EVEN : {
+	res += M_PI*val_boundary(bound, rrso, pcf) ;
+	break ;
+    }
+    case SIN_ODD : {
+	  for (int j=0 ; j<nbr_coefs(1) ; j++) {
+	    pcf.set(1) = j ;
+	    res += 2./(2*double(j)+1) * val_boundary(bound, rrso, pcf) ;
+	  }
+      break ;
+    }
+    
+    default : 
+      cerr << "Case not yet implemented in Domain_shell::integ" << endl ;
+      abort() ;
+  }
+    res *= 2*M_PI ;
+	}
+    return res ;
 }
 }
