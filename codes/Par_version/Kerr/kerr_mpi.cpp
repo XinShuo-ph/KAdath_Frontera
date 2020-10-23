@@ -16,6 +16,7 @@ int main(int argc, char** argv) {
 	}
 #endif
     Arguments_parser arg_parser{argc,argv};
+    auto block_size = arg_parser.get_option_value<int>("-bsize","Sets block size of ScaLAPack cyclic decomposition",64);
     auto max_iterations = arg_parser.get_option_value<int>("-niter","Sets the maximum number of iteration for Newton-Raphson method. A null or negative sets this limit to infinity.",0);
     auto max_nb_omega = arg_parser.get_option_value<int>("-nomega","Sets the number of increments toward Omega to perform.", 40);
     auto nb_points = arg_parser.get_option_value<int>("-npts","Sets the number of collocation points (note that this value is constraint by the spectral method).",17);
@@ -27,6 +28,7 @@ int main(int argc, char** argv) {
     }
 
     Kerr_init kerr_init{nb_points.first};
+    kerr_init.set_block_size(block_size.first);
     kerr_init.mpi_rank = rank;
     kerr_init.set_verbosity(verbosity_level.first);
     if(max_iterations.second) kerr_init.newton_max_iterations = max_iterations.first;

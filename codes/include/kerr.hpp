@@ -61,7 +61,10 @@ public:
     int mpi_rank;
 
 public:
+    static void set_block_size(std::size_t new_block_size) {System_of_eqs::default_block_size = new_block_size;}
+
     int get_verbosity() const {return verbosity;}
+
     Kerr_base & set_verbosity(int new_value) {
         verbosity = new_value;
         if(system) {

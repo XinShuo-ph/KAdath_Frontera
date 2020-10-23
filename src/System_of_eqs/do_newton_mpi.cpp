@@ -49,7 +49,7 @@ namespace Kadath {
         Array<double> second (sec_member());
         error = max(fabs(second));
         int second_member_size = second.get_size(0);
-        int bsize{64};
+        int bsize{static_cast<int>(default_block_size)};
 	/*int bsize{};
         {
             double const dsms{static_cast<double>(second_member_size)}, dncpn{static_cast<double>(nb_core_per_node)};

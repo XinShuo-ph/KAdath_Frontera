@@ -56,7 +56,11 @@ namespace Kadath {
 
 	class System_of_eqs : public Profiled_object<System_of_eqs> {
 	public:
-		static constexpr std::size_t default_block_size {64};
+		/*
+		 * Defines the sub-matrix size in the scalapack 2D cyclic block decomposition. For optimal performances, this
+		 * value should be set so that three blocks can be loaded simultaneously in the lowest level of cache memory
+		 */
+		static std::size_t default_block_size;
 		static constexpr std::size_t nb_core_per_node{24};
 		//! Dummy variable for the purpose of better readability.
 		static constexpr int ALL_COLUMNS {-1};
