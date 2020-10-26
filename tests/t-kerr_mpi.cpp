@@ -18,6 +18,14 @@
 */
 
 
+/**
+ * \file Functionnal test using the Kerr sample code. Since no analytical solution
+ * is known, the test simply consists in leading the computation to its end without
+ * a scratch. Due to the relative complexity of the problem, it is only enalbled
+ * for MPI parallel builds.
+ */
+
+
 #include "base_fftw.hpp"
 #include "kadath_spheric.hpp"
 #include "mpi.h"

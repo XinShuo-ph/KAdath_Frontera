@@ -16,9 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
-//
-// Created by sauliac on 20/01/2020.
-//
+
+/**
+ * \file Same as \c t-schwarz_seq.cpp but for the MPI parallel version of the
+ * libray.
+ */
 
 #include <random>
 #include "system_of_eqs.hpp"

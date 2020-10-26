@@ -16,9 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
-//
-// Created by sauliac on 20/01/2020.
-//
+
+/**
+ * \file Functionnal test that performs the "schwarz" sample code and compare the
+ * obtained approximation to the known analytical solution. The test fails if
+ * the error is not small enough.
+ */
 
 #include <random>
 #include "system_of_eqs.hpp"
