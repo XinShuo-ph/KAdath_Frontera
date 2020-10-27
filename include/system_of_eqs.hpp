@@ -24,6 +24,7 @@
 #ifdef PAR_VERSION
 #include "mpi.h"
 #endif
+#include <sstream>
 #include "profiled_object.hpp"
 #include "tensor.hpp"
 #include "ope_eq.hpp"
@@ -70,7 +71,9 @@ namespace Kadath {
 
 	protected:
 	    std::ostream * output_stream; ///< Default output stream for log messages.
-		const Space& espace ; ///< Associated \c Space
+		//!Stream used as buffer to delay messages the user may send to the standard stream.
+	    std::ostringstream user_stream;
+	    const Space& espace ; ///< Associated \c Space
 		int dom_min ; ///< Smallest domain number
 		int dom_max ; ///< Highest domain number
 		int ndom ; ///< Number of domains used.
@@ -154,7 +157,7 @@ namespace Kadath {
 		* Standard constructor nothing is done. The space is affected and the equations are to be solved in all space.
 		* @param so [input] : associated space.
 		*/
-		System_of_eqs (const Space& so) ;
+		explicit System_of_eqs (const Space& so) ;
 		/**
 		* Constructor, nothing is done. The space is affected and the equations are solved only between two domains.
 		* @param so [input] : associated space.
@@ -169,7 +172,7 @@ namespace Kadath {
 		**/
 		System_of_eqs (const Space& so, int i) : System_of_eqs{so,i,i} {}
 		System_of_eqs (const System_of_eqs&) = delete ; ///< Constructor by copy.
-		~System_of_eqs() ; ///< Destructor.
+		~System_of_eqs() override ; ///< Destructor.
 
 		const Metric* get_met() const ; ///< Returns a pointer on the \c Metric.
 

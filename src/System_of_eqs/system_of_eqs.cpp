@@ -30,7 +30,7 @@ namespace Kadath {
     std::size_t System_of_eqs::default_block_size {64};
 // Constructor
 
-System_of_eqs::System_of_eqs (const Space& sp) : output_stream{&std::cout},
+System_of_eqs::System_of_eqs (const Space& sp) : output_stream{&std::cout}, user_stream{},
     espace{sp}, dom_min{0}, dom_max{espace.get_nbr_domains()-1}, ndom{dom_max-dom_min+1},
     nvar_double{0}, var_double{VARMAX}, names_var_double{VARMAX},
     nvar{0}, var{VARMAX}, names_var{VARMAX},
@@ -77,7 +77,7 @@ System_of_eqs::System_of_eqs (const Space& sp) : output_stream{&std::cout},
 
 // same between two bounds
 System_of_eqs::System_of_eqs (const Space& sp, int dmin, int dmax) : output_stream{&std::cout},
-    espace{sp}, dom_min{dmin}, dom_max{dmax},ndom{dom_max-dom_min+1},
+    user_stream{}, espace{sp}, dom_min{dmin}, dom_max{dmax},ndom{dom_max-dom_min+1},
     nvar_double{0}, var_double{VARMAX}, names_var_double{VARMAX},
     nvar{0}, var{VARMAX}, names_var{VARMAX},
     nterm_double{0}, term_double{VARMAX * ndom}, assoc_var_double{VARMAX*ndom},

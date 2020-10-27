@@ -110,7 +110,7 @@ void Schwarz_test<A,B,C>::do_newton()
     }
 }
 
-template<int A,int B,int C> void Schwarz_test<A,B,C>::check_solution()
+template<int A,int B,int C> void Schwarz_test<A,B,C>::  check_solution()
 {
     assert(p_conf);
     int resol = 100 ;
