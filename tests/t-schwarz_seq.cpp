@@ -157,10 +157,13 @@ int main(int argc,char * argv[]) {
 #ifdef PAR_VERSION
     MPI_Init(&argc,&argv);
 #endif
+    std::cout << "========================== t-schwarz_seq functional test ===========================\n\n";
+
     Schwarz_test<> test{};
     assert(test.converged);
     assert(test.error_l_infinity <= TESTS_TOLERANCE);
     assert(test.error_l_2 <= TESTS_TOLERANCE);
+    std::cout << "\n\n====================================================================================";
 #ifdef PAR_VERSION
     MPI_Finalize();
 #endif

@@ -163,8 +163,10 @@ void AutoProfilerTester::test_time_conversions()
 }
 
 int main(int argc,char * argv[]) {
+    std::cout << "============================== t-utils unit-tests set ==============================\n\n";
     AutoProfilerTester auto_profiler_tester{};
     auto_profiler_tester.test_measurement();
     auto_profiler_tester.test_time_conversions();
+    std::cout << "\n\n====================================================================================";
     return 0;
 }

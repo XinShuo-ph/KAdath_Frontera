@@ -60,7 +60,7 @@ public:
 
 int main(int argc,char * argv[]) {
     Array_tester array_tester{};
-    std::cout << "========== t-array unit-tests set ==========\n\n";
+    std::cout << "============================== t-array unit-tests set ==============================\n\n";
 
     std::cout << "Tests for reordering methods : " << std::endl;
     std::cout << "    - trivial zero-dimensional array case (one element array)...";
@@ -100,7 +100,7 @@ int main(int argc,char * argv[]) {
     std::cout << (test_file_x_x ? " success" : " failure") << std::endl;
     assert(test_file_x_x);
 
-    std::cout << "\n\n=============================================";
+    std::cout << "\n\n====================================================================================";
     return 0;
 }
 

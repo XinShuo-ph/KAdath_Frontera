@@ -25,6 +25,8 @@ using namespace Kadath;
 
 int main(int argc,char *argv[])
 {
+    std::cout << "========================= t-array_iterator unit-tests set ===========================\n\n";
+
     constexpr int max_size {15};
     tests::Random_generator<int> dist{1,max_size};
     constexpr int const ndim{5};
@@ -89,6 +91,7 @@ int main(int argc,char *argv[])
                 } while (incstep_ok && inc_i && inc_ai);
                 assert(incstep_ok);
             }
-        return 0;
     }
+    std::cout << "\n\n=====================================================================================";
+    return 0;
 }

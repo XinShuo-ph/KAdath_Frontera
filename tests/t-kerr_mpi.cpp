@@ -35,8 +35,11 @@ using namespace Kadath ;
 int main(int argc, char** argv) {
 
     int rc = MPI_Init (&argc, &argv) ;
+
     int rank = 0 ;
     MPI_Comm_rank (MPI_COMM_WORLD, &rank) ;
+    if(rank == 0)
+        std::cout << "============================ t-kerr_mpi functional test ============================\n\n";
 
     // 3D :
     int dim = 3 ;
@@ -304,6 +307,8 @@ int main(int argc, char** argv) {
     delete [] p_evol ;
     for (int i=0 ; i<n_dirac ; i++) delete p_dirac[i] ;
     delete [] p_dirac ;
+    if(rank==0)
+        std::cout << "\n\n====================================================================================";
 
     MPI_Finalize() ;
     return EXIT_SUCCESS ;

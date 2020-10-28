@@ -156,12 +156,17 @@ int main(int argc,char * argv[]) {
     MPI_Init(&argc,&argv);
     int rank{0};
     MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+    if(rank == 0)
+        std::cout << "========================== t-schwarz_mpi functional test ===========================\n\n";
+
     Schwarz_test<> test{};
     if(rank==0) {
         assert(test.converged);
         assert(test.error_l_infinity <= TESTS_TOLERANCE);
         assert(test.error_l_2 <= TESTS_TOLERANCE);
+        std::cout << "\n\n====================================================================================";
     }
+
     MPI_Finalize();
     return 0;
 }
