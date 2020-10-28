@@ -19,6 +19,12 @@ if(ENABLE_TESTING)
     set_target_properties(${TEST_UTILS} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/tests)
     add_test(NAME ${TEST_UTILS} COMMAND ./${TEST_UTILS})
 
+    set(TEST_SOLVERS t-solvers)
+    add_executable(${TEST_SOLVERS} ${TEST_SOLVERS}.cpp)
+    target_link_libraries(${TEST_SOLVERS} kadath ${KADATH_DEPENDENCIES})
+    set_target_properties(${TEST_SOLVERS} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/tests)
+    add_test(NAME ${TEST_SOLVERS} COMMAND ./${TEST_SOLVERS})
+
     set(TEST_SCHWARZ_SEQ t-schwarz_seq)
     add_executable(${TEST_SCHWARZ_SEQ} ${TEST_SCHWARZ_SEQ}.cpp)
     target_link_libraries(${TEST_SCHWARZ_SEQ} kadath ${KADATH_DEPENDENCIES})
