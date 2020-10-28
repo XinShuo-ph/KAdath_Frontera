@@ -101,17 +101,9 @@ namespace Kadath {
 
 
 #ifdef PAR_VERSION
-#ifdef ENABLE_GPU_USE
-    constexpr Computational_model default_computational_model = Computational_model::gpu_mpi_parallel;
-#else // #ifdef ENABLE_GPU_USE
   constexpr Computational_model default_computational_model = Computational_model::mpi_parallel;
-#endif//#ifdef ENABLE_GPU_USE
 #else //#ifdef PAR_VERSION
-#ifdef ENABLE_GPU_USE
-  constexpr Computational_model default_computational_model = Computational_model::gpu_sequential;
-#else //#ifdef ENABLE_GPU_USE
   constexpr Computational_model default_computational_model = Computational_model::sequential;
-#endif //#ifdef ENABLE_GPU_USE
 #endif //#ifdef PAR_VERSION
 }
 #endif

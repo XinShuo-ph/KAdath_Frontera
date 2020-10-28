@@ -96,7 +96,6 @@ template<int A,int B,int C> bool Schwarz_test<A,B,C>::initialize()
     p_space->add_inner_bc (*p_syst, "dn(P) + 0.5 / a * P = 0") ;
     p_space->add_eq (*p_syst, "Lap(P) = 0", "P", "dn(P)") ;
     p_space->add_outer_bc (*p_syst, "P=1") ;
-    p_syst->disable_data_display();
     return system_initialized && p_space != nullptr && p_conf != nullptr ;
 }
 

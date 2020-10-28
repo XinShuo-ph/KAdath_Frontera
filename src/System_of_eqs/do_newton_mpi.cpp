@@ -29,7 +29,7 @@
 namespace Kadath {
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error) {
+    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double precision, double& error,bool verbosity) {
         auto & os = *output_stream;
         bool res;
 #ifdef PAR_VERSION
@@ -41,7 +41,7 @@ namespace Kadath {
         MPI_Comm_rank (MPI_COMM_WORLD, &rank);
         MPI_Comm_size (MPI_COMM_WORLD, &nproc);
 
-        if(rank==0 && niter==1 && display_newton_data)
+        if(rank==0 && niter==1 && verbosity)
         {
             display_do_newton_report_header(os,precision);
         }
@@ -60,7 +60,7 @@ namespace Kadath {
 
         if (error<precision) {
             res = true;
-            if(rank==0 && display_newton_data)
+            if(rank==0 && verbosity)
             {
                 display_do_newton_ending_line(os,precision,error);
                 os  << endl;
@@ -204,7 +204,7 @@ namespace Kadath {
             newton_update_vars(xx);
 
             Duration const t_newton_update {this->stop_chrono(chrono_key)};
-            if (rank == 0 && display_newton_data) {
+            if (rank == 0 && verbosity) {
                 display_do_newton_iteration(os,
                         {niter, second_member_size, error, t_load_matrix, t_trans_matrix, t_inv_matrix, t_newton_update});
             }

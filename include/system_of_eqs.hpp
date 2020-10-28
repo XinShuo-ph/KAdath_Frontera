@@ -67,6 +67,8 @@ namespace Kadath {
 		static constexpr int ALL_COLUMNS {-1};
 		//! Dummy names for the purpose of better readability.
 		enum : bool { DO_NOT_TRANSPOSE = false, TRANSPOSE = true};
+		//! Flags used to enable/disable data output while calling the \c d_newton method.
+		enum : bool {output_disabled, output_enabled};
 		enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
 
 	protected:
@@ -142,7 +144,6 @@ namespace Kadath {
 		MMPtr_array<Index> which_coef ; ///< Stores the "true" coefficients on some boundaries (probably deprecated).
 
 		unsigned niter{0u}; ///< Counter toward the number of times the \c do_newton method has been called.
-		bool display_newton_data{true};///< Boolean used to enable or disable the display of data during the Newton iterations.
 		int mpi_world_size{1};
 		int mpi_proc_rank{0};
 		void init_proc_data() {
@@ -209,8 +210,6 @@ namespace Kadath {
 		 * Returns the current iteration number.
 		 */
 		unsigned get_niter() const {return niter;}
-		System_of_eqs & enable_data_display() {display_newton_data = true; return *this;}
-		System_of_eqs & disable_data_display() {display_newton_data = false; return *this;}
         int get_mpi_proc_rank() const {return mpi_proc_rank;}
         int get_mpi_world_size() const {return mpi_world_size;}
 
@@ -893,10 +892,12 @@ namespace Kadath {
 		* @tparam computational_model template parameter for the computational model (mpi/sequential/GPU) selection.
 		* @param prec : required precision.
 		* @param error : achieved precision.
+		* @param verbosity : select the output verbosity mode : either \c output_disabled (\c false) or
+		* \c output_enabled (\c true).
 		* @return true if the required precision is achieved, false otherwise.
 		*/
 		template<Computational_model computational_model = default_computational_model>
-		bool do_newton (double, double&) ;
+		bool do_newton (double prec, double &error, bool verbosity = output_disabled ) ;
 
 		/**
 		 * Update the values of \c var and \c var_double from the solution of the linear system of the last Newton
@@ -928,7 +929,7 @@ namespace Kadath {
 		void do_arnoldi (int n, Array<double>& qi, Matrice& Hmat) ;
 		void update_gmres (const Array<double>&) ;
 
-		private:
+    private:
 		/**
 		* Tests the value of the number of unknowns.
 		* Used by do_newton_with_linesearch ; only implemented in parallel version.
@@ -1683,16 +1684,16 @@ namespace Kadath {
 
     }
 
-    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &);
-    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &);
-    template<> bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &);
-    template<> bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double, double &);
+    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &,bool);
+    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &,bool);
+    template<> bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &,bool);
+    template<> bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double, double &,bool);
     template<> bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double , double &, int , double );
 
 // default : not implemented - the implemention is made through the specializations (see the seq_do_newton.cpp,
 // mpi_do_newton.cpp... files).
     template<Computational_model computational_model>
-    bool System_of_eqs::do_newton(double, double &)
+    bool System_of_eqs::do_newton(double, double &,bool)
     {
         cerr << "Error: System_of_eq::do_newton is not implemented for the "
              << computational_model_name(computational_model)

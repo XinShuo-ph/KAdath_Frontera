@@ -34,7 +34,7 @@
 
 namespace Kadath {
     template<>
-    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error)
+    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,bool verbosity)
     {
         auto & os = *output_stream;
 #ifdef PAR_VERSION
@@ -43,7 +43,7 @@ namespace Kadath {
         if(rank==0) {
 #endif
             niter++;
-            if(niter==1 && display_newton_data)
+            if(niter==1 && verbosity)
             {
                 display_do_newton_report_header(os,precision);
             }
@@ -51,7 +51,7 @@ namespace Kadath {
             error = max(fabs(second));
             if (error < precision)
             {
-                if(display_newton_data)
+                if(verbosity)
                 {
                     display_do_newton_ending_line(os,precision,error);
                     os  << endl;
@@ -82,7 +82,7 @@ namespace Kadath {
                 newton_update_vars(xx);
                 Duration const t_newton_update
                         {this->stop_chrono(chrono_key)};
-                if(display_newton_data)
+                if(verbosity)
                 {
                     display_do_newton_iteration(os,
                             {niter,nn,error,t_load_matrix,Duration{},t_inv_matrix,t_newton_update});

@@ -65,14 +65,7 @@ public:
 
     int get_verbosity() const {return verbosity;}
 
-    Kerr_base & set_verbosity(int new_value) {
-        verbosity = new_value;
-        if(system) {
-            if (verbosity <= 0) system->disable_data_display();
-            else system->enable_data_display();
-        }
-        return *this;
-    }
+    Kerr_base & set_verbosity(int new_value)  {verbosity = new_value; return *this;}
     Dim_array const & get_number_of_points() const {return number_of_points;}
     Dim_array & get_number_of_points() {return number_of_points;}
     void set_number_of_points(int new_value) {
@@ -180,7 +173,7 @@ public:
         if(mpi_rank==0 && verbosity > 0) std::cout << "Computation with omega = " << omega << std::endl;
         while(!newton_success &&
               (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
-            newton_success = system->do_newton(tolerance,newton_residue);
+            newton_success = system->do_newton(tolerance,newton_residue,verbosity>0);
             newton_nbr_iterations++;
         }
     }

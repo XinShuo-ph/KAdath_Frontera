@@ -16,7 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef __SOLVER_HPP_
-#define __SOLVER_HPP_
+#ifndef __INTERFACE_HPP_
+#define __INTERFACE_HPP_
 
-#endif //__SOLVER_HPP_
+namespace Kadath {
+
+}
+
+#endif //__INTERFACE_HPP_

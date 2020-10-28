@@ -62,14 +62,7 @@ public:
     Dim_array const & get_number_of_points() const {number_of_points;}
     Dim_array & get_number_of_points() {number_of_points;}
     int get_verbosity() const {return verbosity;}
-    Schwarz & set_verbosity(int new_value) {
-        verbosity = new_value;
-        if(system) {
-            if (verbosity <= 0) system->disable_data_display();
-            else system->enable_data_display();
-        }
-        return *this;
-    }
+    Schwarz & set_verbosity(int new_value) {verbosity = new_value; return *this;}
     void set_number_of_points(int new_val) {number_of_points.set(0) = new_val;}
     int get_number_of_domains() const {return number_of_domains;}
     void set_number_of_domains(int new_val);
@@ -137,7 +130,7 @@ public:
         bool const do_not_check_iter {newton_max_iterations < 0};
         while(!newton_success &&
                 (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
-            newton_success = system->do_newton(tolerance,newton_residue);
+            newton_success = system->do_newton(tolerance,newton_residue, verbosity>0);
             newton_nbr_iterations++;
         }
     }

@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
         bool endloop = false ;
         int ite = 1 ;
         while (!endloop) {
-            endloop = syst.do_newton(1e-6, conv) ;
+            endloop = syst.do_newton(1e-6, conv, System_of_eqs::output_enabled) ;
             ite++ ;
         }
 
@@ -220,7 +220,7 @@ int main(int argc, char** argv) {
         bool endloop = false;
         int ite = 1;
         while (!endloop) {
-            endloop = syst.do_newton(1e-8, conv);
+            endloop = syst.do_newton(1e-8, conv,System_of_eqs::output_enabled);
             ite++;
         }
         syst.finalize_profiling();
