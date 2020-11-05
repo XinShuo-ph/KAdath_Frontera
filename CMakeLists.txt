@@ -7,6 +7,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.1)
 endif()
 project(Kadath VERSION 2.3.0.0)
 
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
 # Set a default build type if none was specified (debug by default for devs, release for others)

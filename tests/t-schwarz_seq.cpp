@@ -26,6 +26,7 @@
 #include <random>
 #include "system_of_eqs.hpp"
 #include "kadath_spheric.hpp"
+#include "solvers.hpp"
 
 
 constexpr double TESTS_TOLERANCE {1.e-8};
@@ -102,11 +103,16 @@ template<int A,int B,int C> bool Schwarz_test<A,B,C>::initialize()
 template<int A,int B,int C>
 void Schwarz_test<A,B,C>::do_newton()
 {
-    unsigned short niter{0};
-    while (!converged && niter<2) {
-        converged = p_syst->do_newton(newton_tol, newton_error);
-        niter++;
-    }
+    Solver solver{MaxNbIter = 2,Tolerance = newton_tol,Verbosity = 2,EnableOutput};
+    auto const solver_result = solver(*p_syst);
+    newton_error = solver.get_current_error();
+    converged = solver_result == Kadath::Solver::tolerance_reached;
+//    unsigned short niter{0};
+//    while (!converged && niter<2) {
+//        converged = p_syst->do_newton(newton_tol, newton_error);
+//        niter++;
+//    }
+
 }
 
 template<int A,int B,int C> void Schwarz_test<A,B,C>::  check_solution()

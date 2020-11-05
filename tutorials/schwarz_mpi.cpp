@@ -87,7 +87,7 @@ int main(int argc,char** argv) {
     bool endloop = false ;
     int ite = 1 ;
     while (!endloop) {
-        endloop = syst.do_newton(1e-8, conv) ;
+        endloop = syst.do_newton(1e-8, conv,System_of_eqs::output_enabled /* "true" or "1" would work as well */) ;
         ite++ ;
     }
 
@@ -123,8 +123,6 @@ int main(int argc,char** argv) {
     if(rank==0) cout << "Error max " << error_max << endl ;
 
 
-    syst.finalize_profiling();
-    if(rank==0) profiling_report(syst,std::cout);
 #ifdef ENABLE_GPU_USE
     if(rank==0)
 	{

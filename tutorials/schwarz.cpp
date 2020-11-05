@@ -53,7 +53,7 @@ int main() {
 	bool endloop = false ;
 	int ite = 1 ;
 	while (!endloop) {
-		endloop = syst.do_newton(1e-8, conv) ;
+		endloop = syst.do_newton(1e-8, conv,System_of_eqs::output_enabled /* "true" or "1" would work as well */) ;
 		ite++ ;
 	}
 
@@ -87,8 +87,6 @@ int main() {
 		}
 
 	cout << "Error max " << error_max << endl ;
-    syst.finalize_profiling();
-    profiling_report(syst,std::cout);
     return EXIT_SUCCESS ;
 }
 

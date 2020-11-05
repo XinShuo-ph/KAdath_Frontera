@@ -52,12 +52,10 @@ int main() {
 	bool endloop = false ;
 	int ite = 1 ;
 	while (!endloop) {
-		endloop = syst.do_newton(1e-8, conv, System_of_eqs::output_enabled) ;
+		endloop = syst.do_newton(1e-8, conv) ;
 		cout << "Newton iteration " << ite << " " << conv << endl ;
 		ite++ ;
 	}
 
-    syst.finalize_profiling();
-    profiling_report(syst,std::cout);
 	return EXIT_SUCCESS ;
 }

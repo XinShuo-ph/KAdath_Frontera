@@ -73,8 +73,6 @@ namespace Kadath {
 
 	protected:
 	    std::ostream * output_stream; ///< Default output stream for log messages.
-		//!Stream used as buffer to delay messages the user may send to the standard stream.
-	    std::ostringstream user_stream;
 	    const Space& espace ; ///< Associated \c Space
 		int dom_min ; ///< Smallest domain number
 		int dom_max ; ///< Highest domain number

@@ -33,13 +33,14 @@ namespace Kadath {
         static constexpr value_type get_default_value() {return Derived::default_value;}
         static inline void set(Solver *,Parameter_base const &);
         value_type value;
-        constexpr Parameter_base(value_type _value = get_default_value()) : value{_value} {}
-        constexpr Parameter_base operator=(value_type _value) const {return _value;}
-        constexpr Parameter_base(Parameter_base const &) = delete;
-        constexpr Parameter_base(Parameter_base&&) = delete;
+        constexpr explicit Parameter_base(value_type _value) : value{_value} {}
+        constexpr Parameter_base operator=(value_type _value) const {return Parameter_base{_value};}
+        constexpr Parameter_base(Parameter_base const &) = default;
+        constexpr Parameter_base(Parameter_base&&) noexcept = default;
+        constexpr Parameter_base() : value{get_default_value()} {}
     };
 
-    template<typename... Args> struct Setter {static void apply(Solver *pthis,Args && ... args);};
+    template<typename... Args> struct Setter {static void apply(Solver *pthis,Args && ... args) {};};
     template<typename Arg1,typename... OtherArgs> struct Setter<Arg1,OtherArgs...> {
         static inline void apply(Solver *pthis,Arg1 const & a1,OtherArgs const &... other_args) {
             Arg1::set(pthis,a1);
@@ -47,12 +48,13 @@ namespace Kadath {
         }
     };
 
-    template<> struct Setter<> {static inline void apply(Solver *) {}};
+//    template<> struct Setter<> {static inline void apply(Solver *) {}};
 
 
     struct param_output : Parameter_base<bool,param_output> {
         static constexpr bool default_value{true};
         using Base::operator=;
+        using Base::Base;
     };
     constexpr param_output  EnableOutput {true};
     constexpr param_output  DisableOutput {false};
@@ -60,6 +62,7 @@ namespace Kadath {
     struct param_enable_gpu : Parameter_base<bool,param_enable_gpu> {
         static constexpr bool default_value {false};
         using Base::operator=;
+        using Base::Base;
     };
     constexpr param_enable_gpu EnableGPU{true};
     constexpr param_enable_gpu DisableGPU{false};
@@ -68,6 +71,7 @@ namespace Kadath {
     struct param_target_error : Parameter_base<double,param_target_error> {
         static constexpr double default_value{1.e-12};
         using Base::operator=;
+        using Base::Base;
     };
     constexpr param_target_error Tolerance;
 
@@ -75,6 +79,7 @@ namespace Kadath {
     struct param_target_nb_iteration : Parameter_base<int,param_target_nb_iteration> {
         static constexpr int default_value{-1};
         using Base::operator=;
+        using Base::Base;
     };
     constexpr param_target_nb_iteration MaxNbIter;
 
@@ -82,6 +87,7 @@ namespace Kadath {
     struct param_target_duration : Parameter_base<double,param_target_duration> {
         static constexpr double default_value{-1.};
         using Base::operator=;
+        using Base::Base;
     };
     constexpr param_target_duration MaxElapsedTime;
 
@@ -89,10 +95,16 @@ namespace Kadath {
     struct param_target_error_decrease : Parameter_base<double,param_target_error_decrease> {
         static constexpr double default_value {-1.};
         using Base::operator=;
+        using Base::Base;
     };
     constexpr param_target_error_decrease MinImprovement;
 
-
+    struct param_verbosity : Parameter_base<int,param_verbosity> {
+        static constexpr int default_value {1};
+        using Base::operator=;
+        using Base::Base;
+    };
+    constexpr param_verbosity Verbosity;
 
     /**
      * Base class for the implementation of functors which solve the system of equations described
@@ -101,11 +113,13 @@ namespace Kadath {
     class Solver {
     public:
         enum Stopping_criteria : int {
-            none = -1,
-            tolerance = 0,
-            min_error_improvement = 1,
-            max_elapsed_time = 2,
-            max_nb_iteration = 3
+            fatal_error = -2,
+            out_of_memory = 1,
+            none = 0,
+            tolerance_reached = 1,
+            min_error_improvement_reached = 2,
+            max_elapsed_time_reached = 3,
+            max_nb_iteration_reached = 4
         };
     protected:
         double target_error;
@@ -118,15 +132,17 @@ namespace Kadath {
         int current_nb_iteration;
         bool output;
         bool enable_gpu;
+        int verbosity;
 
     public:
         static constexpr double unknown_value{-1.};
         //! Default constructor.
-        Solver() : target_error{Tolerance.default_value}, current_error{std::numeric_limits<double>::max()},
-                   target_nb_iteration{MaxNbIter.default_value}, current_nb_iteration{0},
-                   target_duration{MaxElapsedTime.default_value}, current_duration{0.},
-                   target_error_decrease{MinImprovement.default_value}, current_error_decrease{unknown_value},
-                   output{param_output::default_value}, enable_gpu{param_enable_gpu::default_value} {}
+        Solver() : target_error{param_target_error::default_value}, current_error{std::numeric_limits<double>::max()},
+                   target_nb_iteration{param_target_nb_iteration::default_value}, current_nb_iteration{0},
+                   target_duration{param_target_duration::default_value}, current_duration{0.},
+                   target_error_decrease{param_target_error_decrease::default_value}, current_error_decrease{unknown_value},
+                   output{param_output::default_value}, enable_gpu{param_enable_gpu::default_value},
+                   verbosity{param_verbosity::default_value} {}
 
         /**
          * Variadic template constructor. Allows to initialize the algorithm parameters using any subset of the
@@ -139,7 +155,7 @@ namespace Kadath {
          * iterations, without output displayed, and that will stop after one hour of runtime if the max number of
          * iterations or default tolerance are not reached before that.
          */
-        template<typename... Parameter_types> Solver(Parameter_types const & ... parameters) : Solver{} {
+        template<typename... Parameter_types> explicit Solver(Parameter_types const & ... parameters) : Solver{} {
             this->set(parameters...);
         }
 
@@ -154,23 +170,24 @@ namespace Kadath {
         }
 
         Solver & reset_current_values();
-        std::pair<bool,Stopping_criteria> check_stopping_criteria() const;
+        [[nodiscard]] std::pair<bool,Stopping_criteria> check_stopping_criteria() const;
 
-        virtual bool operator()(System_of_eqs & system);
+        virtual Stopping_criteria operator()(System_of_eqs & system);
 
         //! Displays informations about the solver (mainly parameters).
         virtual void display(std::ostream & os) const;
 
-        double get_target_error() const {return target_error;}
-        double get_current_error() const {return current_error;}
-        double get_target_error_decrease() const {return target_error_decrease;}
-        double get_current_error_decrease() const {return current_error_decrease;}
-        double get_target_duration() const {return target_duration;}
-        double get_current_duration() const {return current_duration;}
-        int get_target_nb_iteration() const {return target_nb_iteration;}
-        int get_current_nb_iteration() const {return current_nb_iteration;}
-        bool get_output() const {return output;}
-        bool get_enable_gpu() const {return enable_gpu;}
+        [[nodiscard]] double get_current_error() const {return current_error;}
+        [[nodiscard]] double get_target_error() const {return target_error;}
+        [[nodiscard]] double get_target_error_decrease() const {return target_error_decrease;}
+        [[nodiscard]] double get_current_error_decrease() const {return current_error_decrease;}
+        [[nodiscard]] double get_target_duration() const {return target_duration;}
+        [[nodiscard]] double get_current_duration() const {return current_duration;}
+        [[nodiscard]] int get_target_nb_iteration() const {return target_nb_iteration;}
+        [[nodiscard]] int get_current_nb_iteration() const {return current_nb_iteration;}
+        [[nodiscard]] bool get_output() const {return output;}
+        [[nodiscard]] bool get_enable_gpu() const {return enable_gpu;}
+        [[nodiscard]] int get_verbosity() const {return verbosity;}
 
         Solver & set_target_error(double new_value) {target_error = new_value; return *this;}
         Solver & set_target_error_decrease(double new_value) {target_error_decrease = new_value; return *this;}
@@ -178,7 +195,7 @@ namespace Kadath {
         Solver & set_target_nb_iteration(int new_value) {target_nb_iteration = new_value; return *this;}
         Solver & set_output(bool new_value) {output = new_value; return *this;}
         Solver & set_enable_gpu(bool new_value) {enable_gpu = new_value; return *this;}
-
+        Solver & set_verbosity(int new_value) {verbosity = new_value; return *this;}
     };
 
 
@@ -204,6 +221,10 @@ namespace Kadath {
 
     template<> inline void Parameter_base<bool,param_enable_gpu>::set(Solver *pthis,Parameter_base const & _param) {
         pthis->set_enable_gpu(_param.value);
+    }
+
+    template<> inline void Parameter_base<int,param_verbosity>::set(Solver *pthis,Parameter_base const & _param) {
+        pthis->set_verbosity(_param.value);
     }
 
 }

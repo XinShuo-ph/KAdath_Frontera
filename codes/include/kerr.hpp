@@ -3,11 +3,13 @@
 //
 #include "codes_utilities.hpp"
 #include "kadath_spheric.hpp"
+#include "solvers.hpp"
 
 #ifndef __KADATH_CODES_KERR_HPP_
 #define __KADATH_CODES_KERR_HPP_
 
 using namespace Kadath;
+static constexpr double default_tolerance {1.e-8};
 
 //! Class demonstrating how to use Kadath to implement a solver for the Kerr problem.
 class Kerr_base {
@@ -49,24 +51,19 @@ public:
     //! Pointer toward the system of equations object.
     ptr_data_member(System_of_eqs,system,shared);
 
-    //! Current residue in the Newton-Rapthson algorithm
-    internal_variable(double,newton_residue);
-    //! Current number of iterations done in the NR algorithm.
-    internal_variable(int,newton_nbr_iterations);
-    //! Maximum allowed number of iterations (unlimited if zero or less).
-    int newton_max_iterations;
-    //! Tolerance for error checking.
-    double tolerance;
+    //! Newton algorithm implementation.
+    Solver newton_solver;
     //! MPI rank (0 if sequential).
     int mpi_rank;
 
 public:
     static void set_block_size(std::size_t new_block_size) {System_of_eqs::default_block_size = new_block_size;}
+    [[nodiscard]] Solver const & get_newton_solver() const {return newton_solver;}
+    Solver & get_newton_solver() {return newton_solver;}
+    [[nodiscard]] int get_verbosity() const {return verbosity;}
 
-    int get_verbosity() const {return verbosity;}
-
-    Kerr_base & set_verbosity(int new_value)  {verbosity = new_value; return *this;}
-    Dim_array const & get_number_of_points() const {return number_of_points;}
+    Kerr_base & set_verbosity(int new_value)  {newton_solver.set_verbosity(new_value); verbosity = new_value; return *this;}
+    [[nodiscard]] Dim_array const & get_number_of_points() const {return number_of_points;}
     Dim_array & get_number_of_points() {return number_of_points;}
     void set_number_of_points(int new_value) {
         number_of_points.set(0) = new_value;
@@ -79,8 +76,7 @@ public:
         number_of_points{dimension}, center{dimension}, number_of_domains{ndom},
         bounds{number_of_domains-1}, bh_radius{_bh_radius}, type_coloc{_type_coloc}, n0{0.5},
         omega{0.}, space{nullptr}, basis{nullptr}, conformal{nullptr}, system{nullptr},
-        newton_residue{HUGE_VAL}, newton_nbr_iterations{0}, newton_max_iterations{-1},
-        tolerance{1.e-6}, mpi_rank{0}
+        newton_solver(Verbosity = verbosity), mpi_rank{0}
     {
         number_of_points.set(0) = nbr; number_of_points.set(1) = nbr;
         number_of_points.set(2) = 1;
@@ -156,8 +152,7 @@ public:
         this->reset_initial_guess();
         this->reset_system();
 
-        newton_nbr_iterations = 0;
-        newton_residue = HUGE_VAL;
+        newton_solver.reset_current_values();
 
         return *this;
     }
@@ -169,13 +164,9 @@ public:
       */
     virtual bool do_newton() {
         bool newton_success {false};
-        bool const do_not_check_iter {newton_max_iterations < 0};
         if(mpi_rank==0 && verbosity > 0) std::cout << "Computation with omega = " << omega << std::endl;
-        while(!newton_success &&
-              (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
-            newton_success = system->do_newton(tolerance,newton_residue,verbosity>0);
-            newton_nbr_iterations++;
-        }
+        Solver::Stopping_criteria const result = newton_solver(*system);
+        return result == Solver::Stopping_criteria::tolerance_reached;
     }
 
     //! Computes profiling datas (if enabled).
@@ -287,7 +278,6 @@ public:
                                   p_evol{new Array<int>* [n_evol] },
                                   p_dirac{new Array<int>* [n_dirac] }
     {
-        verbosity = kerr_init.verbosity;
         number_of_points = kerr_init.number_of_points;
         center = kerr_init.center;
         number_of_domains = kerr_init.number_of_domains;
@@ -304,8 +294,8 @@ public:
         shift = kerr_init.shift;
         system = kerr_init.system;
 
-        newton_nbr_iterations = kerr_init.newton_max_iterations;
-        tolerance = kerr_init.tolerance;
+        newton_solver = kerr_init.newton_solver;
+        this->set_verbosity(kerr_init.verbosity);
 
         // here again, the values may be number of domains dependants...
         for (int i=0 ; i<n_evol_inner ; i++) p_evol_inner[i] = new Array<int>{2} ;
@@ -432,8 +422,7 @@ public:
         space->add_outer_bc (*system, "bet^i=0") ;
         space->add_outer_bc (*system, "g^ij=gf^ij", n_evol, p_evol) ;
 
-        newton_nbr_iterations = 0;
-        newton_residue = HUGE_VAL;
+        newton_solver.reset_current_values();
         return *this;
     }
 
@@ -459,17 +448,12 @@ public:
 
     //! Performs Newton's method for the current value of \c omega.
     bool do_newton() override {
-        bool newton_success {false};
         char name[100] ;
         sprintf(name, "kerr_%d_%f.dat", number_of_points(0), omega) ;
-        bool const do_not_check_iter {newton_max_iterations < 0};
         if(mpi_rank==0 && verbosity > 0) std::cout << "Computation with omega = " << omega << std::endl;
-        while(!newton_success &&
-              (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
-            newton_success = system->do_newton(tolerance,newton_residue);
-            newton_nbr_iterations++;
-            if(save_to_file && mpi_rank==0) this->save(name);
-        }
+        bool const success {newton_solver(*system) == Solver::Stopping_criteria::tolerance_reached};
+        if(mpi_rank==0 && save_to_file && success) this->save(name);
+        return success;
     }
 
     /**

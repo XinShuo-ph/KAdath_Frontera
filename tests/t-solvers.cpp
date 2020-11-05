@@ -22,6 +22,7 @@
 using namespace Kadath;
 
 int main(int argc, char * argv[]) {
+
     std::cout << "============================= t-solvers unit-tests set =============================\n\n";
     Solver solver;
     solver.display(std::cout);

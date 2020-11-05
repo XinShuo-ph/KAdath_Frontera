@@ -21,6 +21,9 @@ int main(int argc, char** argv) {
     auto max_nb_omega = arg_parser.get_option_value<int>("-nomega","Sets the number of increments toward Omega to perform.", 40);
     auto nb_points = arg_parser.get_option_value<int>("-npts","Sets the number of collocation points (note that this value is constraint by the spectral method).",17);
     auto verbosity_level = arg_parser.get_option_value<int>("-v","Sets the verbosity level",1);
+    auto gpu_enabled = arg_parser.get_option_value<bool>("-gpu","Enables GPU acceleration for linear solvers",false);
+    auto tolerance = arg_parser.get_option_value<double>("-tol","Sets the tolerance value for Newton-Raphson's algorithms",default_tolerance);
+    auto max_time = arg_parser.get_option_value<double>("-time","Sets a time limit for each Newton-Raphsons to perform (in seconds, negative values disable this chronometer). ",-1.);
     bool const show_help {arg_parser.find_option("-h","Display this help message.")};
     if(show_help) {
         if(rank == 0) arg_parser.display(std::cout);
@@ -31,7 +34,10 @@ int main(int argc, char** argv) {
     kerr_init.set_block_size(block_size.first);
     kerr_init.mpi_rank = rank;
     kerr_init.set_verbosity(verbosity_level.first);
-    if(max_iterations.second) kerr_init.newton_max_iterations = max_iterations.first;
+    if(max_iterations.second) kerr_init.get_newton_solver().set_target_nb_iteration(max_iterations.first);
+    if(gpu_enabled.second) kerr_init.get_newton_solver().set_enable_gpu(gpu_enabled.first);
+    if(tolerance.second) kerr_init.get_newton_solver().set_target_error(tolerance.first);
+    if(max_time.second) kerr_init.get_newton_solver().set_target_duration(max_time.first);
 
     // build all internal data.
     kerr_init.build_space_and_system();

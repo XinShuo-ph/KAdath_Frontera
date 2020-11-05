@@ -293,9 +293,9 @@ template <typename T> class Array : public Memory_mapped {
             return data[i+dimensions(0)*(j+k*dimensions(1))] ;
 //            return data[i*dimensions(1)*dimensions(2)+j*dimensions(2)+k] ;
         }
-	     /**
-	   * Direct accessor to the data, read only version
-	   */
+	    /**
+	    * Direct accessor to the data, read only version
+	    */
          [[nodiscard]] const_pointer get_data() const {return data.get_data() ;} ;
 	
 	   /**
