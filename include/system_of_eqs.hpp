@@ -70,9 +70,10 @@ namespace Kadath {
 		enum : bool { DO_NOT_TRANSPOSE = false, TRANSPOSE = true};
 		//enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
         struct Output_data{
-            unsigned n_iter; int problem_size; double current_error;
-            Duration t_load_matrix; Duration t_trans_matrix; Duration t_inv_matrix; Duration t_newton_update;
+            unsigned n_iter{}; int problem_size{}; double current_error{};
+            Duration t_load_matrix{}; Duration t_trans_matrix{}; Duration t_inv_matrix{}; Duration t_newton_update{};
         };
+        Output_data current_output_data; ///< Data related to the last newton iterations.
 
 	protected:
 	    std::ostream * output_stream; ///< Default output stream for log messages.

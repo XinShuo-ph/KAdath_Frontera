@@ -39,11 +39,11 @@ namespace Kadath {
 #ifdef ENABLE_GPU_USE
                 if(enable_gpu) {
                     converged = system.do_newton<Computational_model::gpu_mpi_parallel>(target_error >= 0. ? target_error : 0.,
-                                                                                        current_error,output);
+                                                                                        current_error);
                 }
                 else {
                     converged = system.do_newton<Computational_model::mpi_parallel>(target_error >= 0. ? target_error : 0.,
-                                                                                    current_error, output);
+                                                                                    current_error,);
                 }
 #else //ifdef ENABLE_GPU_USE
                 converged = system.do_newton<Computational_model::mpi_parallel>(target_error >= 0. ? target_error : 0.,
@@ -51,13 +51,14 @@ namespace Kadath {
 #endif //ifdef ENABLE_GPU_USE
 #else  //ifdef PAR_VERSION
                 converged = system.do_newton<Computational_model::sequential>(target_error >= 0. ? target_error : 0.,
-                                                                                current_error,output && verbosity>0);
+                                                                                current_error);
 #endif //ifdef PAR_VERSION
                 current_nb_iteration++;
                 current_error_decrease = previous_error - current_error ;
                 std::chrono::steady_clock::duration elapsed {std::chrono::steady_clock::now() - start_time};
                 current_duration = std::chrono::duration_cast<std::chrono::duration<double>>(elapsed).count();
                 algo_state = check_stopping_criteria();
+                display_do_newton_iteration(system.current_output_data);
             }
         }
         catch (std::exception & e) {

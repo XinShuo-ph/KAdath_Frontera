@@ -204,6 +204,8 @@ namespace Kadath {
             newton_update_vars(xx);
 
             Duration const t_newton_update {this->stop_chrono(chrono_key)};
+            current_output_data = Output_data{niter, second_member_size, error, t_load_matrix, t_trans_matrix,
+                                              t_inv_matrix, t_newton_update};
 //            if (rank == 0 && verbosity) {
 //                display_do_newton_iteration(os,
 //                        {niter, second_member_size, error, t_load_matrix, t_trans_matrix, t_inv_matrix, t_newton_update});
