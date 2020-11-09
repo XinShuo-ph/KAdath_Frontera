@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 Sylvain AULIAC
+ *  Copyright 2020 Sylvain AULIAC
  *
  *  This file is an automaticaly generated configuration header build by
  *  for Kadath.
@@ -70,12 +70,6 @@
 // 0 : STL vector   1 : STL unordered map   2 : STL map     3 : flat map
 
 #define MEMORY_MAP_TYPE @MEMORY_MAP_TYPE_INDEX@
-
-
-// Enables the build and compilation of unit and functional tests using google-tests
-// Warning : google test as to be included manually within the tests directory.
-
-#cmakedefine ENABLE_GTEST
 
 
 // Declares that the cmake build is for the use of the MKL versions of the scalapack library.
