@@ -52,7 +52,7 @@ int main() {
 	bool endloop = false ;
 	int ite = 1 ;
 	while (!endloop) {
-		endloop = syst.do_newton(1e-8, conv) ;
+		endloop = syst.do_newton(1e-8, conv);
 		cout << "Newton iteration " << ite << " " << conv << endl ;
 		ite++ ;
 	}

@@ -28,9 +28,10 @@ namespace Kadath {
             if(system.get_mpi_proc_rank() == 0 && verbosity>0)
                 std::cerr << "WARNING: No stopping criteria set, high risk of endless loop !" << std::endl;
         }
-        std::pair<bool,Stopping_criteria> algo_state {false,none};
+        std::pair<bool,Stopping_criteria> algo_state {check_stopping_criteria()};
         auto start_time = std::chrono::steady_clock::now();
         bool converged {false};
+        if(verbosity>0) display_do_newton_report_header();
         try{
             while(!algo_state.first && !converged) {
                 double previous_error {current_error};
@@ -46,7 +47,7 @@ namespace Kadath {
                 }
 #else //ifdef ENABLE_GPU_USE
                 converged = system.do_newton<Computational_model::mpi_parallel>(target_error >= 0. ? target_error : 0.,
-                                                                                current_error,output);
+                                                                                current_error);
 #endif //ifdef ENABLE_GPU_USE
 #else  //ifdef PAR_VERSION
                 converged = system.do_newton<Computational_model::sequential>(target_error >= 0. ? target_error : 0.,
@@ -59,18 +60,16 @@ namespace Kadath {
                 algo_state = check_stopping_criteria();
             }
         }
-        catch (std::bad_alloc & e) {
+        catch (std::exception & e) {
             if(verbosity)
                 std::cerr << "ERROR: Iterating over do_newton() lead to the following exception :\n"
                           << e.what() << std::endl;
-            return out_of_memory;
         }
-        catch(std::exception & e) {
-            if(verbosity)
-                std::cerr << "ERROR: Iterating over do_newton() lead to the following exception :\n"
-                          << e.what() << std::endl;
-            return fatal_error;
+        catch(...) {
+            if(verbosity) std::cerr << "ERROR : Newton iteration interrupted by unknown exception.\n" ;
+            throw;
         }
+        if(verbosity>0) display_do_newton_ending_line(algo_state.second);
         system.finalize_profiling();
         if(verbosity > 1) {
             profiling_report(system,system.get_output_stream());
@@ -137,5 +136,70 @@ namespace Kadath {
                           << "\t           this option will be ignored." << std::endl;
 #endif
         os << std::endl;
+    }
+
+
+    void Solver::display_do_newton_report_header()
+    {
+        if(master_processus) {
+            auto &os = *output_stream;
+            os <<
+               "============================================================================================================================\n"
+               "|      |            |       ||b||      |                              Computational Times                                  |\n"
+               "| Iter | Syst. Size |   Initial Error  |-----------------------------------------------------------------------------------|\n"
+               "|      |            | (tol=" << std::setw(10) << std::setprecision(9) << target_error;
+            os << ") | Matrix Computation | Matrix Translation |      Linear Solver |      Newton Update |\n"
+                  "|======|============|==================|====================|====================|====================|====================|\n";
+        }
+    }
+
+    void Solver::display_do_newton_ending_line(Stopping_criteria sc)
+    {
+        if(master_processus) {
+            auto &os = *output_stream;
+            os << "===================================================================================================="
+                  "=======================\n";
+            switch (sc) {
+                case fatal_error :
+                    os << "ERROR : algorithm stopped due to fatal unknown error." << std::endl;
+                    break;
+                case out_of_memory :
+                    os << "ERROR : algorithm stopped due to memory limitations." << std::endl;
+                    break;
+                case tolerance_reached :
+                    os << "Success: tolerance reached with ||b|| = " << current_error << " / " << target_error << "\n";
+                    break;
+                case min_error_improvement_reached :
+                    os << "Failure: error improvement dropped below the fixed limit before convergence." << std::endl;
+                    break;
+                case max_elapsed_time_reached:
+                    os << "Failure: max elapsed time reached before convergence." << std::endl;
+                    break;
+                case max_nb_iteration_reached:
+                    os << "Failure: max number of iterations reached before convergence." << std::endl;
+                    break;
+                default :
+                    os << "ERROR : algorithm stopped without triggering any stopping condition..." << std::endl;
+                    break;
+            }
+        }
+
+    }
+
+    void Solver::display_do_newton_iteration(const Output_data &data)
+    {
+        if(master_processus) {
+            auto &os = *output_stream;
+            static constexpr int dds{16};
+            os << '|';
+            os << ' ' << std::setw(4) << data.n_iter << " |";
+            os << ' ' << std::setw(10) << data.problem_size << " |";
+            os << ' ' << std::setw(dds) << data.current_error << " |";
+            os << ' ' << std::setw(dds) << System_of_eqs::to_seconds(data.t_load_matrix) << " s |";
+            os << ' ' << std::setw(dds) << System_of_eqs::to_milliseconds(data.t_trans_matrix) << "ms |";
+            os << ' ' << std::setw(dds) << System_of_eqs::to_seconds(data.t_inv_matrix) << " s |";
+            os << ' ' << std::setw(dds) << System_of_eqs::to_milliseconds(data.t_newton_update) << "ms |";
+            os << "\n";
+        }
     }
 }

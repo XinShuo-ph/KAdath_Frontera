@@ -53,6 +53,7 @@ namespace Kadath {
 	 * The equations are solved between the domains \c dom_min and \c dom_max .
 	 * The various quantities are given names (char*) that are used when passing the equations to the \c System_of_eqs.
 	 * \ingroup systems
+	 * \todo Remove commented code blocks when stability is at an acceptable level (especially in the do_newton_***.cpp files).
 	 */
 
 	class System_of_eqs : public Profiled_object<System_of_eqs> {
@@ -67,9 +68,11 @@ namespace Kadath {
 		static constexpr int ALL_COLUMNS {-1};
 		//! Dummy names for the purpose of better readability.
 		enum : bool { DO_NOT_TRANSPOSE = false, TRANSPOSE = true};
-		//! Flags used to enable/disable data output while calling the \c d_newton method.
-		enum : bool {output_disabled, output_enabled};
-		enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
+		//enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
+        struct Output_data{
+            unsigned n_iter; int problem_size; double current_error;
+            Duration t_load_matrix; Duration t_trans_matrix; Duration t_inv_matrix; Duration t_newton_update;
+        };
 
 	protected:
 	    std::ostream * output_stream; ///< Default output stream for log messages.
@@ -890,12 +893,10 @@ namespace Kadath {
 		* @tparam computational_model template parameter for the computational model (mpi/sequential/GPU) selection.
 		* @param prec : required precision.
 		* @param error : achieved precision.
-		* @param verbosity : select the output verbosity mode : either \c output_disabled (\c false) or
-		* \c output_enabled (\c true).
 		* @return true if the required precision is achieved, false otherwise.
 		*/
 		template<Computational_model computational_model = default_computational_model>
-		bool do_newton (double prec, double &error, bool verbosity = output_disabled ) ;
+        bool do_newton(double prec, double &error);
 
 		/**
 		 * Update the values of \c var and \c var_double from the solution of the linear system of the last Newton
@@ -1026,29 +1027,6 @@ namespace Kadath {
 		friend class Metric_conf_factor_const ;
 		friend class Metric_cfc ;
 
-	protected:
-		struct Newton_iteration_data{
-			unsigned n_iter; int problem_size; double current_error;
-			Duration t_load_matrix; Duration t_trans_matrix; Duration t_inv_matrix; Duration t_newton_update;
-		};
-		/**
-		 * Sends the header lines for the Newton-Raphson iterations data.
-		 * @param os stream to send the header to.
-		 * @param precision is the tolerance stopping criterion for the algorithm.
-		 */
-		static void display_do_newton_report_header(std::ostream & os,double precision);
-		/**
-		 * Sends the last lines for the Newton-Raphson iterations data.
-		 * @param os stream to send the end lines to.
-		 * @param reached_precision value of the reached precision.
-		 */
-		static void display_do_newton_ending_line(std::ostream &os, double precision, double reached_precision);
-		/**
-		 * Format end sends the Newton-Raphson iteration data.
-		 * @param os stream to send the data to.
-		 * @param data data to display.
-		 */
-		static void display_do_newton_iteration(std::ostream &os,const Newton_iteration_data & data);
 	};
 
 	/**
@@ -1682,16 +1660,20 @@ namespace Kadath {
 
     }
 
-    template<> bool System_of_eqs::do_newton<Computational_model::sequential>(double, double &,bool);
-    template<> bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &,bool);
-    template<> bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &,bool);
-    template<> bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double, double &,bool);
+    template<>
+    bool System_of_eqs::do_newton<Computational_model::sequential>(double prec, double &error);
+    template<>
+    bool System_of_eqs::do_newton<Computational_model::mpi_parallel>(double, double &);
+    template<>
+    bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double, double &);
+    template<>
+    bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double, double &);
     template<> bool System_of_eqs::do_newton_with_linesearch<Computational_model::mpi_parallel>(double , double &, int , double );
 
 // default : not implemented - the implemention is made through the specializations (see the seq_do_newton.cpp,
 // mpi_do_newton.cpp... files).
     template<Computational_model computational_model>
-    bool System_of_eqs::do_newton(double, double &,bool)
+    bool System_of_eqs::do_newton(double, double &)
     {
         cerr << "Error: System_of_eq::do_newton is not implemented for the "
              << computational_model_name(computational_model)

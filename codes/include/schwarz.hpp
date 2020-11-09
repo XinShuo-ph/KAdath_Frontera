@@ -130,7 +130,7 @@ public:
         bool const do_not_check_iter {newton_max_iterations < 0};
         while(!newton_success &&
                 (do_not_check_iter || newton_nbr_iterations <= newton_max_iterations)) {
-            newton_success = system->do_newton(tolerance,newton_residue, verbosity>0);
+            newton_success = system->do_newton(tolerance, newton_residue);
             newton_nbr_iterations++;
         }
     }

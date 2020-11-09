@@ -75,7 +75,7 @@ int main(int argc,char ** argv) {
     double conv ;
     bool endloop = false ;
     while (!endloop) {
-        endloop = syst.do_newton(1e-8, conv, System_of_eqs::output_enabled) ;
+        endloop = syst.do_newton(1e-8, conv);
     }
 
     syst.finalize_profiling();

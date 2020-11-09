@@ -34,7 +34,7 @@
 
 namespace Kadath {
     template<>
-    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double& error,bool verbosity)
+    bool System_of_eqs::do_newton<Computational_model::sequential>(double precision, double &error)
     {
         auto & os = *output_stream;
 #ifdef PAR_VERSION
@@ -43,19 +43,19 @@ namespace Kadath {
         if(rank==0) {
 #endif
             niter++;
-            if(niter==1 && verbosity)
-            {
-                display_do_newton_report_header(os,precision);
-            }
+//            if(niter==1 && verbosity)
+//            {
+//                display_do_newton_report_header(os,precision);
+//            }
             Array<double> second(sec_member());
             error = max(fabs(second));
             if (error < precision)
             {
-                if(verbosity)
-                {
-                    display_do_newton_ending_line(os,precision,error);
-                    os  << endl;
-                }
+//                if(verbosity)
+//                {
+//                    display_do_newton_ending_line(os,precision,error);
+//                    os  << endl;
+//                }
                 return true;
             } else {
                 int nn(second.get_size(0));
@@ -82,11 +82,11 @@ namespace Kadath {
                 newton_update_vars(xx);
                 Duration const t_newton_update
                         {this->stop_chrono(chrono_key)};
-                if(verbosity)
-                {
-                    display_do_newton_iteration(os,
-                            {niter,nn,error,t_load_matrix,Duration{},t_inv_matrix,t_newton_update});
-                }
+//                if(verbosity)
+//                {
+//                    display_do_newton_iteration(os,
+//                            {niter,nn,error,t_load_matrix,Duration{},t_inv_matrix,t_newton_update});
+//                }
                 return false;
             }
 #ifdef PAR_VERSION

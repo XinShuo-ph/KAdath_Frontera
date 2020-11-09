@@ -157,38 +157,6 @@ System_of_eqs::~System_of_eqs() {
     if(!which_coef.empty()) for (int i=0 ; i<nbr_conditions ; i++) delete which_coef[i] ;
 }
 
-void System_of_eqs::display_do_newton_report_header(std::ostream &os, double precision)
-{
-    os <<
-       "============================================================================================================================\n"
-       "|      |            |       ||b||      |                              Computational Times                                  |\n"
-       "| Iter | Syst. Size |   Initial Error  |-----------------------------------------------------------------------------------|\n"
-       "|      |            | (tol=" << std::setw(10) << std::setprecision(9) << precision;
-    os << ") | Matrix Computation | Matrix Translation |      Linear Solver |      Newton Update |\n"
-          "|======|============|==================|====================|====================|====================|====================|\n";
-}
-
-void System_of_eqs::display_do_newton_ending_line(std::ostream &os, double precision, double reached_precision)
-{
-    os << "===================================================================================================="
-          "=======================\n";
-    os << "Success: tolerance reached with ||b|| = " << reached_precision << " / " << precision << "\n" ;
-}
-
-void System_of_eqs::display_do_newton_iteration(std::ostream &os,const Newton_iteration_data &data)
-{
-    static constexpr int dds {16};
-    os << '|';
-    os << ' ' << std::setw(4) << data.n_iter << " |";
-    os << ' ' << std::setw(10) << data.problem_size << " |";
-    os << ' ' << std::setw(dds) << data.current_error << " |";
-    os << ' ' << std::setw(dds) << to_seconds(data.t_load_matrix) << " s |";
-    os << ' ' << std::setw(dds) << to_milliseconds(data.t_trans_matrix) << "ms |";
-    os << ' ' << std::setw(dds) << to_seconds(data.t_inv_matrix) << " s |";
-    os << ' ' << std::setw(dds) << to_milliseconds(data.t_newton_update) << "ms |";
-    os << "\n";
-
-}
 
 const Metric* System_of_eqs::get_met() const {
 	if (met==nullptr) {

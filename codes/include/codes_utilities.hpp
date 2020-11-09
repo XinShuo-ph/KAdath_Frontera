@@ -66,11 +66,11 @@ template<> inline char const * from_string<char const *>(std::string const & s) 
 std::vector<std::string> inline part_string(std::string str,std::size_t part_size) {
     std::vector<std::string> parts{};
     while(!str.empty()) {
-        auto pos = str.find_first_of(" ",part_size);
+        auto pos = str.find_first_of(' ',part_size);
 //        auto pos = std::find(str.cbegin()+part_size,str.cend(),' ');
         parts.push_back(str.substr(0,pos));
         str.erase(0,pos);
-        pos = str.find_first_not_of(" ");
+        pos = str.find_first_not_of(' ');
         str.erase(0,pos);
     }
     return std::move(parts);
@@ -86,14 +86,15 @@ struct Option_base {
     std::string type_name;
     std::string description;
     Option_base() = default;
-    Option_base(std::string const & _key, std::string const & _type_name,std::string const & _description) :
-        key{_key}, type_name{_type_name}, description{_description} {}
+    Option_base(std::string _key, std::string _type_name,std::string _description) :
+        key{std::move(_key)}, type_name{std::move(_type_name)}, description{std::move(_description)} {}
     virtual ~Option_base() = default;
     virtual Option_base & set(std::string const & input) = 0;
     virtual void display(std::ostream &os) const {
         auto const parted_descr = part_string(description,description_column_size);
-        os << "    " << std::setw(max_key_size) << key
-           << "    " << std::setw(max_type_name_size) << type_name << "    ";
+        os << "    " << std::setw(max_key_size) << key;
+        if(key=="-h") os << "    " << std::setw(max_type_name_size) << "N/A" << "    ";
+        else os << "    " << std::setw(max_type_name_size) << type_name << "    ";
         bool first_line {true};
         for(auto const & line : parted_descr) {
             if(!first_line) {
@@ -111,7 +112,7 @@ std::ostream & operator<<(std::ostream & os,Option_base const & option) {option.
 template<typename T> struct Option : Option_base {
     T value;
     T default_value;
-    Option(std::string const & key,std::string const & description,T _default_value,std::string const & input)
+    [[maybe_unused]] Option(std::string const & key,std::string const & description,T _default_value,std::string const & input)
         : Option_base{key,option_type_name<T>::get(),description}, value{}, default_value{_default_value}
     {
         this->set(input);
@@ -130,9 +131,9 @@ template<typename T> struct Option : Option_base {
 };
 
 template<> struct Option<bool> : Option_base {
-    bool value;
-    bool default_value;
-    Option(std::string const & key,std::string const & description,bool _default_value,
+    bool value{};
+    bool default_value{};
+    [[maybe_unused]] Option(std::string const & key,std::string const & description,bool _default_value,
             std::string const & input = "") :
         Option_base{key,"bool",description}, value{}, default_value{_default_value}
     {}
@@ -143,8 +144,10 @@ template<> struct Option<bool> : Option_base {
         return *this;}
     void display(std::ostream & os) const override {
         this->Option_base::display(os);
-        os << std::setw(description_tab_size) << ' ';
-        os << "Default value : " << (default_value ? "true" : "false") << std::endl;
+        if(key != "-h") {
+            os << std::setw(description_tab_size) << ' ';
+            os << "Default value : " << (default_value ? "true" : "false") << std::endl;
+        }
     }
 };
 
@@ -157,17 +160,18 @@ private:
     std::map<std::string,std::unique_ptr<Option_base>> option_list;
 
 public:
-    Arguments_parser (int &argc, char **argv,std::string const &_executable="") :
-        executable{_executable}, command_line{}, option_list{} {
+    Arguments_parser (int &argc, char **argv,std::string _executable="") :
+        executable{std::move(_executable)}, command_line{}, option_list{} {
         if(executable.empty()) executable = argv[0];
         for (int i=1; i < argc; ++i)
-            this->command_line.push_back(std::string(argv[i]));
+            this->command_line.emplace_back(argv[i]);
     }
 
-    std::string const & get_executable() const {return executable;}
+    [[nodiscard]] std::string const & get_executable() const {return executable;}
     Arguments_parser & set_executable(std::string const & new_executable) {executable = new_executable; return *this;}
 
-    template<typename T> void reference_option(std::string const &key,std::string const &description,T default_value,
+    template<typename T>
+    [[maybe_unused]] void reference_option(std::string const &key,std::string const &description,T default_value,
                                                 std::string const & input= "") {
         std::unique_ptr<Option_base> opt{new Option<T>{key,description,default_value,input}};
         auto pos = option_list.find(key);

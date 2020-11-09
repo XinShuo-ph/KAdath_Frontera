@@ -32,7 +32,7 @@ namespace Kadath {
 
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double precision, double& error,bool verbosity)
+    bool System_of_eqs::do_newton<Computational_model::gpu_mpi_parallel>(double prec, double &error)
     {
         auto & os = *output_stream;
         bool res;
@@ -146,7 +146,7 @@ namespace Kadath {
     }
 
     template<>
-    bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double precision, double& error,bool)
+    bool System_of_eqs::do_newton<Computational_model::gpu_sequential>(double precision, double &error)
     {
         auto & os = *output_stream;
 #ifdef PAR_VERSION
