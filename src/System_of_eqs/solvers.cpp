@@ -43,7 +43,7 @@ namespace Kadath {
                 }
                 else {
                     converged = system.do_newton<Computational_model::mpi_parallel>(target_error >= 0. ? target_error : 0.,
-                                                                                    current_error,);
+                                                                                    current_error);
                 }
 #else //ifdef ENABLE_GPU_USE
                 converged = system.do_newton<Computational_model::mpi_parallel>(target_error >= 0. ? target_error : 0.,
