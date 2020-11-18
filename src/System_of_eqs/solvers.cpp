@@ -149,8 +149,12 @@ namespace Kadath {
                "|      |            |       ||b||      |                              Computational Times                                  |\n"
                "| Iter | Syst. Size |   Initial Error  |-----------------------------------------------------------------------------------|\n"
                "|      |            | (tol=" << std::setw(10) << std::setprecision(9) << target_error;
-            os << ") | Matrix Computation | Matrix Translation |      Linear Solver |      Newton Update |\n"
-                  "|======|============|==================|====================|====================|====================|====================|\n";
+            os << ") | Matrix Computation | Matrix Translation |      Linear Solver |      Newton Update |\n";
+            if(enable_gpu) {
+                os
+                        << "|      |            |                  |       [CPUs]       |       [CPUs]       |        [GPU]       |       [CPUs]       |\n";
+            }
+            os << "|======|============|==================|====================|====================|====================|====================|\n";
         }
     }
 
