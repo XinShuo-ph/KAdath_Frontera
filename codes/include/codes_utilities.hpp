@@ -61,8 +61,16 @@ template<typename T> inline T from_string(std::string const & s) {
     return t_from_s;
 }
 template<> inline bool from_string<bool>(std::string const & s) {
-    if(s == "0" || s == "false") return false;
-    else if(s == "1" || s == "true") return true;
+    if( s == "0" || s == "false" || s == "False" || s == "FALSE" ||
+        s == "off" || s == "Off" || s == "OFF" || s == "disabled" ||
+        s == "Disabled" || s == "DISABLED") {
+        return false;
+    }
+    else if( s == "1" || s == "true" || s == "True" || s == "TRUE" ||
+        s == "on" || s == "On" || s == "ON" || s == "enabled" ||
+        s == "Enabled" || s == "ENABLED") {
+        return false;
+    }
     else throw std::runtime_error{"bad converion from string too bool"};
 }
 template<> inline std::string from_string<std::string>(std::string const & s) {return s;}
