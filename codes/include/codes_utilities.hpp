@@ -69,7 +69,7 @@ template<> inline bool from_string<bool>(std::string const & s) {
     else if( s == "1" || s == "true" || s == "True" || s == "TRUE" ||
         s == "on" || s == "On" || s == "ON" || s == "enabled" ||
         s == "Enabled" || s == "ENABLED") {
-        return false;
+        return true;
     }
     else throw std::runtime_error{"bad converion from string too bool"};
 }
