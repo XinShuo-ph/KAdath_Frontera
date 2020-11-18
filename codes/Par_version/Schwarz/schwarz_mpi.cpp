@@ -43,6 +43,7 @@ int main(int argc,char** argv) {
     bool const show_help {arg_parser.find_option("-h","Display this help message.")};
     if(show_help) {
         if(rank == 0) arg_parser.display(std::cout);
+        MPI_Barrier(MPI_COMM_WORLD);
         return 0;
     }
 
