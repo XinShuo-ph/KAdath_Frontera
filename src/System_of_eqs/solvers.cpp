@@ -24,7 +24,7 @@ namespace Kadath {
 
     Solver::Stopping_criteria Solver::operator()(System_of_eqs &system) {
         reset_current_values();
-        if(target_nb_iteration < 0 && target_error < 0. && target_duration < 0. && target_error_decrease < 0.) {
+        if(max_nb_iter < 0 && tolerance < 0. && max_elapsed_time < 0. && min_improvement < 0.) {
             if(system.get_mpi_proc_rank() == 0 && verbosity>0)
                 std::cerr << "WARNING: No stopping criteria set, high risk of endless loop !" << std::endl;
         }
@@ -38,25 +38,25 @@ namespace Kadath {
 #ifdef PAR_VERSION
 #ifdef ENABLE_GPU_USE
                 if(enable_gpu) {
-                    converged = system.do_newton<Computational_model::gpu_mpi_parallel>(target_error >= 0. ? target_error : 0.,
+                    converged = system.do_newton<Computational_model::gpu_mpi_parallel>(tolerance >= 0. ? tolerance : 0.,
                                                                                         current_error);
                 }
                 else {
-                    converged = system.do_newton<Computational_model::mpi_parallel>(target_error >= 0. ? target_error : 0.,
+                    converged = system.do_newton<Computational_model::mpi_parallel>(tolerance >= 0. ? tolerance : 0.,
                                                                                     current_error);
                 }
 #else //ifdef ENABLE_GPU_USE
-                converged = system.do_newton<Computational_model::mpi_parallel>(target_error >= 0. ? target_error : 0.,
+                converged = system.do_newton<Computational_model::mpi_parallel>(tolerance >= 0. ? tolerance : 0.,
                                                                                 current_error);
 #endif //ifdef ENABLE_GPU_USE
 #else  //ifdef PAR_VERSION
-                converged = system.do_newton<Computational_model::sequential>(target_error >= 0. ? target_error : 0.,
+                converged = system.do_newton<Computational_model::sequential>(tolerance >= 0. ? tolerance : 0.,
                                                                                 current_error);
 #endif //ifdef PAR_VERSION
-                current_nb_iteration++;
-                current_error_decrease = previous_error - current_error ;
+                current_nb_iter++;
+                current_improvement = previous_error - current_error ;
                 std::chrono::steady_clock::duration elapsed {std::chrono::steady_clock::now() - start_time};
-                current_duration = std::chrono::duration_cast<std::chrono::duration<double>>(elapsed).count();
+                current_elapsed_time = std::chrono::duration_cast<std::chrono::duration<double>>(elapsed).count();
                 algo_state = check_stopping_criteria();
                 display_do_newton_iteration(system.current_output_data);
             }
@@ -89,16 +89,16 @@ namespace Kadath {
     }
 
     std::pair<bool,Solver::Stopping_criteria> Solver::check_stopping_criteria() const {
-        if(target_error > 0. && current_error <= target_error) {
+        if(tolerance > 0. && current_error <= tolerance) {
             return std::make_pair(true, tolerance_reached);
         }
-        else if(target_nb_iteration>=0 && current_nb_iteration >= target_nb_iteration) {
+        else if(max_nb_iter >= 0 && current_nb_iter >= max_nb_iter) {
             return std::make_pair(true, max_nb_iteration_reached);
         }
-        else if(target_duration >= 0. && current_duration >= target_duration) {
+        else if(max_elapsed_time >= 0. && current_elapsed_time >= max_elapsed_time) {
             return std::make_pair(true, max_elapsed_time_reached);
         }
-        else if(target_error_decrease >= 0. && current_error_decrease <= target_error_decrease) {
+        else if(min_improvement >= 0. && current_improvement <= min_improvement) {
             return std::make_pair(true, min_error_improvement_reached);
         }
         else return std::make_pair(false, none);
@@ -107,9 +107,9 @@ namespace Kadath {
 
     Solver & Solver::reset_current_values() {
         current_error = std::numeric_limits<double>::max();
-        current_nb_iteration = 0;
-        current_duration = 0.;
-        current_error_decrease = -1.;
+        current_nb_iter = 0;
+        current_elapsed_time = 0.;
+        current_improvement = -1.;
         return *this;
     }
 
@@ -120,17 +120,17 @@ namespace Kadath {
         os  << "\t - Data output display.................... : " << EorD(output) << std::endl;
         os  << "\t - Verbosity level........................ : " << verbosity << std::endl;
         os  << "\t - Error value-based stop. criteria....... : ";
-        if(target_error <= 0.) os << "disabled \n";
-        else os << "enabled  -  " << current_error << " / " << target_error << "\n";
+        if(tolerance <= 0.) os << "disabled \n";
+        else os << "enabled  -  " << current_error << " / " << tolerance << "\n";
         os  << "\t - Error improvement-based stop. criteria. : ";
-        if(target_error_decrease <= 0.) os << "disabled \n";
-        else os << "enabled  -  " << current_error_decrease << " / " << target_error_decrease << "\n";
+        if(min_improvement <= 0.) os << "disabled \n";
+        else os << "enabled  -  " << current_improvement << " / " << min_improvement << "\n";
         os  << "\t - Iteration-based stop. criteria......... : ";
-        if(target_nb_iteration < 0) os << "disabled \n";
-        else os << "enabled  -  " << current_nb_iteration << " / " << target_nb_iteration << "\n";
+        if(max_nb_iter < 0) os << "disabled \n";
+        else os << "enabled  -  " << current_nb_iter << " / " << max_nb_iter << "\n";
         os  << "\t - Time-based stop. criteria.............. : ";
-        if(target_duration <= 0.) os << "disabled \n";
-        else os << "enabled  -  " << current_duration << " s / " << target_duration << " s\n";
+        if(max_elapsed_time <= 0.) os << "disabled \n";
+        else os << "enabled  -  " << current_elapsed_time << " s / " << max_elapsed_time << " s\n";
         os  << "\t - Use GPU for linear solve (if available) : " << EorD(enable_gpu) << std::endl;
 #ifndef ENABLE_GPU_USE
         if(enable_gpu) os << "\t WARNING : this version of Kadath has not been build with GPU capabilities,\n"
@@ -148,7 +148,7 @@ namespace Kadath {
                "============================================================================================================================\n"
                "|      |            |       ||b||      |                              Computational Times                                  |\n"
                "| Iter | Syst. Size |   Initial Error  |-----------------------------------------------------------------------------------|\n"
-               "|      |            | (tol=" << std::setw(10) << std::setprecision(9) << target_error;
+               "|      |            | (tol=" << std::setw(10) << std::setprecision(9) << tolerance;
             os << ") | Matrix Computation | Matrix Translation |      Linear Solver |      Newton Update |\n";
             if(enable_gpu) {
                 os
@@ -172,7 +172,7 @@ namespace Kadath {
                     os << "ERROR : algorithm stopped due to memory limitations." << std::endl;
                     break;
                 case tolerance_reached :
-                    os << "Success: tolerance reached with ||b|| = " << current_error << " / " << target_error << "\n";
+                    os << "Success: tolerance reached with ||b|| = " << current_error << " / " << tolerance << "\n";
                     break;
                 case min_error_improvement_reached :
                     os << "Failure: error improvement dropped below the fixed limit before convergence." << std::endl;

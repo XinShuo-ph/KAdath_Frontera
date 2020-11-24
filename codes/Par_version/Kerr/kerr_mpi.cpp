@@ -35,10 +35,10 @@ int main(int argc, char** argv) {
     kerr_init.set_block_size(block_size.first);
     kerr_init.mpi_rank = rank;
     kerr_init.set_verbosity(verbosity_level.first);
-    if(max_iterations.second) kerr_init.get_newton_solver().set_target_nb_iteration(max_iterations.first);
+    if(max_iterations.second) kerr_init.get_newton_solver().set_max_nb_iter(max_iterations.first);
     if(gpu_enabled.second) kerr_init.get_newton_solver().set_enable_gpu(gpu_enabled.first);
-    kerr_init.get_newton_solver().set_target_error(tolerance.first);
-    kerr_init.get_newton_solver().set_target_duration(max_time.first);
+    kerr_init.get_newton_solver().set_tolerance(tolerance.first);
+    kerr_init.get_newton_solver().set_max_elapsed_time(max_time.first);
 
     // build all internal data.
     kerr_init.build_space_and_system();

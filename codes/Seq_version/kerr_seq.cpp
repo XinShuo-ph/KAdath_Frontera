@@ -34,9 +34,9 @@ int main(int argc, char** argv) {
     }
 
     Kerr_init kerr_init{nb_points.first};
-    if(max_iterations.second) kerr_init.newton_solver.set_target_nb_iteration(max_iterations.first);
-    kerr_init.newton_solver.set_target_error(tolerance.first);
-    kerr_init.newton_solver.set_target_duration(max_time.first);
+    if(max_iterations.second) kerr_init.newton_solver.set_max_nb_iter(max_iterations.first);
+    kerr_init.newton_solver.set_tolerance(tolerance.first);
+    kerr_init.newton_solver.set_max_elapsed_time(max_time.first);
 
     // build all internal data.
     kerr_init.build_space_and_system();

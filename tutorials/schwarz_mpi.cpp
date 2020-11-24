@@ -19,6 +19,7 @@
 #include "kadath_spheric.hpp"
 #include "mpi.h"
 #include "magma_interface.hpp"
+#include "solvers.hpp"
 
 using namespace Kadath ;
 int main(int argc,char** argv) {
@@ -83,13 +84,10 @@ int main(int argc,char** argv) {
     space.add_outer_bc (syst, "P=1") ;
 
     // Newton-Raphson
-    double conv ;
-    bool endloop = false ;
-    int ite = 1 ;
-    while (!endloop) {
-        endloop = syst.do_newton(1e-8, conv,System_of_eqs::output_enabled /* "true" or "1" would work as well */) ;
-        ite++ ;
-    }
+    Solver solver;
+    solver.set(Tolerance = 1.e-8); //equivalent to solver.set_tolerance(1.e-8)
+    solver(syst);
+
 
     // Check of the solution
     int resol = 100 ;

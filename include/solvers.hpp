@@ -24,81 +24,113 @@
 #include "system_of_eqs.hpp"
 
 namespace Kadath {
-    //!
     class Solver;
 
+    /**
+     * Base class use to declare parameter for the \c Solver class (and its derived one if there is).
+     * Beware : this is meant to provide order-free variadic setters, not to be used as data member (see
+     * the solver class).
+     * @tparam T
+     * @tparam Derived
+     */
     template<typename T,typename Derived> struct Parameter_base {
         static_assert(!std::is_reference<T>::value,"T cannot be a reference type, consider using pointers");
         using value_type = T;
         using Base = Parameter_base;
+        //! Returns the default valoue of the parameter.
         static constexpr value_type get_default_value() {return Derived::default_value;}
+        //! Set the parameter value in the appropriate data member of the \c Solver instance pointed to.
         static inline void set(Solver *,Parameter_base const &);
+        //! Value of the parameter.
         value_type value;
+        //! Constructor.
         constexpr explicit Parameter_base(value_type _value) : value{_value} {}
+        //! Assignment operator hack (this is not an assignment !).
         constexpr Parameter_base operator=(value_type _value) const {return Parameter_base{_value};}
         constexpr Parameter_base(Parameter_base const &) = default;
         constexpr Parameter_base(Parameter_base&&) noexcept = default;
         constexpr Parameter_base() : value{get_default_value()} {}
     };
 
-    template<typename... Args> struct Setter {static void apply(Solver *,Args && ... ) {};};
+    //! Helper struct used for the partial specialization of a variadic setter.
+    template<typename... Args> struct Setter {
+        static void apply(Solver *,Args && ... ) {}
+    };
+    /**
+     * Specialization for parameter packs of length greater than or equal to 1.
+     * @tparam Arg1 First argument type.
+     * @tparam OtherArgs Parameter types of the eventual other arguments.
+     */
     template<typename Arg1,typename... OtherArgs> struct Setter<Arg1,OtherArgs...> {
+        /**
+         * Function that sets the values of argument to the corresponding data members within the \c Solver
+         * instance pointed to.
+         * @param pthis \Solover instance being parametrized.
+         * @param a1 first parameter value
+         * @param other_args parameter pack of the the eventual other arguments values.
+         */
         static inline void apply(Solver *pthis,Arg1 const & a1,OtherArgs const &... other_args) {
             Arg1::set(pthis,a1);
             Setter<OtherArgs...>::apply(pthis,other_args...);
         }
     };
 
-//    template<> struct Setter<> {static inline void apply(Solver *) {}};
 
-
+    //! Parameter controling output during the algorithm execution.
     struct param_output : Parameter_base<bool,param_output> {
         static constexpr bool default_value{true};
         using Base::operator=;
         using Base::Base;
     };
+    //! Global variable emulating keywords for the output controling parameter.
     [[maybe_unused]] constexpr param_output  EnableOutput {true};
     [[maybe_unused]] constexpr param_output  DisableOutput {false};
 
+    //! Parameter enabling the use of GPU.
     struct param_enable_gpu : Parameter_base<bool,param_enable_gpu> {
         static constexpr bool default_value {false};
         using Base::operator=;
         using Base::Base;
     };
+    //! GPU-enabling keyword emulating variable.
     [[maybe_unused]] constexpr param_enable_gpu EnableGPU{true};
+    //! GPU-disabling keyword emulating variable.
     [[maybe_unused]] constexpr param_enable_gpu DisableGPU{false};
 
-
-    struct param_target_error : Parameter_base<double,param_target_error> {
+    //! Tolerance/precision.
+    struct param_tolerance : Parameter_base<double,param_tolerance> {
         static constexpr double default_value{1.e-12};
         using Base::operator=;
         using Base::Base;
     };
-    [[maybe_unused]] constexpr param_target_error Tolerance;
+    //! Tolerance keyword emulating variable.
+    [[maybe_unused]] constexpr param_tolerance Tolerance;
 
 
-    struct param_target_nb_iteration : Parameter_base<int,param_target_nb_iteration> {
+    //! Number of iterations.
+    struct param_max_nb_iter : Parameter_base<int,param_max_nb_iter> {
         static constexpr int default_value{-1};
         using Base::operator=;
         using Base::Base;
     };
-    [[maybe_unused]] constexpr param_target_nb_iteration MaxNbIter;
+    //! Keyword.
+    [[maybe_unused]] constexpr param_max_nb_iter MaxNbIter;
 
 
-    struct param_target_duration : Parameter_base<double,param_target_duration> {
+    struct param_max_elapsed_time : Parameter_base<double,param_max_elapsed_time> {
         static constexpr double default_value{-1.};
         using Base::operator=;
         using Base::Base;
     };
-    [[maybe_unused]] constexpr param_target_duration MaxElapsedTime;
+    [[maybe_unused]] constexpr param_max_elapsed_time MaxElapsedTime;
 
 
-    struct param_target_error_decrease : Parameter_base<double,param_target_error_decrease> {
+    struct param_min_improvement : Parameter_base<double,param_min_improvement> {
         static constexpr double default_value {-1.};
         using Base::operator=;
         using Base::Base;
     };
-    [[maybe_unused]] constexpr param_target_error_decrease MinImprovement;
+    [[maybe_unused]] constexpr param_min_improvement MinImprovement;
 
     struct param_verbosity : Parameter_base<int,param_verbosity> {
         static constexpr int default_value {1};
@@ -117,43 +149,65 @@ namespace Kadath {
     /**
      * Base class for the implementation of functors which solve the system of equations described
      * by an instance of \c System_of_eqs.
+     * \todo it would be better to make a class hierarchy for stopping criteria and simply have a vector of the base instead of all those data members...
      */
     class Solver {
     public:
         using Output_data = System_of_eqs::Output_data;
+        //! Result code for the algorithm.
         enum Stopping_criteria : int {
+            //! Bad things happened...
             fatal_error = -2,
+            //! Algorithm stopped due to memory limitations.
             out_of_memory = -1,
+            //! Default value (should not be returned).
             none = 0,
+            //! Success with the desired precision reached.
             tolerance_reached = 1,
+            //! Algorithm stopped due to too small progression toward error decrease (user setting).
             min_error_improvement_reached = 2,
+            //! Algorithm stopped after exceeding the time limit set by the user.
             max_elapsed_time_reached = 3,
+            //! Algorithm stopped after exceeding the maximal number of iterations.
             max_nb_iteration_reached = 4
         };
 
     protected:
-        double target_error;
+        //! Desired precision (i.e. tolerance / error).
+        double tolerance;
+        //! Currently reached precision/error.
         double current_error;
-        double target_error_decrease;
-        double current_error_decrease;
-        double target_duration;
-        double current_duration;
-        int target_nb_iteration;
-        int current_nb_iteration;
+        //! Minimal error decrease value (disabled if negative).
+        double min_improvement;
+        //! Current error decrease.
+        double current_improvement;
+        //! Maximal allowed time.
+        double max_elapsed_time;
+        //! Current elapsed time.
+        double current_elapsed_time;
+        //! Maximal allowed number of iterations.
+        int max_nb_iter;
+        //! Current number of iterations done.
+        int current_nb_iter;
+        //! Enables/disables the output during the algorithm progression.
         bool output;
+        //! Enables/disables GPU use for linear solvers.
         bool enable_gpu;
+        //! Verbosity level.
         int verbosity;
+        //! STL output stream to which the output is sent.
         std::ostream * output_stream;
 
+        //! Boolean indicating if this proc has null rank or not (mainly to avoid output duplication when using MPI).
         bool master_processus;
 
     public:
         static constexpr double unknown_value{-1.};
         //! Default constructor.
-        Solver() : target_error{param_target_error::default_value}, current_error{std::numeric_limits<double>::max()},
-                   target_nb_iteration{param_target_nb_iteration::default_value}, current_nb_iteration{0},
-                   target_duration{param_target_duration::default_value}, current_duration{0.},
-                   target_error_decrease{param_target_error_decrease::default_value}, current_error_decrease{unknown_value},
+        Solver() : tolerance{param_tolerance::default_value}, current_error{std::numeric_limits<double>::max()},
+                   max_nb_iter{param_max_nb_iter::default_value}, current_nb_iter{0},
+                   max_elapsed_time{param_max_elapsed_time::default_value}, current_elapsed_time{0.},
+                   min_improvement{param_min_improvement::default_value}, current_improvement{unknown_value},
                    output{param_output::default_value}, enable_gpu{param_enable_gpu::default_value},
                    verbosity{param_verbosity::default_value}, output_stream{param_output_stream::default_value},
                    master_processus{true}
@@ -190,6 +244,10 @@ namespace Kadath {
             Setter<Args...>::apply(this,args...); return *this;
         }
 
+        /**
+         * Check if one of the set stopping criteria is met.
+         * @return true if a stopping criteria is triggered, and the code of the stopping criteria.
+         */
         Solver & reset_current_values();
         [[nodiscard]] std::pair<bool,Stopping_criteria> check_stopping_criteria() const;
 
@@ -219,22 +277,22 @@ namespace Kadath {
         virtual void display(std::ostream & os) const;
 
         [[nodiscard,maybe_unused]] double get_current_error() const {return current_error;}
-        [[nodiscard,maybe_unused]] double get_target_error() const {return target_error;}
-        [[nodiscard,maybe_unused]] double get_target_error_decrease() const {return target_error_decrease;}
-        [[nodiscard,maybe_unused]] double get_current_error_decrease() const {return current_error_decrease;}
-        [[nodiscard,maybe_unused]] double get_target_duration() const {return target_duration;}
-        [[nodiscard,maybe_unused]] double get_current_duration() const {return current_duration;}
-        [[nodiscard,maybe_unused]] int get_target_nb_iteration() const {return target_nb_iteration;}
-        [[nodiscard,maybe_unused]] int get_current_nb_iteration() const {return current_nb_iteration;}
+        [[nodiscard,maybe_unused]] double get_tolerance() const {return tolerance;}
+        [[nodiscard,maybe_unused]] double get_min_improvement() const {return min_improvement;}
+        [[nodiscard,maybe_unused]] double get_current_improvement() const {return current_improvement;}
+        [[nodiscard,maybe_unused]] double get_max_elapsed_time() const {return max_elapsed_time;}
+        [[nodiscard,maybe_unused]] double get_current_elapsed_time() const {return current_elapsed_time;}
+        [[nodiscard,maybe_unused]] int get_max_nb_iter() const {return max_nb_iter;}
+        [[nodiscard,maybe_unused]] int get_current_nb_iter() const {return current_nb_iter;}
         [[nodiscard,maybe_unused]] bool get_output() const {return output;}
         [[nodiscard,maybe_unused]] bool get_enable_gpu() const {return enable_gpu;}
         [[nodiscard,maybe_unused]] int get_verbosity() const {return verbosity;}
         [[nodiscard,maybe_unused]] std::ostream & get_output_stream() const {return *output_stream;}
 
-        Solver & set_target_error(double new_value) {target_error = new_value; return *this;}
-        Solver & set_target_error_decrease(double new_value) {target_error_decrease = new_value; return *this;}
-        Solver & set_target_duration(double new_value) {target_duration = new_value; return *this;}
-        Solver & set_target_nb_iteration(int new_value) {target_nb_iteration = new_value; return *this;}
+        Solver & set_tolerance(double new_value) { tolerance = new_value; return *this;}
+        Solver & set_min_improvement(double new_value) { min_improvement = new_value; return *this;}
+        Solver & set_max_elapsed_time(double new_value) { max_elapsed_time = new_value; return *this;}
+        Solver & set_max_nb_iter(int new_value) { max_nb_iter = new_value; return *this;}
         Solver & set_output(bool new_value) {output = new_value; return *this;}
         Solver & set_enable_gpu(bool new_value) {enable_gpu = new_value; return *this;}
         Solver & set_verbosity(int new_value) {verbosity = new_value; return *this;}
@@ -245,17 +303,17 @@ namespace Kadath {
     template<> inline void Parameter_base<param_output::value_type,param_output>::set
         (Solver * pthis,Parameter_base const & _param) {pthis->set_output (_param.value);}
 
-    template<> inline void Parameter_base<param_target_error::value_type,param_target_error>::set
-        (Solver *pthis,Parameter_base const & _param) {pthis->set_target_error(_param.value);}
+    template<> inline void Parameter_base<param_tolerance::value_type,param_tolerance>::set
+        (Solver *pthis,Parameter_base const & _param) { pthis->set_tolerance(_param.value);}
 
-    template<> inline void Parameter_base<param_target_duration::value_type,param_target_duration>::set
-        (Solver *pthis,Parameter_base const & _param) {pthis->set_target_duration(_param.value);}
+    template<> inline void Parameter_base<param_max_elapsed_time::value_type,param_max_elapsed_time>::set
+        (Solver *pthis,Parameter_base const & _param) { pthis->set_max_elapsed_time(_param.value);}
 
-    template<> inline void Parameter_base<param_target_error_decrease::value_type,param_target_error_decrease>::set
-        (Solver *pthis,Parameter_base const & _param) {pthis->set_target_error_decrease(_param.value);}
+    template<> inline void Parameter_base<param_min_improvement::value_type,param_min_improvement>::set
+        (Solver *pthis,Parameter_base const & _param) { pthis->set_min_improvement(_param.value);}
 
-    template<> inline void Parameter_base<param_target_nb_iteration::value_type,param_target_nb_iteration>::set
-        (Solver *pthis,Parameter_base const & _param) {pthis->set_target_nb_iteration(_param.value);}
+    template<> inline void Parameter_base<param_max_nb_iter::value_type,param_max_nb_iter>::set
+        (Solver *pthis,Parameter_base const & _param) { pthis->set_max_nb_iter(_param.value);}
 
     template<> inline void Parameter_base<param_enable_gpu::value_type,param_enable_gpu>::set
         (Solver *pthis,Parameter_base const & _param) {pthis->set_enable_gpu(_param.value);}
