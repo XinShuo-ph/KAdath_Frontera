@@ -112,6 +112,7 @@ class Val_domain {
 	void operator= (const Val_domain&) ; ///< Assignement to another \c Val_domain
 	void operator= (double) ; ///< Assignement to a \c double , in the configuration space.
 	void annule_hard() ; ///< Sets all the arrays to zero (the logical state is NOT set to zero).
+	void annule_hard_coef() ; ///< Sets all the arrays to zero in the coefficient space (the logical state is NOT set to zero).
 	/**
 	* Returns the basis of decomposition.
 	*/	

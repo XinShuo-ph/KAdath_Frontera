@@ -94,6 +94,11 @@ void Scalar::annule_hard() {
 		set_domain(i).annule_hard() ;
 }
 
+void Scalar::annule_hard_coef() {
+	for (int i=0 ; i<ndom ; i++)
+		set_domain(i).annule_hard_coef() ;
+}
+
 void Scalar::set_in_conf() {
 	for (int l=0 ; l<ndom ; l++)
 	    val_zones[l]->set_in_conf() ;

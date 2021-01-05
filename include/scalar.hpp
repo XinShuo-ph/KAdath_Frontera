@@ -118,6 +118,12 @@ class Scalar : public Tensor {
 	* @returns the \c Space.
 	*/
       const Space& get_space () const {return espace ;} ;
+
+	/**
+	* Gives the class of the tensor.
+	*/
+	virtual string get_class_name () const {return "Scalar" ;} ;
+      
       
     public:
       Val_domain& set_domain (int) ; ///< Read/write of a particular \c Val_domain.
@@ -126,7 +132,8 @@ class Scalar : public Tensor {
       void operator= (const Scalar&) ; ///< Assignement to another \c Scalar.
       virtual void operator= (const Tensor&) ; ///< Assignement to a \c Tensor (must be scalar)
       void operator= (double) ; ///< Assignment to a double (sets all the values in the configuration space to that value.
-      virtual void annule_hard() ; ///< Sets the value to zero evetywhere (the logical state of the \c Val_domain is NOT zero).
+      virtual void annule_hard() ; ///< Sets the value to zero everywhere (the logical state of the \c Val_domain is NOT zero).
+      virtual void annule_hard_coef() ; ///< Sets the value to zero everywhere in the coefficient space (the logical state of the \c Val_domain is NOT zero).
 
       Scalar der_var (int) const ; ///< Returns the derivative with respect to one particular numerical coordinate.
       Scalar der_abs (int) const ;///< Returns the derivative with respect to one particular absolute Cartesian coordinate.
