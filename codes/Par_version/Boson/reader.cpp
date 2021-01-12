@@ -48,9 +48,6 @@ int main(int argc, char** argv) {
 		MM.set(2) += rmax / nbr ;
 	}
 
-	cout << nr << " " << error_axe << endl ;
-	abort() ;
-
       	Scalar Np(incNphi.div_rsint()) ;
 
 	// Madm
