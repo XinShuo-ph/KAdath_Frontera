@@ -1,3 +1,4 @@
+#!/bin/bash
 
 echo
 
@@ -214,9 +215,10 @@ then
   echo "mkdir $build_dir"
   mkdir "$build_dir"
   echo "cd $build_dir"
-  cd "$build_dir" || return
-  echo "cmake ${cmake_options} .."
-  cmake "${cmake_options}" ..
+  cd "$build_dir" || exit
+  #echo "cmake ${cmake_options} .."
+  echo cmake "${opt_cmake_build_type}" "${opt_cmake_par_version}" "${opt_cmake_mkl_version}" "${opt_cmake_mpi_c_compiler}" "${opt_cmake_mpi_cxx_compiler}" ..
+  cmake "${opt_cmake_build_type}" "${opt_cmake_par_version}" "${opt_cmake_mkl_version}" "${opt_cmake_mpi_c_compiler}" "${opt_cmake_mpi_cxx_compiler}" ..
   if [ "$verbosity" = "On" ]; then
     echo "make -j${compile_nb_proc} VERBOSE=1"
     make -j"${compile_nb_proc}" VERBOSE=1
