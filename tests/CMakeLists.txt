@@ -1,4 +1,5 @@
 if(ENABLE_TESTING)
+    include_directories(${PROJECT_SOURCE_DIR}/codes/include)
     include_directories(include)
 
     set(TEST_ARRAY t-array)

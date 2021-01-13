@@ -59,6 +59,17 @@ public:
 };
 
 int main(int argc,char * argv[]) {
+    Arguments_parser arg_parser{argc,argv};
+    bool const show_help = arg_parser.find_option("-h","Display this message");
+    auto test_level = arg_parser.get_option_value<int>("-lvl","Sets the test level (the number of tests increases with the passed value).",1);
+    auto array_dim = arg_parser.get_option_value<int>("-dim","Sets the max values for testing arrays dimensions.",5);
+    if(show_help) {
+        arg_parser.display(std::cout);
+        return 0;
+    }
+
+    unsigned const level {static_cast<unsigned>(test_level.first)};
+
     Array_tester array_tester{};
     std::cout << "============================== t-array unit-tests set ==============================\n\n";
 
@@ -69,38 +80,38 @@ int main(int argc,char * argv[]) {
     assert(test_1_1);
 
     std::cout << "    - trivial 1-dimensional array case...";
-    bool const test_1_x {array_tester.test_1_x(100)};
+    bool const test_1_x {array_tester.test_1_x(100 * level)};
     std::cout << (test_1_x ? " success" : " failure") << std::endl;
     assert(test_1_x);
 
     std::cout << "    - 2-dimensional array case...";
-    bool const test_2_x {array_tester.test_2_x(100)};
+    bool const test_2_x {array_tester.test_2_x(100 * level)};
     std::cout << (test_2_x ? " success" : " failure") << std::endl;
     assert(test_2_x);
 
     std::cout << "    - higher-dimensional array case...";
-    bool const test_x_x {array_tester.test_x_x(10)};
+    bool const test_x_x {array_tester.test_x_x(10 * level,array_dim.first)};
     std::cout << (test_x_x ? " success" : " failure") << std::endl;
     assert(test_x_x);
 
     std::cout << std::endl <<
         "Tests for file I/O methods mixed with reordering :" << std::endl;
     std::cout << "    - trivial 1-dimensional array case...";
-    bool const test_file_1_x {array_tester.test_file_1_x(10)};
+    bool const test_file_1_x {array_tester.test_file_1_x(10 * level)};
     std::cout << (test_file_1_x ? " success" : " failure") << std::endl;
     assert(test_file_1_x);
 
     std::cout << "    - 2-dimensional array case...";
-    bool const test_file_2_x {array_tester.test_file_2_x(10)};
+    bool const test_file_2_x {array_tester.test_file_2_x(10 * level)};
     std::cout << (test_file_2_x ? " success" : " failure") << std::endl;
     assert(test_file_2_x);
 
     std::cout << "    - higher-dimensional array case";
-    bool const test_file_x_x {array_tester.test_file_x_x(5)};
+    bool const test_file_x_x {array_tester.test_file_x_x(5 * level,array_dim.first)};
     std::cout << (test_file_x_x ? " success" : " failure") << std::endl;
     assert(test_file_x_x);
 
-    std::cout << "\n\n====================================================================================";
+    std::cout << "\n\n====================================================================================" << std::endl;
     return 0;
 }
 

@@ -3,6 +3,7 @@
 *.so
 *.log
 *.dylib
+*.backup
 lib
 bin
 build*

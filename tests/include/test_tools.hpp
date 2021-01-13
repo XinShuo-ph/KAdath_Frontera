@@ -6,6 +6,8 @@
 #include <random>
 #include <type_traits>
 
+#include "codes_utilities.hpp"
+
 #ifndef __KADATH_TESTS_TEST_TOOLS_HPP_
 #define __KADATH_TESTS_TEST_TOOLS_HPP_
 

@@ -409,7 +409,7 @@ template <typename T> bool Array<T>::is_increasing() const {
             auto q_r = div(q,dimensions(k));
             q = q_r.quot;
             ret.set(k) = q_r.rem;
-            if(k==dim-1) assert(q==0);
+            assert(q==0 || k<dim-1);
             k++;
         }
         k=0;
@@ -427,7 +427,7 @@ template <typename T> bool Array<T>::is_increasing() const {
             auto q_r = div(q,dimensions(k));
             q = q_r.quot;
             ret.set(k) = q_r.rem;
-            if(k==0) assert(q==0);
+            assert(q==0 || k>0);
             k--;
         }
         k = dim-1;
