@@ -1,4 +1,3 @@
-#!/bin/bash
 
 echo
 
@@ -7,7 +6,7 @@ show_help()
   echo -e "Usage\n"
   echo "installer.sh [options]"
   echo
-  echo "Configure and build Kadath in the dersire directory and then compile the library."
+  echo "Configure, build and compile Kadath in the desired directory."
   echo
   echo "Options"
   echo "  --help, -h               = Print usage information and exit."
@@ -48,15 +47,15 @@ while [ -n "$1" ]; do # while loop starts
 	case "$1" in
 	--help)
 	  show_help
-	  return
+	  exit
 	  ;;
 	-help)
 	  show_help
-	  return
+	  exit
 	  ;;
 	-h)
 	  show_help
-	  return
+	  exit
 	  ;;
 	--arch)
 	  preconf_arch="$2"
