@@ -147,7 +147,8 @@ class Scalar : public Tensor {
       Scalar mult_cos_phi () const ;///< Returns the multiplication by \f$\cos \varphi\f$.
       Scalar mult_sin_phi () const ;///< Returns the multiplication by \f$\sin \varphi\f$.
       double integrale() const ;///< Returns the integral in the whole space.
-
+      Scalar mult_r () const ; ///< Returns the multiplication by r
+	
       unique_ptr<Scalar> clone() const; ///< Copy using unique_ptr
       Vector grad() const ; ///< Computes the gradient (in Cartesian coordinates).
 

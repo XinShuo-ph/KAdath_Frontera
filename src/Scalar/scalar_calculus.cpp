@@ -37,6 +37,14 @@ Scalar Scalar::div_r() const {
 	return res ;
 }
 
+Scalar Scalar::mult_r() const {
+	Scalar res (*this, false) ;
+	for (int dom=0 ; dom<ndom ; dom++)
+		res.set_domain(dom) = val_zones[dom]->zone->mult_r(*val_zones[dom]) ;
+
+	return res ;
+}
+
 Scalar Scalar::div_rsint() const {
 	Scalar res (*this, false) ;
 	for (int dom=0 ; dom<ndom ; dom++) {
