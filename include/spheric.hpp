@@ -1194,6 +1194,17 @@ class Space_spheric : public Space {
 	* @param withzec [input] : use a compactified domain or not
 	*/
 	Space_spheric (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds, bool withzec=true) ;
+	
+	/**
+     	* Constructor with different resolution in each domain
+     	* @param ttype [input] : the type of basis.
+	* @param cr [input] : absolute coordinates of the center.
+	* @param nbr [input] : number of points in each domain.
+	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
+	*/
+	Space_spheric (int ttype, const Point& cr, Dim_array** nbr, const Array<double>& bounds) ;
+	
+	
 	/**
 	* Standard constructor that allows some shells to be of diffent type (\c Domain_shell_log or \c Domain_shell_surr)
 	* @param ttype [input] : the type of basis.
