@@ -968,11 +968,12 @@ class Space_spheric_symphi : public Space {
      * @param cr [input] : absolute coordinates of the center.
      * @param nbr [input] : number of points in each domain.
      * @param bound [input] : radius of the nucleus.
+     * @param withzec [input] : put an outer compactified domain or not ?
      */
-	Space_spheric_symphi (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds) ;
+	Space_spheric_symphi (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds, bool withzec=false) ;
 
 
-	Space_spheric_symphi (FILE* fd) ; ///< Constructor from a file
+	Space_spheric_symphi (FILE* fd, bool withzec=false) ; ///< Constructor from a file
 	virtual ~Space_spheric_symphi() ;       
 	virtual void save(FILE*) const ;
 
