@@ -59,8 +59,8 @@ public:
     double tolerance;
 
 public:
-    Dim_array const & get_number_of_points() const {number_of_points;}
-    Dim_array & get_number_of_points() {number_of_points;}
+    Dim_array const & get_number_of_points() const {return number_of_points;}
+    Dim_array & get_number_of_points() {return number_of_points;}
     int get_verbosity() const {return verbosity;}
     Schwarz & set_verbosity(int new_value) {verbosity = new_value; return *this;}
     void set_number_of_points(int new_val) {number_of_points.set(0) = new_val;}
@@ -133,6 +133,7 @@ public:
             newton_success = system->do_newton(tolerance, newton_residue);
             newton_nbr_iterations++;
         }
+        return newton_success;
     }
 
     /**

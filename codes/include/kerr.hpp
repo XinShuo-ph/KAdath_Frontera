@@ -234,6 +234,7 @@ public:
             space->add_outer_bc (*system, "bet^i=0") ;
 
         } else initialization_order_error(std::cerr,__FILE__,__LINE__);
+        return *this;
     }
 };
 

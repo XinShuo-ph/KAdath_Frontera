@@ -58,7 +58,8 @@ Tensor & Tensor::operator=(const Tensor& t) {
 				ind_t.set(perm(j)) = ind(j) ;
 			set(ind) = t(ind_t) ;
 		}
-	}	
+	}
+    return *this;
 }
 Tensor & Tensor::operator=(double xx) {
 	for (int i=0 ; i<n_comp ; i++)
