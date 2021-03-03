@@ -487,7 +487,10 @@ namespace Kadath {
 
         template<typename T, typename S>
         inline Memory_mapped_array<T, S> &
-        Memory_mapped_array<T, S>::operator=(Memory_mapped_array<T, S> &&source) noexcept { this->swap(source); }
+        Memory_mapped_array<T, S>::operator=(Memory_mapped_array<T, S> &&source) noexcept {
+            this->swap(source);
+            return *this;
+        }
 
         template<typename T, typename S>
         void Memory_mapped_array<T, S>::range_check(const size_type i) const {

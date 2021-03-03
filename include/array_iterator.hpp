@@ -71,7 +71,16 @@ namespace Kadath {
         * @return \c false if the result is outside the \c Array and \c true otherwise.
         */
         bool inc (int increm, int var=0) { position += increm * steps[var]; return check_value();}
+        /**
+         * Optimized unit increment with respect to the passed index number.
+         * @param var index number
+         * @return \c true while the last component index is not passed.
+         */
         bool inc1(int var)  { position += steps[var]; return check_value();}
+        /**
+         * Optimized unit increment.
+         * @return \c true while the last component index is not passed.
+         */
         bool inc() {position++; return check_value(); }
         template <class> friend class Array ;
     };
