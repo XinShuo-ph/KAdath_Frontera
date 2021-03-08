@@ -3,7 +3,7 @@ project(myproject)
 
 set(KADATH_SOURCES_DIRECTORY $ENV{HOME_KADATH} CACHE PATH "Kadath sources directory")
 set(KADATH_RELATIVE_BUILD_PATH build CACHE STRING "Relative path name for Kadath build directory")
-set(KADATH_BUILD_DIRECTORY ${KADATH_SOURCES_DIRECTORY}/${KADATH_BUILD_PATH_NAME} CACHE PATH "Kadath directory")
+set(KADATH_BUILD_DIRECTORY ${KADATH_SOURCES_DIRECTORY}/${KADATH_RELATIVE_BUILD_PATH} CACHE PATH "Kadath directory")
 
 message("Kadath sources directory : ${KADATH_SOURCES_DIRECTORY}")
 message("Kadath build directory   : ${KADATH_BUILD_DIRECTORY}")
