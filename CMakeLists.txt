@@ -5,10 +5,8 @@ endif()
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.1)
     cmake_policy(SET CMP0054 NEW)
 endif()
-project(Kadath VERSION 2.3.0.0)
+project(Kadath VERSION 2.0.3.0)
 
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_STANDARD 17)
 
 # Set a default build type if none was specified (debug by default for devs, release for others)
 set(default_build_type "Release")
@@ -38,6 +36,7 @@ endif()
 option(ENABLE_ASSERTS "Enables the assert preprocessor macro (useless in release build cases)" ON)
 option(REMOVE_ALL_CHECKS "Remove most of the runtime range or type/tag checks for increase performances." OFF)
 #User options :
+option(USE_CXX_STANDARD_14 "Compile the library with C++-14 instead of 17" OFF)
 option(PAR_VERSION "Parallel version" ON)
 option(ENABLE_TESTING "Enable unit/functional tests using ctest." ON)
 option(HAVE_LINUX "Build for linux" ON)
@@ -86,12 +85,21 @@ if(ENABLE_GPU_USE)
 else()
     message(" - ENABLE_GPU_USE .................: OFF - do not build for GPU usage")
 endif()
+if(USE_CXX_STANDARD_14)
+    set(CPP_STANDARD "14")
+else()
+    set(CPP_STANDARD "17")
+endif()
+message(" - CPP_STANDARD ...................: ${CPP_STANDARD}")
 message(" - HAVE_LINUX .....................: ${HAVE_LINUX}")
 message(" - ENABLE_INTERNAL_PROFILER (dev) .: ${ENABLE_INTERNAL_PROFILER}")
 message(" - ENABLE_BOOST_MEMORY_POOLS (dev) : ${ENABLE_BOOST_MEMORY_POOLS}")
 message(" - TENSOR_MOVE_SEMANTIC (dev) .....: ${TENSOR_MOVE_SEMANTIC}")
 message(" - MEMORY_MAP_TYPE (dev) ..........: ${MEMORY_MAP_TYPE} (code ${MEMORY_MAP_TYPE_INDEX})")
 message("  ")
+
+set(CMAKE_CXX_REQUIRED OFF)
+set(CMAKE_CXX_STANDARD ${CPP_STANDARD})
 
 find_package(Boost)
 if(Boost_FOUND)
@@ -146,7 +154,8 @@ set(KADATH_SOURCES_DIRECTORY ${PROJECT_SOURCE_DIR})
 set(KADATH_BUILD_DIRECTORY ${PROJECT_BINARY_DIR})
 include (${PROJECT_SOURCE_DIR}/Cmake/CMakeExec.cmake)
 
-configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h" )
+set(KADATH_CONFIGURATION_HEADER ${PROJECT_BINARY_DIR}/include/config.h)
+configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${KADATH_CONFIGURATION_HEADER}" )
 
 if(DEFINED CUDA_INCLUDE_DIRS)
     include_directories (${CUDA_INCLUDE_DIRS})
@@ -156,13 +165,21 @@ if(DEFINED MAGMA_INCLUDE_DIR)
 endif()
 
 add_library(kadath ${KADATH_SOURCES})
-set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib COMPILE_FLAGS "-fPIC" $
-        <$<CONFIG:Debug>:-O0>)
+set_target_properties(kadath PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
+        COMPILE_FLAGS "-fPIC" $ <$<CONFIG:Debug>:-O0>
+        PRIVATE_HEADER ${KADATH_CONFIGURATION_HEADER}
+        PUBLIC_HEADER "${KADATH_HEADERS}")
 
-target_include_directories(kadath PUBLIC ${PROJECT_SOURCE_DIR}/include/Kadath_point_h ${PROJECT_BINARY_DIR}/include/)
+target_include_directories(kadath PUBLIC ${PROJECT_SOURCE_DIR}/include/Kadath_point_h ${CMAKE_BINARY_DIR}/include/)
 
 
 message("  ")
+message("C++ compiler : ${CMAKE_CXX_COMPILER}")
+message("C++ standard version : ${CMAKE_CXX_STANDARD}")
+if(PAR_VERSION)
+    message("C++ MPI wrapper : ${MPI_CXX_COMPILER}")
+endif()
 message("External libraries summary (empty if not found) :")
 message(" - threads   :  ${CMAKE_THREAD_LIBS_INIT}")
 message(" - GSL       :  ${GSL_LIBRARIES}")
@@ -182,13 +199,14 @@ if(ENABLE_GPU_USE)
     message("            # MAGMA_LIBRARIES = ${MAGMA_LIBRARIES}")
 endif()
 message("  ")
+message("Build directory : ${CMAKE_BINARY_DIR}")
+message("  CMAKE_BINARY_DIR = ${CMAKE_BINARY_DIR}")
+message("  PROJECT_BINARY_DIR = ${PROJECT_BINARY_DIR}")
 
 #option to compile with google thread-sanitizer
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fPIE -pie -g")
 #option to compile with google address-sanitizer
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -O1 -fno-omit-frame-pointer -g")
-
-add_subdirectory(codes)
 
 #add the tests directory
 message("   ")
@@ -210,3 +228,18 @@ if(DOXYGEN_FOUND)
     doxygen_add_docs(doc ${INPUT_FILES_FOR_DOXYGEN})
 endif()
 message("  ")
+
+include(GNUInstallDirs)
+install(TARGETS kadath DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+if(PAR_VERSION)
+    install(TARGETS ${MISNER_SEQ} ${SCHWARZ_SEQ} ${KERR_SEQ}
+            DESTINATION ${CMAKE_INSTALL_BINDIR}/sequential)
+else()
+    install(TARGETS ${BOSON_TARGETS}
+            DESTINATION "${CMAKE_INSTALL_BINDIR}/parallel/boson")
+    install(TARGETS ${KERR_MPI_TARGETS}
+            DESTINATION "${CMAKE_INSTALL_BINDIR}/parallel/kerr")
+    install(TARGETS ${MISNER_MPI} ${SCHWARZ_MPI} DESTINATION "${CMAKE_INSTALL_BINDIR}/parallel")
+endif()

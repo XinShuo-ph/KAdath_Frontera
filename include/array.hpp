@@ -296,30 +296,30 @@ template <typename T> class Array : public Memory_mapped {
 	    /**
 	    * Direct accessor to the data, read only version
 	    */
-         [[nodiscard]] const_pointer get_data() const {return data.get_data() ;} ;
+         CXX_17_ATTRIBUTES(nodiscard) const_pointer get_data() const {return data.get_data() ;} ;
 	
 	   /**
 	   * Direct accessor to the data, read/write version
 	   */
-       [[nodiscard]] pointer set_data() {return data.set_data() ;} ;
+       CXX_17_ATTRIBUTES(nodiscard) pointer set_data() {return data.set_data() ;} ;
 
 	    /**
 	    * Returns the number of dimensions.
 	    */
-        [[nodiscard]] int get_ndim() const {return dimensions.get_ndim() ;} ;
+        CXX_17_ATTRIBUTES(nodiscard) int get_ndim() const {return dimensions.get_ndim() ;} ;
 	    /**
 	    * Returns the total number of elements.
 	    */
-        [[nodiscard]] int get_nbr() const {return nbr ;} ;
+        CXX_17_ATTRIBUTES(nodiscard) int get_nbr() const {return nbr ;} ;
 	    /**
 	    * Returns the size of a given dimension.
 	    * @param i [input] : dimension.
 	    */
-        [[nodiscard]] int get_size(int i) const {return dimensions(i) ;} ;
+        CXX_17_ATTRIBUTES(nodiscard) int get_size(int i) const {return dimensions(i) ;} ;
 	    /**
             * Returns the \c Dim_array of the \c Array.
 	    */
-	    [[nodiscard]] const Dim_array& get_dimensions() const {return dimensions ;} ;
+	    CXX_17_ATTRIBUTES(nodiscard) const Dim_array& get_dimensions() const {return dimensions ;} ;
 	    
 	    /*
 	    * Checks if a 1D array is increasing.

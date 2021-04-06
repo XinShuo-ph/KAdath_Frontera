@@ -51,6 +51,10 @@ The available main cmake build options are the following (the value in parenthes
                                         magnitude. Thus, one should not use a GPU-enabled Kadath unless he has access
                                         to a node owning both a GPU and a decent amount of CPUs.
 
+ -DUSE_CXX_STANDARD_14 = On/Off (Off)   Allows to downgrade the version of the C++ standard required for the compilation
+                                        of the library to 14 instead of the default C++-17. The compilation may
+                                        issues some warning if standard 14 is used but the resulting library is stable.
+
 When using the MKL, it is likely that the Intel compiler has to be used for the whole compilation process of the
 library. Cmake often doesn't set the MPI compiler consequently, thus one has to provide the path to the MPI wrapper
 manually with the -DMPI_CXX_COMPILER and -DMPI_C_COMPILER variables.

@@ -20,8 +20,7 @@ int main(int argc, char** argv) {
 	Scalar incNphi (space, fin) ;
 	Scalar phi (space, fin) ;
 	fclose(fin) ;
-	phi.affect_parameters() ;
-        phi.set_parameters()->set_m_quant() = kk ;
+    phi.set_parameters().set_m_quant() = kk ;
 	
 	int ndom = space.get_nbr_domains() ;
 	int nr = space.get_domain(0)->get_nbr_coefs()(0) ;
@@ -47,6 +46,9 @@ int main(int argc, char** argv) {
 			error_axe = current ;
 		MM.set(2) += rmax / nbr ;
 	}
+
+	cout << nr << " " << error_axe << endl ;
+	abort() ;
 
       	Scalar Np(incNphi.div_rsint()) ;
 

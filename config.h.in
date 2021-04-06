@@ -112,3 +112,7 @@
 #else
 #define ENABLE_PROFILING 0
 #endif
+
+// Macro used to adapt the syntax with respect to the c++ standard used (14 at least, but better with 17 or more).
+
+#cmakedefine USE_CXX_STANDARD_17_OR_HIGHER

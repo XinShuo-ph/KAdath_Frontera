@@ -83,8 +83,8 @@ namespace Kadath {
         using Base::Base;
     };
     //! Global variable emulating keywords for the output controling parameter.
-    [[maybe_unused]] constexpr param_output  EnableOutput {true};
-    [[maybe_unused]] constexpr param_output  DisableOutput {false};
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_output  EnableOutput {true};
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_output  DisableOutput {false};
 
     //! Parameter enabling the use of GPU.
     struct param_enable_gpu : Parameter_base<bool,param_enable_gpu> {
@@ -93,9 +93,9 @@ namespace Kadath {
         using Base::Base;
     };
     //! GPU-enabling keyword emulating variable.
-    [[maybe_unused]] constexpr param_enable_gpu EnableGPU{true};
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_enable_gpu EnableGPU{true};
     //! GPU-disabling keyword emulating variable.
-    [[maybe_unused]] constexpr param_enable_gpu DisableGPU{false};
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_enable_gpu DisableGPU{false};
 
     //! Tolerance/precision.
     struct param_tolerance : Parameter_base<double,param_tolerance> {
@@ -104,7 +104,7 @@ namespace Kadath {
         using Base::Base;
     };
     //! Tolerance keyword emulating variable.
-    [[maybe_unused]] constexpr param_tolerance Tolerance;
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_tolerance Tolerance;
 
 
     //! Number of iterations.
@@ -114,7 +114,7 @@ namespace Kadath {
         using Base::Base;
     };
     //! Keyword.
-    [[maybe_unused]] constexpr param_max_nb_iter MaxNbIter;
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_max_nb_iter MaxNbIter;
 
 
     struct param_max_elapsed_time : Parameter_base<double,param_max_elapsed_time> {
@@ -122,7 +122,7 @@ namespace Kadath {
         using Base::operator=;
         using Base::Base;
     };
-    [[maybe_unused]] constexpr param_max_elapsed_time MaxElapsedTime;
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_max_elapsed_time MaxElapsedTime;
 
 
     struct param_min_improvement : Parameter_base<double,param_min_improvement> {
@@ -130,21 +130,21 @@ namespace Kadath {
         using Base::operator=;
         using Base::Base;
     };
-    [[maybe_unused]] constexpr param_min_improvement MinImprovement;
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_min_improvement MinImprovement;
 
     struct param_verbosity : Parameter_base<int,param_verbosity> {
         static constexpr int default_value {1};
         using Base::operator=;
         using Base::Base;
     };
-    [[maybe_unused]] constexpr param_verbosity Verbosity;
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_verbosity Verbosity;
 
     struct param_output_stream : Parameter_base<std::ostream*,param_output_stream> {
         static constexpr std::ostream * default_value {&std::cout};
         using Base::operator=;
         using Base::Base;
     };
-    [[maybe_unused]] constexpr param_output_stream Output_stream;
+    CXX_17_ATTRIBUTES(maybe_unused) constexpr param_output_stream Output_stream;
 
     /**
      * Base class for the implementation of functors which solve the system of equations described
@@ -249,7 +249,7 @@ namespace Kadath {
          * @return true if a stopping criteria is triggered, and the code of the stopping criteria.
          */
         Solver & reset_current_values();
-        [[nodiscard]] std::pair<bool,Stopping_criteria> check_stopping_criteria() const;
+        CXX_17_ATTRIBUTES(nodiscard) std::pair<bool,Stopping_criteria> check_stopping_criteria() const;
 
         virtual Stopping_criteria operator()(System_of_eqs & system);
 
@@ -276,18 +276,18 @@ namespace Kadath {
         //! Displays informations about the solver (mainly parameters).
         virtual void display(std::ostream & os) const;
 
-        [[nodiscard,maybe_unused]] double get_current_error() const {return current_error;}
-        [[nodiscard,maybe_unused]] double get_tolerance() const {return tolerance;}
-        [[nodiscard,maybe_unused]] double get_min_improvement() const {return min_improvement;}
-        [[nodiscard,maybe_unused]] double get_current_improvement() const {return current_improvement;}
-        [[nodiscard,maybe_unused]] double get_max_elapsed_time() const {return max_elapsed_time;}
-        [[nodiscard,maybe_unused]] double get_current_elapsed_time() const {return current_elapsed_time;}
-        [[nodiscard,maybe_unused]] int get_max_nb_iter() const {return max_nb_iter;}
-        [[nodiscard,maybe_unused]] int get_current_nb_iter() const {return current_nb_iter;}
-        [[nodiscard,maybe_unused]] bool get_output() const {return output;}
-        [[nodiscard,maybe_unused]] bool get_enable_gpu() const {return enable_gpu;}
-        [[nodiscard,maybe_unused]] int get_verbosity() const {return verbosity;}
-        [[nodiscard,maybe_unused]] std::ostream & get_output_stream() const {return *output_stream;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) double get_current_error() const {return current_error;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) double get_tolerance() const {return tolerance;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) double get_min_improvement() const {return min_improvement;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) double get_current_improvement() const {return current_improvement;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) double get_max_elapsed_time() const {return max_elapsed_time;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) double get_current_elapsed_time() const {return current_elapsed_time;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) int get_max_nb_iter() const {return max_nb_iter;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) int get_current_nb_iter() const {return current_nb_iter;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) bool get_output() const {return output;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) bool get_enable_gpu() const {return enable_gpu;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) int get_verbosity() const {return verbosity;}
+        CXX_17_ATTRIBUTES(nodiscard,maybe_unused) std::ostream & get_output_stream() const {return *output_stream;}
 
         Solver & set_tolerance(double new_value) { tolerance = new_value; return *this;}
         Solver & set_min_improvement(double new_value) { min_improvement = new_value; return *this;}

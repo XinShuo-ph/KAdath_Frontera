@@ -58,12 +58,12 @@ public:
 
 public:
     static void set_block_size(std::size_t new_block_size) {System_of_eqs::default_block_size = new_block_size;}
-    [[nodiscard]] Solver const & get_newton_solver() const {return newton_solver;}
+    CXX_17_ATTRIBUTES(nodiscard) Solver const & get_newton_solver() const {return newton_solver;}
     Solver & get_newton_solver() {return newton_solver;}
-    [[nodiscard]] int get_verbosity() const {return verbosity;}
+    CXX_17_ATTRIBUTES(nodiscard) int get_verbosity() const {return verbosity;}
 
     Kerr_base & set_verbosity(int new_value)  {newton_solver.set_verbosity(new_value); verbosity = new_value; return *this;}
-    [[nodiscard]] Dim_array const & get_number_of_points() const {return number_of_points;}
+    CXX_17_ATTRIBUTES(nodiscard) Dim_array const & get_number_of_points() const {return number_of_points;}
     Dim_array & get_number_of_points() {return number_of_points;}
     void set_number_of_points(int new_value) {
         number_of_points.set(0) = new_value;

@@ -28,6 +28,12 @@
 #include <typeinfo>
 #include <cmath>
 
+#ifdef USE_CXX_STANDARD_17_OR_HIGHER
+#define CXX_17_ATTRIBUTES(...) [[__VA_ARGS__]]
+#else
+#define CXX_17_ATTRIBUTES(...)
+#endif
+
 #ifdef ENABLE_ASSERTS
 #include <cassert>
 #else

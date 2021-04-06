@@ -33,7 +33,7 @@
 #include <type_traits>
 #include <functional>
 #include <cmath>
-#include "config.h"
+#include "headcpp.hpp"
 
 
 
@@ -56,42 +56,42 @@ namespace Kadath {
     template<typename T> struct Time_unit_traits<std::chrono::duration<T,std::nano>>
     {
         static constexpr char const * const value = "ns";
-        [[maybe_unused]] static constexpr char const * const complete_value = "nanosecond(s)";
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * const complete_value = "nanosecond(s)";
     };
     template<typename T> struct Time_unit_traits<std::chrono::duration<T,std::micro>>
     {
         static constexpr char const * const value = "µs";
-        [[maybe_unused]] static constexpr char const * const complete_value = "microsecond(s)";
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * const complete_value = "microsecond(s)";
     };
     template<typename T> struct Time_unit_traits<std::chrono::duration<T,std::milli>>
     {
         static constexpr char const * const value = "ms";
-        [[maybe_unused]] static constexpr char const * const complete_value = "millisecond(s)";
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * const complete_value = "millisecond(s)";
     };
     template<typename T> struct Time_unit_traits<std::chrono::duration<T>>
     {
         static constexpr char const * const value = "s";
-        [[maybe_unused]] static constexpr char const * const complete_value = "second(s)";
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * const complete_value = "second(s)";
     };
     template<typename T> struct Time_unit_traits<std::chrono::duration<T,std::ratio<60>>>
     {
         static constexpr char const * const value = "min";
-        [[maybe_unused]] static constexpr char const * const complete_value = "minute(s)";
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * const complete_value = "minute(s)";
     };
     template<typename T> struct Time_unit_traits<std::chrono::duration<T,std::ratio<3600>>>
     {
         static constexpr char const * const value = "h";
-        [[maybe_unused]] static constexpr char const * const complete_value = "hour(s)";
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * const complete_value = "hour(s)";
     };
     template<typename T> struct Time_unit_traits<std::chrono::duration<T,std::ratio<3600 * 24>>>
     {
         static constexpr char const * const value = "d";
-        [[maybe_unused]] static constexpr char const * const complete_value = "day(s)";
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * const complete_value = "day(s)";
     };
     template<typename T> struct Time_unit_traits<std::chrono::duration<T,std::ratio<3600 * 24 * 365>>>
     {
         static constexpr char const * const value = "y";
-        [[maybe_unused]] static constexpr char const * const complete_value = "year(s)";
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * const complete_value = "year(s)";
     };
 
     //! Convert the cmake option value into a static boolean value.
@@ -130,7 +130,7 @@ namespace Kadath {
         //! Clear all computed statistics.
         static void reset_statistics() {statistic_map.clear();}
         static constexpr char const * get_unit() {return Time_unit_traits<OutputDuration>::value;}
-        [[maybe_unused]] static constexpr char const * get_complete_unit() {return Time_unit_traits<OutputDuration>::complete_value;}
+        CXX_17_ATTRIBUTES(maybe_unused) static constexpr char const * get_complete_unit() {return Time_unit_traits<OutputDuration>::complete_value;}
 
         /**
          * Sends the data into the passed output stream.
@@ -329,13 +329,13 @@ namespace Kadath {
             return _stop_chrono(hash(name + "." + user_key));
         }
 
-        [[maybe_unused]] std::hash<std::string> const & get_hash() const {return hash;}
+        CXX_17_ATTRIBUTES(maybe_unused) std::hash<std::string> const & get_hash() const {return hash;}
         //! Accessor for the \c name data member.
         const std::string & get_name() const {return name;}
         //! Mutator for the \c name data member.
         Profiled_object & set_name(const std::string &_name) { name = _name; return *this;}
         //! Read-only access to the profiling results map.
-        [[maybe_unused]] std::map<Hash_key,Duration_deque> const & get_profiling_map() const {return profiling_map;}
+        CXX_17_ATTRIBUTES(maybe_unused) std::map<Hash_key,Duration_deque> const & get_profiling_map() const {return profiling_map;}
         //! Read-only access to the user keys dictionnary.
         std::map<Hash_key,std::string> const & get_user_keys() const {return user_keys;}
 

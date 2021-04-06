@@ -2,7 +2,7 @@
 set (KERR_MPI kerr_mpi)
 set (SOURCES_KERR_MPI ${KERR_MPI}.cpp)
 add_executable(${KERR_MPI} ${SOURCES_KERR_MPI} ${KADATH_HEADERS} ${CODES_HEADER_FILES})
-target_include_directories(${KERR_MPI} PUBLIC ${PROJECT_SOURCE_DIR}/codes/include)
+target_include_directories(${KERR_MPI} PUBLIC ${CMAKE_SOURCE_DIR}/tests/codes/include)
 target_link_libraries(${KERR_MPI} kadath ${KADATH_DEPENDENCIES})
 
 #Executable reader (for kerr)

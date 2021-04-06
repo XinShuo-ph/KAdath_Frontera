@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
+#include "headcpp.hpp"
 
 #ifndef __KADATH_CODES_UTILITY_HPP_
 #define __KADATH_CODES_UTILITY_HPP_
@@ -125,7 +126,7 @@ std::ostream & operator<<(std::ostream & os,Option_base const & option) {option.
 template<typename T> struct Option : Option_base {
     T value;
     T default_value;
-    [[maybe_unused]] Option(std::string const & key,std::string const & description,T _default_value,std::string const & input)
+    CXX_17_ATTRIBUTES(maybe_unused) Option(std::string const & key,std::string const & description,T _default_value,std::string const & input)
         : Option_base{key,option_type_name<T>::get(),description}, value{}, default_value{_default_value}
     {
         this->set(input);
@@ -146,7 +147,7 @@ template<typename T> struct Option : Option_base {
 template<> struct Option<bool> : Option_base {
     bool value{};
     bool default_value{};
-    [[maybe_unused]] Option(std::string const & key,std::string const & description,bool _default_value,
+    CXX_17_ATTRIBUTES(maybe_unused) Option(std::string const & key,std::string const & description,bool _default_value,
             std::string const & input = "") :
         Option_base{key,"bool",description}, value{}, default_value{_default_value}
     {}
@@ -180,11 +181,11 @@ public:
             this->command_line.emplace_back(argv[i]);
     }
 
-    [[nodiscard]] std::string const & get_executable() const {return executable;}
+    CXX_17_ATTRIBUTES(nodiscard) std::string const & get_executable() const {return executable;}
     Arguments_parser & set_executable(std::string const & new_executable) {executable = new_executable; return *this;}
 
     template<typename T>
-    [[maybe_unused]] void reference_option(std::string const &key,std::string const &description,T default_value,
+    CXX_17_ATTRIBUTES(maybe_unused) void reference_option(std::string const &key,std::string const &description,T default_value,
                                                 std::string const & input= "") {
         std::unique_ptr<Option_base> opt{new Option<T>{key,description,default_value,input}};
         auto pos = option_list.find(key);
