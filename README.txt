@@ -3,22 +3,31 @@ General purpose instructions :
 Compiling the library :
 
 Use cmake to generate a build system (better with version 3.1 or higher, but it should work with the later 2.x versions) :
-  - Create a build directory where you want the library to be compiled, for exemple at the Kadath directory :
+
+  1) Create a build directory where you want the library to be compiled, for exemple at the Kadath directory :
             cd Kadath
             mkdir build
             cd build
-  - Run cmake with the Kadath directory as argument and desired compilation options (for an effective release build,
-    don't forget the -DCMAKE_BUILD_TYPE=Release option, or Debug for development):
-            cmake <options> ..
-    In the cases where cmake could not find some required external libraries, one may pass them manually through the
-    Kadath/Cmake/CMakeLocal.cmake file (the fftw and scalapack library must usually be provided in that way). Some
-    templates are provided for that file in this directory.
-  - Run make to compile the library and some samples :
-            make
-    Use the -j option with a generous (but reasonable) number of process to speed-up the compilation.
-    You may also restrain the compilation process to single targets, for exemple "make kadath" will only generate the
-    library binary file, "make <code>" with code=kerr, schwarz, bosons, etc. may be used to create the executable of
-    the corresponding sample code. "make doc" can be used to generate the Doxygen documentation.
+
+  2) Run cmake with the Kadath directory as argument and desired compilation options (for an effective release build,
+     don't forget the -DCMAKE_BUILD_TYPE=Release option, or Debug for development):
+             cmake <options> ..
+     In the cases where cmake could not find some required external libraries, one may pass them manually through the
+     Kadath/Cmake/CMakeLocal.cmake file (the fftw and scalapack library must usually be provided in that way). Some
+     templates are provided for that file in this directory.
+
+  3) Run make to compile the library and some samples :
+             make
+     Use the -j option with a generous (but reasonable) number of process to speed-up the compilation.
+     You may also restrain the compilation process to single targets, for exemple "make kadath" will only generate the
+     library binary file, "make <code>" with code=kerr, schwarz, bosons, etc. may be used to create the executable of
+     the corresponding sample code. "make doc" can be used to generate the Doxygen documentation.
+
+  4) (Optional) For a proper installation "make install" to copy the library archive and header files in the
+     installation directory. The default installation directory is /usr/lib for the libray archive, and
+     /usr/include/kadath for the headers. The cmake option CMAKE_INSTALL_PREFIX allows to replace the default /usr
+     directory with a custom one at step 2). Other options allows more control toward installation directories, see
+     the cmake documentation.
 
 For samples regarding how to compile and link executables using the library, one may use the sources and CMakeLists.txt
 of the codes directory as template, or the ones located in the tutorial folder for more independent builds.
