@@ -35,31 +35,41 @@ Space_spheric_symphi::Space_spheric_symphi(int ttype, const Point& center, const
     domains[0] = new Domain_nucleus_symphi(0, ttype, bound, center, res) ;
 }
 
-Space_spheric_symphi::Space_spheric_symphi(int ttype, const Point& center, const Dim_array& res, const Array<double>& bounds) {
+Space_spheric_symphi::Space_spheric_symphi(int ttype, const Point& center, const Dim_array& res, const Array<double>& bounds, bool withzec) {
 
 
     ndim = 3 ;
     
     nbr_domains = bounds.get_size(0) ;
     type_base = ttype ;
-    domains = new Domain* [nbr_domains] ;
+    domains = (withzec) ? new Domain* [nbr_domains+1]  : new Domain* [nbr_domains] ;
     // Nucleus
     domains[0] = new Domain_nucleus_symphi(0, ttype, bounds(0), center, res) ;
     for (int i=1 ; i<=nbr_domains-1 ; i++)
        domains[i] = new Domain_shell_symphi(i, ttype, bounds(i-1), bounds(i), center, res) ;
+    if (withzec) {
+    	nbr_domains ++ ;
+    	domains[nbr_domains-1] =  new Domain_compact_symphi(nbr_domains-1, ttype, bounds(nbr_domains-2), center, res) ;
+    }
 }
 
 
 
-Space_spheric_symphi::Space_spheric_symphi(FILE* fd) {
+Space_spheric_symphi::Space_spheric_symphi(FILE* fd, bool withzec) {
 	fread_be (&nbr_domains, sizeof(int), 1, fd) ;
 	fread_be (&ndim, sizeof(int), 1, fd) ;
 	fread_be (&type_base, sizeof(int), 1, fd) ;
 	domains = new Domain* [nbr_domains] ;
 	//nucleus :
 	domains[0] = new Domain_nucleus_symphi(0, fd) ;
-	for (int i=1 ; i<=nbr_domains-1 ; i++)
-        	domains[i] = new Domain_shell_symphi(i, fd) ;
+	if (withzec) {
+		for (int i=1 ; i<nbr_domains-1 ; i++)
+        		domains[i] = new Domain_shell_symphi(i, fd) ;
+        	domains[nbr_domains-1] = new Domain_compact_symphi(nbr_domains-1, fd) ;
+       }
+       else
+       	for (int i=1 ; i<=nbr_domains-1 ; i++)
+        		domains[i] = new Domain_shell_symphi(i, fd) ;
 }
 
 Space_spheric_symphi::~Space_spheric_symphi() {

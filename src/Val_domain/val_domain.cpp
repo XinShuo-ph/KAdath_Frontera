@@ -162,6 +162,12 @@ void Val_domain::annule_hard() {
 	*c = 0. ;
 }
 
+void Val_domain::annule_hard_coef() {
+	allocate_coef() ;
+	del_deriv() ;
+	*cf = 0. ;
+}
+
 double& Val_domain::set(const Index& index)  {
 	set_in_conf() ;
 	del_deriv() ;
