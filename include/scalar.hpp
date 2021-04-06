@@ -125,6 +125,11 @@ namespace Kadath {
          */
         const Space& get_space () const {return espace ;} ;
 
+        /**
+        * Gives the class of the tensor.
+        */
+        virtual string get_class_name () const {return "Scalar" ;} ;
+
     public:
         Val_domain& set_domain (int) ; ///< Read/write of a particular \c Val_domain.
         const Val_domain& operator() (int) const; ///< Read only of a particular \c Val_domain.
@@ -133,7 +138,7 @@ namespace Kadath {
         Scalar & operator= (const Tensor&) override ; ///< Assignement to a \c Tensor (must be scalar)
         Scalar & operator= (double) ; ///< Assignment to a double (sets all the values in the configuration space to that value.
         virtual void annule_hard() ; ///< Sets the value to zero evetywhere (the logical state of the \c Val_domain is NOT zero).
-
+        virtual void annule_hard_coef() ;
         Scalar der_var (int) const ; ///< Returns the derivative with respect to one particular numerical coordinate.
         Scalar der_abs (int) const ;///< Returns the derivative with respect to one particular absolute Cartesian coordinate.
         Scalar der_spher (int) const ;///< Returns the derivative with respect to one particular absolute Cartesian coordinate.
@@ -146,6 +151,7 @@ namespace Kadath {
         Scalar mult_cos_phi () const ;///< Returns the multiplication by \f$\cos \varphi\f$.
         Scalar mult_sin_phi () const ;///< Returns the multiplication by \f$\sin \varphi\f$.
         double integrale() const ;///< Returns the integral in the whole space.
+        Scalar mult_r () const ; ///< Returns the multiplication by r
 
         ///< Copy using unique_ptr
         Vector grad() const ; ///< Computes the gradient (in Cartesian coordinates).
@@ -367,6 +373,11 @@ namespace Kadath {
     inline void Scalar::annule_hard() {
         for (int i=0 ; i<ndom ; i++)
             set_domain(i).annule_hard() ;
+    }
+
+    inline void Scalar::annule_hard_coef() {
+        for (int i=0 ; i<ndom ; i++)
+            set_domain(i).annule_hard_coef() ;
     }
 
     inline void Scalar::set_in_conf() {
