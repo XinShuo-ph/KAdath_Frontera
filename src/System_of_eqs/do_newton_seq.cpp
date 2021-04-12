@@ -49,6 +49,7 @@ namespace Kadath {
 //            }
             Array<double> second(sec_member());
             error = max(fabs(second));
+            cout << "Entering do_newton with error " << error << endl ;
             if (error < precision)
             {
 //                if(verbosity)

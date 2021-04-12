@@ -48,6 +48,8 @@ namespace Kadath {
         //vars_to_terms();
         Array<double> second (sec_member());
         error = max(fabs(second));
+        if (rank==0) 
+        	cout << "Entering do_newton with error " << error << endl ;
         int second_member_size = second.get_size(0);
         int bsize{static_cast<int>(default_block_size)};
 	/*int bsize{};
