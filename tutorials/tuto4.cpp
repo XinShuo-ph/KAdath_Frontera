@@ -39,7 +39,7 @@ int main() {
 
 	// Puts 1-r^2 in domain 0
 	func.set_domain(0) = 1 - pow(space.get_domain(0)->get_radius(),2) ;
-	// Put 1/r in the other ones
+	// Puts 1/r in the other ones
 	for (int d=1 ; d<ndom ; d++)
      		func.set_domain(d)  = 1/space.get_domain(d)->get_radius() ;
 
@@ -69,13 +69,13 @@ int main() {
 	//Base is known and is the standard one ;
 	cout << "Base of 2*f + f^2 in the nucleus" << endl ;
 	cout << f1(0).get_base() << endl ;
-	// It is the standard base
+	// It is the standard basis
 
 	// Taking the derivative
 	Scalar der (func.der_r()) ;
 	cout << "Base of of f' in the nucleus" << endl ;
 	cout << der(0).get_base() << endl ;
-	// It is not the standard base ; change in the r parity
+	// It is not the standard basis ; change in the r parity
 
 	// Operator cosine
 	Scalar test (cos(func)) ;
@@ -101,7 +101,7 @@ int main() {
 	cout << "Analytical value  = " << M(3) / rr / rr << endl ;
 	cout << "Wrong numerical value = " << odd.val_point(M) << endl ;
 
-	// Put the right spectral basis :
+	// Puts the right spectral basis :
 	odd.std_anti_base() ;
 	odd.set_in_conf() ; // One needs to kill the previously computed (wrong) coefficients.
 	cout << "True numerical value = " << odd.val_point(M) << endl ;

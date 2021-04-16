@@ -48,7 +48,7 @@ int main() {
 	syst.add_var ("F", field) ;
 	// The string is the name by which the system will then describe the field.
 
-	// define a constant, begin the radius of the first domain
+	// Define a constant, begin the radius of the first domain
 	Index pos (space.get_domain(1)->get_nbr_points()) ; // Index on the domain 1
 	double rad = space.get_domain(1)->get_radius()(pos) ;
 	cout << "The inner radius of the first shell is " << rad << endl ;
