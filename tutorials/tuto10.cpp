@@ -53,7 +53,7 @@ int main() {
 	//cout << gmet << endl ;
 
 	// Construction of a constant metric
-	// The numerical value is contained in a <code>Metric_tensor</code> that can be covariant or contravariant.
+	// The numerical value is contained in a Metric_tensor that can be covariant or contravariant.
 	Metric_const met (gmet) ;
 
 	// Passing it to a system 
@@ -80,7 +80,7 @@ int main() {
 	gouter.std_base() ;
 	
 	// Construction of a unknown metric
-	// The initial value numerical value is contained in a <code>Metric_tensor</code>.
+	// The initial value numerical value is contained in a Metric_tensor.
 	Metric_general metgen (gmet) ;
 
 	// Passing it to a new system 

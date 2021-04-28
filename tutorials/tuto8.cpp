@@ -84,7 +84,7 @@ int main() {
 	// Index manipulation produces an arror as no metric has been defined
 	//syst.add_def ("Ucov_i = U_i") ;  
 
-	// The various definitions can be accessed by give_val_def()
+	// The various definitions can be accessed by give_val_def
 	// For instance for printing
 	// cout << syst.give_val_def("Contract") << endl ;
 

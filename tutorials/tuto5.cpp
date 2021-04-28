@@ -46,7 +46,7 @@ int main() {
 
 	// The field is an unknown
 	syst.add_var ("F", field) ;
-	// The string is the name by which the system will then describe the field.
+	// The string is the name by which the field will be refereed to by the system.
 
 	// Define a constant, begin the radius of the first domain
 	Index pos (space.get_domain(1)->get_nbr_points()) ; // Index on the domain 1
@@ -55,8 +55,8 @@ int main() {
 
 	// This number is a constant for the system
 	syst.add_cst ("a", rad) ;
-	// The string is the name by which the system will then describe the constant
-
+	// The string is the name by which the constant will be refereed to by the system.
+	
 	// The equation is the same in each domain
 	for (int d=1 ; d<ndom ; d++) // Loop on the domains
         	syst.add_eq_inside (d, "Lap(F)=0") ; 
