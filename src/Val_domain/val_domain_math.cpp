@@ -66,7 +66,6 @@ Val_domain sin(const Val_domain& so) {
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
 		res.c = new Array<double> (sin(*so.c)) ;
-	//	res.std_base();
 		return res ;
 	}
 }
@@ -79,7 +78,7 @@ Val_domain cos(const Val_domain& so ) {
 		res.is_zero = false ;
 		res.allocate_conf() ;
 		*res.c = 1. ;
-	//	res.std_base();
+		res.std_base();
 		return res ;
 	}
 	else {
@@ -87,7 +86,6 @@ Val_domain cos(const Val_domain& so ) {
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
 		res.c = new Array<double> (cos(*so.c)) ;
-	//	res.std_base();
 		return res ;
 	}
 }
@@ -99,7 +97,7 @@ Val_domain cosh(const Val_domain& so ) {
 		res.is_zero = false ;
 		res.allocate_conf() ;
 		*res.c = 1. ;
-	//	res.std_base();
+		res.std_base();
 		return res ;
 	}
 	else {
@@ -107,7 +105,7 @@ Val_domain cosh(const Val_domain& so ) {
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
 		res.c = new Array<double> (cosh(*so.c)) ;
-	//	res.std_base();
+		res.std_base();
 		return res ;
 	}
 }
@@ -119,7 +117,7 @@ Val_domain sinh(const Val_domain& so ) {
 		res.is_zero = false ;
 		res.allocate_conf() ;
 		*res.c = 1. ;
-		//res.std_base();
+		res.std_base();
 		return res ;
 	}
 	else {
@@ -127,7 +125,7 @@ Val_domain sinh(const Val_domain& so ) {
 		Val_domain res (so.zone) ;
 		res.set_in_conf() ;
 		res.c = new Array<double> (sinh(*so.c)) ;
-	//	res.std_base();
+		res.std_base();
 		return res ;
 	}
 }

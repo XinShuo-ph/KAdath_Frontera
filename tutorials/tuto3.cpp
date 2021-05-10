@@ -39,7 +39,7 @@ int main() {
 
 	// Puts 1-r^2 in domain 0
 	func.set_domain(0) = 1 - pow(space.get_domain(0)->get_radius(),2) ;
-	// Put 1/r in the other ones
+	// Puts 1/r in the other ones
 	for (int d=1 ; d<ndom ; d++)
      		func.set_domain(d)  = 1/space.get_domain(d)->get_radius() ;
 
@@ -52,7 +52,7 @@ int main() {
 	for (int d=1 ; d<ndom ; d++)
     	   func.set_domain(d)  = space.get_domain(d)->get_radius()* exp(- space.get_domain(d)->get_radius()*space.get_domain(d)->get_radius()/10.) ;
 
-	// Nans appears at infinty
+	// Nans appear at infinty
 	cout << "Nans at infinity" << endl ;
 	cout << func(ndom-1) << endl ;
 
