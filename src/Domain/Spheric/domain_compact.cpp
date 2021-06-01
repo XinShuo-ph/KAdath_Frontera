@@ -87,39 +87,39 @@ return res ;
 }
 
 double Domain_compact::integ (const Val_domain& so, int bound) const {
-	double res = 0 ;
-
-	if (bound!=OUTER_BC) {
-	  cerr << "Domain_compact::integ only defined for r=infty yet..." << endl ;
-	  abort() ;
-	}
-
-	int baset = (*so.base.bases_1d[1]) (0) ;
-	if (baset != COS_EVEN) {
-		// Odd function
-		return res ;
-	}
-	else {
+	  
+	Val_domain rrso (mult_r(mult_r(mult_sin_theta(so)))) ;
 	
-		Val_domain auxi (so.div_xm1()) ;
-		auxi = auxi.div_xm1() ;
-		auxi /= alpha * alpha ;
-		auxi.coef() ;
+	double res = 0 ;
+	if (!so.check_if_zero())
+	{
 
-		//Loop on theta :
-		Index pos (get_nbr_coefs()) ;
-		pos.set(2) = 0 ;
-		for (int j=0 ; j<nbr_coefs(1) ; j++) {
-			pos.set(1) = j ;
-			double fact_tet = 2./double(1-4*j*j) ;
-			// Loop on r :
-			for (int i=0 ; i<nbr_coefs(0) ; i++) {
-				pos.set(0) = i ;
-				res += fact_tet*(*auxi.cf)(pos) ;
-			}
-		}
-		return res*2*M_PI ;
+	  int baset = (*rrso.get_base().bases_1d[1]) (0) ;
+	  Index pcf (nbr_coefs) ;
+	switch (baset) {
+	  case COS_ODD :
+	break ;
+	case SIN_EVEN :
+	  break ;
+	case COS_EVEN : {
+	res += M_PI*val_boundary(bound, rrso, pcf) ;
+	break ;
+    }
+    case SIN_ODD : {
+	  for (int j=0 ; j<nbr_coefs(1) ; j++) {
+	    pcf.set(1) = j ;
+	    res += 2./(2*double(j)+1) * val_boundary(bound, rrso, pcf) ;
+	  }
+      break ;
+    }
+    
+    default : 
+      cerr << "Case not yet implemented in Domain_shell::integ" << endl ;
+      abort() ;
+  }
+    res *= 2*M_PI ;
 	}
+    return res ;
 }
 
 // Computes the Cartesian coordinates
@@ -667,11 +667,11 @@ void Domain_compact::set_val_inf (Val_domain& so, double x) const {
 	inf.set(0) = nbr_points(0)-1 ;
 	do 
 		so.set(inf) = x ;
-	while (inf.inc1(1)) ;
+	while (inf.inc(1,1)) ;
 }
 
 // Computes the derivatives with respect to XYZ as function of the numerical ones.
-void Domain_compact::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
+void Domain_compact::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
 
 	// d/dx :
 	Val_domain dr (-der_var[0]->mult_xm1()) ;
