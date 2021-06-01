@@ -87,7 +87,7 @@ return res ;
 }
 
 double Domain_compact::integ (const Val_domain& so, int bound) const {
-	  
+	
 	Val_domain rrso (mult_r(mult_r(mult_sin_theta(so)))) ;
 	
 	double res = 0 ;
@@ -667,11 +667,11 @@ void Domain_compact::set_val_inf (Val_domain& so, double x) const {
 	inf.set(0) = nbr_points(0)-1 ;
 	do 
 		so.set(inf) = x ;
-	while (inf.inc(1,1)) ;
+	while (inf.inc1(1)) ;
 }
 
 // Computes the derivatives with respect to XYZ as function of the numerical ones.
-void Domain_compact::do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const {
+void Domain_compact::do_der_abs_from_der_var(const Val_domain *const *const der_var, Val_domain **const der_abs) const {
 
 	// d/dx :
 	Val_domain dr (-der_var[0]->mult_xm1()) ;
