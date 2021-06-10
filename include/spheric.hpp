@@ -107,7 +107,8 @@ class Domain_nucleus : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */
-     virtual void set_cheb_base(Base_spectral& so) const ;       
+     virtual void set_cheb_base(Base_spectral& so) const ;        
+     virtual void set_cheb_base_with_m(Base_spectral& so, int m) const ;       
    /**
     * Sets the base to the standard one for Legendre polynomials.
     * The bases are :
@@ -598,6 +599,7 @@ class Domain_shell : public Domain {
     * @param so [output] : the returned base.
     */
      virtual void set_cheb_base(Base_spectral&) const ;  
+      virtual void set_cheb_base_with_m(Base_spectral& so, int m) const ;       
    /**
     * Sets the base to the standard one for Legendre polynomials.
     * The bases are :
@@ -784,7 +786,9 @@ class Domain_shell : public Domain {
 	* @param mlim: limit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @returns the number of true unknowns.
 	*/
+     int nbr_unknowns_val_domain_mquant (const Val_domain& so, int mquant) const ;
      int nbr_unknowns_val_domain (const Val_domain& so, int mlim) const ;
+     
      virtual Array<int> nbr_conditions (const Tensor&, int, int, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Computes number of discretized equations associated with a given tensorial equation in the bulk.
@@ -793,8 +797,10 @@ class Domain_shell : public Domain {
 	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @param order : order of the equation (i.e. 2 for a Laplacian for instance)
 	* @returns the number of true unknowns.
-	*/
+	*/ 
+     int nbr_conditions_val_domain_mquant (const Val_domain& so, int mquant, int order) const ;
      int nbr_conditions_val_domain (const Val_domain& so, int mlim, int order) const ;
+     
      virtual Array<int> nbr_conditions_boundary (const Tensor&, int, int, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Computes number of discretized equations associated with a given equation on a boundary.
@@ -804,7 +810,9 @@ class Domain_shell : public Domain {
 	* @param mlim : mimit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @returns the number of true conditions.
 	*/
+     int nbr_conditions_val_domain_boundary_mquant (const Val_domain& so, int mquant) const ;
      int nbr_conditions_val_domain_boundary (const Val_domain& so, int mlim) const ;
+     
      virtual void export_tau (const Tensor&, int, int, Array<double>&, int&, const Array<int>&,  int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Exports a residual equation in the bulk.
@@ -816,7 +824,9 @@ class Domain_shell : public Domain {
 	* @param pos_res : current position in res.
 	* @param ncond :  the corresponding number of equations. It is used when the equation is null.
 	*/
+     void export_tau_val_domain_mquant (const Val_domain& eq, int mquant, int order, Array<double>& res, int& pos_res, int ncond) const ;
      void export_tau_val_domain (const Val_domain& eq, int mlim, int order, Array<double>& res, int& pos_res, int ncond) const ;
+     
      virtual void export_tau_boundary (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Exports all the residual equations corresponding to a tensorial one on a given boundary
@@ -828,7 +838,9 @@ class Domain_shell : public Domain {
 	* @param pos_res : current position in res.
 	* @param ncond : the corresponding number of equations. It is used when the residual is null.
 	*/
+     void export_tau_val_domain_boundary_mquant (const Val_domain& eq, int mquant, int bound, Array<double>& res, int& pres_res, int ncond) const ;
      void export_tau_val_domain_boundary (const Val_domain& eq, int mlim, int bound, Array<double>& res, int& pres_res, int ncond) const ;
+     
      virtual void affecte_tau (Tensor&, int, const Array<double>&, int&) const ;
 	/**
 	* Affects some coefficients to a \c Val_domain.
@@ -838,7 +850,9 @@ class Domain_shell : public Domain {
 	* @param cf : \c Array of the coefficients used.
 	* @param pos_cf : current position in the array of coefficients.
 	*/
+     void affecte_tau_val_domain_mquant (Val_domain& so, int mquant, const Array<double>& cf, int& pos_cf) const ;
      void affecte_tau_val_domain (Val_domain& so, int mlim, const Array<double>& cf, int& pos_cf) const ;
+     
      virtual void affecte_tau_one_coef (Tensor&, int, int, int&) const ;
 	/**
 	* Sets at most one coefficient of a \c Val_domain to 1.
@@ -848,7 +862,9 @@ class Domain_shell : public Domain {
 	* @param cc : location, in the overall system, of the coefficient to be set to 1.
 	* @param pos_cf : current position.
 	*/
+     void affecte_tau_one_coef_val_domain_mquant (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, int cc, int& pos_cf) const ;
+     
      virtual void export_tau_boundary_exception (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, const Param&, int, 
 							    const Tensor&, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
@@ -863,7 +879,11 @@ class Domain_shell : public Domain {
 	* @param type_exception : states which type of exception (value or derivative ; current domain or the other one). Highly specialized...
 	* @param exception : the equation used for the alternative condition.
 	* @returns the number of true conditions.
-	*/
+	*/    
+	
+     void export_tau_val_domain_boundary_exception_mquant (const Val_domain& so, int mquant, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, 
+		int type_exception, const Val_domain& exception) const ;
+  
      void export_tau_val_domain_boundary_exception (const Val_domain& so, int mlim, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, 
 		int type_exception, const Val_domain& exception) const ;
      
@@ -959,6 +979,7 @@ class Domain_compact : public Domain {
     * @param so [output] : the returned base.
     */
      virtual void set_cheb_base(Base_spectral&) const ;     
+      virtual void set_cheb_base_with_m(Base_spectral& so, int m) const ;       
    /**
     * Sets the base to the standard one for Legendre polynomials.
     * The bases are :
@@ -1102,8 +1123,10 @@ class Domain_compact : public Domain {
 	* @param so : the field.
 	* @param mlim: limit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @returns the number of true unknowns.
-	*/
+	*/ 
+     int nbr_unknowns_val_domain_mquant (const Val_domain& so , int mquant) const ;
      int nbr_unknowns_val_domain (const Val_domain& so , int mlim) const ;
+     
      virtual Array<int> nbr_conditions (const Tensor&, int, int, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Computes number of discretized equations associated with a given tensorial equation in the bulk.
@@ -1112,8 +1135,10 @@ class Domain_compact : public Domain {
 	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @param order : order of the equation (i.e. 2 for a Laplacian for instance)
 	* @returns the number of true unknowns.
-	*/
+	*/     
+     int nbr_conditions_val_domain_mquant (const Val_domain& eq, int mquant, int order) const ;
      int nbr_conditions_val_domain (const Val_domain& eq, int mlim, int order) const ;
+     
      virtual Array<int> nbr_conditions_boundary (const Tensor&, int, int, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Computes number of discretized equations associated with a given equation on a boundary.
@@ -1122,8 +1147,10 @@ class Domain_compact : public Domain {
 	* @param eq : the residual of the equation.
 	* @param mlim : mimit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @returns the number of true conditions.
-	*/
+	*/     
+     int nbr_conditions_val_domain_boundary_mquant (const Val_domain& eq, int mquant) const ;
      int nbr_conditions_val_domain_boundary (const Val_domain& eq, int mlim) const ;
+     
      virtual void export_tau (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Exports a residual equation in the bulk.
@@ -1134,8 +1161,10 @@ class Domain_compact : public Domain {
 	* @param res : The \c Array where the discretized equations are stored.
 	* @param pos_res : current position in res.
 	* @param ncond : the corresponding number of equations. It is used when the equation is null.
-	*/
+	*/     
+     void export_tau_val_domain_mquant (const Val_domain& eq, int mquant, int order, Array<double>& res, int& pos_res, int ncond) const ;
      void export_tau_val_domain (const Val_domain& eq, int mlim, int order, Array<double>& res, int& pos_res, int ncond) const ;
+     
      virtual void export_tau_boundary (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Exports all the residual equations corresponding to a tensorial one on a given boundary
@@ -1146,8 +1175,10 @@ class Domain_compact : public Domain {
 	* @param res : The \c Array where the discretized equations are stored.
 	* @param pos_res : current position in res.
 	* @param ncond : the corresponding number of equations. It is used when the equation is null. 
-	*/
+	*/     
+     void export_tau_val_domain_boundary_mquant (const Val_domain& eq, int mquant, int bound, Array<double>& res, int& pos_res, int ncond) const ;
      void export_tau_val_domain_boundary (const Val_domain& eq, int mlim, int bound, Array<double>& res, int& pos_res, int ncond) const ;
+     
      virtual void affecte_tau (Tensor&, int, const Array<double>&, int&) const ;
 	/**
 	* Affects some coefficients to a \c Val_domain.
@@ -1156,8 +1187,10 @@ class Domain_compact : public Domain {
 	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @param cf : \c Array of the coefficients used.
 	* @param pos_cf : current position in the array of coefficients.
-	*/
+	*/  
+     void affecte_tau_val_domain_mquant (Val_domain& so, int mquant, const Array<double>& cf, int& pos_cf) const ;
      void affecte_tau_val_domain (Val_domain& so, int mlim, const Array<double>& cf, int& pos_cf) const ;
+    
      virtual void affecte_tau_one_coef (Tensor&, int, int, int&) const ;
 	/**
 	* Sets at most one coefficient of a \c Val_domain to 1.
@@ -1166,7 +1199,8 @@ class Domain_compact : public Domain {
 	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @param cc : location, in the overall system, of the coefficient to be set to 1.
 	* @param pos_cf : current position.
-	*/
+	*/  
+     void affecte_tau_one_coef_val_domain_mquant (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, int cc, int& pos_cf) const ;
  
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;

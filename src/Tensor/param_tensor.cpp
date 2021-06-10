@@ -39,4 +39,24 @@ int mult_m_quant (const Param_tensor & aa, const Param_tensor & bb) {
         return (val_a + val_b);
     }
 }
+
+int div_m_quant (const Param_tensor & aa, const Param_tensor & bb) {
+    if(!aa && !bb) return 0;
+    else if (!aa)  return (bb.m_quant_affected) ? -bb.m_quant : 0 ;
+    else if (!bb)  return (aa.m_quant_affected) ? aa.m_quant : 0 ;
+    else {
+        int val_a = (aa.m_quant_affected) ? aa.m_quant : 0;
+        int val_b = (bb.m_quant_affected) ? bb.m_quant : 0;
+        return (val_a - val_b);
+    }
+}
+
+int inv_m_quant (const Param_tensor & aa) {
+    if(!aa) return 0;
+    else {
+        int val_a = (aa.m_quant_affected) ? aa.m_quant : 0;
+        return (-val_a);
+    }
+}
+
 }

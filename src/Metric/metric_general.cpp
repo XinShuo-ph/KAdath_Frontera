@@ -637,7 +637,7 @@ Term_eq Metric_general::derive (int type_der, char ind_der, const Term_eq& so) c
 		compute_christo(dd) ;
 	// The partial derivative part
 	Term_eq res (fmet.derive_with_other (type_der, ind_der, so, this)) ;
-	
+		
 	// Add the part containing the Christoffel :
 	//Must find a name for summation on Christofel :
 	bool found = false ;
@@ -738,7 +738,17 @@ Term_eq Metric_general::derive (int type_der, char ind_der, const Term_eq& so) c
 			res = res + part_christo ;
 		else
 			res = res - part_christo ;
+	
 	}
+	
+	// Special case for bosonic field
+	if (so.val_t->is_m_quant_affected()) {
+		// affect same m quant for
+		res.val_t->set_parameters() = so.val_t->get_parameters() ;
+		if (res.der_t!=0x0)
+			res.der_t->set_parameters() = so.val_t->get_parameters() ;
+	}
+		
 	return res ;
 }
 

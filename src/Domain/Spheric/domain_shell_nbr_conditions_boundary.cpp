@@ -24,6 +24,41 @@
 #include "tensor.hpp"
 
 namespace Kadath {
+int Domain_shell::nbr_conditions_val_domain_boundary_mquant (const Val_domain& so, int mquant) const {
+	int res = 0 ;
+	
+	for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		bool indic = true ;
+		// Get base in theta :
+		int baset = (*so.get_base().bases_1d[1])(0) ;
+		switch (baset) {
+					case COS_EVEN:
+						if ((j==0) && (mquant!=0))
+							indic = false ;
+						break ;
+					case COS_ODD:
+						if ((j==nbr_coefs(1)-1) || ((j==0) && (mquant!=0)))
+							indic = false ;
+						break ;
+					case SIN_EVEN:
+						if (((j==1) && (mquant>1)) ||(j==0) || (j==nbr_coefs(1)-1)) 
+							indic = false  ;
+						break ;
+					case SIN_ODD:
+						if (((j==0) && (mquant>1)) || (j==nbr_coefs(1)-1))
+							indic = false ;
+						break ;
+					default:
+						cerr << "Unknow theta basis in Domain_shell::nbr_conditions_val_boundary_mquant" << endl ;
+						abort() ;
+		}
+
+		if (indic)
+			res ++ ;
+	}
+	return res ;
+}
+
 int Domain_shell::nbr_conditions_val_domain_boundary (const Val_domain& so, int mlim) const {
 	
 	int res = 0 ;
@@ -78,10 +113,15 @@ Array<int> Domain_shell::nbr_conditions_boundary (const Tensor& tt, int dom, int
 	int val = tt.get_valence() ;
 	switch (val) {
 		case 0 :
+			if (tt.is_m_quant_affected()) {
+				// Special case for bosonic field
+				res.set(0) = nbr_conditions_val_domain_boundary_mquant (tt()(dom), tt.get_parameters().get_m_quant()) ;
+			} else {
 			if (!tt.is_m_order_affected())
 			  res.set(0) = nbr_conditions_val_domain_boundary (tt()(dom), 0) ;
 			else
 			  res.set(0) = nbr_conditions_val_domain_boundary (tt()(dom), tt.get_parameters().get_m_order()) ;
+			}
 			break ;
 		case 1 : {
 			bool found = false ;

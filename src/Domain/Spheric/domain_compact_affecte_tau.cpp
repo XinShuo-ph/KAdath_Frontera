@@ -24,6 +24,95 @@
 #include "tensor_impl.hpp"
 #include "tensor.hpp"
 namespace Kadath {
+
+void Domain_compact::affecte_tau_val_domain_mquant (Val_domain& so, int mquant, const Array<double>& values, int& conte) const {
+
+	so.allocate_coef() ;
+	*so.cf = 0. ;
+
+	Index pos_cf (nbr_coefs) ;
+	// True values
+	// Loop on theta
+	int baset = (*so.get_base().bases_1d[1]) (0) ;
+	for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		pos_cf.set(1) = j ;
+		bool true_tet = true ;
+		switch (baset) {
+			case COS_EVEN:
+				if ((j==0) && (mquant!=0))
+					true_tet = false ;
+				break ;
+			case COS_ODD:
+				if ((j==nbr_coefs(1)-1) || ((j==0) && (mquant!=0)))
+					true_tet = false ;
+				break ;
+			case SIN_EVEN:
+				if (((j==1) && (mquant>1)) || (j==0) || (j==nbr_coefs(1)-1))
+					true_tet = false  ;
+				break ;
+			case SIN_ODD:
+				if (((j==0) && (mquant>1)) || (j==nbr_coefs(1)-1))
+					true_tet = false ;
+				break ;
+			default:
+			cerr << "Unknow theta basis in Domain_compact::affecte_tau_val_domain_mquant" << endl ;
+				abort() ;
+		}
+					
+		if (true_tet)
+			for (int i=0 ; i<nbr_coefs(0) ; i++) {
+					pos_cf.set(0) = i ;
+					so.cf->set(pos_cf) += values(conte);
+					conte ++ ;
+				}
+	}
+	// Regularity on the axis :
+	if (mquant>1) {
+	// Loop on r :
+	for (int i=0 ; i<nbr_coefs(0) ; i++) {
+	  pos_cf.set(0) = i ;
+		double sum = 0. ;
+		switch (baset) {
+			case COS_EVEN:
+				for (int j=1 ; j<nbr_coefs(1) ; j++) {
+					pos_cf.set(1) = j ;
+					sum += (*so.cf)(pos_cf) ;
+					}
+				pos_cf.set(1) = 0 ;
+				so.cf->set(pos_cf) = -sum ;
+				break ;
+			case COS_ODD:
+				for (int j=1 ; j<nbr_coefs(1) ; j++) {
+					pos_cf.set(1) = j ;
+					sum += (*so.cf)(pos_cf) ;
+				}
+				pos_cf.set(1) = 0 ;
+				so.cf->set(pos_cf) = -sum ;
+				break ;
+			case SIN_EVEN:
+				for (int j=2 ; j<nbr_coefs(1) ; j++) {
+					pos_cf.set(1) = j ;
+					sum += j*(*so.cf)(pos_cf) ;
+				}
+				pos_cf.set(1) = 1 ;
+				so.cf->set(pos_cf) = -sum ;
+				break ;
+			case SIN_ODD:
+				for (int j=1 ; j<nbr_coefs(1) ; j++) {
+					pos_cf.set(1) = j ;
+					sum += (2*j+1)*(*so.cf)(pos_cf) ;
+				}
+				pos_cf.set(1) = 0 ;
+				so.cf->set(pos_cf) = -sum ;
+				break ;
+			default:
+			cerr << "Unknow theta basis in Domain_compact::affecte_tau_val_domain_mquant" << endl ;
+			abort() ;
+		}
+	}
+    }
+}
+	
 void Domain_compact::affecte_tau_val_domain (Val_domain& so, int mlim, const Array<double>& values, int& conte) const {
 
 	int kmin = 2*mlim+2 ;
@@ -139,7 +228,12 @@ void Domain_compact::affecte_tau (Tensor& tt, int dom, const Array<double>& cf, 
 	int val = tt.get_valence() ;
 	switch (val) {
 		case 0 :
-			affecte_tau_val_domain (tt.set().set_domain(dom), 0, cf, pos_cf) ;
+			if (tt.is_m_quant_affected()) {
+				// Special case bosonic field
+				affecte_tau_val_domain_mquant (tt.set().set_domain(dom), tt.get_parameters().get_m_quant(), cf, pos_cf) ;
+			}
+			else
+				affecte_tau_val_domain (tt.set().set_domain(dom), 0, cf, pos_cf) ;
 			break ;
 		case 1 : {
 			bool found = false ;

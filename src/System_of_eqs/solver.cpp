@@ -144,7 +144,7 @@ Array<double> System_of_eqs::do_col_J (int cc) {
 	  for (int i=0 ; i<nterm ; i++)
 	    term[i]->set_der_zero() ;
 	}
-	
+
 	// Double 
 	for (int i=0 ; i<nvar_double ; i++) {
 		if (conte==cc) {
@@ -158,6 +158,7 @@ Array<double> System_of_eqs::do_col_J (int cc) {
 		conte ++ ;
 	}
 
+
 	// Fields
 	for (int i=0 ; i<nterm ; i++) {
 		int dom = term[i]->get_dom() ;
@@ -165,6 +166,7 @@ Array<double> System_of_eqs::do_col_J (int cc) {
 		try {
             espace.get_domain(dom)->affecte_tau_one_coef(auxi, dom, cc, conte);
         }
+        	
 		catch(Unknown_base_error & e) {
 		    std::cerr << "Error in System_of_eqs[rank=" << mpi_proc_rank << "]::do_col_J(cc = " << cc
                      /*<< ")\n"*/;

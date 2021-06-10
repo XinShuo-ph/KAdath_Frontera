@@ -1351,5 +1351,24 @@ class Ope_def_global : public Ope_eq {
 		Term_eq* get_res() ;///< Returns the result.
 		void compute_res() ; ///< Forces the computation of the result (when things have changed).
 } ;
+
+/**
+ * 
+ * Complex conjugate (only changes the m_quant parameter so far).
+ * \ingroup systems.
+ */
+class Ope_conjug: public Ope_eq {
+  
+	public:
+		/**
+		* Constructor
+		* @param syst : the associated \c System_of_eqs.
+		* @param so : the target.
+		*/
+		Ope_conjug(const System_of_eqs* syst, Ope_eq* so) ;
+		~Ope_conjug() override ; ///< Destructor
+	
+		Term_eq action() const override;
+} ;
 }
 #endif

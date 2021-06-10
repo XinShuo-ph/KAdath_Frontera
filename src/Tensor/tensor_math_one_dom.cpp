@@ -525,7 +525,12 @@ Tensor div_one_dom (int dd, const Tensor& t1, const Tensor& t2) {
 	for (int i=0 ; i<res.valence ; i++)
 		res.set_name_ind(i, t1.name_indice[i]) ;
    }
-
+ 
+   // Put parameters :
+      int m_res = div_m_quant (t1.get_parameters(), t2.get_parameters()) ;
+      if (m_res!=0) {
+	res.set_parameters().set_m_quant() = m_res ;
+      }
    return res ;
 }
 
@@ -538,6 +543,12 @@ Tensor div_one_dom (int dd, double x, const Tensor& t) {
    Tensor res(t.espace, t.valence, t.type_indice, t.basis) ;
 
    res.cmp[0]->set_domain(dd) = x/(*t.cmp[0])(dd) ;
+   
+   // Copy parameters in this case...
+      int m_res = inv_m_quant (t.get_parameters()) ;
+      if (m_res!=0) {
+	res.set_parameters().set_m_quant() = m_res ;
+      }
    return res ;
 }
 

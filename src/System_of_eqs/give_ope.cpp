@@ -875,6 +875,13 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 		return p_ope ;
 		}
 
+	// Check if complex conjugate
+	indic = is_ope_uni(name, p1, "conjug") ;
+	if (indic) {
+		p_ope = new Ope_conjug(this, give_ope(dd,p1, bound)) ;
+		return p_ope ;
+		}
+		
 	// Check if determinant :
 	indic = is_ope_uni(name, p1, "determinant") ;
 	if (indic) {

@@ -24,6 +24,51 @@
 #include "tensor.hpp"
 
 namespace Kadath {
+
+
+int Domain_shell::nbr_conditions_val_domain_mquant (const Val_domain& so, int mquant, int order) const {
+	int res = 0 ;
+	
+	Index pos (nbr_coefs) ;
+	do {
+		bool indic = true ;
+		// Get base in theta :
+		int baset = (*so.get_base().bases_1d[1]) (0) ;
+		switch (baset) {
+					case COS_EVEN:
+						if ((pos(1)==0) && (mquant!=0))
+							indic = false ;
+						break ;
+					case COS_ODD:
+						if ((pos(1)==nbr_coefs(1)-1) || ((pos(1)==0) && (mquant!=0)))
+							indic = false ;
+						break ;
+					case SIN_EVEN:
+						if (((pos(1)==1) && (mquant>1)) || (pos(1)==0) || (pos(1)==nbr_coefs(1)-1))
+							indic = false  ;
+						break ;
+					case SIN_ODD:
+						if (((pos(1)==0) && (mquant>1)) || (pos(1)==nbr_coefs(1)-1))
+							indic = false ;
+						break ;
+					default:
+						cerr << "Unknow theta basis in Domain_shell::nbr_conditions_val_domain_mquant" << endl ;
+						abort() ;
+		}
+		// Order with respect to r :
+		if (pos(0)>nbr_coefs(0)-order-1)
+			indic = false ;
+
+		if (indic)
+			res ++ ;
+		pos.inc() ;
+	}
+	while (pos(2)==0) ;
+
+	return res ;
+}
+
+
 int Domain_shell::nbr_conditions_val_domain (const Val_domain& so, int mlim, int order) const {
 	
 	int res = 0 ;
@@ -77,10 +122,16 @@ Array<int> Domain_shell::nbr_conditions (const Tensor& tt, int dom, int order, i
 	int val = tt.get_valence() ;
 	switch (val) {
 		case 0 :
+			if (tt.is_m_quant_affected()) {
+				// Special case for boson field
+				 res.set(0) = nbr_conditions_val_domain_mquant (tt()(dom), tt.get_parameters().get_m_quant(), order) ;
+			}
+			else {
 			if (!tt.is_m_order_affected())
 			  res.set(0) = nbr_conditions_val_domain (tt()(dom), 0, order) ;
 			else 
 			  res.set(0) = nbr_conditions_val_domain (tt()(dom), tt.get_parameters().get_m_order(), order) ;
+			 }
 			break ;
 		case 1 : {
 			bool found = false ;

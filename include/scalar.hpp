@@ -325,7 +325,10 @@ namespace Kadath {
     inline Scalar::Scalar(const Scalar& so, bool copie) : Tensor{so.espace}, val_zones{ndom} {
         for (int l=0 ; l<ndom ; l++)
             val_zones[l] = new Val_domain{*so.val_zones[l], copie} ;
-        cmp[0] = this ;
+        cmp[0] = this ;  
+        
+        if (so.parameters)
+        	set_parameters() = so.get_parameters() ;
     }
 
     inline Scalar::Scalar (const Tensor& so, bool copie) : Tensor{so.espace}, val_zones{ndom} {
@@ -334,6 +337,9 @@ namespace Kadath {
         for (int l=0 ; l<ndom ; l++)
             val_zones[l] = new Val_domain{*so.cmp[0]->val_zones[l], copie} ;
         cmp[0] = this ;
+        
+        if (so.parameters)
+        	set_parameters() = so.get_parameters() ;
     }
 
     inline Scalar::Scalar (const Space& sp, FILE* fd) : Tensor{sp}, val_zones{ndom} {

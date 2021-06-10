@@ -94,6 +94,8 @@ namespace Kadath {
 
     int add_m_quant(const Param_tensor &, const Param_tensor &);
     int mult_m_quant(const Param_tensor &, const Param_tensor &);
+    int div_m_quant(const Param_tensor &, const Param_tensor &);
+    int inv_m_quant(const Param_tensor &);
 
     /**
      * Class for handling additional parameters for some \c Tensor.
@@ -125,6 +127,10 @@ namespace Kadath {
 
         friend int mult_m_quant(const Param_tensor &, const Param_tensor &);
 
+        friend int div_m_quant(const Param_tensor &, const Param_tensor &);
+
+        friend int inv_m_quant(const Param_tensor &);
+        
         friend class Tensor;
     };
 

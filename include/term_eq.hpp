@@ -238,7 +238,8 @@ namespace Kadath {
         friend class Ope_div_1mrsL ;
         friend class Ope_div_1mx2 ;
         friend class Ope_dtime ;
-        friend class Ope_ddtime ;
+        friend class Ope_ddtime ;        
+        friend class Ope_conjug ;
         friend class Domain ;
         friend class Domain_nucleus ;
         friend class Domain_shell ;

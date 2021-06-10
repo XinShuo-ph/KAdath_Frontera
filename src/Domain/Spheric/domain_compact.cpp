@@ -329,6 +329,42 @@ void Domain_compact::set_cheb_base(Base_spectral& base) const {
 	}	
 }
 
+void Domain_compact::set_cheb_base_with_m(Base_spectral& base, int mquant) const {
+	int m ;
+
+	assert (type_base == CHEB_TYPE) ;
+
+	base.allocate(nbr_coefs) ;
+	    
+	Index index (base.bases_1d[0]->get_dimensions()) ;
+	
+	if (mquant%2==0) {
+	base.def=true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? COS_EVEN : SIN_ODD ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = CHEB ;
+		 }
+	}
+	}
+	else {
+	base.def=true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? SIN_ODD : COS_EVEN ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = CHEB ;
+		 }
+	}
+	}
+	
+}
+
 void Domain_compact::set_cheb_r_base(Base_spectral& base) const {
   set_cheb_base(base) ;
 }

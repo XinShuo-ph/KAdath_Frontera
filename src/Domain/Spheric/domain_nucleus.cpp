@@ -291,6 +291,44 @@ void Domain_nucleus::set_cheb_base(Base_spectral& base) const {
 	}
 }
 
+// Base for a function symetric in z, using Chebyshev
+void Domain_nucleus::set_cheb_base_with_m(Base_spectral& base, int mquant) const {
+
+	int m,l ;
+
+	assert (type_base == CHEB_TYPE) ;
+	base.allocate(nbr_coefs) ;
+	
+	Index index(base.bases_1d[0]->get_dimensions()) ;
+	
+	if (mquant%2==0) {
+	base.def=true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? COS_EVEN : SIN_ODD ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    l = (m%2==0) ? 2*j : 2*j+1 ;    
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = (l%2==0) ? CHEB_EVEN : CHEB_ODD ;
+		 }
+	}
+	}
+	else {
+	base.def=true ;
+	base.bases_1d[2]->set(0) = COSSIN ;
+	for (int k=0 ; k<nbr_coefs(2) ; k++) {
+	        m = (k%2==0) ? k/2 : (k-1)/2 ;
+		base.bases_1d[1]->set(k) = (m%2==0) ? SIN_ODD : COS_EVEN ;
+		for (int j=0 ; j<nbr_coefs(1) ; j++) {
+		    l = (m%2==0) ? 2*j : 2*j+1 ;    
+		    index.set(0) = j ; index.set(1) = k ;
+		    base.bases_1d[0]->set(index) = (l%2==0) ? CHEB_ODD : CHEB_EVEN ;
+		 }
+	}
+	}
+}
+
 // Base for a function anti-symetric in z, using Chebyshev
 void Domain_nucleus::set_anti_cheb_base(Base_spectral& base) const {
 

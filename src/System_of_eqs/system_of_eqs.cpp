@@ -480,6 +480,8 @@ Tensor System_of_eqs::give_val_def (const char* so) const {
   Array<int>* index ;
   Base_tensor* basis ;
   
+  bool foundpar = false ;
+ 
   for (int i=0 ; i<ndef ; i++) 
     if (!found) {
       if (strcmp(names_def[i], name)==0) {
@@ -488,6 +490,9 @@ Tensor System_of_eqs::give_val_def (const char* so) const {
 	valence = auxi.get_valence() ;
 	index = new Array<int> (auxi.get_index_type()) ;
 	basis = new Base_tensor (auxi.get_basis()) ;
+	if ((auxi.parameters) && (!foundpar)) {
+		foundpar = true ;
+	}
       }
     }
     
@@ -510,9 +515,13 @@ Tensor System_of_eqs::give_val_def (const char* so) const {
 	Array<int> ind (res.indices(n)) ;
 	res.set(ind).set_domain(zedom) = auxi(ind)(zedom) ;
       }
-	res.set_basis(zedom) = auxi.get_basis().get_basis(zedom) ;
+	res.set_basis(zedom) = auxi.get_basis().get_basis(zedom) ;  
+    	if (foundpar) {
+    		res.set_parameters() = auxi.get_parameters() ;
+    		foundpar = false ;
+    	}
     }
-
+   
   return res ; 
 }
 
