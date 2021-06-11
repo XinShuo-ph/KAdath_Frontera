@@ -1358,7 +1358,14 @@ class Space_spheric : public Space {
 	* @returns the surface integral.
 	*/
 	double int_inf (const Scalar&) const ;
-
+	/**
+	* Adds an equation being the value of some field at a given point.
+	* @param syst : the \c System_of_eqs.
+	* @param pp : the point
+	* @param eq : the string describing the quantity that must be zero at the \c pp
+	*/
+	void add_eq_point (System_of_eqs& syst, const Point& pp, const char* eq) ;
+		
 	virtual Array<int> get_indices_matching_non_std(int, int) const ;
 } ;
 

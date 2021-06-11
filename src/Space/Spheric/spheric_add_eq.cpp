@@ -113,4 +113,21 @@ void Space_spheric::add_eq_mode_mid (System_of_eqs& sys, const char* name, int i
 	char auxi[LMAX] ;
 	trim_spaces (auxi, name) ;
 	sys.add_eq_val_mode (1, auxi, pos_cf, value) ;
+}
+
+void Space_spheric::add_eq_point (System_of_eqs& sys, const Point& MM, const char* name) {
+
+	// Get the domain and num coordinates :
+	int ld = -1;
+	bool* inside = new bool[nbr_domains] ;
+	for (int l=0 ; l<nbr_domains; l++)
+	    inside[l] = get_domain(l)->is_in(MM) ;
+	for (int l=0 ; l<nbr_domains ; l++)
+	      if ((ld==-1) && (inside[l]))
+		  ld = l ;
+	Point num (get_domain(ld)->absol_to_num(MM)) ;
+	
+	char auxi[LMAX] ;
+	trim_spaces (auxi, name) ;
+	sys.add_eq_point (ld, auxi, num) ;
 }}
