@@ -1,0 +1,12 @@
+set(FFTW_LIBRARIES "/usr/lib64/libfftw3.a")
+#set(GSL_LIBRARIES "-L/home/astro/papenfort/spack/opt/spack/linux-rhel7-x86_64/gcc-4.8.5/gsl-2.5-nq5ulbad7td6sfptb6pc4mypzls7ouqu -lgsl")
+set(GSL_LIBRARIES "/home/astro/papenfort/spack/opt/spack/linux-scientific7-x86_64/gcc-8.2.0/gsl-2.5-5kjsrm7c3j4gu3sgnewqzaeyunbx2eac/lib/libgsl.a")
+
+if("$ENV{KAD_CXX}" STREQUAL "icpc")
+  message("Loading intel settings...")
+  set(SCALAPACK_LIBRARIES "-L/cluster/intel/compilers_and_libraries_2019.1.144/linux/mkl/lib/intel64 -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_openmpi_lp64 -lpthread -lm -ldl")
+elseif("$ENV{KAD_CXX}" STREQUAL "g++")
+  message("Loading gcc settings...")
+#  set(SCALAPACK_LIBRARIES "-L/cluster/intel/compilers_and_libraries_2018/linux/mkl/lib/intel64 -Wl,--no-as-needed -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_openmpi_lp64 -lpthread -lm -ldl")
+  set(SCALAPACK_LIBRARIES "-L/cluster/intel/compilers_and_libraries_2019.1.144/linux/mkl/lib/intel64 -Wl,--no-as-needed -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
+endif()

@@ -28,6 +28,8 @@
 #include "param.hpp"
 #include "matrice.hpp"
 #include "list_comp.hpp"
+#include "matrice.hpp"
+#include "memory.hpp"
 
 #include <vector>
 using std::vector;
@@ -51,6 +53,7 @@ class Eq_int ;
 
 class System_of_eqs {
     protected:
+
 	const Space& espace ; ///< Associated \c Space
 	int dom_min ; ///< Smallest domain number
 	int dom_max ; ///< Highest domain number
@@ -63,7 +66,7 @@ class System_of_eqs {
         int nvar ; ///< Number of unknown fields.
 	Tensor** var ; ///< Pointer on the unknown fields.
 	char** names_var ; ///< Names of the unknown fields.
-	
+
 	int nterm_double ; ///< Number of \c Term_eq corresponding to the unknowns that are numbers.
 	Term_eq** term_double ; ///< Pointers on the \c Term_eq corresponding to the unknowns that are numbers.
 	Array<int> assoc_var_double ; ///< Array giving the correspondance with the \c var_double pointers.
@@ -85,7 +88,7 @@ class System_of_eqs {
 	int ndef ; ///< Number of definitions.
 	Ope_def** def ; ///< Pointers on the definition (i.e. on the \c Ope_def that is needed to compute the result).
 	char** names_def ; ///< Names of the definitions.
-	
+
 	// Definitions globale (liste of operators I guess)
 	int ndef_glob ; ///< Number of global definitions (the one that require the knowledge of the whole space to give the result, like integrals).
 	Ope_def_global** def_glob ; ///< Pointers on the global definitions.
@@ -117,9 +120,20 @@ class System_of_eqs {
 	int nbr_unknowns ; ///< Number of unknowns (basically the number of coefficients of all the unknown fields, once regularities are taken into account).
 	int nbr_conditions ; ///< Total number of conditions (the number of coefficients of all the equations, once regularities are taken into account).
 
+  std::vector<std::tuple<std::string, int, int>> eq_list; ///< List of all equations through all domains, to match indices to expressions.
+  std::vector<std::tuple<std::string, int, int>> eq_int_list; ///< List of all integral equations through all domains, to match indices to expressions.
+
 	Index** which_coef ; ///< Stores the "true" coefficients on some boundaries (probably deprecated).
 
+//	Array<double> J;  ///< Stores local copy of the Jacobian
+
     public:
+	/**
+	* Solvers implemented in the do_newton routine
+	*/
+        enum SOLVER {NEWTON_RAPHSON, GAUSS_NEWTON};
+
+
 	/**
 	* Standard constructor nothing is done. The space is affected and the equations are to be solved in all space.
 	* @param so [input] : associated space.
@@ -159,11 +173,11 @@ class System_of_eqs {
 	/**
 	* Returns the number of conditions.
 	*/
-	int get_nbr_conditions() const {return nbr_conditions ;} ; 
+	int get_nbr_conditions() const {return nbr_conditions ;} ;
 	/**
 	* Returns the number of unknowns.
 	*/
-	int get_nbr_unknowns() const {return nbr_unknowns ;} ; 
+	int get_nbr_unknowns() const {return nbr_unknowns ;} ;
 
 	/**
 	* Returns a pointer on a \c Term_eq corresponding to an unknown number.
@@ -205,8 +219,8 @@ class System_of_eqs {
 	* @param name : name of the definition.
 	*/
 	Tensor give_val_def (const char* name) const ;
-	
-	
+
+
 	/**
 	 * Addition of a variable (number case)
 	 * @param name : name of the variable (used afterwards by \c System_of_eqs)
@@ -233,23 +247,23 @@ class System_of_eqs {
 	void add_cst (const char* name, const Tensor& cst) ;
 
 	/**
-	 * Addition of a definition 
+	 * Addition of a definition
 	 * @param name : string describing the definition (like "A=...")
 	 */
 	void add_def (const char* name) ;
 	/**
-	 * Addition of a definition in a single domain. 
+	 * Addition of a definition in a single domain.
 	 * @param dd : number of the \c Domain.
 	 * @param name : string describing the definition (like "A=...")
 	 */
 	void add_def (int dd, const char* name) ;
 	/**
-	 * Addition of a global definition 
+	 * Addition of a global definition
 	 * @param name : string describing the definition (like "A=...")
 	 */
 	void add_def_global (const char* name) ;
 	/**
-	 * Addition of a global definition in a single domain. 
+	 * Addition of a global definition in a single domain.
 	 * @param dd : number of the \c Domain.
 	 * @param name : string describing the definition (like "A=...")
 	 */
@@ -267,7 +281,7 @@ class System_of_eqs {
 	* @param pope : pointer on the function describing the action of the  operator.
 	* @param par : parameters of the operator.
 	*/
-	void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, const Term_eq&, Param*), Param* par) ; 
+	void add_ope (const char* name, Term_eq (*pope) (const Term_eq&, const Term_eq&, Param*), Param* par) ;
 
 	/**
 	* Check if a string is an unknown (number).
@@ -292,7 +306,7 @@ class System_of_eqs {
 	bool iscst (const char* target, int& which, int& valence, char*& name_ind, Array<int>*& type_ind) const ;
 	/**
 	* Check if a string is a definition (can required indices manipulation and/or inner contraction).
-	* @param dd : index of the \c Domain.	
+	* @param dd : index of the \c Domain.
 	* @param target : the string to be tested.
 	* @param which : the index of the found definition (if found).
 	* @param valence : valence of the result.
@@ -302,13 +316,13 @@ class System_of_eqs {
 	bool isdef (int dd, const char* target, int& which, int& valence, char*& name_ind, Array<int>*& type_ind) const ;
 	/**
 	* Check if a string is a global definition.
-	* @param dd : index of the \c Domain.	
+	* @param dd : index of the \c Domain.
 	* @param target : the string to be tested.
 	* @param which : the index of the found definition (if found).
 	*/
 	bool isdef_glob (int dd, const char* target, int& which) const ;
 
-	
+
 	/**
 	* Checks if a string contains the operator minus
 	* @param input : the string to be tested.
@@ -377,7 +391,7 @@ class System_of_eqs {
 	* Checks if a string represents an operator of the type "ope(a)".
 	* @param input : the string to be tested.
 	* @param p1 : the returned  argument.
-	* @param nameope : name of the operator 
+	* @param nameope : name of the operator
 	*/
 	bool is_ope_uni (const char* input, char* p1, const char* nameope) const ;
 	/**
@@ -385,7 +399,7 @@ class System_of_eqs {
 	* @param input : the string to be tested.
 	* @param p1 : the returned  first argument.
 	* @param p2 : the returned  first argument.
-	* @param nameope : name of the operator 
+	* @param nameope : name of the operator
 	*/
 	bool is_ope_uni (const char* input, char* p1, char* p2, const char* nameope) const ;
 	/**
@@ -443,7 +457,26 @@ class System_of_eqs {
 	* @param bb : boundary, if a boundary is needed (depending on the type of equation considered : bulk vs matching for instance).
 	*/
 	Ope_eq* give_ope (int dom, const char* name, int bb=0) const ;
-	
+
+	/**
+	* Parse an equation to be solved inside a domain.
+	* Based on give_ope and gets called by the different add_eq routines.
+	* @param dom : number of the \c Domain.
+	* @param eq : string defining the equation.
+	* @param bb : boundary, if a boundary is needed (depending on the type of equation considered : bulk vs matching for instance).
+	*/
+	Ope_eq* parse_eq (int dom, const char* eq, int bb=0) const;
+
+	/**
+	* Parse an expression with or without equal sign.
+	* Based on give_ope and gets called by the different add_eq routines.
+	* @param dom : number of the \c Domain.
+	* @param eq : string defining the equation.
+	* @param bb : boundary, if a boundary is needed (depending on the type of equation considered : bulk vs matching for instance).
+	* @param first : first or second part of the expression involving an equal sign.
+	*/
+	Ope_eq* parse_eq_trim (int dom, const char* eq, int bb=0, bool first = 0) const;
+
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be second order).
 	* @param dom : number of the \c Domain.
@@ -451,7 +484,7 @@ class System_of_eqs {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;	
+	void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (assumed to be second order).
@@ -460,7 +493,7 @@ class System_of_eqs {
 	* @param eq : string defining the equation.
 	* @param list : list of the components to be considered
 	*/
-	void add_eq_inside (int dom, const char* eq, const List_comp& list) ;	
+	void add_eq_inside (int dom, const char* eq, const List_comp& list) ;
 
 	/**
 	* Addition of an equation to be solved inside a domain (of arbitrary order).
@@ -669,7 +702,7 @@ class System_of_eqs {
 	* @param dom : number of the \c Domain.
 	* @param order : order of the equation.
 	* @param eq : string defining the equation.
-	* @param const_part : constant par 
+	* @param const_part : constant par
 	*/
 	void add_eq_vel_pot (int dom, int order, const char* eq, const char* const_part) ;
 
@@ -736,16 +769,16 @@ class System_of_eqs {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;	
+	void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 
 	/**
 	* Addition of an equation representing a first integral.
-	* @param dommin : index of the first \d Domain 
+	* @param dommin : index of the first \d Domain
 	* @param dommax : index of the last \d Domain
 	* @param integ_part : name of the integral quantity
 	* @param const_part : equation fixing the value of the integral.
 	*/
-	void add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* const_part) ;	
+	void add_eq_first_integral (int dom_min, int dom_max, const char* integ_part, const char* const_part) ;
 
 	/**
 	* Addition of an equation prescribing the value of one coefficient of a scalar field, on a given boundary.
@@ -755,7 +788,7 @@ class System_of_eqs {
 	* @param pos_cf : which coefficient is used.
 	* @param val : the value the coefficient must have.
 	*/
-	void add_eq_mode (int dom, int bb, const char* eq, const Index& pos_cf, double val) ; 
+	void add_eq_mode (int dom, int bb, const char* eq, const Index& pos_cf, double val) ;
 	/**
 	* Addition of an equation prescribing the value of one coefficient of a scalar field.
 	* @param dom : number of the \c Domain.
@@ -777,7 +810,7 @@ class System_of_eqs {
 	* @param eq : string defining the scalar field that must vanish.
 	* @param MM : which point is used.
 	*/
-	void add_eq_point (int dom, const char* eq, const Point& MM) ; 
+	void add_eq_point (int dom, const char* eq, const Point& MM) ;
 
 	// Various computational stuff :
 	/**
@@ -820,12 +853,13 @@ class System_of_eqs {
 	Array<double> do_col_J (int i) ;
 
 	/**
-	* Does one step of the Newton-Raphson iteration.
+	* Does one step of the solver iteration.
 	* @param prec : required precision.
 	* @param error : achieved precision.
+	* @param solver: the underlying solver type
 	* @return true if the required precision is achieved, false otherwise.
 	*/
-	bool do_newton (double, double&) ;
+	bool do_newton (double, double&, SOLVER solver = NEWTON_RAPHSON) ;
 
 	/**
 	* Updates the variations of the \c Term_eq that comes from the fact that some \c Domains are variable (i.e. their shape).
@@ -842,13 +876,13 @@ class System_of_eqs {
 	* @param stepmax : second linesearch parameter.
 	* @return true if the required precision is achieved, false otherwise.
 	*/
-	bool do_newton_with_linesearch (double precision, double& error, int ntrymax = 10, double stepmax = 1.0); 
-  
+	bool do_newton_with_linesearch (double precision, double& error, int ntrymax = 10, double stepmax = 1.0);
+
 
 	// Parts for implementing gmres
 	void do_arnoldi (int n, Array<double>& qi, Matrice& Hmat) ;
 	void update_gmres (const Array<double>&) ;
-	
+
 	private:
 	/**
 	* Tests the value of the number of unknowns.
@@ -907,12 +941,13 @@ class System_of_eqs {
 	void check_negative(double delta);
 
 	friend class Space_spheric ;
-	friend class Space_bispheric ;		
+	friend class Space_bispheric ;
 	friend class Space_critic ;
 	friend class Space_polar ;
 	friend class Space_spheric_adapted ;
 	friend class Space_polar_adapted ;
 	friend class Space_bin_ns ;
+	friend class Space_bhns ;
 	friend class Space_bin_bh ;
 	friend class Space_bin_fake ;
 	friend class Space_polar_periodic ;
@@ -942,7 +977,7 @@ class System_of_eqs {
  * Class implementing an equation. This is a purely abstract class that can not be instanciated.
  * \ingroup systems
  */
-class Equation {
+class Equation : public MemoryMappable {
 
 	protected:
 	    const Domain* dom ; ///< Pointer on the \c Domain where the equation is defined.
@@ -1003,16 +1038,16 @@ class Equation {
 	* @param sec : array of the discretized errors.
 	* @param pos_sec : current position in \c sec.
 	*/
-	   virtual void export_der(int& conte, Term_eq** residuals, Array<double>& sec, int& pos_sec) const = 0 ;    
+	   virtual void export_der(int& conte, Term_eq** residuals, Array<double>& sec, int& pos_sec) const = 0 ;
 	/**
 	* Computes the number of conditions associated with the equation.
 	* @param tt : the residual of the equation.
 	*/
-	   virtual Array<int> do_nbr_conditions (const Tensor& tt) const = 0 ;  
+	   virtual Array<int> do_nbr_conditions (const Tensor& tt) const = 0 ;
 	/**
 	* Check whether the variation of the residual has to be taken into account when computing a given column.
 	* @param target : domain involved in the computation of the given column.
-	*/	  
+	*/
 	 virtual bool take_into_account (int) const = 0 ;
 
 	 friend class System_of_eqs ;
@@ -1038,9 +1073,9 @@ class Eq_inside : public Equation {
 		Eq_inside(const Domain* dom, int nd, Ope_eq* op, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_inside() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;	
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;		    
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	  
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
 		virtual bool take_into_account (int) const ;
 } ;
 
@@ -1058,7 +1093,7 @@ class Eq_vel_pot : public Equation {
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
-	* @param nd : number of the \d Domain (consistence is not checked).	
+	* @param nd : number of the \d Domain (consistence is not checked).
 	* @param ord : order of the equation (probably only safe with 0, 1 or 2).
 	* @param ope : pointer on the operator describing the equation.
 	* @param ope_constant : condition for the constant part
@@ -1066,9 +1101,9 @@ class Eq_vel_pot : public Equation {
 		Eq_vel_pot(const Domain* dom, int nd, int ord, Ope_eq* op, Ope_eq* op_constant) ;
 		virtual ~Eq_vel_pot() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;	
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;		    
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	  
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
 		virtual bool take_into_account (int) const ;
 } ;
 
@@ -1104,10 +1139,10 @@ class Eq_bc_exception : public Equation {
  * \ingroup systems
  */
 class Eq_order : public Equation {
- 
+
 	public:
 		int order ; ///< Order of the equation.
-		
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1117,13 +1152,13 @@ class Eq_order : public Equation {
 	* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-		
+
 		Eq_order(const Domain* dom, int nd, int ord, Ope_eq* ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_order() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;	
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;		    
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	  
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
 		virtual bool take_into_account (int) const ;
 } ;
 
@@ -1134,7 +1169,7 @@ class Eq_order : public Equation {
 class Eq_bc : public Equation {
 
 	public:
-		int bound ; ///< The boundary 
+		int bound ; ///< The boundary
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1147,10 +1182,10 @@ class Eq_bc : public Equation {
 		Eq_bc(const Domain* dom, int nd, int bb, Ope_eq* ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_bc() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 	   
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	 	        
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	   		
-		virtual bool take_into_account (int) const ;		
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
+		virtual bool take_into_account (int) const ;
 } ;
 
 /**
@@ -1163,7 +1198,7 @@ class Eq_matching : public Equation {
 		int bound ; ///< Name of the boundary in the domain of the equation.
 		int other_dom ; ///< Number of the other domain.
 		int other_bound ; ///< Name of the boundary in the other domain.
-		
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1176,14 +1211,14 @@ class Eq_matching : public Equation {
 	* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	
+
 		Eq_matching(const Domain* dom, int nd, int bb, int oz_nd, int oz_bb, Ope_eq* ope, Ope_eq* oz_ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_matching() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 	   
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	   	      		
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;     	
-		virtual bool take_into_account (int) const ;		
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
+		virtual bool take_into_account (int) const ;
 } ;
 
 /**
@@ -1197,7 +1232,7 @@ class Eq_matching_one_side : public Equation {
 		int bound ; ///< Name of the boundary in the domain of the equation.
 		int other_dom ; ///< Number of the other domain.
 		int other_bound ; ///< Name of the boundary in the other domain.
-		
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1213,17 +1248,17 @@ class Eq_matching_one_side : public Equation {
 	Eq_matching_one_side(const Domain* dom, int nd , int bb, int oz_nd, int oz_bb, Ope_eq* ope, Ope_eq* oz_ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_matching_one_side() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 	   
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	   	      		
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;     	
-		virtual bool take_into_account (int) const ;		
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
+		virtual bool take_into_account (int) const ;
 } ;
 
 /**
  * Class for an equation representing the matching of quantities accross a boundary.
  * The matching is performed in the configuration space.
  * It is intended where the collocations points are different at each side of the boundary.
- * It can happen when there are more than one touching domain (bispheric vs spheric) and when the number of points is different.	
+ * It can happen when there are more than one touching domain (bispheric vs spheric) and when the number of points is different.
  * \ingroup systems
  */
 class Eq_matching_non_std : public Equation {
@@ -1232,9 +1267,9 @@ class Eq_matching_non_std : public Equation {
 		int bound ; ///< Name of the boundary in the domain of the equation.
 		Array<int> other_doms ; ///< Array containing the number of the domains being on the other side of the surface.
 		Array<int> other_bounds ; ///< Names of the boundary, as seen in the other domains.
-         
+
 		Index** which_points ; ///< Lists the collocation points on the boundary (probably...)
-		
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1247,9 +1282,9 @@ class Eq_matching_non_std : public Equation {
 		Eq_matching_non_std (const Domain* dom, int nd, int bb, const Array<int>& ozers, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_matching_non_std() ; ///< Destructor.
 
-	   virtual void apply(int&, Term_eq**) ; 
+	   virtual void apply(int&, Term_eq**) ;
 	   virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
-	   virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ; 
+	   virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
 
 	   /**
 	   * Computes the collocation points used
@@ -1257,7 +1292,7 @@ class Eq_matching_non_std : public Equation {
 	   * @param start : starting index
 	   */
 	   void do_which_points (const Base_spectral& base, int start) ;
-	   virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  
+	   virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
 	   virtual bool take_into_account (int) const ;
 
 	friend class System_of_eqs ;
@@ -1267,7 +1302,7 @@ class Eq_matching_non_std : public Equation {
  * Class for an equation representing the matching of quantities accross a boundary using the "import" reserved word.
  * The matching is performed in the configuration space.
  * It is intended where the collocations points are different at each side of the boundary.
- * It can happen when there are more than one touching domain (bispheric vs spheric) and when the number of points is different.	
+ * It can happen when there are more than one touching domain (bispheric vs spheric) and when the number of points is different.
  * \ingroup systems
  */
 class Eq_matching_import : public Equation {
@@ -1276,8 +1311,8 @@ class Eq_matching_import : public Equation {
 		int bound ; ///< Name of the boundary in the domain of the equation.
 		Array<int> other_doms ; ///< Array containing the number of the domains being on the other side of the surface.
 		Array<int> other_bounds ; ///< Names of the boundary, as seen in the other domains.
-	
-		
+
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1291,17 +1326,17 @@ class Eq_matching_import : public Equation {
 		Eq_matching_import (const Domain* dom, int nd, int bb, Ope_eq* eq, const Array<int>& ozers, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_matching_import() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 	   
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	 	        
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	   		
-		virtual bool take_into_account (int) const ;		
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
+		virtual bool take_into_account (int) const ;
 } ;
 
 /**
  * Class implementing an integral equation.
  * \ingroup systems
  */
-class Eq_int {
+class Eq_int : public MemoryMappable {
 
 	protected:
 	    int n_ope ; ///< Number of terms.
@@ -1348,9 +1383,9 @@ class Eq_full : public Equation {
 		Eq_full(const Domain* dom, int nd, Ope_eq* ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_full() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	      
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;     
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
 		virtual bool take_into_account (int) const ;
 } ;
 
@@ -1372,9 +1407,9 @@ class Eq_one_side : public Equation {
 		Eq_one_side(const Domain* dom, int nd, Ope_eq* ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_one_side() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	      
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;     
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
 		virtual bool take_into_account (int) const ;
 } ;
 
@@ -1383,10 +1418,10 @@ class Eq_one_side : public Equation {
  * \ingroup systems
  */
 class Eq_order_array : public Equation {
- 
+
 	public:
 		const Array<int>& order ; ///< Orders of the equation wrt each variable.
-		
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1399,9 +1434,9 @@ class Eq_order_array : public Equation {
 		Eq_order_array(const Domain* dom, int nd, const Array<int>& ord, Ope_eq* ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_order_array() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;	
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;		    
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	  
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
 		virtual bool take_into_account (int) const ;
 } ;
 
@@ -1415,7 +1450,7 @@ class Eq_bc_order_array : public Equation {
 	public:
 		int bound ; ///< The boundary.
 		const Array<int>& order;  ///< Orders of the equation wrt each variable.
-		
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1429,10 +1464,10 @@ class Eq_bc_order_array : public Equation {
 		Eq_bc_order_array(const Domain* dom, int nd, int bb, const Array<int>& ord, Ope_eq* ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_bc_order_array() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 	   
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	 	        
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;  	   		
-		virtual bool take_into_account (int) const ;		
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
+		virtual bool take_into_account (int) const ;
 } ;
 
 /**
@@ -1447,7 +1482,7 @@ class Eq_matching_order_array : public Equation {
 		int other_dom ; ///< Number of the \c Domain on the other side of the boundary.
 		int other_bound ; ///< Name of the boundary as seen from the other domain.
 		const Array<int>& order ; ///< Orders of the equation wrt each variable.
-		
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1464,10 +1499,10 @@ class Eq_matching_order_array : public Equation {
 		Eq_matching_order_array(const Domain* dom, int nd, int bb, int oz_nd, int oz_bb, const Array<int>& ord, Ope_eq* ope, Ope_eq* oz_ope, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_matching_order_array() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 	   
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	   	      		
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;     	
-		virtual bool take_into_account (int) const ;		
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
+		virtual bool take_into_account (int) const ;
 } ;
 
 /**
@@ -1481,7 +1516,7 @@ class Eq_matching_exception : public Equation {
 		int other_dom ;///< Number of the \c Domain on the other side of the boundary.
 		int other_bound ;///< Name of the boundary as seen from the other domain.
 		const Param& parameters ; ///< Parameters needed for describing the exception.
-		
+
 	/**
 	* Constructor
 	* @param dom : Pointer on the \d Domain
@@ -1499,10 +1534,10 @@ class Eq_matching_exception : public Equation {
 		Eq_matching_exception(const Domain* dom, int nd, int bb, int oz_nd, int oz_bb, Ope_eq* ope, Ope_eq* oz_ope, const Param& par, Ope_eq* ope_exc, int n_cmp = -1, Array<int>** p_cmp=0x0) ;
 		virtual ~Eq_matching_exception() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 	   
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	   	      		
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;     	
-		virtual bool take_into_account (int) const ;		
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
+		virtual bool take_into_account (int) const ;
 } ;
 
 /**
@@ -1528,9 +1563,9 @@ class Eq_first_integral : public Equation {
 		Eq_first_integral(const System_of_eqs* syst, const Domain* dom, int dommin, int dommax, const char* integ_part, const char* const_part) ;
 		virtual ~Eq_first_integral() ; ///< Destructor.
 
-		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ; 
-		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;	      
-		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;     
+		virtual void export_val(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual void export_der(int&, Term_eq**, Array<double>&, int&) const ;
+		virtual Array<int> do_nbr_conditions (const Tensor& tt) const ;
 		virtual bool take_into_account (int) const ;
 } ;
 

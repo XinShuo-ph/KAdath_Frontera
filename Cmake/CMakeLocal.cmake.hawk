@@ -1,0 +1,3 @@
+set(FFTW_INCLUDES "$ENV{FFTW_ROOT}/include")
+set(FFTW_LIBRARIES "$ENV{FFTW_ROOT}/lib/libfftw3.so")
+set(SCALAPACK_LIBRARIES "-L$ENV{MKLROOT}/lib/intel64 -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_sgimpt_lp64 -Wl,--end-group -lgomp -lpthread -lmkl_scalapack_lp64 -lm -ldl")

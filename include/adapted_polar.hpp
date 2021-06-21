@@ -43,7 +43,7 @@ namespace Kadath {
 * \f$ \theta = \theta^\star \f$
 *
 * \f$ R \f$ is the fixed outer boundary and \f$ r_i \f$ is an angular function giving the value of the inner variable boundary.
-* 
+*
 * \ingroup domain
 */
 
@@ -77,16 +77,16 @@ class Domain_polar_shell_inner_adapted : public Domain {
    * Pointer on the \c Term_eq containing the \f$ {\rm d} r / {\rm d} \theta\f$.
    */
   mutable Term_eq* dt_rad_term_eq ;
-  
+
   Point center ; ///< Absolute coordinates of the center.
- 
- public: 
+
+ public:
    /**
   * Constructor :
   * @param sp [input] : the associated \c Space.
   * @param num : number of the domain (used by the \c Space).
   * @param ttype [input] : Chebyshev or Legendre type of spectral expansion.
-  * @param rin [input] : inner radius (constant with this constructor). 
+  * @param rin [input] : inner radius (constant with this constructor).
   * @param rout [input] : outer radius.
   * @param cr [input] : center of the spherical coordinates.
   * @param nbr [nbr] : number of points in each dimension.
@@ -97,7 +97,7 @@ class Domain_polar_shell_inner_adapted : public Domain {
   * @param sp [input] : the associated \c Space.
   * @param num : number of the domain (used by the \c Space).
   * @param ttype [input] : Chebyshev or Legendre type of spectral expansion.
-  * @param rin [input] : inner radius. 
+  * @param rin [input] : inner radius.
   * @param rout [input] : outer radius.
   * @param cr [input] : center of the spherical coordinates.
   * @param nbr [nbr] : number of points in each dimension.
@@ -119,37 +119,37 @@ class Domain_polar_shell_inner_adapted : public Domain {
     */
   Val_domain get_inner_radius() const {return *inner_radius;} ;
   virtual void del_deriv() const ;
-  
-  private: 
+
+  private:
     virtual void do_absol ()  const ;
     virtual void do_radius () const ;
     virtual void do_cart ()  const ;
     virtual void do_cart_surr () const ;
 
-  
+
   private:
-     virtual void set_cheb_base(Base_spectral&) const ;  
+     virtual void set_cheb_base(Base_spectral&) const ;
      virtual void set_legendre_base(Base_spectral&) const ;
-     virtual void set_anti_cheb_base(Base_spectral&) const ;      
-     virtual void set_anti_legendre_base(Base_spectral&) const ; 
-     virtual void set_cheb_base_with_m(Base_spectral&, int m) const ;  
+     virtual void set_anti_cheb_base(Base_spectral&) const ;
+     virtual void set_anti_legendre_base(Base_spectral&) const ;
+     virtual void set_cheb_base_with_m(Base_spectral&, int m) const ;
      virtual void set_legendre_base_with_m(Base_spectral&, int m) const ;
-     virtual void set_anti_cheb_base_with_m(Base_spectral&, int m) const ;      
-     virtual void set_anti_legendre_base_with_m(Base_spectral&, int m) const ;     
-     virtual void set_cheb_r_base(Base_spectral&) const ;  
+     virtual void set_anti_cheb_base_with_m(Base_spectral&, int m) const ;
+     virtual void set_anti_legendre_base_with_m(Base_spectral&, int m) const ;
+     virtual void set_cheb_r_base(Base_spectral&) const ;
      virtual void set_legendre_r_base(Base_spectral&) const ;
-     
+
      virtual void do_coloc () ;
      virtual int give_place_var (char*) const ;
-      
+
      virtual int nbr_unknowns_from_adapted() const ;
      virtual void vars_to_terms() const ;
      virtual void affecte_coef (int&, int, bool&) const ;
      virtual void xx_to_vars_from_adapted (Val_domain&, const Array<double>&, int&) const ;
      virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
      virtual void update_term_eq (Term_eq*) const ;
-     virtual void update_variable (const Val_domain&, const Scalar&, Scalar&) const ;   
-     virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;   
+     virtual void update_variable (const Val_domain&, const Scalar&, Scalar&) const ;
+     virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;
      virtual void update_mapping(const Val_domain&) ;
 
   public:
@@ -161,13 +161,13 @@ class Domain_polar_shell_inner_adapted : public Domain {
      * Updates all the quantities that depend on the inner radius (like the normal vectors).
      */
      void update() const ;
-    
+
   public:
      virtual Point get_center () const {return center ;} ;
      virtual bool is_in(const Point& xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
      virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
-   
+
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
 
@@ -180,8 +180,8 @@ class Domain_polar_shell_inner_adapted : public Domain {
      virtual Val_domain laplacian (const Val_domain&, int) const ;
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
      virtual Val_domain der_r (const Val_domain&) const ;
-    
-    
+
+
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
@@ -193,17 +193,17 @@ class Domain_polar_shell_inner_adapted : public Domain {
       */
      Term_eq flat_grad_spher (const Term_eq& so) const ;
 
-     virtual Term_eq partial_spher (const Term_eq&) const ;     
+     virtual Term_eq partial_spher (const Term_eq&) const ;
      virtual Term_eq partial_cart (const Term_eq&) const ;
      virtual const Term_eq* give_normal(int, int) const ;
-     virtual Term_eq grad_term_eq (const Term_eq&) const ;   
-	 	
+     virtual Term_eq grad_term_eq (const Term_eq&) const ;
+
 	/**
 	* Computes \f$ \partial_r \f$.
 	* @param so : the source \c Term_eq.
 	* @returns : the derivative.
 	*/
-     Term_eq  derive_r (const Term_eq& so) const ;   
+     Term_eq  derive_r (const Term_eq& so) const ;
   	/**
 	* Computes \f$ \partial_\theta \f$.
 	* @param so : the source \c Term_eq.
@@ -218,15 +218,15 @@ class Domain_polar_shell_inner_adapted : public Domain {
 	* The result is stored in \c normal_cart
 	*/
      void do_normal_cart () const ;
-	  
+
      virtual Term_eq der_normal_term_eq (const Term_eq&, int) const ;
      virtual Term_eq dr_term_eq (const Term_eq&) const ;
-     virtual Term_eq lap_term_eq (const Term_eq&, int) const ;   
-     virtual Term_eq lap2_term_eq (const Term_eq&, int) const ; 
+     virtual Term_eq lap_term_eq (const Term_eq&, int) const ;
+     virtual Term_eq lap2_term_eq (const Term_eq&, int) const ;
      virtual Term_eq mult_r_term_eq (const Term_eq&) const ;
      virtual Term_eq div_r_term_eq (const Term_eq&) const ;
      virtual Term_eq integ_term_eq (const Term_eq&, int) const ;
-     
+
      virtual int nbr_unknowns (const Tensor&, int) const ;
 	/**
 	* Computes the number of true unknowns of a \c Val_domain.
@@ -300,10 +300,9 @@ class Domain_polar_shell_inner_adapted : public Domain {
 	* @param pos_cf : current position.
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
-	      
+
 public:
      virtual ostream& print (ostream& o) const ;
-          
      friend class Space_polar_adapted ;
 } ;
 
@@ -322,7 +321,7 @@ public:
 * \f$ \theta = \theta^\star \f$
 *
 * \f$ R \f$ is the fixed inner boundary and \f$ r_o \f$ is an angular function giving the value of the outer variable boundary.
-* 
+*
 * \ingroup domain
 */
 class Domain_polar_shell_outer_adapted : public Domain {
@@ -338,7 +337,7 @@ class Domain_polar_shell_outer_adapted : public Domain {
  /**
    * Pointer on the \c Term_eq containing the normal vector to the outer boundary, in orthonormal spherical coordinates.
    */
-  mutable Term_eq* normal_spher ; 
+  mutable Term_eq* normal_spher ;
   /**
    * Pointer on the \c Term_eq containing the normal vector to the outer boundary, in Cartesian coordinates.
    */
@@ -355,10 +354,10 @@ class Domain_polar_shell_outer_adapted : public Domain {
    * Pointer on the \c Term_eq containing the \f$ {\rm d} r / {\rm d} \theta\f$.
    */
   mutable Term_eq* dt_rad_term_eq ;
- 
+
   Point center ; ///< Absolute coordinates of the center.
- 
- public: 
+
+ public:
  /**
   * Constructor :
   * @param sp [input] : the associated \c Space.
@@ -390,47 +389,47 @@ class Domain_polar_shell_outer_adapted : public Domain {
   */
   Domain_polar_shell_outer_adapted (const Space& sp, int num, FILE* fd) ;
 
-  virtual ~Domain_polar_shell_outer_adapted () ; 
-  
+  virtual ~Domain_polar_shell_outer_adapted () ;
+
   virtual void del_deriv() const ;
-  
+
   virtual void save (FILE*) const ;
  /**
     * Returns the outer variable boundary.
     */
    Val_domain get_outer_radius() const {return *outer_radius;} ;
-  private: 
+  private:
     virtual void do_absol ()  const ;
     virtual void do_radius () const ;
     virtual void do_cart ()  const ;
     virtual void do_cart_surr () const ;
 
-    
+
   private:
-     virtual void set_cheb_base(Base_spectral&) const ;     
+     virtual void set_cheb_base(Base_spectral&) const ;
      virtual void set_legendre_base(Base_spectral&) const ;
-     virtual void set_anti_cheb_base(Base_spectral&) const ;       
-     virtual void set_anti_legendre_base(Base_spectral&) const ; 
-     virtual void set_cheb_base_with_m(Base_spectral&, int m) const ;     
+     virtual void set_anti_cheb_base(Base_spectral&) const ;
+     virtual void set_anti_legendre_base(Base_spectral&) const ;
+     virtual void set_cheb_base_with_m(Base_spectral&, int m) const ;
      virtual void set_legendre_base_with_m(Base_spectral&, int m) const ;
-     virtual void set_anti_cheb_base_with_m(Base_spectral&, int m) const ;       
-     virtual void set_anti_legendre_base_with_m(Base_spectral&, int m) const ;     
-     virtual void set_cheb_r_base(Base_spectral&) const ;  
+     virtual void set_anti_cheb_base_with_m(Base_spectral&, int m) const ;
+     virtual void set_anti_legendre_base_with_m(Base_spectral&, int m) const ;
+     virtual void set_cheb_r_base(Base_spectral&) const ;
      virtual void set_legendre_r_base(Base_spectral&) const ;
 
-     virtual void do_coloc()  ;     
+     virtual void do_coloc()  ;
 
-  
+
      virtual int give_place_var (char*) const ;
-     
+
      virtual int nbr_unknowns_from_adapted() const ;
      virtual void vars_to_terms() const ;
      virtual void affecte_coef (int&, int, bool&) const ;
      virtual void xx_to_vars_from_adapted (Val_domain&, const Array<double>&, int&) const ;
      virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
      virtual void update_term_eq (Term_eq*) const ;
-     virtual void update_variable (const Val_domain&, const Scalar&, Scalar&) const ;   
-     virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;   
+     virtual void update_variable (const Val_domain&, const Scalar&, Scalar&) const ;
+     virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;
      virtual void update_mapping(const Val_domain&) ;
 
   public:
@@ -442,47 +441,47 @@ class Domain_polar_shell_outer_adapted : public Domain {
      * Updates all the quantities that depend on the inner radius (like the normal vectors).
      */
      void update() const ;
-      
+
   public:
-    
-    virtual Point get_center () const {return center ;} ; 
-   
-     virtual bool is_in(const Point& xx, double prec=1e-13) const ;    
+
+    virtual Point get_center () const {return center ;} ;
+
+     virtual bool is_in(const Point& xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
-     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ; 
-    
+     virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
+
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
-  public:      
-    
+  public:
+
      virtual Val_domain mult_cos_theta (const Val_domain&) const ;
      virtual Val_domain mult_sin_theta (const Val_domain&) const ;
      virtual Val_domain div_sin_theta (const Val_domain&) const ;
-        
-     virtual Val_domain mult_r (const Val_domain&) const ;   
+
+     virtual Val_domain mult_r (const Val_domain&) const ;
      virtual Val_domain div_r (const Val_domain&) const ;
      virtual Val_domain laplacian (const Val_domain&, int) const ;
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
      virtual Val_domain der_r (const Val_domain&) const ;
-  
+
     /**
       * Computes the flat gradient of a field, in orthonormal spherical coordinates.
       * @param so : the input field.
       * @returns : the gradient.
       */
      Term_eq flat_grad_spher (const Term_eq&) const ;
-  
-     virtual Term_eq partial_spher (const Term_eq&) const ;     
+
+     virtual Term_eq partial_spher (const Term_eq&) const ;
      virtual Term_eq partial_cart (const Term_eq&) const ;
      virtual const Term_eq* give_normal(int, int) const ;
-     virtual Term_eq grad_term_eq (const Term_eq&) const ;   
+     virtual Term_eq grad_term_eq (const Term_eq&) const ;
      virtual Term_eq integ_term_eq (const Term_eq&, int) const ;
 	/**
 	* Computes \f$ \partial_r \f$.
 	* @param so : the source \c Term_eq.
 	* @returns : the derivative.
 	*/
-     Term_eq  derive_r (const Term_eq& so) const ;   
+     Term_eq  derive_r (const Term_eq& so) const ;
   	/**
 	* Computes \f$ \partial_\theta \f$.
 	* @param so : the source \c Term_eq.
@@ -497,14 +496,14 @@ class Domain_polar_shell_outer_adapted : public Domain {
 	* The result is stored in \c normal_cart
 	*/
      void do_normal_cart () const ;
-   
+
      virtual Term_eq der_normal_term_eq (const Term_eq&, int) const ;
      virtual Term_eq dr_term_eq (const Term_eq&) const ;
-     virtual Term_eq lap_term_eq (const Term_eq&, int) const ;   
-     virtual Term_eq lap2_term_eq (const Term_eq&, int) const ; 
+     virtual Term_eq lap_term_eq (const Term_eq&, int) const ;
+     virtual Term_eq lap2_term_eq (const Term_eq&, int) const ;
      virtual Term_eq mult_r_term_eq (const Term_eq&) const ;
      virtual Term_eq div_r_term_eq (const Term_eq&) const ;
-   
+
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
@@ -583,7 +582,6 @@ class Domain_polar_shell_outer_adapted : public Domain {
 	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int cf, int& pos_cf) const ;
 
-	    
 public:
      virtual ostream& print (ostream& o) const ;
      
@@ -596,7 +594,13 @@ public:
  * \ingroup domain
  */
 class Space_polar_adapted : public Space {
-     public:
+  private:
+  int n_shells;
+  
+  public:
+  int ADAPTED_OUTER;
+  int ADAPTED_INNER;
+
 	/**
      	* Standard constructor ; all the shells are initially not deformed.
      	* @param ttype [input] : the type of basis.
@@ -606,9 +610,9 @@ class Space_polar_adapted : public Space {
 	*/
 	Space_polar_adapted (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds) ;
 	Space_polar_adapted (FILE*) ; ///< Constructor from a file
-	virtual ~Space_polar_adapted() ; ///< Destructor        
+	virtual ~Space_polar_adapted() ; ///< Destructor
 	virtual void save(FILE*) const ;
-	
+
 	virtual int nbr_unknowns_from_variable_domains() const ;
 	virtual void affecte_coef_to_variable_domains(int& , int, Array<int>&) const ;
 	virtual void xx_to_ders_variable_domains(const Array<double>&, int&) const ;
@@ -629,7 +633,18 @@ class Space_polar_adapted : public Space {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_eq (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, int nused=-1, Array<int>** pused=0x0) const ; 
+	void add_eq (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, int nused=-1, Array<int>** pused=0x0) const ;
+
+	/**
+	* Adds a bulk equation and two matching conditions between nucleus and adapted shell.
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the bulk equation.
+	* @param rac : the string describing the first matching condition.
+	* @param rac_der : the string describing the second matching condition.
+	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
+	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+	*/
+	void add_eq_matter (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, int nused=-1, Array<int>** pused=0x0) const ;
 
 } ;
 }

@@ -43,7 +43,7 @@ namespace Kadath {
 * \f$ \varphi = \varphi^\star \f$
 *
 * \f$ R \f$ is the fixed outer boundary and \f$ r_i \f$ is an angular function giving the value of the inner variable boundary.
-* 
+*
 * \ingroup domain
 */
 
@@ -61,7 +61,7 @@ class Domain_shell_inner_adapted : public Domain {
   /**
    * Pointer on the \c Term_eq containing the normal vector to the inner boundary, in orthonormal spherical coordinates.
    */
-  mutable Term_eq* normal_spher ; 
+  mutable Term_eq* normal_spher ;
  /**
    * Pointer on the \c Term_eq containing the normal vector to the inner boundary, in Cartesian coordinates.
    */
@@ -77,21 +77,21 @@ class Domain_shell_inner_adapted : public Domain {
    /**
    * Pointer on the \c Term_eq containing the \f$ {\rm d} r / {\rm d} \theta\f$.
    */
-  mutable Term_eq* dt_rad_term_eq ;   
+  mutable Term_eq* dt_rad_term_eq ;
   /**
    * Pointer on the \c Term_eq containing the \f$ {\rm d} r / {\rm d} \varphi\f$.
    */
   mutable Term_eq* dp_rad_term_eq ;
-  
+
   Point center ; ///< Absolute coordinates of the center.
- 
- public: 
+
+ public:
   /**
   * Constructor :
   * @param sp [input] : the associated \c Space.
   * @param num : number of the domain (used by the \c Space).
   * @param ttype [input] : Chebyshev or Legendre type of spectral expansion.
-  * @param rin [input] : inner radius (constant with this constructor). 
+  * @param rin [input] : inner radius (constant with this constructor).
   * @param rout [input] : outer radius.
   * @param cr [input] : center of the spherical coordinates.
   * @param nbr [nbr] : number of points in each dimension.
@@ -102,7 +102,7 @@ class Domain_shell_inner_adapted : public Domain {
   * @param sp [input] : the associated \c Space.
   * @param num : number of the domain (used by the \c Space).
   * @param ttype [input] : Chebyshev or Legendre type of spectral expansion.
-  * @param rin [input] : inner radius. 
+  * @param rin [input] : inner radius.
   * @param rout [input] : outer radius.
   * @param cr [input] : center of the spherical coordinates.
   * @param nbr [nbr] : number of points in each dimension.
@@ -120,26 +120,27 @@ class Domain_shell_inner_adapted : public Domain {
   virtual ~Domain_shell_inner_adapted () ; ///< Destructor
   virtual void del_deriv() const ;
   virtual void save (FILE*) const ;
+  virtual double integ (const Val_domain&, int) const ;
    /**
     * Returns the inner variable boundary.
     */
   Val_domain get_inner_radius() const {return *inner_radius;} ;
 
-  private: 
+  private:
     virtual void do_absol ()  const ;
-    virtual void do_radius () const ; 
+    virtual void do_radius () const ;
     virtual void do_cart ()  const ;
-    virtual void do_cart_surr () const ; 
+    virtual void do_cart_surr () const ;
 
-  
+
   protected:
-   
-     virtual void set_cheb_base(Base_spectral&) const ;       
+
+     virtual void set_cheb_base(Base_spectral&) const ;
      virtual void set_legendre_base(Base_spectral&) const ;
 
-     virtual void set_anti_cheb_base(Base_spectral&) const ;       
-     virtual void set_anti_legendre_base(Base_spectral&) const ;  
-   
+     virtual void set_anti_cheb_base(Base_spectral&) const ;
+     virtual void set_anti_legendre_base(Base_spectral&) const ;
+
      virtual Tensor change_basis_cart_to_spher (int, const Tensor&) const ;
      virtual Tensor change_basis_spher_to_cart (int, const Tensor&) const ;
 
@@ -152,20 +153,20 @@ class Domain_shell_inner_adapted : public Domain {
 
      virtual void set_cheb_r_base(Base_spectral&) const ;
      virtual void set_legendre_r_base(Base_spectral&) const ;
-     
+
      virtual void do_coloc () ;
      virtual int give_place_var (char*) const ;
-     
+
      virtual int nbr_unknowns_from_adapted() const ;
      virtual void vars_to_terms() const ;
      virtual void affecte_coef (int&, int, bool&) const ;
      virtual void xx_to_vars_from_adapted (Val_domain&, const Array<double>&, int&) const ;
      virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
      virtual void update_term_eq (Term_eq*) const ;
-     virtual void update_variable (const Val_domain&, const Scalar&, Scalar&) const ;   
-     virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;   
+     virtual void update_variable (const Val_domain&, const Scalar&, Scalar&) const ;
+     virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;
      virtual void update_mapping(const Val_domain&) ;
-  
+
    public:
     /** Affects the inner radius.
      * @param so : the value to be used.
@@ -175,37 +176,37 @@ class Domain_shell_inner_adapted : public Domain {
      * Updates all the quantities that depend on the inner radius (like the normal vectors).
      */
      void update() const ;
-    
+
   public:
-     virtual Point get_center () const {return center ;} ; 
+     virtual Point get_center () const {return center ;} ;
      virtual bool is_in(const Point&xx, double prec=1e-13) const ;
-     virtual const Point absol_to_num(const Point&) const; 
-    
+     virtual const Point absol_to_num(const Point&) const;
+
      virtual const Point absol_to_num_bound(const Point&, int) const;
-     
-   
+
+
      virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
   public:
-    
+
      virtual Val_domain mult_cos_phi (const Val_domain&) const ;
      virtual Val_domain mult_sin_phi (const Val_domain&) const ;
      virtual Val_domain mult_cos_theta (const Val_domain&) const ;
      virtual Val_domain mult_sin_theta (const Val_domain&) const ;
-     virtual Val_domain div_sin_theta (const Val_domain&) const ;  
+     virtual Val_domain div_sin_theta (const Val_domain&) const ;
      virtual Val_domain div_cos_theta (const Val_domain&) const ;
      virtual Val_domain ddp (const Val_domain&) const ;
      virtual Val_domain der_r (const Val_domain&) const ;
      virtual Val_domain div_r (const Val_domain&) const ;
      virtual Val_domain laplacian (const Val_domain&, int) const ;
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
- 
+
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
 
-     virtual int nbr_unknowns (const Tensor&, int) const ;	
+     virtual int nbr_unknowns (const Tensor&, int) const ;
 	/**
 	* Computes the number of true unknowns of a \c Val_domain.
 	* It takes into account the various symmetries and regularity conditions to determine the precise number of degrees of freedom.
@@ -289,17 +290,17 @@ class Domain_shell_inner_adapted : public Domain {
       */
      Term_eq flat_grad_spher (const Term_eq&) const ;
 
-     virtual Term_eq partial_spher (const Term_eq&) const ;     
+     virtual Term_eq partial_spher (const Term_eq&) const ;
      virtual Term_eq partial_cart (const Term_eq&) const ;
      virtual Term_eq connection_spher (const Term_eq&) const ;
      virtual const Term_eq* give_normal(int, int) const ;
-     
+
 	/**
 	* Computes \f$ \partial_r \f$.
 	* @param so : the source \c Term_eq.
 	* @returns : the derivative.
 	*/
-     Term_eq derive_r (const Term_eq& so) const ;     
+     Term_eq derive_r (const Term_eq& so) const ;
 	/**
 	* Computes \f$ \partial_\theta \f$.
 	* @param so : the source \c Term_eq.
@@ -315,33 +316,33 @@ class Domain_shell_inner_adapted : public Domain {
 	/** Computes the normal wrt the inner boundary, in orthonormal spherical coordinates.
 	* The result is stored in \c normal_spher
 	*/
-     void do_normal_spher () const ; 
+     void do_normal_spher () const ;
 	/** Computes the normal wrt the inner boundary, in Cartesian coordinates.
 	* The result is stored in \c normal_cart
 	*/
      void do_normal_cart () const ;
-	  
+
      virtual Term_eq der_normal_term_eq (const Term_eq&, int) const ;
      virtual Term_eq dr_term_eq (const Term_eq&) const ;
-     virtual Term_eq lap_term_eq (const Term_eq&, int) const ; 
+     virtual Term_eq lap_term_eq (const Term_eq&, int) const ;
      virtual Term_eq mult_r_term_eq (const Term_eq&) const ;
      virtual Term_eq integ_volume_term_eq (const Term_eq&) const ;
-     virtual Term_eq integ_term_eq (const Term_eq&, int) const ;
-     
+
      virtual Term_eq derive_flat_spher (int, char, const Term_eq&, const Metric*) const ;
      virtual Term_eq derive_flat_cart (int, char, const Term_eq&, const Metric*) const ;
-        
+
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
-  
+
      virtual double integ_volume (const Val_domain&) const ;
-	     
+
 public:
      virtual ostream& print (ostream& o) const ;
-     
-     friend class Space_spheric_adapted ;   
+
+     friend class Space_spheric_adapted ;
      friend class Space_bin_ns ;
+     friend class Space_bhns ;
      friend class Space_bin_bh ;
-     friend class Space_adapted_bh ; 
+     friend class Space_adapted_bh ;
      friend class Space_bbh ;
 } ;
 
@@ -361,7 +362,7 @@ public:
 * \f$ \varphi = \varphi^\star \f$
 *
 * \f$ R \f$ is the fixed inner boundary and \f$ r_o \f$ is an angular function giving the value of the outer variable boundary.
-* 
+*
 * \ingroup domain
 */
 class Domain_shell_outer_adapted : public Domain {
@@ -398,10 +399,10 @@ class Domain_shell_outer_adapted : public Domain {
    * Pointer on the \c Term_eq containing the \f$ {\rm d} r / {\rm d} \varphi\f$.
    */
   mutable Term_eq* dp_rad_term_eq ;
-  
+
   Point center ; ///< Absolute coordinates of the center.
- 
- public: 
+
+ public:
   /**
   * Constructor :
   * @param sp [input] : the associated \c Space.
@@ -441,20 +442,20 @@ class Domain_shell_outer_adapted : public Domain {
     */
   Val_domain get_outer_radius() const {return *outer_radius;} ;
 
-  private: 
+  private:
     virtual void do_absol ()  const ;
     virtual void do_radius () const ;
     virtual void do_cart ()  const ;
     virtual void do_cart_surr () const ;
 
-    
+
   protected:
-   
-     virtual void set_cheb_base(Base_spectral&) const ;       
+
+     virtual void set_cheb_base(Base_spectral&) const ;
      virtual void set_legendre_base(Base_spectral&) const ;
- 
-     virtual void set_anti_cheb_base(Base_spectral&) const ;       
-     virtual void set_anti_legendre_base(Base_spectral&) const ;  
+
+     virtual void set_anti_cheb_base(Base_spectral&) const ;
+     virtual void set_anti_legendre_base(Base_spectral&) const ;
 
      virtual void set_cheb_base_r_spher(Base_spectral&) const ;
      virtual void set_cheb_base_t_spher(Base_spectral&) const ;
@@ -465,18 +466,18 @@ class Domain_shell_outer_adapted : public Domain {
 
      virtual void set_cheb_r_base(Base_spectral&) const ;
      virtual void set_legendre_r_base(Base_spectral&) const ;
-     
+
      virtual void do_coloc () ;
      virtual int give_place_var (char*) const ;
-      
+
      virtual int nbr_unknowns_from_adapted() const ;
      virtual void vars_to_terms() const ;
      virtual void affecte_coef (int&, int, bool&) const ;
      virtual void xx_to_vars_from_adapted (Val_domain&, const Array<double>&, int&) const ;
      virtual void xx_to_ders_from_adapted (const Array<double>&, int&) const ;
      virtual void update_term_eq (Term_eq*) const ;
-     virtual void update_variable (const Val_domain&, const Scalar&, Scalar&) const ;   
-     virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;   
+     virtual void update_variable (const Val_domain&, const Scalar&, Scalar&) const ;
+     virtual void update_constante (const Val_domain&, const Scalar&, Scalar&) const ;
      virtual void update_mapping(const Val_domain&) ;
   public:
     /** Affects the outer radius.
@@ -487,12 +488,13 @@ class Domain_shell_outer_adapted : public Domain {
      * Updates all the quantities that depend on the inner radius (like the normal vectors).
      */
      void update() const ;
- 
+
   public:
-     virtual Point get_center () const {return center ;} ; 
+     virtual Point get_center () const {return center ;} ;
 
      virtual bool is_in(const Point&xx, double prec=1e-13) const ;
      virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num_bound(const Point&, int) const;
      virtual void do_der_abs_from_der_var(Val_domain** der_var, Val_domain** der_abs) const ;
      virtual Base_spectral mult (const Base_spectral&, const Base_spectral&) const ;
 
@@ -501,18 +503,18 @@ class Domain_shell_outer_adapted : public Domain {
      virtual Val_domain mult_sin_phi (const Val_domain&) const ;
      virtual Val_domain mult_cos_theta (const Val_domain&) const ;
      virtual Val_domain mult_sin_theta (const Val_domain&) const ;
-     virtual Val_domain div_sin_theta (const Val_domain&) const ;  
+     virtual Val_domain div_sin_theta (const Val_domain&) const ;
      virtual Val_domain div_cos_theta (const Val_domain&) const ;
      virtual Val_domain laplacian (const Val_domain&, int) const ;
      virtual Val_domain laplacian2 (const Val_domain&, int) const ;
- 
+
      virtual Tensor change_basis_cart_to_spher (int dd, const Tensor&) const ;
      virtual Tensor change_basis_spher_to_cart (int dd, const Tensor&) const ;
-     
+
      virtual Val_domain ddp (const Val_domain&) const ;
      virtual Val_domain der_r (const Val_domain&) const ;
      virtual Val_domain div_r (const Val_domain&) const ;
-      
+
      virtual double val_boundary (int, const Val_domain&, const Index&) const ;
      virtual void find_other_dom (int, int, int&, int&) const ;
      virtual Val_domain der_normal (const Val_domain&, int) const ;
@@ -599,18 +601,18 @@ class Domain_shell_outer_adapted : public Domain {
       * @param so : the input field.
       * @returns : the gradient.
       */
-     Term_eq flat_grad_spher (const Term_eq&) const ;  
-     virtual Term_eq partial_spher (const Term_eq&) const ;     
+     Term_eq flat_grad_spher (const Term_eq&) const ;
+     virtual Term_eq partial_spher (const Term_eq&) const ;
      virtual Term_eq partial_cart (const Term_eq&) const ;
      virtual Term_eq connection_spher (const Term_eq&) const ;
      virtual const Term_eq* give_normal(int, int) const ;
-     
+
 	/**
 	* Computes \f$ \partial_r \f$.
 	* @param so : the source \c Term_eq.
 	* @returns : the derivative.
 	*/
-     Term_eq  derive_r (const Term_eq& so) const ;     
+     Term_eq  derive_r (const Term_eq& so) const ;
 	/**
 	* Computes \f$ \partial_\theta \f$.
 	* @param so : the source \c Term_eq.
@@ -634,7 +636,7 @@ class Domain_shell_outer_adapted : public Domain {
 
      virtual Term_eq der_normal_term_eq (const Term_eq&, int) const ;
      virtual Term_eq dr_term_eq (const Term_eq&) const ;
-     virtual Term_eq lap_term_eq (const Term_eq&, int) const ; 
+     virtual Term_eq lap_term_eq (const Term_eq&, int) const ;
      virtual Term_eq mult_r_term_eq (const Term_eq&) const ;
      virtual Term_eq integ_volume_term_eq (const Term_eq&) const ;
      virtual Term_eq integ_term_eq (const Term_eq&, int) const ;
@@ -648,7 +650,8 @@ public:
      virtual ostream& print (ostream& o) const ;
      
      friend class Space_spheric_adapted ;
-     friend class Space_bin_ns ;   
+     friend class Space_bin_ns ;
+     friend class Space_bhns ;
      friend class Space_bin_bh ;
      friend class Space_adapted_bh ;     
      friend class Space_bbh ;
@@ -669,9 +672,9 @@ class Space_spheric_adapted : public Space {
 	*/
 	Space_spheric_adapted (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds) ;
 	Space_spheric_adapted (FILE*) ; ///< Constructor from a file
-	virtual ~Space_spheric_adapted() ; ///< Destructor        
+	virtual ~Space_spheric_adapted() ; ///< Destructor
 	virtual void save(FILE*) const ;
-	
+
 	virtual int nbr_unknowns_from_variable_domains() const ;
 	virtual void affecte_coef_to_variable_domains(int& , int, Array<int>&) const ;
 	virtual void xx_to_ders_variable_domains(const Array<double>&, int&) const ;
@@ -691,8 +694,8 @@ class Space_spheric_adapted : public Space {
 	* @param rac_der : the string describing the second matching condition.
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
-	*/	
-	void add_eq (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, int nused=-1, Array<int>** pused=0x0)  ; 
+	*/
+	void add_eq (System_of_eqs& syst, const char* eq, const char* rac, const char* rac_der, int nused=-1, Array<int>** pused=0x0)  ;
 	/**
 	* Adds an equation being a surface integral at infinity.
 	* @param syst : the \c System_of_eqs.

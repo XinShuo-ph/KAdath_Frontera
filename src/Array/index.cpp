@@ -22,83 +22,16 @@
 #include "dim_array.hpp"
 #include "tensor.hpp"
 namespace Kadath {
-// Constructor
-Index::Index(const Dim_array& res) : sizes(res) {
-	coord = new int[get_ndim()] ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	    coord[i] = 0 ;
-} 
 
-// Copy constructor
-Index::Index(const Index& so) : sizes(so.sizes) {
-
-	coord = new int[get_ndim()] ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	   coord[i] = so.coord[i] ;
-} 
-
-// Constructor fro a tensor :
+///< Constructor for looping on components of a tensor
 Index::Index (const Tensor& t) : sizes(t.valence) {
-	for (int i=0 ; i<get_ndim() ; i++)
-		sizes.set(i) = t.get_ndim() ;
-	coord = new int[get_ndim()] ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	    coord[i] = 0 ;
-}
+  for (int i=0 ; i<get_ndim() ; i++)
+  	sizes.set(i) = t.get_ndim() ;
 
-// Destructor
-Index::~Index() {
-	delete [] coord ;
-}
+  coord = MemoryMapper::get_memory<int>(get_ndim());
 
-// Read/write
-int& Index::set(int i) {
-	assert(i>=0) ;
-	assert(i<get_ndim()) ;
-	return coord[i] ;
-}
-
-// Read only
-int Index::operator() (int i) const {
-	assert(i>=0) ;
-	assert(i<get_ndim()) ;
-	return coord[i] ;
-}
-
-// Assignement
-void Index::operator= (const Index& so) {
-	assert (sizes == so.sizes) ;
-	for (int i=0 ; i<get_ndim() ; i++)
-	    coord[i] = so.coord[i] ;
-}
-
-void Index::set_start() {
-	for (int i=0 ; i<get_ndim() ; i++)
-	     coord[i] = 0 ;
-}
-
-// Increment
-bool Index::inc (int increm, int var) {
-	bool res = ((var >=0) && (var<get_ndim())) ? true : false ;
-	if (res) {
-	coord[var] += increm ;
-	for (int i=var ; i<get_ndim()-1 ; i++) {
-		div_t division = div(coord[i], sizes(i)) ;
-		coord[i] = division.rem ;
-		coord[i+1] += division.quot ;
-	}
-        res = (coord[get_ndim()-1] >= sizes(get_ndim()-1)) ? false : true ;
-	}
-	return res ;
-}
-
-bool Index::operator== (const Index& xx) const {
-	bool res = (get_ndim()==xx.get_ndim()) ? true : false ;
-	if (res) 
-		for (int i=0 ; i<get_ndim() ; i++)
-			if (xx.coord[i] != coord[i])
-				res = false ;
-	return res ;
+  for (int i=0 ; i<get_ndim() ; i++)
+      coord[i] = 0 ;
 }
 
 ostream& operator<< (ostream& o, const Index& so) {

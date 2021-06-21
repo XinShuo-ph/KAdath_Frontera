@@ -31,13 +31,14 @@ double chi_lim_eta (double chi, double rext, double a, double chi_c) ;
 double zerosec(double (*f)(double, const Param&), const Param& parf, 
     double x1, double x2, double precis, int nitermax, int& niter) ;
 
-    
-double func_ab (double aa, const Param& par) {
+double func_ab2 (double aa, const Param& par) {
 	double r1 = par.get_double(0) ;
 	double r2 = par.get_double(1) ;
 	double d = par.get_double(2) ;
 	return (sqrt(aa*aa+r1*r1)+sqrt(aa*aa+r2*r2)-d) ;
 }
+    
+
 
 Space_bbh::Space_bbh (int ttype, double dist, double rbh1, double rbh2, double rbi, double rext, int nr) {
 
@@ -63,7 +64,7 @@ Space_bbh::Space_bbh (int ttype, double dist, double rbh1, double rbh2, double r
     double precis = PRECISION ;
     int nitermax = 500 ;
     int niter ;
-    double aa = zerosec(func_ab, par_a, a_min, a_max, precis, nitermax, niter) ;
+    double aa = zerosec(func_ab2, par_a, a_min, a_max, precis, nitermax, niter) ;
     double eta_plus = asinh(aa/2/rbh2) ;
     double eta_minus = -asinh(aa/2/rbh1) ;
     

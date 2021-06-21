@@ -23,6 +23,8 @@
 #include "space.hpp"
 #include "dim_array.hpp"
 #include "base_spectral.hpp"
+#include "memory.hpp"
+
 namespace Kadath {
 
 Val_domain sin(const Val_domain& ) ;
@@ -60,33 +62,34 @@ Val_domain atan (const Val_domain&) ;
 double maxval (const Val_domain&) ;
 
 /**
-* Class for storing the basis of decompositions of a field and its values on both the configuration 
+* Class for storing the basis of decompositions of a field and its values on both the configuration
 * and coefficients spaces, in a given \c Domain.
 *
 * \ingroup spectral
 **/
 
-class Val_domain {
+class Val_domain : public MemoryMappable {
 
     protected:
 	const Domain* zone ; ///< Pointer to the associated \c Domain
 	Base_spectral base ; ///< Spectral basis of the field.
 
 	bool is_zero ; ///< Indicator used for null fields (for speed issues).
-	
+
 	mutable Array<double>* c ; ///< Pointer on the \c Array of the values in the configuration space.
 	mutable Array<double>* cf ; ///< Pointer on the \c Array of the values in the coefficients space.
 	mutable bool in_conf ; ///< Is the field known in the configuration space ?
 	mutable bool in_coef ;///< Is the field known in the coefficient space ?
- 
+
 	mutable Val_domain** p_der_var ; ///< Pointers on the derivatives of the field with respect to the numerical coordinates.
         mutable Val_domain** p_der_abs ; ///< Pointers on the derivatives of the field with respect to the absolute Cartesian coordinates.
 
-	private: 
+	private:
 	   void del_deriv() const ; ///< Delete the derived quantities.
 	   void compute_der_var() const ;	///< Computes the derivatives with respect to the numerical coordinates.
 	   void compute_der_abs() const ; ///< Computes the derivatives with respect to the absolute Cartesian coordinates.
-      
+	   void assign_vals(const Val_domain&) ; ///< assigns the content of another Val_domain to this one, even if they are in different domains. Be careful with this.
+
     public:
 	/**
 	* Constructor from a \c Domain.
@@ -108,20 +111,20 @@ class Val_domain {
 	/**
 	* @returns a pointer on the \c Domain.
 	*/
-	const Domain* get_domain() const  {return zone ;} ;  
+	const Domain* get_domain() const  {return zone ;} ;
 	void operator= (const Val_domain&) ; ///< Assignement to another \c Val_domain
 	void operator= (double) ; ///< Assignement to a \c double , in the configuration space.
 	void annule_hard() ; ///< Sets all the arrays to zero (the logical state is NOT set to zero).
 	void annule_hard_coef() ; ///< Sets all the arrays to zero in the coefficient space (the logical state is NOT set to zero).
 	/**
 	* Returns the basis of decomposition.
-	*/	
+	*/
 	const Base_spectral& get_base() const {return base ;} ;
         /**
 	* Sets the basis of decomposition.
 	*/
 	Base_spectral& set_base() {return base ;} ;
-	
+
 	/**
 	* @returns the values in the configuration space.
 	*/
@@ -136,7 +139,7 @@ class Val_domain {
 	/**
 	* Check whether the logical state is zero or not.
 	*/
-	bool check_if_zero() const {return is_zero ;} ; 
+	bool check_if_zero() const {return is_zero ;} ;
 
     public:
 	/**
@@ -166,7 +169,7 @@ class Val_domain {
 	void std_base_y_cart() ; ///< Sets the basis for the Y-component of a vector in Cartesian coordinates.
 	void std_base_z_cart() ; ///< Sets the basis for the Z-component of a vector in Cartesian coordinates.
 	void std_r_base() ;  ///< Sets the basis for the radius.
- 
+
 	void std_base_rt_spher() ; ///< Sets the basis for the \f$(r,\theta)\f$ component of a 2-tensor in orthonormal spherical coordinates.
 	void std_base_rp_spher() ; ///< Sets the basis for the \f$(r,\varphi)\f$ component of a 2-tensor in orthonormal spherical coordinates.
 	void std_base_tp_spher() ; ///< Sets the basis for the \f$(\theta, \varphi)\f$ component of a 2-tensor in orthonormal spherical coordinates.
@@ -183,7 +186,7 @@ class Val_domain {
 	void std_base_r_mtz() ; ///< Sets the basis for the radial component of a vector in orthonormal coordinates in the MTZ context.
 	void std_base_t_mtz() ; ///< Sets the basis for the \f$\theta\f$ component of a vector in orthonormal coordinates in the MTZ context.
 	void std_base_p_mtz() ; ///< Sets the basis for the \f$\varphi\f$ component of a vector in orthonormal coordinates in the MTZ context.
-	
+
 	/**
 	* Read/write the value of the field in the configuration space. The coefficients are destroyed.
 	* @param pos [input] : point concerned.
@@ -260,44 +263,44 @@ class Val_domain {
 	void operator-= (double) ; ///< Operator -=
 	void operator*= (double) ; ///< Operator *=
 	void operator/= (double) ; ///< Operator /=
-	    
-	friend class Space ;	
+
+	friend class Space ;
 	friend class Space_spheric ;
 	friend class Scalar ;
 	friend class Domain_nucleus ;
 	friend class Domain_shell ;
-	friend class Domain_shell_log ;	
+	friend class Domain_shell_log ;
 	friend class Domain_shell_surr ;
 	friend class Domain_compact ;
 	friend class Domain_bispheric_rect ;
 	friend class Domain_bispheric_chi_first ;
-	friend class Domain_bispheric_eta_first ;	
+	friend class Domain_bispheric_eta_first ;
 	friend class Domain_critic_inner ;
 	friend class Domain_critic_outer ;
 	friend class Domain_polar_nucleus ;
-	friend class Domain_polar_shell ;	
+	friend class Domain_polar_shell ;
 	friend class Domain_polar_shell_inner_adapted ;
 	friend class Domain_polar_shell_outer_adapted ;
-	friend class Domain_polar_compact ;	
+	friend class Domain_polar_compact ;
 	friend class Domain_oned_ori ;
 	friend class Domain_oned_qcq ;
 	friend class Domain_oned_inf ;
 	friend class Domain_spheric_periodic_nucleus ;
 	friend class Domain_spheric_periodic_shell ;
-	friend class Domain_spheric_periodic_compact ;	
+	friend class Domain_spheric_periodic_compact ;
 	friend class Domain_spheric_time_nucleus ;
-	friend class Domain_spheric_time_shell ;	
+	friend class Domain_spheric_time_shell ;
 	friend class Domain_spheric_time_compact ;
 	friend class Domain_shell_outer_adapted ;
 	friend class Domain_shell_inner_adapted ;
-	friend class Domain_shell_inner_homothetic ;	
+	friend class Domain_shell_inner_homothetic ;
 	friend class Domain_shell_outer_homothetic ;
 	friend class Domain_nucleus_symphi ;
 	friend class Domain_shell_symphi ;
 	friend class Domain_compact_symphi ;
-	friend class Domain_polar_periodic_nucleus ;	
+	friend class Domain_polar_periodic_nucleus ;
 	friend class Domain_polar_periodic_shell ;
-	friend class Domain_fourD_periodic_nucleus ;	
+	friend class Domain_fourD_periodic_nucleus ;
 	friend class Domain_fourD_periodic_shell ;
 
 
@@ -317,7 +320,7 @@ class Val_domain {
 	friend Val_domain operator- (double, const Val_domain&) ;
 	friend Val_domain operator* (const Val_domain&, const Val_domain&) ;
 	friend Val_domain operator* (const Val_domain&, double) ;
-	friend Val_domain operator* (double, const Val_domain&) ;	
+	friend Val_domain operator* (double, const Val_domain&) ;
 	friend Val_domain operator* (const Val_domain&, int) ;
 	friend Val_domain operator* (int, const Val_domain&) ;
 	friend Val_domain operator* (const Val_domain&, long int) ;
@@ -337,5 +340,5 @@ class Val_domain {
 	friend double diffmax (const Val_domain&, const Val_domain&) ;
    friend double maxval (const Val_domain&) ;
 } ;
-}	
+}
 #endif

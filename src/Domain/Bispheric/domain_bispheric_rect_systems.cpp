@@ -19,7 +19,7 @@
 
 #include "headcpp.hpp"
 #include "bispheric.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "param.hpp"
 #include "val_domain.hpp"
 

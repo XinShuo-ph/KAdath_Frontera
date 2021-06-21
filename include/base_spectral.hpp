@@ -22,6 +22,7 @@
 
 #include "dim_array.hpp"
 #include "array.hpp"
+#include "memory.hpp"
 
 #define NBR_MAX_BASE    30
 #define CHEB         1
@@ -65,7 +66,7 @@ class Point ;
 * \ingroup spectral
 **/
 
-class Base_spectral {
+class Base_spectral : public MemoryMappable {
      protected:
         bool def ; ///< \c true if the \c Base_spectral is defined and \c false otherwise.
         int ndim ; ///< Number of dimensions.
@@ -74,7 +75,7 @@ class Base_spectral {
         * The size of each array depends on the order of the various numerical coordinates.
 	*/
 	Array<int>** bases_1d ;
-	
+
      public:
 	/**
 	* Standard constructor, the \c Base_spectral is not defined.
@@ -107,7 +108,7 @@ class Base_spectral {
 	* @param nbr_coefs [input] : a \c Dim_array storing the number of coefficients in each dimenions.
 	*/
 	void allocate (const Dim_array& nbr_coefs) ;
-	/**   	
+	/**
 	* Allocates the various arrays, for a given number of coefficients and sets basis to some values (same for all harmonics).
 	* It assumes one is working in 3D.
 	* @param nbr_coefs [input] : a \c Dim_array storing the number of coefficients in each dimenions.
@@ -116,7 +117,7 @@ class Base_spectral {
 	* @param baser : basis for \f$\varphi\f$
 	*/
         void set(Dim_array const& nbr_coefs, int basephi, int basetheta, int baser);
-	
+
 	/**
         * performs the coefficient transformation for one particular variable.
 	* @param var [input] : the variable for which the coefficients are to be computed.
@@ -162,16 +163,16 @@ class Base_spectral {
 	* may is changed but not the others basis which should be changed by hand, if needed.
 	* @returns the coefficients of the result.
 	*/
-	Array<double> ope_1d (int (*function) (int, Array<double>&), 
+	Array<double> ope_1d (int (*function) (int, Array<double>&),
 				int var , const Array<double>& so, Base_spectral& base) const ;
-				
+
      friend bool operator== (const Base_spectral&, const Base_spectral&) ; ///< Comparison operator
      friend ostream& operator<< (ostream& o, const Base_spectral&) ; ///< Display
      friend class Space ;
      friend class Space_spheric ;
      friend class Scalar ;
      friend class Domain_nucleus ;
-     friend class Domain_shell ;    
+     friend class Domain_shell ;
      friend class Domain_shell_log ;
      friend class Domain_compact ;
      friend class Domain_bispheric_rect ;
@@ -180,29 +181,29 @@ class Base_spectral {
      friend class Domain_critic_inner ;
      friend class Domain_critic_outer ;
      friend class Domain_polar_nucleus ;
-     friend class Domain_polar_shell ; 
+     friend class Domain_polar_shell ;
      friend class Domain_polar_shell_inner_adapted ;
      friend class Domain_polar_shell_outer_adapted ;
-     friend class Domain_polar_compact ;     
+     friend class Domain_polar_compact ;
      friend class Domain_oned_ori ;
      friend class Domain_oned_qcq ;
      friend class Domain_oned_inf ;
      friend class Domain_spheric_periodic_nucleus ;
      friend class Domain_spheric_periodic_shell ;
-     friend class Domain_spheric_periodic_compact ;    
+     friend class Domain_spheric_periodic_compact ;
      friend class Domain_spheric_time_nucleus ;
-     friend class Domain_spheric_time_shell ;  
-     friend class Domain_spheric_time_compact ; 
-     friend class Domain_shell_inner_adapted ;    
+     friend class Domain_spheric_time_shell ;
+     friend class Domain_spheric_time_compact ;
+     friend class Domain_shell_inner_adapted ;
      friend class Domain_shell_outer_adapted ;
-     friend class Domain_shell_inner_homothetic ;    
+     friend class Domain_shell_inner_homothetic ;
      friend class Domain_shell_outer_homothetic ;
-     friend class Domain_nucleus_symphi ;     
+     friend class Domain_nucleus_symphi ;
      friend class Domain_shell_symphi ;
      friend class Domain_compact_symphi ;
-     friend class Domain_polar_periodic_nucleus ; 
+     friend class Domain_polar_periodic_nucleus ;
      friend class Domain_polar_periodic_shell ;
-     friend class Domain_fourD_periodic_nucleus ;   
+     friend class Domain_fourD_periodic_nucleus ;
      friend class Domain_fourD_periodic_shell ;
 } ;
 }

@@ -1,2 +1,14 @@
 doc/*
 *~
+build_*
+!build*/CMakeLists.txt
+!build*/compile
+./lib
+*.so
+*.a
+*jobscript*
+JOBID
+*compile*
+src/System_of_eqs/do_newton.cpp
+*build*
+*bin*

@@ -20,7 +20,7 @@
 #include "headcpp.hpp"
 #include "utilities.hpp"
 #include "oned.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "val_domain.hpp"
 namespace Kadath {
 int mult_xm1_1d (int, Array<double>&) ;

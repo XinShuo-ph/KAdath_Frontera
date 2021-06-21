@@ -21,7 +21,7 @@
 #include "utilities.hpp"
 #include "critic.hpp"
 #include "point.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "val_domain.hpp"
 namespace Kadath {
 // Standard constructor

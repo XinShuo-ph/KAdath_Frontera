@@ -1,1 +1,7 @@
-set (FFTW_LIBRARIES "/usr/lib/x86_64-linux-gnu/libfftw3.a")
+set (PGPLOT_LIBRARIES "/usr/lib/libpgplot.so.5")
+set (GSL_LIBRARIES "/usr/lib/x86_64-linux-gnu/libgsl.so")
+set (SCALAPACK_LIBRARIES "/usr/lib/x86_64-linux-gnu/libscalapack-openmpi.so")
+#set (BLACS_LIBRARIES "/usr/lib/x86_64-linux-gnu/libblacs-openmpi.so")
+set (FFTW_LIBRARIES "/usr/lib/x86_64-linux-gnu/libfftw3.so")
+set (BLAS_LIBRARIES "/usr/lib/x86_64-linux-gnu/libblas.so")
+set (LAPACK_LIBRARIES "/usr/lib/x86_64-linux-gnu/liblapack.so")

@@ -82,6 +82,7 @@ public:
           
    friend class Space_spheric_adapted ;   
    friend class Space_bin_ns ;
+   friend class Space_bhns ;
 } ;
 /**
 * Class for a spherical-like domain, having a symmetry with respect to the plane \f$ z=0 \f$.
@@ -140,6 +141,7 @@ public:
           
    friend class Space_spheric_adapted ;   
    friend class Space_bin_ns ;
+   friend class Space_bhns ;
 } ;
 }
 #endif

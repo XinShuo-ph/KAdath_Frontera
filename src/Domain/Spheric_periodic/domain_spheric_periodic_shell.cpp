@@ -20,7 +20,7 @@
 #include "headcpp.hpp"
 #include "utilities.hpp"
 #include "spheric_periodic.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "val_domain.hpp"
 
 namespace Kadath {

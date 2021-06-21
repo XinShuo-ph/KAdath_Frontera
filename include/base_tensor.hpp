@@ -25,6 +25,7 @@
 // Headers C
 #include "headcpp.hpp"
 #include "space.hpp"
+#include "memory.hpp"
 
 // Types of basis :
 #define CARTESIAN_BASIS 0
@@ -38,17 +39,17 @@ namespace Kadath {
 		    //-----------------------------------//
 
 /**
- * Describes the tensorial basis used by the various tensors. 
+ * Describes the tensorial basis used by the various tensors.
  * In each \c Domain it stores an integer describing the basis.
  * Possible choices :
- * \li CARTESIAN_BASIS : Cartesian 
+ * \li CARTESIAN_BASIS : Cartesian
  * \li SPHERICAL_BASIS : orthonormal spherical.
  * \li MTZ_BASIS : orthonormal basis, assuming the constant radius sections have a negative curvature.
  * \ingroup fields
  */
-class Base_tensor {
-    
-    // Data : 
+class Base_tensor : public MemoryMappable {
+
+    // Data :
     // -----
     protected:
 	const Space& space ; ///< The associated \c Space
@@ -57,7 +58,7 @@ class Base_tensor {
 
     // Constructors - Destructor
     // -------------------------
-	
+
   public:
 	/**
 	* Constructor, does not affect anything.
@@ -70,7 +71,7 @@ class Base_tensor {
 	* @param bb : input basis.
 	**/
 	Base_tensor (const Space& spa, int bb) ;
-	Base_tensor(const Base_tensor& ) ;	///< Copy constructor 
+	Base_tensor(const Base_tensor& ) ;	///< Copy constructor
 	/**
 	* Constructor from a file.
 	* @param spa : the \c Space.
@@ -79,8 +80,8 @@ class Base_tensor {
 	Base_tensor (const Space& spa, FILE* fd) ;
 	virtual ~Base_tensor() ;			///< Destructor
 
-    public: 
-	
+    public:
+
 	int& set_basis(int) ; ///< Read/write the basis in a given domain
 	int get_basis (int) const ; ///< Read only the basis in a given domain
 	void operator= (const Base_tensor&) ; ///< Affectation operator
@@ -88,12 +89,12 @@ class Base_tensor {
 	/**
 	* @returns : the \c Space (read only)/
 	*/
-	const Space& get_space () const {return space;} ; 
-	
+	const Space& get_space () const {return space;} ;
+
 	void save (FILE*) const ; ///< Saving function
 
     // Outputs
-    // ------- 
+    // -------
     friend ostream& operator<<(ostream& , const Base_tensor& ) ; ///< Display
     friend bool operator== (const Base_tensor&, const Base_tensor&) ; ///< Tests equality of two basis.
     friend bool operator!= (const Base_tensor&, const Base_tensor&) ; ///< Tests the difference of two basis.

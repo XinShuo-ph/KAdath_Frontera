@@ -21,15 +21,17 @@
 #define __OPE_EQ_HPP_
 
 #include "term_eq.hpp"
+#include "memory.hpp"
+
 namespace Kadath {
 
 /**
  * Abstract class that describes the various operators that can appear in the equations.
  * It can not be instanciated and one must use the derived classes.
- * It works at the \c Term_eq level (i.e. on a given \c Domain and using the dual quantities required by the automatic differentiation technique). 
+ * It works at the \c Term_eq level (i.e. on a given \c Domain and using the dual quantities required by the automatic differentiation technique).
  * \ingroup systems
  */
-class Ope_eq {
+class Ope_eq : public MemoryMappable {
 
 	protected:
 		const System_of_eqs* syst ; ///< The associated \c System_of_eqs
@@ -48,11 +50,11 @@ class Ope_eq {
 		* @param syst : the associated \c System_of_eqs.
 		* @param dom : the index of the \c Domain.
 		*/
-		Ope_eq (const System_of_eqs* syst, int dom) ; 
+		Ope_eq (const System_of_eqs* syst, int dom) ;
 		Ope_eq (const Ope_eq&) ; ///< Copy constructor
 	public:
 		virtual ~Ope_eq() ; ///< Destructor
-		
+
 		/**
 		* @return the index of the \c Domain.
 		*/
@@ -79,7 +81,7 @@ class Ope_id : public Ope_eq {
 		bool need_sum ; ///< True if an inner contraction is needed to compute the result.
 
 	public:
-		/** 
+		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
 		* @param so : The input \c Term_eq
@@ -88,7 +90,7 @@ class Ope_id : public Ope_eq {
 		* @param ttype : type of the indices (can differ from so, in whic case a \c Metric is required to do the manipulation).
 		*/
 		Ope_id (const System_of_eqs* syst, const Term_eq* so, int valence, char* names, Array<int>* ttype) ;
-		/** 
+		/**
 		* Constructor with mos of the stuff uninitialized.
 		* @param syst : the associated \c System_of_eqs.
 		* @param so : The input \c Term_eq
@@ -117,7 +119,7 @@ class Ope_pow : public Ope_eq {
 		*/
 		Ope_pow(const System_of_eqs* syst, int pow, Ope_eq* so) ;
 		virtual ~Ope_pow() ; ///< Destructor.
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -135,7 +137,7 @@ class Ope_minus : public Ope_eq {
 		*/
 		Ope_minus(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_minus() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -154,7 +156,7 @@ class Ope_add : public Ope_eq {
 		*/
 		Ope_add(const System_of_eqs*, Ope_eq* aa, Ope_eq* bb) ;
 		virtual ~Ope_add() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -173,7 +175,7 @@ class Ope_sub : public Ope_eq {
 		*/
 		Ope_sub(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
 		virtual ~Ope_sub() ;///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -193,7 +195,7 @@ class Ope_mult : public Ope_eq {
 		*/
 		Ope_mult(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
 		virtual ~Ope_mult() ;///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -213,7 +215,7 @@ class Ope_div: public Ope_eq {
 		*/
 		Ope_div(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
 		virtual ~Ope_div() ;///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -223,7 +225,7 @@ class Ope_div: public Ope_eq {
  * \ingroup systems.
  */
 class Ope_lap: public Ope_eq {
-  
+
 	public:
 		/**
 		* Constructor
@@ -232,7 +234,7 @@ class Ope_lap: public Ope_eq {
 		*/
 		Ope_lap(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_lap() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -242,7 +244,7 @@ class Ope_lap: public Ope_eq {
  * \ingroup systems.
  */
 class Ope_dtime: public Ope_eq {
-  
+
 	public:
 		/**
 		* Constructor
@@ -251,7 +253,7 @@ class Ope_dtime: public Ope_eq {
 		*/
 		Ope_dtime(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_dtime() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -281,7 +283,7 @@ class Ope_ddtime: public Ope_eq {
  * \ingroup systems.
  */
 class Ope_lap2: public Ope_eq {
-  
+
 	public:
 		/**
 		* Constructor
@@ -290,7 +292,7 @@ class Ope_lap2: public Ope_eq {
 		*/
 		Ope_lap2(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_lap2() ;///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -302,7 +304,7 @@ class Ope_lap2: public Ope_eq {
 class Ope_dn: public Ope_eq {
 
 	protected:
-		int bound ; ///< The boundary 
+		int bound ; ///< The boundary
 
 	public:
 		/**
@@ -313,7 +315,7 @@ class Ope_dn: public Ope_eq {
 		*/
 		Ope_dn(const System_of_eqs* syst, int bb, Ope_eq* so) ;
 		virtual ~Ope_dn() ;///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -324,7 +326,7 @@ class Ope_dn: public Ope_eq {
  */
 class Ope_grad: public Ope_eq {
 
-	public:	
+	public:
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
@@ -332,7 +334,7 @@ class Ope_grad: public Ope_eq {
 		*/
 		Ope_grad(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_grad() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -352,7 +354,7 @@ class Ope_scal: public Ope_eq {
 		*/
 		Ope_scal(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
 		virtual ~Ope_scal() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -372,12 +374,12 @@ class Ope_der: public Ope_eq {
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
 		* @param typeder : type of derivative (CON or COV)
-		* @param indder : name of the index of the derivative.	
+		* @param indder : name of the index of the derivative.
 		* @param so : target
 		*/
 		Ope_der(const System_of_eqs* syst, int typeder, char indder, Ope_eq* so) ;
 		virtual ~Ope_der() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -397,12 +399,12 @@ class Ope_der_flat: public Ope_eq {
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
 		* @param typeder : type of derivative (CON or COV)
-		* @param indder : name of the index of the derivative.	
+		* @param indder : name of the index of the derivative.
 		* @param so : target
 		*/
 		Ope_der_flat(const System_of_eqs* syst, int typeder, char indder, Ope_eq* so) ;
 		virtual ~Ope_der_flat() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -422,12 +424,12 @@ class Ope_der_background: public Ope_eq {
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
 		* @param typeder : type of derivative (CON or COV)
-		* @param indder : name of the index of the derivative.	
+		* @param indder : name of the index of the derivative.
 		* @param so : target
 		*/
 		Ope_der_background(const System_of_eqs* syst, int typeder, char indder, Ope_eq* so) ;
 		virtual ~Ope_der_background() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -449,7 +451,7 @@ class Ope_int: public Ope_eq {
 		*/
 		Ope_int(const System_of_eqs* syst, int bb, Ope_eq* so) ;
 		virtual ~Ope_int() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -467,7 +469,7 @@ class Ope_int_volume: public Ope_eq {
 		*/
 		Ope_int_volume (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_int_volume() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -487,7 +489,7 @@ class Ope_def: public Ope_eq {
 		* @param so : target
 		* @param val : valence of the result (can be different from so, due to summations)
 		* @param name : names of the indices
-		* @param ttype : type of the various indices (COV or CON).		
+		* @param ttype : type of the various indices (COV or CON).
 		*/
 		Ope_def (const System_of_eqs* syst, Ope_eq* so, int val, char* name, Array<int>* ttype) ;
 		virtual ~Ope_def() ;
@@ -506,11 +508,11 @@ class Ope_mult_r: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_mult_r (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_mult_r() ; ///< Destructor.
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -524,11 +526,11 @@ class Ope_mult_x: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_mult_x (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_mult_x() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -542,11 +544,11 @@ class Ope_srdr: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_srdr (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_srdr() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -562,11 +564,11 @@ class Ope_ddr: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_ddr (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_ddr() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -580,11 +582,11 @@ class Ope_dr: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_dr (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_dr() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -598,11 +600,11 @@ class Ope_ddp: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_ddp (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_ddp() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -616,11 +618,11 @@ class Ope_dt: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_dt (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_dt() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -634,11 +636,11 @@ class Ope_ddt: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_ddt (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_ddt() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -652,11 +654,11 @@ class Ope_div_r: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_div_r (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_div_r() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -670,11 +672,11 @@ class Ope_div_rsint: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_div_rsint (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_div_rsint() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -688,11 +690,11 @@ class Ope_mult_rsint: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_mult_rsint (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_mult_rsint() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -706,11 +708,11 @@ class Ope_div_cost: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_div_cost (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_div_cost() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -726,11 +728,11 @@ class Ope_div_xpone: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_div_xpone (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_div_xpone() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -744,11 +746,11 @@ class Ope_div_1mx2: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_div_1mx2 (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_div_1mx2() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -762,11 +764,11 @@ class Ope_div_1mrsL: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_div_1mrsL (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_div_1mrsL() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -780,11 +782,11 @@ class Ope_mult_1mrsL: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_mult_1mrsL (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_mult_1mrsL() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -798,11 +800,11 @@ class Ope_mult_sint: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_mult_sint (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_mult_sint() ; ///> Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -816,11 +818,11 @@ class Ope_div_sint: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_div_sint (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_div_sint() ; ///> Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -837,7 +839,7 @@ class Ope_partial : public Ope_eq {
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
 		* @param name : name of the index corresponding to the derivative
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_partial (const System_of_eqs* syst, char name, Ope_eq* so) ;
 		virtual ~Ope_partial() ; ///< Destructor
@@ -854,7 +856,7 @@ class Ope_determinant : public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_determinant (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_determinant() ; ///< Destructor
@@ -871,7 +873,7 @@ class Ope_inverse : public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_inverse (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_inverse() ; ///< Destructor
@@ -889,7 +891,7 @@ class Ope_inverse_nodet : public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_inverse_nodet (const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_inverse_nodet() ; ///< Destructor
@@ -909,7 +911,7 @@ class Ope_partial_var : public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_partial_var (const System_of_eqs* syst, int, Ope_eq* so) ;
 		virtual ~Ope_partial_var() ; ///< Destructor
@@ -922,7 +924,7 @@ class Ope_partial_var : public Ope_eq {
  * \ingroup systems.
  */
 class Ope_mode : public Ope_eq {
-	protected:	   
+	protected:
 		int bound ; ///< The boundary where the coefficients are read.
 		/**
 		* The desired coefficient.
@@ -938,7 +940,7 @@ class Ope_mode : public Ope_eq {
 		* @param bb : the boundary
 		* @param ind : which coefficient.
 		* @param val : the value with which the coefficient is "compared"
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_mode (const System_of_eqs*, int bb, const Index& ind, double val, Ope_eq* so) ;
 		virtual ~Ope_mode() ; ///< Destructor
@@ -951,7 +953,7 @@ class Ope_mode : public Ope_eq {
  * \ingroup systems.
  */
 class Ope_val_mode : public Ope_eq {
-	protected:	   
+	protected:
 		Index pos_cf ; ///< The desired coefficient.
 		double value ;///< The result is the coefficient minus value.
 
@@ -961,7 +963,7 @@ class Ope_val_mode : public Ope_eq {
 		* @param syst : the associated \c System_of_eqs.
 		* @param ind : which coefficient.
 		* @param val : the value with which the coefficient is "compared"
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_val_mode (const System_of_eqs* syst, const Index& ind, double val, Ope_eq* so) ;
 		virtual ~Ope_val_mode() ; ///< Destructor
@@ -974,7 +976,7 @@ class Ope_val_mode : public Ope_eq {
  * \ingroup systems.
  */
 class Ope_val : public Ope_eq {
-	protected:	   
+	protected:
 		Index pos ; ///< which collocation point.
 
 	public:
@@ -982,7 +984,7 @@ class Ope_val : public Ope_eq {
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
 		* @param ind : which  collocation point.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_val(const System_of_eqs* syst, const Index& ind, Ope_eq* so) ;
 		virtual ~Ope_val() ; ///< Destructor
@@ -995,7 +997,7 @@ class Ope_val : public Ope_eq {
  * \ingroup systems.
  */
 class Ope_point : public Ope_eq {
-	protected:	   
+	protected:
 		Point num; ///< Absolute coordinates of the point
 
 	public:
@@ -1003,7 +1005,7 @@ class Ope_point : public Ope_eq {
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
 		* @param pp : which point.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_point(const System_of_eqs* syst, const Point& pp, Ope_eq* so) ;
 		virtual ~Ope_point() ; ///< Destructor
@@ -1022,7 +1024,7 @@ class Ope_val_ori : public Ope_eq {
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
 		* @param dd : index of the \c Domain where the origin is (could be different from 0).
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_val_ori(const System_of_eqs* syst, int dd, Ope_eq* so) ;
 		virtual ~Ope_val_ori() ; ///< Destructor
@@ -1040,11 +1042,11 @@ class Ope_sqrt: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_sqrt(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_sqrt() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1058,11 +1060,11 @@ class Ope_sqrt_anti: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_sqrt_anti(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_sqrt_anti() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1077,11 +1079,11 @@ class Ope_sqrt_nonstd: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_sqrt_nonstd(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_sqrt_nonstd() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1095,11 +1097,11 @@ class Ope_exp: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_exp(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_exp() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1113,11 +1115,11 @@ class Ope_log: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_log(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_log() ; ///< Destructor.
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1131,11 +1133,11 @@ class Ope_cosh: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_cosh(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_cosh() ; ///< Destructor.
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1149,11 +1151,11 @@ class Ope_sinh: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_sinh(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_sinh() ; ///< Destructor.
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1168,11 +1170,11 @@ class Ope_atanh: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_atanh(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_atanh() ; ///< Destructor.
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1186,11 +1188,11 @@ class Ope_cos: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_cos(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_cos() ; ///< Destructor.
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1204,11 +1206,11 @@ class Ope_sin: public Ope_eq {
 		/**
 		* Constructor
 		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
+		* @param so : target
 		*/
 		Ope_sin(const System_of_eqs* syst, Ope_eq* so) ;
 		virtual ~Ope_sin() ; ///< Destructor.
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1226,7 +1228,7 @@ class Ope_fit_waves : public Ope_eq {
 		*/
 	    Ope_fit_waves (const System_of_eqs* syst, Ope_eq* so, Ope_eq* ome) ;
 	    virtual ~Ope_fit_waves() ; ///< Destructor
-      
+
 	    virtual Term_eq action() const ;
 } ;
 
@@ -1291,7 +1293,7 @@ class Ope_import: public Ope_eq {
 		 * \li in (0,*) the indexes of the domains situated on the other side of the boundary.
 		 * \li in (1,*) the name of the boundary, as seen by the other domains.
 		*/
-		Array<int> others ; 
+		Array<int> others ;
 
 	public:
 		/**
@@ -1303,7 +1305,7 @@ class Ope_import: public Ope_eq {
 		*/
 		Ope_import(const System_of_eqs* syst, int dd, int bb, const char* field) ;
 		virtual ~Ope_import() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1325,7 +1327,7 @@ class Ope_change_basis: public Ope_eq {
 		*/
 		Ope_change_basis(const System_of_eqs* syst, int target, Ope_eq* so) ;
 		virtual ~Ope_change_basis() ; ///< Destructor
-	
+
 		virtual Term_eq action() const ;
 } ;
 
@@ -1336,7 +1338,7 @@ class Ope_change_basis: public Ope_eq {
  */
 class Ope_def_global : public Ope_eq {
 	protected:
-		Term_eq* res ; ///< Result 
+		Term_eq* res ; ///< Result
 		Term_eq** auxi ; ///< Various parts of the result (i.e. the contributions of the various domains).
 	public:
 		/**

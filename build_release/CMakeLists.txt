@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 project(Kadath_release)
 
+if (NOT CMAKE_BUILD_TYPE)
+    message(STATUS "No build type selected, default to Release")
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
+
 if (EXISTS $ENV{HOME_KADATH}/Cmake/CMakeLocal.cmake)
 	include($ENV{HOME_KADATH}/Cmake/CMakeLocal.cmake)
 endif()
@@ -38,9 +43,15 @@ if (DEFINED FFTW_INCLUDE_DIR)
 	include_directories (${FFTW_INCLUDE_DIR})
 endif()
 
-#need to use C++11
-add_definitions(-std=c++11)
+#need to use C++17
+add_definitions(-std=c++17)
+if ("$ENV{KAD_ARCH}" STREQUAL "")
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++17")
+else()
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=$ENV{KAD_ARCH} -std=c++17")
+endif()
 
 add_library(kadath ${KADATH_SOURCES})
 set_target_properties(kadath PROPERTIES ARCHIVE_OUTPUT_DIRECTORY $ENV{HOME_KADATH}/lib COMPILE_FLAGS "-fPIC")
 
+message("CMAKE_CXX_FLAGS_RELEASE is ${CMAKE_CXX_FLAGS_RELEASE}")

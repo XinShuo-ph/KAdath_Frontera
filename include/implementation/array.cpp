@@ -17,11 +17,15 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef __ARRAY_IMPL_HPP_
+#define __ARRAY_IMPL_HPP_
+
 #include "assert.h"
 #include "array.hpp"
 #include "headcpp.hpp"
 #include "utilities.hpp"
 #include "dim_array.hpp"
+
 namespace Kadath {
 // Constructor from a Dim_array
 template <typename T> Array<T>::Array (const Dim_array& res) : dimensions(res){
@@ -29,21 +33,22 @@ template <typename T> Array<T>::Array (const Dim_array& res) : dimensions(res){
 	nbr = 1 ;
 	for (int i=0 ; i<res.ndim ; i++)
 	    nbr *= res(i) ;
- 	data = new T [nbr] ;
+
+	data = MemoryMapper::get_memory<T>(nbr);
 }
 
 // Constructor for a 1d-array
 template <typename T> Array<T>::Array (int i) : dimensions(1){
 	dimensions.set(0) = i ;
 	nbr = i ;
- 	data = new T [nbr] ;
+	data = MemoryMapper::get_memory<T>(nbr);
 }
 
 template <typename T> Array<T>::Array (int i, int j) : dimensions(2){
 	dimensions.set(0) = i ;
 	dimensions.set(1) = j ;
 	nbr = i*j ;
- 	data = new T [nbr] ;
+	data = MemoryMapper::get_memory<T>(nbr);
 }
 
 template <typename T> Array<T>::Array (int i, int j, int k) : dimensions(3){
@@ -51,20 +56,22 @@ template <typename T> Array<T>::Array (int i, int j, int k) : dimensions(3){
 	dimensions.set(1) = j ;
 	dimensions.set(2) = k ;
 	nbr = i*j*k ;
- 	data = new T [nbr] ;
+	data = MemoryMapper::get_memory<T>(nbr);
 }
 
 // Copy constructor
 template <typename T> Array<T>::Array (const Array<T>& so) : dimensions(so.dimensions){
 	nbr = so.nbr ;
- 	data = new T [nbr] ;
+	data = MemoryMapper::get_memory<T>(nbr);
+
 	for (int i=0 ; i<nbr ; i++)
 	    data[i] = so.data[i] ;
 }
 
 template <typename T> Array<T>::Array (FILE* fd) : dimensions(fd) {
 	fread_be(&nbr, sizeof(int), 1, fd) ;
-	data = new T [nbr] ;
+	data = MemoryMapper::get_memory<T>(nbr);
+
 	fread_be(data, sizeof(T), nbr, fd) ;
 }
 
@@ -114,7 +121,7 @@ template <typename T> T& Array<T>::set(int i) {
 // Read/write for a 2d-array
 template <typename T> T& Array<T>::set(int i, int j) {
 	assert (dimensions.ndim == 2) ;
-	assert ((i >=0) && (i<dimensions(0))) ;	
+	assert ((i >=0) && (i<dimensions(0))) ;
 	assert ((j >=0) && (j<dimensions(1))) ;
 	return data[i*dimensions(1)+j] ;
 }
@@ -122,13 +129,13 @@ template <typename T> T& Array<T>::set(int i, int j) {
 // Read/write for a 3d-array
 template <typename T> T& Array<T>::set(int i, int j, int k) {
 	assert (dimensions.ndim == 3) ;
-	assert ((i >=0) && (i<dimensions(0))) ;	
+	assert ((i >=0) && (i<dimensions(0))) ;
 	assert ((j >=0) && (j<dimensions(1))) ;
 	assert ((k >=0) && (k<dimensions(2))) ;
 	return data[i*dimensions(1)*dimensions(2)+j*dimensions(2)+k] ;
 }
 
-// Read only 
+// Read only
 template <typename T>  T Array<T>::operator() (const Index& point) const {
 	assert (point.sizes == dimensions) ;
 	int index = point(0) ;
@@ -137,7 +144,7 @@ template <typename T>  T Array<T>::operator() (const Index& point) const {
 		assert ((point(i) >=0) && (point(i)<dimensions(i))) ;
 		index += point(i) ;
 		}
-		
+
 	return data[index] ;
 }
 
@@ -145,7 +152,7 @@ template <typename T>  T Array<T>::operator() (const Index& point) const {
 template <typename T> T Array<T>::operator() (int i) const {
 	assert (dimensions.ndim ==1) ;
 	assert ((i >=0) && (i<dimensions(0))) ;
-		
+
 	return data[i] ;
 }
 // Read only for a 2d-array.
@@ -167,7 +174,7 @@ template <typename T> T Array<T>::operator() (int i, int j, int k) const {
 
 template <typename T> void Array<T>::delete_data() {
   if (data!= 0x0)
-      delete [] data ;
+	  MemoryMapper::release_memory<T>(data,nbr);
   data=0x0 ;
 }
 
@@ -177,7 +184,7 @@ template <typename T> ostream& operator<< (ostream& o, const Array<T>& so) {
 	o << "Array of " << ndim << " dimension(s)" << endl ;
 	Index xx (so.get_dimensions()) ;
 	switch (ndim) {
-		case 1: 
+		case 1:
 		    for (int i=0 ; i<so.dimensions(0) ; i++) {
 		        xx.set(0) = i ;
 		        o << so(xx) << " " ;
@@ -218,4 +225,6 @@ template <typename T> ostream& operator<< (ostream& o, const Array<T>& so) {
 		}
 	return o ;
 }
+
 }
+#endif

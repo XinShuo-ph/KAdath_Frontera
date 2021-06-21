@@ -19,7 +19,7 @@
 
 #include "headcpp.hpp"
 #include "spheric_periodic.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "scalar.hpp"
 #include "tensor.hpp"
 

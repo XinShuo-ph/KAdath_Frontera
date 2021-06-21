@@ -19,7 +19,7 @@
 
 #include "headcpp.hpp"
 #include "critic.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "val_domain.hpp"
 namespace Kadath {
 int div_x_1d (int, Array<double>&) ;

@@ -20,7 +20,7 @@
 #include "headcpp.hpp"
 #include "utilities.hpp"
 #include "spheric_symphi.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "term_eq.hpp"
 #include "metric.hpp"
 #include "scalar.hpp"

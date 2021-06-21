@@ -20,7 +20,7 @@
 #include "headcpp.hpp"
 #include "critic.hpp"
 #include "point.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "val_domain.hpp"
 namespace Kadath {
 void Domain_critic_inner::find_other_dom (int dom, int bound, int& other_dom, int& other_bound) const {

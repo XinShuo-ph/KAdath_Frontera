@@ -1,0 +1,12 @@
+set(FFTW_INCLUDES "$ENV{FFTW3_LIB}/include")
+set(FFTW_LIBRARIES "$ENV{FFTW3_LIB}/lib/libfftw3.so")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} $ENV{MPI_INC} $ENV{MPI_LIB}")
+
+include_directories("$ENV{MKL_INCDIR}")
+include_directories("$ENV{FFTW3_LIB}/include")
+include_directories("$ENV{GSL_BASE}/include")
+include_directories("$ENV{BOOST_LIB}/include")
+include_directories("$ENV{PYTHON_INCLUDE}")
+
+#set(SCALAPACK_LIBRARIES "-L$ENV{MKL_LIBDIR} -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -Wl,--end-group -lgomp -lpthread -lmkl_scalapack_lp64 -lm -ldl")
+set(SCALAPACK_LIBRARIES "-L$ENV{MKL_LIBDIR} -Wl,--start-group $ENV{MKL_LIBDIR}/libmkl_intel_lp64.a $ENV{MKL_LIBDIR}/libmkl_intel_thread.a $ENV{MKL_LIBDIR}/libmkl_core.a -Wl,--end-group -lpthread -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64")

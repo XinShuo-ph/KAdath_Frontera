@@ -219,6 +219,13 @@ class Scalar : public Tensor {
       * @returns the value of the field.
       */
       double val_point (const Point& xxx, int sens=-1) const ;
+    /**
+      * Computes the value of the field on the boundary based on a given point, by doing the spectral summation.
+      * @param xxx [input] : absolute Cartesian coordinates of the input point.
+      * @param bound [input] : boundary of interest
+      * @returns the value of the field.
+      */
+      double val_point_bound (const Point& xxx, int bound=OUTER_BC) const ;
       /**
       * Computes the value of the field at a given point, by doing the spectral summation. Returns zero if the \c Point is not found in the computational domain.
       * @param xxx [input] : absolute Cartesian coordinates of the point.

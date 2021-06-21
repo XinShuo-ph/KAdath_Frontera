@@ -1,0 +1,3 @@
+These files have been moved here to be included as header only implementations.
+This leads to longer compile times and a larger binary, but enables the compiler
+to conduct more optimizations and generates less function calls by inlining.

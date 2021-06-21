@@ -32,12 +32,12 @@ void Space_polar::add_outer_bc (System_of_eqs& sys, const char* name, int nused,
 	sys.add_eq_bc (sys.get_dom_max(), OUTER_BC, name, nused, pused) ;
 }
 
-void Space_polar::add_eq (System_of_eqs& sys, const char* name, int nused, Array<int>** pused) const {	
+void Space_polar::add_eq (System_of_eqs& sys, const char* name, int nused, Array<int>** pused) const {
 	for (int dd=sys.get_dom_min() ; dd<=sys.get_dom_max() ; dd++)
 		sys.add_eq_inside (dd, name, nused, pused) ;
 }
 
-void Space_polar::add_eq_full (System_of_eqs& sys, const char* name, int nused, Array<int>** pused) const {	
+void Space_polar::add_eq_full (System_of_eqs& sys, const char* name, int nused, Array<int>** pused) const {
 	for (int dd=sys.get_dom_min() ; dd<=sys.get_dom_max() ; dd++)
 		sys.add_eq_full (dd, name, nused, pused) ;
 }
@@ -57,6 +57,7 @@ void Space_polar::add_eq (System_of_eqs& sys, const char* eq, const char* rac, c
 }
 
 void Space_polar::add_eq_int_volume (System_of_eqs& sys, const char* nom) {
+  sys.eq_int_list.push_back(std::make_tuple(nom, nbr_domains-1, -1));
 
 	// Get the lhs and rhs
 	char p1[LMAX] ;
@@ -82,6 +83,7 @@ void Space_polar::add_eq_int_volume (System_of_eqs& sys, const char* nom) {
 
 
 void Space_polar::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
+  sys.eq_int_list.push_back(std::make_tuple(nom, nbr_domains-1, OUTER_BC));
 
 	// Check the last domain is of the right type :
 	const Domain_polar_compact* pcomp = dynamic_cast <const Domain_polar_compact*> (domains[nbr_domains-1]) ;
@@ -111,8 +113,8 @@ void Space_polar::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 		// no lhs :
 		if (indic)
 			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(dom, p1, OUTER_BC)) ;
-		
-		else 
+
+		else
 			sys.eq_int[sys.neq_int]->set_part(0, new Ope_sub(&sys, sys.give_ope(dom, p1, OUTER_BC), sys.give_ope(dom, p2, OUTER_BC))) ;
 		sys.neq_int ++ ;
 	}
@@ -120,6 +122,7 @@ void Space_polar::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 }
 
 void Space_polar::add_eq_int_inner (System_of_eqs& sys, const char* nom) {
+  sys.eq_int_list.push_back(std::make_tuple(nom, 1, OUTER_BC));
 
 	// Check the last domain is of the right type :
 	const Domain_polar_shell* pshell = dynamic_cast <const Domain_polar_shell*> (domains[1]) ;
@@ -149,8 +152,8 @@ void Space_polar::add_eq_int_inner (System_of_eqs& sys, const char* nom) {
 		// no lhs :
 		if (indic)
 			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(dom, p1, OUTER_BC)) ;
-		
-		else 
+
+		else
 			sys.eq_int[sys.neq_int]->set_part(0, new Ope_sub(&sys, sys.give_ope(dom, p1, OUTER_BC), sys.give_ope(dom, p2, OUTER_BC))) ;
 		sys.neq_int ++ ;
 	}
@@ -188,7 +191,7 @@ void Space_polar::add_eq_point (System_of_eqs& sys, const Point& MM, const char*
 	      if ((ld==-1) && (inside[l]))
 		  ld = l ;
 	Point num (get_domain(ld)->absol_to_num(MM)) ;
-  
+
 	char auxi[LMAX] ;
 	trim_spaces (auxi, name) ;
 	sys.add_eq_point (ld, auxi, num) ;

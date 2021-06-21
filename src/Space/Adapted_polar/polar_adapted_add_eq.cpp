@@ -19,7 +19,9 @@
 
 #include "adapted_polar.hpp"
 #include "system_of_eqs.hpp"
+
 namespace Kadath {
+
 void Space_polar_adapted::add_eq (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, int nused, Array<int>** pused) const  {
 	for (int dd=sys.get_dom_min() ; dd<sys.get_dom_max(); dd++) {
 		sys.add_eq_inside (dd, eq, nused, pused) ;
@@ -27,4 +29,6 @@ void Space_polar_adapted::add_eq (System_of_eqs& sys, const char* eq, const char
 		sys.add_eq_matching (dd, OUTER_BC, rac_der, nused, pused) ;
 	}
 	sys.add_eq_inside (sys.get_dom_max(), eq, nused, pused) ;
-}}
+}
+
+}

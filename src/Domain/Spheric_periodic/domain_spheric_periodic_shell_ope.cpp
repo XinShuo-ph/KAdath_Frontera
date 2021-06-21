@@ -19,7 +19,7 @@
 
 #include "spheric_periodic.hpp"
 #include "val_domain.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 namespace Kadath {
 int mult_x_1d (int, Array<double>&) ;
 int div_xm1_1d (int, Array<double>&) ;

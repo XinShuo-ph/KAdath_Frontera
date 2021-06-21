@@ -34,6 +34,7 @@ void Space_spheric_adapted::add_eq_int_inf (System_of_eqs& sys, const char* nom)
 		abort() ;
 	}
 	int dom = nbr_domains-1 ;
+  sys.eq_int_list.push_back(std::make_tuple(nom,dom,OUTER_BC));
 
 	// Get the lhs and rhs
 	char p1[LMAX] ;
@@ -65,6 +66,7 @@ void Space_spheric_adapted::add_eq_int_volume (System_of_eqs& sys, int nz, const
 		abort() ;
 	}
 	else {
+    sys.eq_int_list.push_back(std::make_tuple(nom, 0, -1));
 		// Construction of the equation
 		sys.eq_int[sys.neq_int] = new Eq_int(nz+1) ;
 

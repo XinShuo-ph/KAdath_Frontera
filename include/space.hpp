@@ -22,8 +22,10 @@
 
 #include "headcpp.hpp"
 #include "base_spectral.hpp"
-#include "array.cpp"
+#include "array.hpp"
 #include "param.hpp"
+#include "utilities.hpp"
+#include "memory.hpp"
 
 #define CHEB_TYPE 1
 #define LEG_TYPE 2
@@ -35,7 +37,7 @@
 #define CHI_ONE_BC 3
 #define ETA_PLUS_BC 4
 #define ETA_MINUS_BC 5
-#define TIME_INIT 6 
+#define TIME_INIT 6
 
 #include "point.hpp"
 
@@ -57,14 +59,14 @@ class Tensor ;
 * \ingroup domain
 */
 
-class Domain {
+class Domain : public MemoryMappable {
 
  protected:
   int num_dom ; ///< Number of the current domain (used by the \c Space)
   int ndim ; ///< Number of dimensions.
   Dim_array nbr_points ; ///< Number of colocation points.
   mutable Dim_array nbr_coefs ; ///< Number of coefficients.
-  
+
   /**
   * Type of colocation point :
   * \li \c CHEB_TYPE : Gauss-Lobato of Chebyshev polynomials.
@@ -76,11 +78,11 @@ class Domain {
    * Colocation points in each dimension (stored in \c ndim 1d- arrays)
    */
   Array<double>** coloc ;
-  mutable Val_domain** absol ; ///< Asbolute coordinates (if defined ; usually Cartesian-like)  
+  mutable Val_domain** absol ; ///< Asbolute coordinates (if defined ; usually Cartesian-like)
   mutable Val_domain** cart ; ///< Cartesian coordinates
   mutable Val_domain* radius ; ///< The generalized radius.
   mutable Val_domain** cart_surr ; ///< Cartesian coordinates divided by the radius
-    
+
   explicit Domain (int num, int ttype, const Dim_array& res) ; ///< Constructor from a number of points and a type of base
   explicit Domain (int, FILE*) ; ///< Constructor from a file
   Domain (const Domain& so) ; ///< Copy constructor.
@@ -91,13 +93,13 @@ class Domain {
    int get_num() const  /// Returns the index of the curent domain.
 	{return num_dom ;} ;
    Dim_array get_nbr_points() const /// Returns the number of points.
-	{return nbr_points ;} ; 
-   Dim_array get_nbr_coefs() const  /// Returns the number of coefficients.  
-	{return nbr_coefs ;} ; 
+	{return nbr_points ;} ;
+   Dim_array get_nbr_coefs() const  /// Returns the number of coefficients.
+	{return nbr_coefs ;} ;
    int get_ndim() const /// Returns the number of dimensions.
-	{return ndim; }; 
+	{return ndim; };
    int get_type_base() const /// Returns the type of the basis.
-	{return type_base ;}; 
+	{return type_base ;};
    Array<double> get_coloc (int) const ; ///< Returns the colocation points for a given variable.
    virtual Point get_center() const ; ///< Returns the center.
    virtual Val_domain get_chi() const ; ///< Returns the variable \f$ \chi \f$.
@@ -121,7 +123,7 @@ class Domain {
 
  protected:
     /**
-    * Destroys the derivated members (like \c coloc, \c cart and \c radius), 
+    * Destroys the derivated members (like \c coloc, \c cart and \c radius),
     * when changing the type of colocation points.
     */
     virtual void del_deriv() const ;
@@ -133,7 +135,7 @@ class Domain {
  public:
      void operator= (const Domain&) ; ///< Assignement operator.
 
-  private:  
+  private:
  /**
     * Gives the standard base for Chebyshev polynomials.
     * @param so [input] : the returned base.
@@ -145,15 +147,15 @@ class Domain {
     */
      virtual void set_legendre_base(Base_spectral& so) const ;
     /**
-    * Gives the base using Chebyshev polynomials, for functions antisymetric with respect to \f$z\f$ 
+    * Gives the base using Chebyshev polynomials, for functions antisymetric with respect to \f$z\f$
     * @param so [intput] : the returned base.
     */
      virtual void set_anti_cheb_base(Base_spectral& so) const ;
    /**
-    * Gives the base using Legendre polynomials, for functions antisymetric with respect to \f$z\f$ 
+    * Gives the base using Legendre polynomials, for functions antisymetric with respect to \f$z\f$
     * @param so [input] : the returned base.
     */
-     virtual void set_anti_legendre_base(Base_spectral& so) const ;    
+     virtual void set_anti_legendre_base(Base_spectral& so) const ;
     /**
     * Gives the standard base using Chebyshev polynomials. Used for a spherical harmonic \f$ m\f$.
     * @param so [input] : the returned base.
@@ -168,16 +170,16 @@ class Domain {
      virtual void set_legendre_base_with_m(Base_spectral& so, int m) const ;
     /**
     * Gives the base using Chebyshev polynomials, for functions antisymetric with respect to \f$z\f$ . Used for a spherical harmonic \f$ m\f$.
-    * @param so [input] : the returned base.    
+    * @param so [input] : the returned base.
     * @param m [input] : index of the spherical harmonic.
     */
      virtual void set_anti_cheb_base_with_m(Base_spectral& so, int m) const ;
    /**
     * Gives the base using Legendre polynomials, for functions antisymetric with respect to \f$z\f$. Used for a spherical harmonic \f$ m\f$.
-    * @param so [input] : the returned base.  
+    * @param so [input] : the returned base.
     * @param m [input] : index of the spherical harmonic.
     */
-     virtual void set_anti_legendre_base_with_m(Base_spectral& so, int m) const ;     
+     virtual void set_anti_legendre_base_with_m(Base_spectral& so, int m) const ;
 
 
  /**
@@ -259,7 +261,7 @@ class Domain {
     * @param so [input] : the returned base.
     */
      virtual void set_legendre_base_p_mtz(Base_spectral& so) const ;
-  
+
 	/**
     * Gives the base using Chebyshev polynomials, for the \f$ x\f$ component of a vector
     * @param so [input] : the returned base.
@@ -305,7 +307,7 @@ class Domain {
     * @param so [input] : the returned base.
     */
      virtual void set_legendre_base_z_cart(Base_spectral& so) const ;
-  
+
 	/**
     * Gives the base using Chebyshev polynomials, for odd functions in\f$ X\f$ (critic space case)
     * @param so [input] : the returned base.
@@ -315,7 +317,7 @@ class Domain {
     * Gives the base using Legendre polynomials, for odd functions in\f$ X\f$ (critic space case)
     * @param so [input] : the returned base.
     */
-     virtual void set_legendre_xodd_base(Base_spectral&) const ; 
+     virtual void set_legendre_xodd_base(Base_spectral&) const ;
     /**
     * Gives the base using Chebyshev polynomials, for odd functions in\f$ T\f$ (critic space case)
     * @param so [input] : the returned base.
@@ -338,12 +340,12 @@ class Domain {
      virtual void set_legendre_xodd_todd_base(Base_spectral& so) const ;
 
    /**
-    * Gives the base using odd Chebyshev polynomials$ 
+    * Gives the base using odd Chebyshev polynomials$
     * @param so [input] : the returned base.
     */
     virtual void set_cheb_base_odd(Base_spectral& so) const ;
  /**
-    * Gives the base using odd Legendre polynomials$ 
+    * Gives the base using odd Legendre polynomials$
     * @param so [input] : the returned base.
     */
     virtual void set_legendre_base_odd(Base_spectral&) const ;
@@ -358,10 +360,10 @@ class Domain {
     * @param so [input] : the returned base.
     */
      virtual void set_legendre_r_base(Base_spectral& so) const ;
-     
+
      virtual void do_coloc () ; ///< Computes the colocation points.
-   
-   public:  
+
+   public:
    /**
      * Check whether a point lies inside \c Domain.
      * @param xx [input] : the point.
@@ -383,7 +385,7 @@ class Domain {
      */
      virtual const Point absol_to_num_bound(const Point& xxx, int bound) const ;
      /**
-     * Computes the derivative with respect to the absolute Cartesian coordinates from the 
+     * Computes the derivative with respect to the absolute Cartesian coordinates from the
      * derivative with respect to the numerical coordinates.
      * @param der_var [input] : the \c ndim derivatives with respect to the numerical coordinates.
      * @param der_abs [output] : the \c ndim derivatives with respect to the absolute Cartesian coordinates.
@@ -419,7 +421,7 @@ class Domain {
     /**
      * Division by \f$ \sin \theta\f$.
      */
-     virtual Val_domain div_sin_theta (const Val_domain&) const ;    
+     virtual Val_domain div_sin_theta (const Val_domain&) const ;
      /**
      * Division by \f$ \cos \theta\f$.
      */
@@ -427,7 +429,7 @@ class Domain {
     /**
      * Division by \f$ x\f$.
      */
-     virtual Val_domain div_x (const Val_domain&) const ;     
+     virtual Val_domain div_x (const Val_domain&) const ;
     /**
      * Division by \f$ \chi\f$.
      */
@@ -435,15 +437,15 @@ class Domain {
     /**
      * Division by \f$ (x-1)\f$.
      */
-     virtual Val_domain div_xm1 (const Val_domain&) const ; 
+     virtual Val_domain div_xm1 (const Val_domain&) const ;
  /**
      * Division by \f$ (1-x^2)\f$.
      */
-     virtual Val_domain div_1mx2 (const Val_domain&) const ;      
+     virtual Val_domain div_1mx2 (const Val_domain&) const ;
       /**
      * Division by \f$ (x+1)\f$.
      */
-     virtual Val_domain div_xp1 (const Val_domain&) const ;      
+     virtual Val_domain div_xp1 (const Val_domain&) const ;
     /**
      * Multiplication by \f$ (x-1)\f$.
      */
@@ -460,7 +462,7 @@ class Domain {
      * Multiplication by \f$ \sin \omega t\f$.
      */
      virtual Val_domain mult_sin_time (const Val_domain&) const ;
-   
+
 	/**
 	* Changes the tensorial basis from Cartsian to spherical in a given domain.
 	* @param dd [input] : the domain. Should be consistent with *this.
@@ -476,7 +478,7 @@ class Domain {
 	* @returns the tensor in Cartesian tensorial basis in the current domain.
 	*/
      virtual Tensor change_basis_spher_to_cart (int dd, const Tensor&) const ;
- 
+
 	/**
 	* Computes the ordinary flat Laplacian for a scalar field with an harmonic index \c m.
 	* @param so [input] : the input scalar field.
@@ -512,7 +514,7 @@ class Domain {
 	* @returns the derivative.
 	*/
      virtual Val_domain der_p (const Val_domain&) const ;
-     
+
 /**
 	* Compute the radial derivative multiplied by \f$ r^2\f$ of a scalar field.
 	* @param so [input] : the input scalar field.
@@ -549,7 +551,7 @@ class Domain {
 	* @returns the result.
 	*/
      virtual Val_domain dt (const Val_domain&) const ;
-     
+
 
 	/**
 	* Computes the time derivative of a field.
@@ -557,11 +559,11 @@ class Domain {
 	* @returns the result.
 	*/
      virtual Val_domain dtime (const Val_domain&) const ;
-     
+
 	/**
 	* Computes the second time derivative of a field
 	* @param so [input] : the input field.
-	* @returns the result 
+	* @returns the result
 	*/
 	virtual Val_domain ddtime (const Val_domain&) const ;
 
@@ -574,7 +576,7 @@ class Domain {
 	*/
      virtual const Term_eq* give_normal (int bound, int tipe) const ;
 
-     // Multipoles extraction 
+     // Multipoles extraction
 	/**
 	* Extraction of a given multipole, at some boundary, for a  symmetric scalar function.
 	* @param k [input] : index of the spherical harmonic for \f$\varphi\f$.
@@ -582,9 +584,9 @@ class Domain {
 	* @param bound [input] : the boundary at which the computation is done.
 	* @param so [input] : input scalar field.
 	* @param passage [input] : passage matrix describing the spherical harmonics.
-	* @returns the multipolar coefficient.	
+	* @returns the multipolar coefficient.
 	*/
-     virtual double multipoles_sym (int k, int j, int, const Val_domain& so, const Array<double>& passage) const ;  
+     virtual double multipoles_sym (int k, int j, int, const Val_domain& so, const Array<double>& passage) const ;
 
 	/**
 	* Extraction of a given multipole, at some boundary, for a anti-symmetric scalar function.
@@ -593,8 +595,8 @@ class Domain {
 	* @param bound [input] : the boundary at which the computation is done.
 	* @param so [input] : input scalar field.
 	* @param passage [input] : passage matrix describing the spherical harmonics.
-	* @returns the multipolar coefficient.	
-	*/ 
+	* @returns the multipolar coefficient.
+	*/
      virtual double multipoles_asym (int, int, int, const Val_domain&, const Array<double>&) const ;
 
   	/**
@@ -604,8 +606,8 @@ class Domain {
 	* @param bound [input] : the boundary at which the computation is done.
 	* @param so [input] : input scalar field.
 	* @param passage [input] : passage matrix describing the spherical harmonics.
-	* @returns the multipolar coefficient.	
-	*/ 
+	* @returns the multipolar coefficient.
+	*/
      virtual Term_eq multipoles_sym (int k, int j, int bound, const Term_eq& so, const Array<double>& passage) const ;
    /**
 	* Extraction of a given multipole, at some boundary, for an anti-symmetric scalar function.
@@ -614,8 +616,8 @@ class Domain {
 	* @param bound [input] : the boundary at which the computation is done.
 	* @param so [input] : input scalar field.
 	* @param passage [input] : passage matrix describing the spherical harmonics.
-	* @returns the multipolar coefficient.	
-	*/ 
+	* @returns the multipolar coefficient.
+	*/
      virtual Term_eq multipoles_asym (int k, int j, int bound, const Term_eq& so, const Array<double>& passage) const ;
 
 	 /**
@@ -626,7 +628,7 @@ class Domain {
 	* @param omega [input] : angular velocity.
 	* @param f [input] : pointer on the radial function describing the fit.
 	* @param param [input] : parameters of the radial fit.
-	* @returns the radial fit.	
+	* @returns the radial fit.
 	*/
      virtual Term_eq radial_part_sym (const Space& space, int k, int j, const Term_eq& omega, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param&), const Param& param) const ;
  	/**
@@ -637,7 +639,7 @@ class Domain {
 	* @param omega [input] : angular velocity.
 	* @param f [input] : pointer on the radial function describing the fit.
 	* @param param [input] : parameters of the radial fit.
-	* @returns the radial fit.	
+	* @returns the radial fit.
 	*/
      virtual Term_eq radial_part_asym (const Space& space, int k, int j, const Term_eq& omega, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param&), const Param& param) const ;
 
@@ -664,7 +666,7 @@ class Domain {
 	* @returns the fit.
 	*/
      virtual Term_eq harmonics_asym (const Term_eq&, const Term_eq&, int, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param&), const Param&, const Array<double>&) const ;
- 
+
 	/**
 	* Extraction of a given multipole, at some boundary, for the radial derivative a  symmetric scalar function.
 	* @param k [input] : index of the spherical harmonic for \f$\varphi\f$.
@@ -672,9 +674,9 @@ class Domain {
 	* @param bound [input] : the boundary at which the computation is done.
 	* @param so [input] : input scalar field.
 	* @param passage [input] : passage matrix describing the spherical harmonics.
-	* @returns the multipolar coefficient.	
+	* @returns the multipolar coefficient.
 	*/
-     virtual Term_eq der_multipoles_sym (int k, int j, int bound, const Term_eq& so, const Array<double>& passage) const ;     
+     virtual Term_eq der_multipoles_sym (int k, int j, int bound, const Term_eq& so, const Array<double>& passage) const ;
 
 	/**
 	* Extraction of a given multipole, at some boundary, for the radial derivative of an anti-symmetric scalar function.
@@ -683,12 +685,12 @@ class Domain {
 	* @param bound [input] : the boundary at which the computation is done.
 	* @param so [input] : input scalar field.
 	* @param passage [input] : passage matrix describing the spherical harmonics.
-	* @returns the multipolar coefficient.	
-	*/ 
+	* @returns the multipolar coefficient.
+	*/
      virtual Term_eq der_multipoles_asym (int k, int j, int bound, const Term_eq& so, const Array<double>& passage) const ;
 
-	
-	
+
+
  	/**
 	* Gives some radial fit for a given multipole, intended for the radial derivative of an anti-symmetric scalar function.
 	* @param space [input] : the concerned \c Space.
@@ -697,7 +699,7 @@ class Domain {
 	* @param omega [input] : angular velocity.
 	* @param f [input] : pointer on the radial function describing the fit.
 	* @param param [input] : parameters of the radial fit.
-	* @returns the radial fit.	
+	* @returns the radial fit.
 	*/
      virtual Term_eq der_radial_part_asym (const Space& space, int k, int j, const Term_eq& omega, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param&), const Param& param) const ;
 
@@ -709,10 +711,10 @@ class Domain {
 	* @param omega [input] : angular velocity.
 	* @param f [input] : pointer on the radial function describing the fit.
 	* @param param [input] : parameters of the radial fit.
-	* @returns the radial fit.	
+	* @returns the radial fit.
 	*/
      virtual Term_eq der_radial_part_sym (const Space& space, int k, int j, const Term_eq& omega, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param& param), const Param& param) const ;
-    
+
 
 	/**
 	* Fit, spherical harmonic by spherical harmonic, for the radial derivative of a symmetric function.
@@ -737,9 +739,9 @@ class Domain {
 	* @returns the fit.
 	*/
      virtual Term_eq der_harmonics_asym (const Term_eq& so, const Term_eq& omega, int bound, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param&), const Param& param, const Array<double>& passage) const ;
-   
+
      // Abstract stuff
-  protected: 
+  protected:
      /**
       * Function used to apply the same operation to all the components of a tensor, in the current domain.
       * It works at the \c Term_eq level and the same operation is applied to both the value and the variation of the tensor.
@@ -758,10 +760,10 @@ class Domain {
       * @returns the resulting \c Term_eq.
       */
      Term_eq do_comp_by_comp_with_int (const Term_eq& so, int val, Val_domain (Domain::*pfunc) (const Val_domain&, int) const) const ;
-     
+
   public:
 	/**
-	* Returns the normal derivative of a \c Term_eq 
+	* Returns the normal derivative of a \c Term_eq
 	* @param so : input field.
 	* @param bound : the boundary.
 	* @returns  the normal derivative.
@@ -769,14 +771,14 @@ class Domain {
      virtual Term_eq der_normal_term_eq (const Term_eq& so, int bound) const ;
 
 	/**
-	* Returns the division by \f$1-x^2\f$ of a \c Term_eq 
+	* Returns the division by \f$1-x^2\f$ of a \c Term_eq
 	* @param so : input field.
 	* @returns  the result of the division.
 	*/
 	virtual Term_eq div_1mx2_term_eq (const Term_eq&) const ;
 
 	/**
-	* Returns the flat Laplacian of \c Term_eq, for a given harmonic. 
+	* Returns the flat Laplacian of \c Term_eq, for a given harmonic.
 	* @param so : input field.
 	* @param m : the index of the harmonic.
 	* @returns  the Laplacian.
@@ -784,7 +786,7 @@ class Domain {
      virtual Term_eq lap_term_eq (const Term_eq& so, int m) const ;
 
      	/**
-	* Returns the flat 2d-Laplacian of \c Term_eq, for a given harmonic. 
+	* Returns the flat 2d-Laplacian of \c Term_eq, for a given harmonic.
 	* @param so : input field.
 	* @param m : the index of the harmonic.
 	* @returns  the 2d-Laplacian.
@@ -792,14 +794,14 @@ class Domain {
      virtual Term_eq lap2_term_eq (const Term_eq& so, int m) const ;
 
      	/**
-	* Multiplication by \f$r\f$ of a \c Term_eq. 
+	* Multiplication by \f$r\f$ of a \c Term_eq.
 	* @param so : input field.
 	* @returns  result.
 	*/
      virtual Term_eq mult_r_term_eq (const Term_eq& so) const ;
 
 	 /**
-	* Volume integral of a \c Term_eq. The volume term must be provided by the actual function. 
+	* Volume integral of a \c Term_eq. The volume term must be provided by the actual function.
 	* @param so : input field.
 	* @returns  result.
 	*/
@@ -813,7 +815,7 @@ class Domain {
      virtual Term_eq grad_term_eq (const Term_eq& so) const ;
 
      	/**
-	* Division by \f$r\f$ of a \c Term_eq. 
+	* Division by \f$r\f$ of a \c Term_eq.
 	* @param so : input field.
 	* @returns  result.
 	*/
@@ -821,7 +823,7 @@ class Domain {
 
 
 	 /**
-	* Surface integral of a \c Term_eq. The surface term must be provided by the actual function. 
+	* Surface integral of a \c Term_eq. The surface term must be provided by the actual function.
 	* @param so : input field.
 	* @param bound : the surface on which the integral is performed.
 	* @returns  result.
@@ -829,31 +831,31 @@ class Domain {
      virtual Term_eq integ_term_eq (const Term_eq& so, int bound) const ;
 
 	/**
-	* Radial derivative of a \c Term_eq. 
+	* Radial derivative of a \c Term_eq.
 	* @param so : input field.
 	* @returns  result.
 	*/
-     virtual Term_eq dr_term_eq (const Term_eq& so) const ;   
-       
+     virtual Term_eq dr_term_eq (const Term_eq& so) const ;
+
 	/**
-	* Time derivative of a \c Term_eq. 
+	* Time derivative of a \c Term_eq.
 	* @param so : input field.
 	* @returns  result.
 	*/
-     virtual Term_eq dtime_term_eq (const Term_eq& so) const ;   
-       
+     virtual Term_eq dtime_term_eq (const Term_eq& so) const ;
+
 	/**
-	* Second time derivative of a \c Term_eq. 
+	* Second time derivative of a \c Term_eq.
 	* @param so : input field.
 	* @returns  result.
 	*/
-     virtual Term_eq ddtime_term_eq (const Term_eq& so) const ;   
-    
+     virtual Term_eq ddtime_term_eq (const Term_eq& so) const ;
+
 	 /**
 	* Computes the flat derivative of a \c Term_eq, in spherical orthonormal coordinates.
 	* If the index of the derivative is present in the source, appropriate contraction is performed.
-	* If the contravariant version is called for, the index is raised using an arbitrary metric. 
-	* @param tipe : type of derivative (\t COV or \t CON)	
+	* If the contravariant version is called for, the index is raised using an arbitrary metric.
+	* @param tipe : type of derivative (\t COV or \t CON)
 	* @param ind : name of the index corresponding to the derivative.
 	* @param so : input field.
 	* @param manip : pointer on the metric used to manipulate the derivative index, if need be.
@@ -866,8 +868,8 @@ class Domain {
 	* Computes the flat derivative of a \c Term_eq, in spherical coordinates
 	* where the constant radii sections have a negative curvature.
 	* If the index of the derivative is present in the source, appropriate contraction is performed.
-	* If the contravariant version is called for, the index is raised using an arbitrary metric. 
-	* @param tipe : type of derivative (\t COV or \t CON)	
+	* If the contravariant version is called for, the index is raised using an arbitrary metric.
+	* @param tipe : type of derivative (\t COV or \t CON)
 	* @param ind : name of the index corresponding to the derivative.
 	* @param so : input field.
 	* @param manip : pointer on the metric used to manipulate the derivative index, if need be.
@@ -875,19 +877,19 @@ class Domain {
 	*/
      virtual Term_eq derive_flat_mtz (int tipe, char ind, const Term_eq& so, const Metric* manip) const ;
 
- 	
+
  	/**
 	* Computes the flat derivative of a \c Term_eq, in Cartesian coordinates.
 	* If the index of the derivative is present in the source, appropriate contraction is performed.
-	* If the contravariant version is called for, the index is raised using an arbitrary metric. 
-	* @param tipe : type of derivative (\t COV or \t CON)	
+	* If the contravariant version is called for, the index is raised using an arbitrary metric.
+	* @param tipe : type of derivative (\t COV or \t CON)
 	* @param ind : name of the index corresponding to the derivative.
 	* @param so : input field.
 	* @param manip : pointer on the metric used to manipulate the derivative index, if need be.
 	* @returns  result.
 	*/
      virtual Term_eq derive_flat_cart (int tipe, char ind, const Term_eq& so, const Metric* manip) const ;
-     
+
 	/**
 	* Gives the number of unknowns coming from the variable shape of the domain.
 	*/
@@ -949,7 +951,7 @@ class Domain {
 	* @param newval : new value of the scalar field.
 	*/
      virtual void update_variable (double bound, const Scalar& oldval, Scalar& newval) const {} ;
-	
+
 	/**
 	* Update the value of a scalar, after the shape  of the \c Domain has been changed by the system.
 	* This is intended for constant field and the new valued is computed using a true spectral summation.
@@ -979,7 +981,7 @@ class Domain {
 	* @param  double : correction to the variable boundary.
 	*/
      virtual void update_mapping(double bound) {} ;
-    
+
      /**
       * Sets the value at infinity of a \c Val_domain : not implemented for this type of \c Domain.
       * @param so [input/output] : the \c Val_domain.
@@ -1023,7 +1025,7 @@ class Domain {
 	* @returns  the integral.
 	*/
      virtual double integ_volume (const Val_domain&) const ;
-  	
+
 	/**
 	* Gives the informations corresponding the a touching neighboring domain.
 	* @param dom : index of the currect domain (deprecated, should be the same as num_dom)
@@ -1038,7 +1040,7 @@ class Domain {
 	* @param bound : boundary at which the normal derivative is computed.
 	* @returns  the normal derivative.
 	*/
-     virtual Val_domain der_normal (const Val_domain& so, int bound) const ;     
+     virtual Val_domain der_normal (const Val_domain& so, int bound) const ;
 	/**
 	* Partial derivative with respect to a coordinate.
 	* @param so : the input scalar field.
@@ -1060,13 +1062,13 @@ class Domain {
 	* @returns the integral.
 	*/
      virtual double integrale (const Val_domain&) const ;
-    
+
 	/**
 	* Computes the part of the gradient containing the partial derivative of the field, in spherical orthonormal coordinates.
 	* @param so : the input \c Term_eq
 	* @returns the result, being \f$(\partial_r, \partial_\theta /r , \partial_\varphi/r/sin\theta)\f$
 	*/
-     virtual Term_eq partial_spher (const Term_eq& so) const ;  
+     virtual Term_eq partial_spher (const Term_eq& so) const ;
 	  /**
 	* Computes the part of the gradient containing the partial derivative of the field, in Cartesian coordinates.
 	* @param so : the input \c Term_eq
@@ -1079,7 +1081,7 @@ class Domain {
 	* @param so : the input \c Term_eq
 	* @returns the result, being \f$(\partial_r, \frac{\cos \theta}{r} \partial_\theta , \frac{\cos \theta}{r \sin \theta} \partial_\varphi)\f$
 	*/
-     virtual Term_eq partial_mtz (const Term_eq& so) const ;  
+     virtual Term_eq partial_mtz (const Term_eq& so) const ;
 	/**
 	* Computes the part of the gradient involving the connections, in spherical orthonormal coordinates.
 	* @param so : the input \c Term_eq
@@ -1093,7 +1095,7 @@ class Domain {
 	* @returns the result.
 	*/
      virtual Term_eq connection_mtz (const Term_eq& so) const ;
-     
+
 	/**
 	* Computes the value of a field at a boundary. The result correspond to one particular coefficient.
 	* @param bound : name of the boundary at which the result is computed.
@@ -1163,7 +1165,7 @@ class Domain {
 	* @param p_cmp : pointer on the indexes of the components to be considered. Not used of n_cmp = -1 .
 	*/
      virtual void export_tau (const Tensor& eq, int dom, int order, Array<double>& res, int& pos_res, const Array<int>& ncond,int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
-    
+
 	/**
 	* Exports all the residual equations corresponding to a tensorial one on a given boundary
 	* It makes use of the various Galerkin basis used.
@@ -1193,8 +1195,8 @@ class Domain {
 	* @param p_cmp : pointer on the indexes of the components to be considered. Not used of n_cmp = -1 .
 	* @returns the number of true conditions.
 	*/
-     virtual void export_tau_boundary_exception (const Tensor& eq, int dom, int bound, Array<double>& res, int& pos_res, const Array<int>& ncond,  
-			const Param& param, int type_exception, const Tensor& exception, int n_cmp=-1,  Array<int>** p_cmp=0x0) const ; 
+     virtual void export_tau_boundary_exception (const Tensor& eq, int dom, int bound, Array<double>& res, int& pos_res, const Array<int>& ncond,
+			const Param& param, int type_exception, const Tensor& exception, int n_cmp=-1,  Array<int>** p_cmp=0x0) const ;
 
 	/**
 	* Affects some coefficients to a \c Tensor.
@@ -1215,7 +1217,7 @@ class Domain {
 	* @param pos_cf : current position.
 	*/
      virtual void affecte_tau_one_coef (Tensor& so, int dom, int cc, int& pos_cf) const ;
-     
+
 	/**
 	* Computes number of discretized equations associated with a given tensorial equation in the bulk.
 	* It takes into account the various Galerkin basis used.
@@ -1253,7 +1255,7 @@ class Domain {
 	* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param p_cmp : pointer on the indexes of the components to be considered. Not used of n_cmp = -1 .
 	*/
-     virtual void export_tau_array (const Tensor& eq, int dom, const Array<int>& order, Array<double>& res, int& pos_res, const Array<int>& ncond, 
+     virtual void export_tau_array (const Tensor& eq, int dom, const Array<int>& order, Array<double>& res, int& pos_res, const Array<int>& ncond,
 														int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
 	* Exports all the residual equations corresponding to one tensorial one on a given boundary
@@ -1268,9 +1270,9 @@ class Domain {
 	* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param p_cmp : pointer on the indexes of the components to be considered. Not used of n_cmp = -1 .
 	*/
-     virtual void export_tau_boundary_array (const Tensor& eq, int dom, int bound, const Array<int>& order, Array<double>& res, int& pos_res, 
+     virtual void export_tau_boundary_array (const Tensor& eq, int dom, int bound, const Array<int>& order, Array<double>& res, int& pos_res,
 				const Array<int>& ncond,  int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
-       
+
 	/**
 	* Computes number of discretized equations associated with a given tensorial equation on a boundary.
 	* The boundary is assumed to also have boundaries. (Used for bispherical coordinates).
@@ -1284,7 +1286,7 @@ class Domain {
 	* @returns the number of true conditions, component by component.
 	*/
     virtual Array<int> nbr_conditions_boundary_one_side (const Tensor& eq, int dom, int bound, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
- 
+
 	/**
 	* Exports all the residual equations corresponding to one tensorial one on a given boundary.
 	* The boundary is assumed to also have boundaries. (Used for bispherical coordinates).
@@ -1298,9 +1300,9 @@ class Domain {
 	* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param p_cmp : pointer on the indexes of the components to be considered. Not used of n_cmp = -1 .
 	*/
-     virtual void export_tau_boundary_one_side (const Tensor& eq, int dom, int bound, Array<double>& res, int& pos_res, 
+     virtual void export_tau_boundary_one_side (const Tensor& eq, int dom, int bound, Array<double>& res, int& pos_res,
 				const Array<int>& ncond, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
-	
+
       /**
 	* Translates a name of a coordinate into its corresponding numerical name
 	* @param name : name of the variable (like 'R', for the radius).
@@ -1359,7 +1361,7 @@ public:
  * It is a purely abstract class and so space must be constructed via the derived classes.
  * \ingroup domain
  */
-class Space {
+class Space : public MemoryMappable {
 
   protected:
     int nbr_domains ; ///< Number od \c Domains.
@@ -1371,11 +1373,11 @@ class Space {
 
   public:
      int get_ndim() const /// Returns the number of dimensions
-	{return ndim ;} ; 
+	{return ndim ;} ;
      int get_nbr_domains() const /// Returns the number of \c Domains
-	{return nbr_domains ;} ; 
+	{return nbr_domains ;} ;
      int get_type_base() const /// Returns the type of basis
-	{return type_base ;} ; 
+	{return type_base ;} ;
      virtual void save (FILE*) const ; ///< Saving function
 
     /**
@@ -1386,7 +1388,7 @@ class Space {
     	assert ((i>=0) && (i<nbr_domains)) ;
 	return domains[i] ;
     }
-    
+
     // Things for adapted domains
 	/**
 	* Gives the number of unknowns coming from the variable shape of the domain.
@@ -1412,16 +1414,16 @@ class Space {
 	* @param conte : current position in the values vector.
 	*/
     virtual void xx_to_vars_variable_domains (System_of_eqs* syst, const Array<double>& xx, int& pos) const {};
- 
+
 	/**
 	* Gives the number of the other domains, touching a given boundary.
 	* It also gives the name of the boundary, as seen by the other domain.
 	* @param dom : the domain considered.
 	* @param bound : the boundary.
-	* @returns a 2d-array containing the numbers of the other domains (stored in (0,i)) and the names of the boundary (stored in (1,i)). 
+	* @returns a 2d-array containing the numbers of the other domains (stored in (0,i)) and the names of the boundary (stored in (1,i)).
 	*/
     virtual Array<int> get_indices_matching_non_std(int dom, int bound) const ;
-    
+
   friend ostream& operator << (ostream& o, const Space& so) ; ///< Display
 } ;
 }

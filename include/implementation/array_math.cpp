@@ -17,8 +17,14 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "math.h"
+#ifndef __ARRAY_MATH_HPP_
+#define __ARRAY_MATH_HPP_
+
+#include "assert.h"
 #include "array.hpp"
+#include "headcpp.hpp"
+#include "utilities.hpp"
+#include "dim_array.hpp"
 
 namespace Kadath {
 template <typename T> bool Array<T>::is_increasing() const {
@@ -62,7 +68,7 @@ template <typename T> void Array<T>::operator*= (const T& xx) {
 template <typename T> void Array<T>::operator/= (const T& xx) {
 	*this = *this/xx ;
 }
-	    
+
 template <typename T> Array<T> sin (const Array<T>& so) {
 
 	Array<T> res(so.dimensions) ;
@@ -118,14 +124,14 @@ template <typename T>  Array<T> operator- (const Array<T>& so) {
 
 
 template <typename T>  Array<T> operator+ (const Array<T>& a, const Array<T>& b) {
-	assert (a.dimensions==b.dimensions) ; 
+	assert (a.dimensions==b.dimensions) ;
 	Array<T> res(a.dimensions) ;
 	for (int i=0 ; i<a.nbr ; i++)
 	    res.data[i] = a.data[i] + b.data[i] ;
 
 	return res ;
 }
-	
+
 
 template <typename T>  Array<T> operator+ (const Array<T>& so , T xx) {
 	Array<T> res(so.dimensions) ;
@@ -146,7 +152,7 @@ template <typename T>  Array<T> operator+ (T xx, const Array<T>& so)  {
 
 
 template <typename T>  Array<T> operator- (const Array<T>& a, const Array<T>& b) {
-	assert (a.dimensions==b.dimensions) ; 
+	assert (a.dimensions==b.dimensions) ;
 	Array<T> res(a.dimensions) ;
 	for (int i=0 ; i<a.nbr ; i++)
 	    res.data[i] = a.data[i] - b.data[i] ;
@@ -173,7 +179,7 @@ template <typename T>  Array<T> operator- (T xx, const Array<T>& so) {
 }
 
 template <typename T>  Array<T> operator* (const Array<T>& a, const Array<T>& b) {
-	assert (a.dimensions==b.dimensions) ; 
+	assert (a.dimensions==b.dimensions) ;
 	Array<T> res(a.dimensions) ;
 	for (int i=0 ; i<a.nbr ; i++)
 	    res.data[i] = a.data[i] * b.data[i] ;
@@ -199,7 +205,7 @@ template <typename T>  Array<T> operator* (T xx, const Array<T>& so) {
 }
 
 template <typename T>  Array<T> operator/ (const Array<T>& a, const Array<T>& b ){
-	assert (a.dimensions==b.dimensions) ; 
+	assert (a.dimensions==b.dimensions) ;
 	Array<T> res(a.dimensions) ;
 	for (int i=0 ; i<a.nbr ; i++)
 	    res.data[i] = a.data[i] / b.data[i] ;
@@ -207,7 +213,7 @@ template <typename T>  Array<T> operator/ (const Array<T>& a, const Array<T>& b 
 	return res ;
 }
 
-template <typename T>  Array<T> operator/ (const Array<T>& so, T xx)  {	
+template <typename T>  Array<T> operator/ (const Array<T>& so, T xx)  {
 	Array<T> res(so.dimensions) ;
 	for (int i=0 ; i<so.nbr ; i++)
 	    res.data[i] = so.data[i] / xx;
@@ -293,7 +299,7 @@ template <typename T> T diffmax (const Array<T>& a, const Array<T>& b) {
 	T diff ;
 	for (int i=0 ; i<a.nbr ; i++) {
 		diff = fabs(a.data[i]-b.data[i]) ;
-		if (diff> res) 
+		if (diff> res)
 			res = diff ;
 	}
 	return res ;
@@ -330,3 +336,4 @@ template <typename T>  Array<T> atan (const Array<T>& so)  {
 	return res;
 }
 }
+#endif

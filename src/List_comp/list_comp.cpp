@@ -19,7 +19,7 @@
 
 #include "assert.h"
 #include "array.hpp"
-#include "array.cpp"
+#include "array.hpp"
 #include "list_comp.hpp"
 
 namespace Kadath {

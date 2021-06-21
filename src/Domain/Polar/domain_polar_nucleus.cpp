@@ -20,7 +20,7 @@
 #include "headcpp.hpp"
 #include "polar.hpp"
 #include "point.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "val_domain.hpp"
 
 namespace Kadath{

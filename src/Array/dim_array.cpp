@@ -21,54 +21,6 @@
 #include "utilities.hpp"
 #include "dim_array.hpp"
 namespace Kadath {
-// Standard onsructor
-Dim_array::Dim_array(int dim) : ndim(dim) {
-	nbr = new int[ndim] ;
-} 
-
-// Constructor by copy
-Dim_array::Dim_array(const Dim_array& so) : ndim(so.ndim) {
-	nbr = new int[ndim] ;
-	for (int i=0 ; i<ndim ; i++)
-	   nbr[i] = so.nbr[i] ;
-}
-
-Dim_array::Dim_array (FILE* fd) {
-	fread_be(&ndim, sizeof(int), 1, fd) ;
-	nbr = new int[ndim] ;
-	fread_be(nbr, sizeof(int), ndim, fd) ;
-}
-
-// Destructor
-Dim_array::~Dim_array() {
-	delete [] nbr ;
-}
-
-// Read/write
-int& Dim_array::set(int i) {
-	assert(i>=0) ;
-	assert(i<ndim) ;
-	return nbr[i] ;
-}
-
-// Assignement
-void Dim_array::operator= (const Dim_array& so) {
-	assert (ndim==so.ndim) ;
-	for (int i=0 ; i<ndim ; i++)
-		nbr[i] = so.nbr[i] ;
-}
-
-// Read only
-int Dim_array::operator() (int i) const {
-	assert(i>=0) ;
-	assert(i<ndim) ;
-	return nbr[i] ;
-}
-
-void Dim_array::save (FILE* fd) const  {
-	fwrite_be(&ndim, sizeof(int), 1, fd) ;
-	fwrite_be(nbr, sizeof(int), ndim, fd) ;
-}
 
 // Output
 ostream& operator<< (ostream& o, const Dim_array& so) {

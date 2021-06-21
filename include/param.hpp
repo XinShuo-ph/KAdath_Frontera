@@ -20,109 +20,111 @@
 #ifndef __PARAM_HPP_
 #define __PARAM_HPP_
 
+#include "memory.hpp"
+
 namespace Kadath {
 /** Parameter storage.
- * 
+ *
  *  This class is intended to store addresses of various Kadath objects to
- *  pass them as parameters in some subroutines. 
+ *  pass them as parameters in some subroutines.
  * \ingroup util
  */
-class Param {
+class Param : public MemoryMappable {
 
-    // Data : 
+    // Data :
     // -----
     private:
-	int n_int ;	///< Number of \c int 's (integers). 
+	int n_int ;	///< Number of \c int 's (integers).
 	/// Array (size \c n_int ) of the \c int 's addresses.
-	int* p_int ;	
+	int* p_int ;
 
-	int n_double ; ///< Number of \c double 's (double precis. numbers). 
+	int n_double ; ///< Number of \c double 's (double precis. numbers).
 	/// Array (size \c n_double ) of the \c double 's addresses.
-	double* p_double ; 
+	double* p_double ;
 
     // Constructors - Destructor
     // -------------------------
-	
+
     public:
 	Param() ;	///< Default constructor is the only constructor
 
     private:
-	/** Copy constructor (private and not implemented to make \c Param 
+	/** Copy constructor (private and not implemented to make \c Param
 	 * a non-copyable class)
-	 */ 
+	 */
 	Param(const Param& ) ;
-	
-    public: 
+
+    public:
 	~Param() ;	///< Destructor
 
 
     // Assignment
     // -----------
-    private: 
-	/** Assignment operator (private and not implemented to make 
+    private:
+	/** Assignment operator (private and not implemented to make
 	 *   \c Param  a non-copyable class)
 	 */
 	void operator=(const Param& ) ;
-	 	
+
 
     // Addition/Extraction of one element
     // ----------------------------------
     public:
-    
+
 	///Returns the number of stored \c int 's addresses.
-	int get_n_int() const ; 
-    
+	int get_n_int() const ;
+
 	/** Adds the address of a new \c int  to the list.
-	 * 
-	 *  @param n [input] \c int  the address of which is 
+	 *
+	 *  @param n [input] \c int  the address of which is
 	 *                             to be stored
 	 *  @param position [input] position of the \c int  in the list
 	 *			    of stored \c int  addresses (default
 	 *			    value = 0)
-	 * 
+	 *
 	 */
 	void add_int(int n, int position = 0) ;
-	
+
 	/** Returns the reference of a \c int  stored in the list.
-	 * 
+	 *
 	 *  @param position [input] position of the \c int  in the list
 	 *			    of stored \c int  addresses (default
 	 *			    value = 0)
-	 *  @return Reference to the \c int  the address of 
-	 *           which is stored at the location  \c position  in the 
+	 *  @return Reference to the \c int  the address of
+	 *           which is stored at the location  \c position  in the
 	 *           list
 	 */
-	const int& get_int(int position = 0) const; 
+	const int& get_int(int position = 0) const;
 
 	///Returns the number of modifiable \c int 's addresses in the list.
-	int get_n_int_mod() const ; 
-    
-	
+	int get_n_int_mod() const ;
+
+
 	///Returns the number of stored \c double 's addresses.
-	int get_n_double() const ; 
-    
+	int get_n_double() const ;
+
 	/** Adds the the address of a new \c double  to the list.
-	 * 
-	 *  @param x [input] \c double  the address of which is 
+	 *
+	 *  @param x [input] \c double  the address of which is
 	 *                             to be stored
 	 *  @param position [input] position of the \c double  in the list
 	 *			    of stored \c double  addresses (default
 	 *			    value = 0)
-	 * 
+	 *
 	 */
 	void add_double(double x, int position = 0) ;
-	
+
 	/** Returns the reference of a \c double  stored in the list.
-	 * 
+	 *
 	 *  @param position [input] position of the \c double  in the list
 	 *			    of stored \c double  addresses (default
 	 *			    value = 0)
-	 *  @return Reference to the \c double  the address of 
-	 *           which is stored at the location  \c position  in the 
+	 *  @return Reference to the \c double  the address of
+	 *           which is stored at the location  \c position  in the
 	 *           list
 	 */
-	const double& get_double(int position = 0) const; 
-	
+	const double& get_double(int position = 0) const;
+
  };
 }
 #endif

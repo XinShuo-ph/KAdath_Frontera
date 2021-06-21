@@ -26,69 +26,86 @@
 #include "name_tools.hpp"
 namespace Kadath {
 void Space_bin_bh::add_bc_sphere_one (System_of_eqs& sys, const char* name, int nused, Array<int>** pused)  {
-	  sys.add_eq_bc (2, INNER_BC, name, nused, pused) ;
+	  sys.add_eq_bc (BH1+2, INNER_BC, name, nused, pused) ;
 }
 
 void Space_bin_bh::add_bc_sphere_two (System_of_eqs& sys, const char* name, int nused, Array<int>** pused)  {
-	sys.add_eq_bc (5, INNER_BC, name, nused, pused) ;
+	sys.add_eq_bc (BH2+2, INNER_BC, name, nused, pused) ;
 }
 
-void Space_bin_bh::add_bc_outer (System_of_eqs& sys, const char* name, int nused, Array<int>** pused)  {	
-	sys.add_eq_bc (11, OUTER_BC, name, nused, pused) ;
+void Space_bin_bh::add_bc_outer (System_of_eqs& sys, const char* name, int nused, Array<int>** pused)  {
+	sys.add_eq_bc (OUTER+5, OUTER_BC, name, nused, pused) ;
 }
 
 void Space_bin_bh::add_eq (System_of_eqs& sys, const char* eq, const char* rac, const char* rac_der, int nused, Array<int>** pused)  {
-  
 	// First bh
-	sys.add_eq_inside (2, eq, nused, pused) ;
-	
+	sys.add_eq_inside (BH1+2, eq, nused, pused) ;
+  for(int i = 0; i < n_shells1; ++i) {
+  	sys.add_eq_matching (BH1+2+i, OUTER_BC, rac, nused, pused) ;
+  	sys.add_eq_matching (BH1+2+i, OUTER_BC, rac_der, nused, pused) ;
+  	sys.add_eq_inside (BH1+3+i, eq, nused, pused) ;
+  }
+
 	// Matching with bispheric :
-	sys.add_eq_matching_import (2, OUTER_BC, rac, nused, pused) ;
-	sys.add_eq_matching_import (6, INNER_BC, rac_der, nused, pused) ;  
-	sys.add_eq_matching_import (7, INNER_BC, rac_der, nused, pused) ;
-	
+	sys.add_eq_matching_import (BH1 + n_shells1 + 2, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (OUTER, INNER_BC, rac_der, nused, pused) ;
+	sys.add_eq_matching_import (OUTER+1, INNER_BC, rac_der, nused, pused) ;
+
 	// Second BH :
-	sys.add_eq_inside (5, eq, nused, pused) ;
-	
+	sys.add_eq_inside (BH2+2, eq, nused, pused) ;
+  for(int i = 0; i < n_shells2; ++i) {
+  	sys.add_eq_matching (BH2+2+i, OUTER_BC, rac, nused, pused) ;
+  	sys.add_eq_matching (BH2+2+i, OUTER_BC, rac_der, nused, pused) ;
+  	sys.add_eq_inside (BH2+3+i, eq, nused, pused) ;
+  }
+
 	// Matching with bispheric :
-	sys.add_eq_matching_import (5, OUTER_BC, rac, nused, pused) ;
-	sys.add_eq_matching_import (9, INNER_BC, rac_der, nused, pused) ;  
-	sys.add_eq_matching_import (10, INNER_BC, rac_der, nused, pused) ;
-	
+	sys.add_eq_matching_import (BH2 + n_shells2 + 2, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (OUTER+3, INNER_BC, rac_der, nused, pused) ;
+	sys.add_eq_matching_import (OUTER+4, INNER_BC, rac_der, nused, pused) ;
+
 	// Chi first
-	sys.add_eq_inside (6, eq, nused, pused) ;
-	sys.add_eq_matching (6, CHI_ONE_BC, rac, nused, pused) ;
-	sys.add_eq_matching (6, CHI_ONE_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (OUTER, eq, nused, pused) ;
+	sys.add_eq_matching (OUTER, CHI_ONE_BC, rac, nused, pused) ;
+	sys.add_eq_matching (OUTER, CHI_ONE_BC, rac_der, nused, pused) ;
 
 	// Rect :
-	sys.add_eq_inside (7, eq, nused, pused) ;
-	sys.add_eq_matching (7, ETA_PLUS_BC, rac, nused, pused) ;
-	sys.add_eq_matching (7, ETA_PLUS_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (OUTER+1, eq, nused, pused) ;
+	sys.add_eq_matching (OUTER+1, ETA_PLUS_BC, rac, nused, pused) ;
+	sys.add_eq_matching (OUTER+1, ETA_PLUS_BC, rac_der, nused, pused) ;
 
 	// Eta first
-	sys.add_eq_inside (8, eq, nused, pused) ;
-	sys.add_eq_matching (8, ETA_PLUS_BC, rac, nused, pused) ;
-	sys.add_eq_matching (8, ETA_PLUS_BC, rac_der, nused, pused) ;
+	sys.add_eq_inside (OUTER+2, eq, nused, pused) ;
+	sys.add_eq_matching (OUTER+2, ETA_PLUS_BC, rac, nused, pused) ;
+	sys.add_eq_matching (OUTER+2, ETA_PLUS_BC, rac_der, nused, pused) ;
 
-	// Rect 
-	sys.add_eq_inside (9, eq, nused, pused) ;
-	sys.add_eq_matching (9, CHI_ONE_BC, rac, nused, pused) ;
-	sys.add_eq_matching (9, CHI_ONE_BC, rac_der, nused, pused) ;
+	// Rect
+	sys.add_eq_inside (OUTER+3, eq, nused, pused) ;
+	sys.add_eq_matching (OUTER+3, CHI_ONE_BC, rac, nused, pused) ;
+	sys.add_eq_matching (OUTER+3, CHI_ONE_BC, rac_der, nused, pused) ;
 
-	
+
 	// chi first :
-	sys.add_eq_inside (10, eq, nused, pused) ;
+	sys.add_eq_inside (OUTER+4, eq, nused, pused) ;
 
 	// Matching outer domain :
-	for (int d=6 ; d<=10 ; d++)
+	for (int d=OUTER ; d<=OUTER+4 ; d++)
 		sys.add_eq_matching_import (d, OUTER_BC, rac, nused, pused) ;
-	sys.add_eq_matching_import (11, INNER_BC, rac_der, nused, pused) ;
-		
-	 //Compactified domain
-	sys.add_eq_inside (11, eq, nused, pused) ;
-	
-}
+  
+  //Matching for first shell or compactified domain
+	sys.add_eq_matching_import (OUTER+5, INNER_BC, rac_der, nused, pused) ;
+  
+  // Optional spherical shells between bi-spherical and compactified domain
+  for (int d=0 ; d<n_shells_outer ; d++) {
+      sys.add_eq_inside (OUTER+5+d, eq, nused, pused) ;
+      sys.add_eq_matching (OUTER+5+d, OUTER_BC, rac, nused, pused) ;
+      sys.add_eq_matching (OUTER+5+d, OUTER_BC, rac_der, nused, pused) ;
+  }
 
+  //Compactified domain
+  sys.add_eq_inside (OUTER+5+n_shells_outer, eq, nused, pused) ;
+
+}
 
 void Space_bin_bh::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 
@@ -109,6 +126,7 @@ void Space_bin_bh::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 		abort() ;
 	}
 	else {
+    sys.eq_int_list.push_back(std::make_tuple(nom, nbr_domains-1, OUTER_BC));
 		// Verif lhs = 0 ?
 		indic = ((p2[0]=='0') && (p2[1]==' ') && (p2[2]=='\0')) ?
 			true : false ;
@@ -120,8 +138,8 @@ void Space_bin_bh::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 		// no lhs :
 		if (indic)
 			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(dom, p1, OUTER_BC)) ;
-		
-		else 
+
+		else
 			sys.eq_int[sys.neq_int]->set_part(0, new Ope_sub(&sys, sys.give_ope(dom, p1, OUTER_BC), sys.give_ope(dom, p2, OUTER_BC))) ;
 		sys.neq_int ++ ;
 	}
@@ -140,6 +158,7 @@ void Space_bin_bh::add_eq_int_sphere_one (System_of_eqs& sys, const char* nom) {
 		abort() ;
 	}
 	else {
+    sys.eq_int_list.push_back(std::make_tuple(nom,BH1+2,INNER_BC));
 
 		// Verif lhs = 0 ?
 		indic = ((p2[0]=='0') && (p2[1]==' ') && (p2[2]=='\0')) ?
@@ -151,11 +170,11 @@ void Space_bin_bh::add_eq_int_sphere_one (System_of_eqs& sys, const char* nom) {
 		  // Affectation :
 		  // no lhs :
 		  if (indic) {
-			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(2, p1, INNER_BC)) ;
+			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(BH1+2, p1, INNER_BC)) ;
 			}
 		  else {
-			sys.eq_int[sys.neq_int]->set_part(0, 
-				new Ope_sub(&sys, sys.give_ope(2, p1, INNER_BC), sys.give_ope(2, p2, INNER_BC))) ;
+			sys.eq_int[sys.neq_int]->set_part(0,
+				new Ope_sub(&sys, sys.give_ope(BH1+2, p1, INNER_BC), sys.give_ope(BH1+2, p2, INNER_BC))) ;
 		  }
 		}
 		sys.neq_int ++ ;
@@ -173,6 +192,7 @@ void Space_bin_bh::add_eq_int_sphere_two (System_of_eqs& sys, const char* nom) {
 		abort() ;
 	}
 	else {
+    sys.eq_int_list.push_back(std::make_tuple(nom,BH2+2,INNER_BC));
 
 		// Verif lhs = 0 ?
 		indic = ((p2[0]=='0') && (p2[1]==' ') && (p2[2]=='\0')) ?
@@ -184,11 +204,11 @@ void Space_bin_bh::add_eq_int_sphere_two (System_of_eqs& sys, const char* nom) {
 		  // Affectation :
 		  // no lhs :
 		  if (indic) {
-			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(5, p1, INNER_BC)) ;
+			sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(BH2+2, p1, INNER_BC)) ;
 			}
 		  else {
-			sys.eq_int[sys.neq_int]->set_part(0, 
-				new Ope_sub(&sys, sys.give_ope(5, p1, INNER_BC), sys.give_ope(5, p2, INNER_BC))) ;
+			sys.eq_int[sys.neq_int]->set_part(0,
+				new Ope_sub(&sys, sys.give_ope(BH2+2, p1, INNER_BC), sys.give_ope(BH2+2, p2, INNER_BC))) ;
 		  }
 		}
 		sys.neq_int ++ ;
@@ -196,7 +216,6 @@ void Space_bin_bh::add_eq_int_sphere_two (System_of_eqs& sys, const char* nom) {
 }
 
 void Space_bin_bh::add_eq_zero_mode_inf (System_of_eqs& sys, const char* name, int j, int k) {
-
 	Index pos_cf (domains[nbr_domains-1]->get_nbr_coefs()) ;
 	pos_cf.set(1) = j ;
 	pos_cf.set(2) = k ;

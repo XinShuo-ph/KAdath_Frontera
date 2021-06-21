@@ -310,7 +310,7 @@ INPUT                  = $(HOME_KADATH)/include $(HOME_KADATH)/doc/kadath.cpp $(
 # *.c *.cc *.cxx *.cpp *.c++ *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx *.hpp 
 # *.h++ *.idl *.odl
 
-FILE_PATTERNS          = *.hpp *.cpp
+FILE_PATTERNS          = *.hpp *.cpp *.hh
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -323,6 +323,7 @@ RECURSIVE              = YES
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
 EXCLUDE                = $(HOME_KADATH)/C++/include/headcpp.hpp $(HOME_KADATH)/C++/include/utilities.hpp
+EXCLUDE               += $(HOME_KADATH)/include/EOS/standalone
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or directories 
 # that are symbolic links (a Unix filesystem feature) are excluded from the input.

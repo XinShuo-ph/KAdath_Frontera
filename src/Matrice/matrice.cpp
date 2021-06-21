@@ -19,8 +19,8 @@
 
 #include "headcpp.hpp"
 #include "matrice.hpp"
-#include "array.cpp"
-#include "array_math.cpp"
+#include "array.hpp"
+#include "array.hpp"
 namespace Kadath {
 //Destructeur des quantites derivees
 

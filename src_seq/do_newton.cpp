@@ -21,11 +21,14 @@
 #include "matrice.hpp"
 #include "scalar.hpp"
 #include "metric.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 
 #include <ctime>
 namespace Kadath {
-bool System_of_eqs::do_newton(double precision, double& error) 
+/* this is OUTDATED and not compatible with this version
+   fixing it should be easy though, since it is just a matter correct interface definition
+   
+bool System_of_eqs::do_newton(double precision, double& error)
 {
    clock_t begin, end;
    vars_to_terms();
@@ -34,7 +37,7 @@ bool System_of_eqs::do_newton(double precision, double& error)
    cout << "Error init = " << error << endl;
    if (error<precision) return true;
    int nn(second.get_size(0));
-   if (nbr_unknowns!=nn) 
+   if (nbr_unknowns!=nn)
    {
       cerr << "N unknowns  = " << nbr_unknowns << endl;
       cerr << "N equations = " << nn << endl;
@@ -46,9 +49,9 @@ bool System_of_eqs::do_newton(double precision, double& error)
    begin = clock();
    Array<double> jx(nn);
    Matrice ope(nn,nn);
-   for (int col(nn-1) ; col >= 0 ; col--) 
+   for (int col(nn-1) ; col >= 0 ; col--)
    {
-      if ((col != 0) && (col%int(nn/10) == 0)) 
+      if ((col != 0) && (col%int(nn/10) == 0))
       {
          cout << "*";
          cout.flush();
@@ -81,7 +84,7 @@ bool System_of_eqs::do_newton(double precision, double& error)
 }
 
 
-bool System_of_eqs::do_newton_with_linesearch(double, double& , int, double ) 
+bool System_of_eqs::do_newton_with_linesearch(double, double& , int, double )
 {
   cerr << "Newton-Raphson with lineseach Not implemented yet in the sequential version" << endl ;
   abort() ;
@@ -140,7 +143,7 @@ void System_of_eqs::update_fields(double, vector<double> const& , vector<Tensor>
 void System_of_eqs::compute_old_and_var(Array<double> const& , vector<double>& , vector<Tensor>& , vector<double>& , vector<Tensor>& )
 {  cerr << "Newton-Raphson with lineseach Not implemented yet in the sequential version" << endl ;
   abort() ;
-  
+
 }
 
 void System_of_eqs::compute_p(Array<double>&, Array<double> const& , int )
@@ -148,6 +151,7 @@ void System_of_eqs::compute_p(Array<double>&, Array<double> const& , int )
     cerr << "Newton-Raphson with lineseach Not implemented yet in the sequential version" << endl ;
   abort() ;
 }
+*/
 }
 
 

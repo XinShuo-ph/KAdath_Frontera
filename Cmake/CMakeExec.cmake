@@ -1,6 +1,11 @@
 set(CMAKE_MODULE_PATH $ENV{HOME_KADATH}/Cmake)
 if(EXISTS $ENV{HOME_KADATH}/Cmake/CMakeLocal.cmake)
-	include ($ENV{HOME_KADATH}/Cmake/CMakeLocal.cmake)	
+	include ($ENV{HOME_KADATH}/Cmake/CMakeLocal.cmake)
+endif()
+
+if (NOT CMAKE_BUILD_TYPE)
+    message(STATUS "No build type selected, default to Release")
+    set(CMAKE_BUILD_TYPE "Release")
 endif()
 
 option(PAR_VERSION "Parallel version" ON)
@@ -47,10 +52,11 @@ if (NOT DEFINED FFTW_LIBRARIES)
      include(FindFFTW) #idem for FindFFTW
 endif()
 
+if (NOT PAR_VERSION)
 if (NOT DEFINED LAPACK_LIBRARIES)
     include(FindLAPACK) #FindLAPACK does exist
 endif()
-
+endif()
 
 #include(FindSUNDIALS)
 
@@ -66,15 +72,22 @@ if (PAR_VERSION)
 endif(PAR_VERSION)
 
 if(NOT PAR_VERSION)
-    if (NOT DEFINED PGPLOT_LIBRARIES)
-	    find_package(PGPLOT REQUIRED) #pgplot probably only used in sequential mode
-    endif()
+#    if (NOT DEFINED PGPLOT_LIBRARIES)
+#	    find_package(PGPLOT REQUIRED) #pgplot probably only used in sequential mode
+#    endif()
 
     if (NOT DEFINED SUNDIALS_LIBRARIES)
-	    include(FindSUNDIALS) #SUNDIAL probably only used in sequential mode	
+	    include(FindSUNDIALS) #SUNDIAL probably only used in sequential mode
     endif()
 endif(NOT PAR_VERSION)
 
-#need to use C++11
-add_definitions(-std=c++11)
-
+#need to use C++17
+add_definitions(-std=c++17)
+if ("$ENV{KAD_ARCH}" STREQUAL "")
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++17 -march=native")
+else()
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++17 -march=$ENV{KAD_ARCH}")
+endif()
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DNDEBUG")
+message("CMAKE_CXX_FLAGS_DEBUG is ${CMAKE_CXX_FLAGS_DEBUG}")
+message("CMAKE_CXX_FLAGS_RELEASE is ${CMAKE_CXX_FLAGS_RELEASE}")

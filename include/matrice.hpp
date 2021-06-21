@@ -22,34 +22,35 @@
 //fichiers includes
 #include "headcpp.hpp"
 #include "array.hpp"
+#include "memory.hpp"
 
 namespace Kadath {
 /**
  * Matrix handling.
  * The matrix can be stored in the usual way in \c std,  in a band-way by
- * \c band and on a LU-decomposition by the two arrays \c lu and 
+ * \c band and on a LU-decomposition by the two arrays \c lu and
  * \c permute. All the storage conventions are those af \b LAPACK which is
  * used to make the LU-decomposition,  the inversion and to compute the
  * eigenvalues of the matrix. All those representations are redondant, that means
- * that doing the LU-decomposition, for example,  does NOT destroy 
+ * that doing the LU-decomposition, for example,  does NOT destroy
  * previously calculated type of storage.
  * \ingroup util
  */
 
-class Matrice {
+class Matrice : public MemoryMappable {
     //Elements
     private:
-	
+
 	/**
 	* \c Dim_array of dimension 2 containing the size of the matrix.
 	*/
 	Dim_array sizes ;
 	Array<double>* std ; ///< Pointer on the array of the standard representation.
-	
-	
+
+
 	mutable int ku ;    ///< Number of upper-diagonals in the band representation.
 	mutable int kl ;    ///< Number of lower-diagonals in the band representation.
-	
+
 	/**
 	 * Pointer on the array of the band representation of a square matrix.
 	 * To be precise, \f$ A(i, j)\f$ is stored in \c band
@@ -57,11 +58,11 @@ class Matrice {
 	 * \mathrm{min} (n, j+kl)\f$, \e n being the size of the matrix.
 	 */
 	mutable Array<double>* band ;
-	
-	
+
+
 	mutable Array<double>* lu ;   ///< Pointer on the first array of the LU-representation.
 	mutable Array<int>* permute ;	///< Pointer on the second array of the LU-representation.
-	
+
     // Constructeurs destructeurs
     public:
 	/**
@@ -70,9 +71,9 @@ class Matrice {
 	 * @param size2 [input] number of columns.
 	 */
 	Matrice (int size1, int size2 ) ;
-	
+
 	Matrice (const Matrice& ) ; ///< Constructor by copy.
-	
+
 	/**
 	 * Constructor from a \c Tbl.
 	 * @param tab [input]  2-dimension or 1-dimension array
@@ -84,12 +85,12 @@ class Matrice {
 	Matrice (const Array<double>& tab) ;
 
 	~Matrice() ; ///< Destructor
-    
+
         //Gestion memoire
 	/**
-	 * Logical destructor : dellocates the memory of the various used 
+	 * Logical destructor : dellocates the memory of the various used
 	 * representations.
-	 * 
+	 *
 	 */
     private:
 	void del_deriv() ; ///< Deletes the (mutable) derived members: band, lu, permute
@@ -103,18 +104,18 @@ class Matrice {
     public:
 	/**
 	 * Returns the dimension of the matrix.
-	 * @param i [input] if \e i =0 returns the number of lines and if \e i =2 
+	 * @param i [input] if \e i =0 returns the number of lines and if \e i =2
 	 * returns the number of columns.
 	 */
 	int get_dim(int i) const {return sizes(i) ;};
-	
-	Array<double>* get_lu() {return lu ;} ; ///< Returns a pointer  on the \c lu decomposition 
+
+	Array<double>* get_lu() {return lu ;} ; ///< Returns a pointer  on the \c lu decomposition
 	Array<int>* get_permute() {return permute ;} ;///< Returns a pointer  on the permutation array.
 
 	const Array<double>& get_array() const {return *std; } ; ///< Returns the array of matrix elements
-	
+
     // affectation
-    public:	
+    public:
 	/**
 	 * Sets all the element of \c *std to \e x.
 	 * The other representations are destroyed.
@@ -123,9 +124,9 @@ class Matrice {
 
 	void operator=(const Matrice& ) ; ///< Assignement to another \c Matrice.
 	void operator=(const Array<double>& ) ; ///< Assignement to an array.
- 
+
     //Impression
-	friend ostream& operator<<(ostream& , const Matrice& ) ; 
+	friend ostream& operator<<(ostream& , const Matrice& ) ;
 
     // extraction d'un element :
     public:
@@ -135,10 +136,10 @@ class Matrice {
 	 * longer valid.
 	 * @param j [input] line coordinate.
 	 * @param i [input] column coordinate.
-	 * 
+	 *
 	 */
 	double& set(int, int) ;
-	
+
 	/**
 	* Copies the elements of \c so inside the matrice, starting at the position \f$ (i,j) \f$.
 	**/
@@ -147,27 +148,27 @@ class Matrice {
 	/**
 	 * Read-only of a particuliar element.
 	 * @param j [input] line coordinate.
-	 * @param i [input] column coordinate. 
-	 */	
+	 * @param i [input] column coordinate.
+	 */
 	double operator()(int , int) const ;
-	
+
     // Passage matrice a bande
 	/**
 	 * Calculate the band storage of \c *std.
-	 * Please note that this function does NOT check if \c *std 
+	 * Please note that this function does NOT check if \c *std
 	 * represents a real band-matrix.
 	 * @param up [input] number of upper-diagonals.
 	 * @param low [input] number of lower-diagonals.
 	 */
 	void set_band (int up, int low) const ;
-	
+
     // Decomposition LU
 	/**
 	 * Calculate the LU-representation,  assuming the band-storage has been
 	 * done. The calculus is done using \b LAPACK.
 	 */
 	void set_lu () const ;
-        
+
     // Inversion de la matrice
 	/**
 	 * Solves the linear system represented by the matrix.
@@ -180,11 +181,11 @@ class Matrice {
     // Les valeurs propres :
 	/**
 	 * Returns the eigenvalues of the matrix, calculated using \b LAPACK.
-	 * @return contains the real and the imaginary parts of the 
-	 * eigenvalues. The real parts are in \c Array<double> \e (0, *) and 
+	 * @return contains the real and the imaginary parts of the
+	 * eigenvalues. The real parts are in \c Array<double> \e (0, *) and
 	 * the imaginary parts in \c Array<double> \e (1, *).
 	 */
-	Array<double> val_propre() const ;	
+	Array<double> val_propre() const ;
 	/**
 	 * Returns the eigenvectors of the matrix, calculated using \b LAPACK.
 	 *
@@ -195,7 +196,7 @@ class Matrice {
 	 * Computes the transpose matrix
 	 */
 	Matrice transpose() const ;
-	
+
 
     // Member arithmetics
     // ------------------
@@ -216,16 +217,16 @@ class Matrice {
 	friend Matrice operator* (const Matrice&, const Matrice& ) ;
 	friend Matrice operator/ (const Matrice&,  double ) ;
 } ;
-ostream& operator<<(ostream& , const Matrice& ) ; 
+ostream& operator<<(ostream& , const Matrice& ) ;
 
 
-Matrice operator+ (const Matrice&, const Matrice& ) ; 
-Matrice operator- (const Matrice&, const Matrice& ) ; 
-Matrice operator- (const Matrice& ) ; 
+Matrice operator+ (const Matrice&, const Matrice& ) ;
+Matrice operator- (const Matrice&, const Matrice& ) ;
+Matrice operator- (const Matrice& ) ;
 Matrice operator* (const Matrice&, double ) ;
 Matrice operator* (double, const Matrice& ) ;
-Matrice operator* (const Matrice&, const Matrice& ) ; 
-Matrice operator/ (const Matrice&,  double ) ; 
+Matrice operator* (const Matrice&, const Matrice& ) ;
+Matrice operator/ (const Matrice&,  double ) ;
 
 // Lapack routines :
 #define F77_dswap dswap_
@@ -246,4 +247,4 @@ void F77_dgeev(char*, char*, int*, double[], int*, double[], double[],
 }
 
 }
-#endif	
+#endif

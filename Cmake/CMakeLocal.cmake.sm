@@ -1,0 +1,15 @@
+#include_directories($ENV{FFTW_BASE}/include/fftw)
+include_directories($ENV{FFTW_BASE}/include)
+include_directories($ENV{GSL_INCDIR})
+include_directories($ENV{BOOST_INCDIR})
+
+# not working
+#set(FFTW_INCLUDES "$ENV{FFTW_BASE}/include/fftw")
+
+set(FFTW_INCLUDES "$ENV{FFTW_BASE}/include")
+set(FFTW_LIBRARIES "$ENV{FFTW_LIBDIR}/libfftw3.a")
+
+set(GSL_LIBRARIES "$ENV{GSL_LIBDIR}/libgsl.a")
+set(GSL_INCLUDES "$ENV{GSL_INCDIR}")
+
+set(SCALAPACK_LIBRARIES "-L$ENV{MKL_LIBDIR} -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")

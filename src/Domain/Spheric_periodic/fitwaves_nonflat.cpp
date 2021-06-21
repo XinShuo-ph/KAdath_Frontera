@@ -22,7 +22,7 @@
 #include "term_eq.hpp"
 #include "scalar.hpp"
 #include "tensor.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 namespace Kadath {
 void coef_1d (int, Array<double>&) ;
 

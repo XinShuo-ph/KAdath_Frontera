@@ -21,9 +21,9 @@
 #include "utilities.hpp"
 namespace Kadath {
 Val_domain::Val_domain(const Domain* dom) : zone(dom), base(zone->get_ndim()), is_zero(false), c(0x0), cf(0x0), in_conf(false), in_coef(false) {
+	p_der_var = MemoryMapper::get_memory<Val_domain*>(zone->get_ndim());
+	p_der_abs = MemoryMapper::get_memory<Val_domain*>(zone->get_ndim());
 
-	p_der_var = new Val_domain* [zone->get_ndim()] ;
-	p_der_abs = new Val_domain* [zone->get_ndim()] ;
 	for (int i=0 ; i<zone->get_ndim() ; i++) {
 	     p_der_var[i] = 0x0 ;
 	     p_der_abs[i] = 0x0 ;
@@ -39,8 +39,9 @@ Val_domain::Val_domain (const Val_domain& so, bool copie) : zone(so.zone), base(
 		in_coef = false ;
 	}
 
-	p_der_var = new Val_domain* [zone->get_ndim()] ;
-	p_der_abs = new Val_domain* [zone->get_ndim()] ;
+	p_der_var = MemoryMapper::get_memory<Val_domain*>(zone->get_ndim());
+	p_der_abs = MemoryMapper::get_memory<Val_domain*>(zone->get_ndim());
+
 	for (int i=0 ; i<zone->get_ndim() ; i++) {
 	     p_der_var[i] = ((so.p_der_var[i]!=0x0) && copie) ? new Val_domain(*so.p_der_var[i]) : 0x0 ;
 	     p_der_abs[i] = ((so.p_der_abs[i]!=0x0) && copie) ? new Val_domain(*so.p_der_abs[i]) : 0x0 ;
@@ -58,8 +59,9 @@ Val_domain::Val_domain (const Domain* so, FILE* fd) : zone (so), base(fd) {
 	in_coef = (indic==0) ? true : false ;
 	cf = (in_coef) ? new Array<double>(fd) : 0x0 ;
 
-	p_der_var = new Val_domain* [zone->get_ndim()] ;
-	p_der_abs = new Val_domain* [zone->get_ndim()] ;
+	p_der_var = MemoryMapper::get_memory<Val_domain*>(zone->get_ndim());
+	p_der_abs = MemoryMapper::get_memory<Val_domain*>(zone->get_ndim());
+
 	for (int i=0 ; i<zone->get_ndim() ; i++) {
 	     p_der_var[i] = 0x0 ;
 	     p_der_abs[i] = 0x0 ;
@@ -68,8 +70,10 @@ Val_domain::Val_domain (const Domain* so, FILE* fd) : zone (so), base(fd) {
 
 Val_domain::~Val_domain() {
 	del_deriv() ;
-	delete [] p_der_var ;
-	delete [] p_der_abs ;
+
+	MemoryMapper::release_memory<Val_domain*>(p_der_var, zone->get_ndim());
+	MemoryMapper::release_memory<Val_domain*>(p_der_abs, zone->get_ndim());
+
 	if (c!=0x0)
 		delete c ;
 	if (cf!=0x0)
@@ -105,6 +109,10 @@ void Val_domain::del_deriv() const {
 
 void Val_domain::operator=(const Val_domain& so) {
 	assert (zone == so.zone) ;
+	this->assign_vals(so);
+}
+
+void Val_domain::assign_vals(const Val_domain& so) {
 	is_zero = so.is_zero ;
 	in_conf = so.in_conf ;
 	in_coef = so.in_coef ;

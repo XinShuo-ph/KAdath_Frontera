@@ -18,7 +18,7 @@
 */
 #include "headcpp.hpp"
 #include "val_domain.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include <gsl/gsl_sf_bessel.h>
 
 namespace Kadath {

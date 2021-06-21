@@ -22,6 +22,7 @@
 
 #include "headcpp.hpp"
 #include "dim_array.hpp"
+#include "memory.hpp"
 
 namespace Kadath {
 
@@ -36,14 +37,14 @@ class Tensor ;
 **/
 
 
-class Index {
+class Index : public MemoryMappable {
     protected:
 	/**
 	* Sizes of the associated \c Array.
 	* When used with a \c Tensor, it is the dimension, for each tensorial index.
 	*/
 	Dim_array sizes ;
-	int* coord ; ///< Value of each index.
+	int* coord = nullptr ; ///< Value of each index.
 
 
     public:
@@ -51,11 +52,11 @@ class Index {
 	* All the positions are set to zero.
 	* @param dim [input] Sizes in each dimensions.
 	**/
-        explicit Index (const Dim_array& dim) ;
+  explicit Index (const Dim_array& dim) ;
 	Index (const Index&) ; ///< Constructor by copy
 	Index (const Tensor&) ; ///< Constructor for looping on components of a tensor
 	~Index() ; ///<Destructor.
-	
+
 	/**
 	* Read/write of the position in a given dimension.
 	* @param i [input] dimension.
@@ -74,7 +75,7 @@ class Index {
 	* Returns all the dimensions
 	*/
 	Dim_array const& get_sizes() const {return sizes ;} ;
-	
+
 	void set_start() ; ///< Sets the position to zero in all dimensions
 	/**
 	* Increments the position of the \c Index.
@@ -83,14 +84,24 @@ class Index {
 	* @param var [input] dimension to be incremented.
 	* @return \c false if the result is outside the \c Array and \c true otherwise.
 	*/
-	bool inc (int increm=1, int var=0) ;
+	bool inc (int increm, int var=0) ;
+
+	/**
+	* Increments the position of the \c Index by one.
+	* If one reaches the last point of a dimension, then the next one is increased.
+	* @return \c false if the result is outside the \c Array and \c true otherwise.
+	*/
+	bool inc () ;
 
 	void operator= (const Index&) ; ///< Assignement to annother \c Index.
-	
+
 	bool operator== (const Index&) const ; ///< Comparison operator
 
 	template <class> friend class Array ;
 	friend ostream& operator<< (ostream&, const Index&) ;
 } ;
 }
+
+#include "implementation/index.cpp"
+
 #endif

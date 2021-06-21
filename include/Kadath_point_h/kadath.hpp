@@ -22,7 +22,7 @@
 
 #include "headcpp.hpp"
 #include "array.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "base_tensor.hpp"
 #include "base_spectral.hpp"
 #include "matrice.hpp"
@@ -46,6 +46,7 @@
 #include "bin_bh.hpp"
 #include "bin_fake.hpp"
 #include "bin_ns.hpp"
+#include "bhns.hpp"
 #include "critic.hpp"
 #include "oned.hpp"
 #include "spheric_periodic.hpp"

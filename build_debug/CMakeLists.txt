@@ -30,6 +30,7 @@ file(GLOB_RECURSE KADATH_SOURCES $ENV{HOME_KADATH}/src/*.cpp )
 #message ("Source files" : ${KADATH_SOURCES})
 
 include_directories($ENV{HOME_KADATH}/include)
+include_directories($ENV{HOME_KADATH}/include/Kadath_point_h)
 #for templates in Array
 include_directories($ENV{HOME_KADATH}/src/Array)
 if (DEFINED FFTW_INCLUDE_DIR)
@@ -37,7 +38,7 @@ if (DEFINED FFTW_INCLUDE_DIR)
 endif()
 
 #need to use C++11
-add_definitions(-std=c++11)
+add_definitions(-std=c++17)
 
 add_library(kadath-debug ${KADATH_SOURCES})
 set_target_properties(kadath-debug PROPERTIES ARCHIVE_OUTPUT_DIRECTORY $ENV{HOME_KADATH}/lib COMPILE_FLAGS "-fPIC")

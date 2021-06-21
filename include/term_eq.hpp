@@ -22,13 +22,15 @@
 
 #include "tensor.hpp"
 #include "metric_tensor.hpp"
+#include "memory.hpp"
 
 #define TERM_D 0
 #define TERM_T 1
 namespace Kadath {
+
 class Term_eq ;
 
-ostream& operator<< (ostream&, const Term_eq&) ; 
+ostream& operator<< (ostream&, const Term_eq&) ;
 Term_eq operator+ (const Term_eq&, const Term_eq&) ;
 Term_eq operator- (const Term_eq&, const Term_eq&) ;
 Term_eq operator* (const Term_eq&, const Term_eq&) ;
@@ -58,9 +60,9 @@ Term_eq scalar_product (const Term_eq&, const Term_eq&) ;
  * \ingroup systems
  */
 
-class Term_eq {
+class Term_eq : public MemoryMappable {
 
-    protected: 
+    protected:
 	const int dom ; ///< Index of the \c Domain where the \c Term_eq is defined.
 	double* val_d ; ///< Pointer on the value, if the \c Term_eq is a double.
 	double* der_d ; ///< Pointer on the variation if the \c Term_eq is a double.
@@ -74,38 +76,38 @@ class Term_eq {
 	const int type_data ;
 
     public:
-	/** 
+	/**
 	* Constructor for a double type \c Term_eq. Only the value is initialized.
 	* @param dom : the domain.
 	* @param val : the value (as an integer).
 	*/
 	Term_eq (int dom, int val) ;
-	/** 
+	/**
 	* Constructor for a double type \c Term_eq. Only the value is initialized.
 	* @param dom : the domain.
 	* @param val : the value.
 	*/
 	Term_eq (int dom, double val) ;
-	/** 
+	/**
 	* Constructor for a double type \c Term_eq.
 	* @param dom : the domain.
 	* @param val : the value.
 	* @param der : the variation.
 	*/
 	Term_eq (int dom, double val, double der) ;
-	/** 
+	/**
 	* Constructor for a tensorial field \c Term_eq. Only the value is initialized.
 	* @param dom : the domain.
 	* @param val : the value.
 	*/
 	Term_eq (int dom, const Tensor& val) ;
-	/** 
+	/**
 	* Constructor for a tensorial field \c Term_eq. Only the value is initialized.
 	* @param dom : the domain.
 	* @param val : the value.
 	* @param der : the variation.
 	*/
-	Term_eq (int dom, const Tensor& val, const Tensor& der) ;		
+	Term_eq (int dom, const Tensor& val, const Tensor& der) ;
 	Term_eq (const Term_eq&) ; ///< Copy constructor.
 	~Term_eq() ; ///< Destructor
 
@@ -187,19 +189,19 @@ class Term_eq {
 	friend class Ope_int ;
 	friend class Ope_grad ;
 	friend class Ope_id ;
-	friend class Ope_der ;	
+	friend class Ope_der ;
 	friend class Ope_der_flat ;
 	friend class Ope_der_background ;
-	friend class Ope_mult_r ;	
+	friend class Ope_mult_r ;
 	friend class Ope_mult_x ;
 	friend class Ope_div_rsint ;
 	friend class Ope_mult_rsint ;
-	friend class Ope_div_r ;	
-	friend class Ope_div_sint ;	
+	friend class Ope_div_r ;
+	friend class Ope_div_sint ;
 	friend class Ope_div_cost ;
 	friend class Ope_mult_sint ;
 	friend class Ope_div_xpone ;
-	friend class Ope_partial ;	
+	friend class Ope_partial ;
 	friend class Ope_partial_var ;
 	friend class Ope_determinant ;
 	friend class Ope_inverse ;
@@ -210,17 +212,17 @@ class Term_eq {
 	friend class Ope_point ;
 	friend class Ope_val_ori ;
 	friend class Ope_sqrt ;
-	friend class Ope_sqrt_anti ;	
+	friend class Ope_sqrt_anti ;
 	friend class Ope_sqrt_nonstd ;
-	friend class Ope_def ;	
+	friend class Ope_def ;
 	friend class Ope_def_global ;
-	friend class Ope_srdr ;	
-	friend class Ope_ddp ;	
-	friend class Ope_ddt ;	
-	friend class Ope_dt ;	
-	friend class Ope_ddr ;	
+	friend class Ope_srdr ;
+	friend class Ope_ddp ;
+	friend class Ope_ddt ;
+	friend class Ope_dt ;
+	friend class Ope_ddr ;
 	friend class Ope_dr ;
-	friend class Ope_exp ;	
+	friend class Ope_exp ;
 	friend class Ope_log ;
 	friend class Ope_atanh;
 	friend class Ope_cosh;
@@ -231,19 +233,19 @@ class Term_eq {
 	friend class Ope_fit_waves ;
 	friend class Ope_change_basis ;
 	friend class Ope_mult_1mrsL ;
-	friend class Ope_div_1mrsL ;	
+	friend class Ope_div_1mrsL ;
 	friend class Ope_div_1mx2 ;
 	friend class Ope_dtime ;
 	friend class Ope_ddtime ;
 	friend class Domain ;
 	friend class Domain_nucleus ;
-	friend class Domain_shell ;	
+	friend class Domain_shell ;
 	friend class Domain_compact ;
 	friend class Domain_shell_outer_adapted ;
 	friend class Domain_shell_inner_adapted ;
 	friend class Domain_polar_shell_outer_adapted ;
-	friend class Domain_polar_shell_inner_adapted ;	
-	friend class Domain_polar_shell_inner_homothetic ;	
+	friend class Domain_polar_shell_inner_adapted ;
+	friend class Domain_polar_shell_inner_homothetic ;
 	friend class Domain_polar_shell_outer_homothetic ;
 	friend class Domain_bispheric_rect ;
 	friend class Domain_bispheric_eta_first ;
@@ -264,17 +266,18 @@ class Term_eq {
 	friend class Metric_conf_factor ;
 	friend class Metric_conf_factor_const ;
 	friend class System_of_eqs ;
-	friend class Space_spheric_adapted ;	
+	friend class Space_spheric_adapted ;
 	friend class Space_polar_adapted ;
 	friend class Space_bin_ns ;
+	friend class Space_bhns ;
 	friend class Space_bin_bh ;
 	friend class Metric_flat_nophi ;
 	friend class Metric_nophi ;
 	friend class Metric_nophi_const ;
 	friend class Metric_nophi_AADS ;
 	friend class Metric_nophi_AADS_const ;
-	friend class Metric_cfc ; 
-	friend class Domain_polar_periodic_nucleus ;	
+	friend class Metric_cfc ;
+	friend class Domain_polar_periodic_nucleus ;
 	friend class Domain_polar_periodic_shell ;
 	friend class Space_polar_periodic ;
 	friend class Space_adapted_bh ;	

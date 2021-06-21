@@ -1,0 +1,16 @@
+include_directories($ENV{MKL_INCDIR})
+#include_directories("$ENV{MKL_INCDIR}/fftw")
+include_directories("$ENV{FFTW_BASE}/include")
+#include_directories($ENV{GSL_INCDIR})
+include_directories("$ENV{GSL_BASE}/include")
+include_directories($ENV{BOOST_INCDIR})
+
+#set(FFTW_INCLUDES "$ENV{FFTW_INC}")
+#set(FFTW_LIBRARIES "$ENV{MKL_LIB}")
+
+#set(FFTW_LIBRARIES "$ENV{FFTW_LIB}")
+set(FFTW_LIBRARIES "-Wl,-static  -L/dss/dsshome1/lrz/sys/spack/staging/19.1/opt/x86_avx512/fftw/3.3.8-intel-3bopyks/lib -lfftw3f -lfftw3 -lfftw3l -Wl,-dy")
+
+#set(SCALAPACK_LIBRARIES "$ENV{MKL_LIB} -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64")
+set(SCALAPACK_LIBRARIES "-L/lrz/sys/intel/studio2019_u3/compilers_and_libraries_2019.3.199/linux/mkl/lib/intel64 -Wl,--start-group /lrz/sys/intel/studio2019_u3/compilers_and_libraries_2019.3.199/linux/mkl/lib/intel64/libmkl_intel_lp64.a /lrz/sys/intel/studio2019_u3/compilers_and_libraries_2019.3.199/linux/mkl/lib/intel64/libmkl_intel_thread.a /lrz/sys/intel/studio2019_u3/compilers_and_libraries_2019.3.199/linux/mkl/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64")
+#set(SCALAPACK_LIBRARIES "-L$ENV{MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")

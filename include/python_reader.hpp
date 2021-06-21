@@ -28,7 +28,18 @@
 #include <vector>
 #include <utility>
 
+#include "EOS/EOS.hh"
+#include "utilities.hpp"
+
 namespace Kadath {
+/*
+  These classes make it possible to create and use
+  Kadath scalar and tensor fields directly from
+  python, for analysis purposes.
+
+  See the codes directory for some examples.
+*/
+
 enum quantity_type {CONSTANT, SCALAR, VECTOR};
 
 typedef std::pair<std::string, quantity_type> var_t;
@@ -39,6 +50,7 @@ template<typename T>
 struct vars_base_t {
   static var_vector vars;
 };
+
 // in any case, get storage for them
 template<typename T> var_vector vars_base_t<T>::vars;
 
@@ -46,11 +58,15 @@ template<typename T> var_vector vars_base_t<T>::vars;
 // fills the internal dictionaries using a quantities type
 template<typename space_t, typename vars_t>
 class python_reader_t {
+  protected:
   // the file from which gets read
   FILE * file;
 
   // the space on which everything is defined
   space_t space;
+
+  // in case of matter content the EOS
+  template<eos_var_t var> using eos = EOS<Margherita::Cold_Table,var>;
 
   public:
   boost::python::dict vars;
@@ -85,8 +101,13 @@ class python_reader_t {
     return boost::python::extract<T const &>(vars[fieldname]);
   }
 
+  template<typename T>
+  T extractConstant(std::string const & cname) {
+    return boost::python::extract<T>(vars[cname]);
+  }
+
   // point-wise tensor field exporter interface for python
-  boost::python::list getFieldValues(std::string const & fieldname, boost::python::list const & coord_list) {
+  boost::python::list getFieldValues(std::string const & fieldname, boost::python::list const & coord_list, int bound = -1) {
     // list of values to return
     boost::python::list values;
 
@@ -115,18 +136,55 @@ class python_reader_t {
       }
 
       // add values to output list
-      if(tensor.get_valence() == 0)
-        values.append(tensor(ind).val_point(abs_coords));
+      if(bound == -1) {
+        if(tensor.get_valence() == 0)
+          values.append(tensor(ind).val_point(abs_coords));
+        else {
+          boost::python::list comps;
+          do {
+            comps.append(tensor(ind).val_point(abs_coords));
+          } while(ind.inc());
+          values.append(comps);
+        }
+      } 
       else {
-        boost::python::list comps;
-        do {
-          comps.append(tensor(ind).val_point(abs_coords));
-        } while(ind.inc());
-        values.append(comps);
+        if(tensor.get_valence() == 0)
+          values.append(tensor(ind).val_point_bound(abs_coords,bound));
+        else {
+          boost::python::list comps;
+          do {
+            comps.append(tensor(ind).val_point_bound(abs_coords,bound));
+          } while(ind.inc());
+          values.append(comps);
+        }
       }
     }
     return values;
   }
+
+  // point-wise EOS exporter interface for python
+  boost::python::list getEOSValues(boost::python::list const & coord_list) {
+    auto logh_values = getFieldValues("logh", coord_list);
+
+    // list of EOS values to return
+    boost::python::list values;
+
+    for(int i = 0; i < len(coord_list); ++i) {
+      double h = std::exp(boost::python::extract<double>(logh_values[i]));
+
+      boost::python::list eos_tuple;
+
+      eos_tuple.append(eos<DENSITY>::get(h));
+      eos_tuple.append(eos<EPSILON>::get(h));
+      eos_tuple.append(eos<PRESSURE>::get(h));
+
+      values.append(eos_tuple);
+    }
+
+    return values;
+  }
+
+
 };
 
 template<typename space_t>
@@ -146,9 +204,10 @@ template<typename reader_t>
 void constructPythonReader(std::string reader_name) {
   using namespace boost::python;
 
-  class_<reader_t>(reader_name.c_str(), init<std::string>())
-    .def("getFieldValues", &reader_t::getFieldValues)
-    .def_readonly("vars", &reader_t::vars);
+  auto reader = class_<reader_t>(reader_name.c_str(), init<std::string>());
+  reader.def("getFieldValues", &reader_t::getFieldValues);
+  reader.def("getEOSValues", &reader_t::getEOSValues);
+  reader.def_readonly("vars", &reader_t::vars);
 }
 
 

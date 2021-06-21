@@ -22,41 +22,42 @@
 
 namespace Kadath {
 Scalar::Scalar (const Space& sp) : Tensor(sp) {
-	val_zones = new Val_domain* [ndom] ;
+	val_zones = MemoryMapper::get_memory<Val_domain*>(ndom);
+
 	for (int l=0 ; l<ndom ; l++)
-	    val_zones[l] = new Val_domain(sp.get_domain(l)) ;	
+	    val_zones[l] = new Val_domain(sp.get_domain(l)) ;
 	cmp[0] = this ;
-} 
+}
 
 Scalar::Scalar (const Scalar& so, bool copie) : Tensor(so.espace) {
 
-	val_zones = new Val_domain* [ndom] ;
+	val_zones = MemoryMapper::get_memory<Val_domain*>(ndom);
 	for (int l=0 ; l<ndom ; l++)
-	    val_zones[l] = new Val_domain(*so.val_zones[l], copie) ;	
+	    val_zones[l] = new Val_domain(*so.val_zones[l], copie) ;
 	cmp[0] = this ;
-} 
+}
 
 Scalar::Scalar (const Tensor& so, bool copie) : Tensor(so.espace) {
 
 	assert (so.valence==0) ;
 
-	val_zones = new Val_domain* [ndom] ;
+	val_zones = MemoryMapper::get_memory<Val_domain*>(ndom);
 	for (int l=0 ; l<ndom ; l++)
-	    val_zones[l] = new Val_domain(*so.cmp[0]->val_zones[l], copie) ;	
+	    val_zones[l] = new Val_domain(*so.cmp[0]->val_zones[l], copie) ;
 	cmp[0] = this ;
-} 
+}
 
 Scalar::Scalar (const Space& sp, FILE* fd) : Tensor(sp) {
-	val_zones = new Val_domain* [ndom] ;
+	val_zones = MemoryMapper::get_memory<Val_domain*>(ndom);
 	for (int l=0 ; l<ndom ; l++)
-	    val_zones[l] = new Val_domain(sp.get_domain(l), fd) ;	
+	    val_zones[l] = new Val_domain(sp.get_domain(l), fd) ;
 	cmp[0] = this ;
 }
 
 Scalar::~Scalar () {
 	for (int i=0 ; i<ndom ; i++)
 		delete val_zones[i] ;
-	delete [] val_zones ;
+  MemoryMapper::release_memory<Val_domain*>(val_zones,ndom);
 	cmp[0] = 0x0 ;
 }
 
@@ -221,7 +222,7 @@ void Scalar::std_todd_base() {
 	   val_zones[l]->std_todd_base() ;
 }
 
-void Scalar::std_xodd_todd_base() { 
+void Scalar::std_xodd_todd_base() {
     val_zones[0]->std_xodd_todd_base() ;
     for (int l=1 ; l<ndom ; l++)
 	   val_zones[l]->std_todd_base() ;
@@ -263,8 +264,8 @@ const Val_domain& Scalar::operator() (int i) const {
 const Val_domain& Scalar::at(int i) const {
 	return operator()(i);
 }
-	
-	
+
+
 Val_domain& Scalar::set_domain (int l) {
 	assert ((l>=0) && (l<ndom)) ;
 	return *val_zones[l] ;
@@ -281,11 +282,12 @@ void Scalar::set_val_inf(double x, int l) {
 double Scalar::val_point(const Point& xx, int sens) const {
 
 	assert ((sens==+1) || (sens==-1)) ;
-  
-	bool* inside = new bool[ndom] ;
+
+	bool* inside = MemoryMapper::get_memory<bool>(ndom);
+
 	for (int l=ndom-1 ; l>=0 ; l--)
 	    inside[l] = get_domain(l)->is_in(xx) ;
-	// First domain in which the point is : 
+	// First domain in which the point is :
 	int ld = -1 ;
 	if (sens == -1) {
 	  for (int l=ndom-1 ; l>=0 ; l--)
@@ -297,19 +299,19 @@ double Scalar::val_point(const Point& xx, int sens) const {
 	      if ((ld==-1) && (inside[l]))
 		  ld = l ;
 	}
-	    
+
 	if (ld==-1) {
 	     cout << "Point " << xx << "not found in the computational space..." << endl ;
 	     abort() ;
-	}     
+	}
 	else {
 	if (val_zones[ld]->check_if_zero())
 		return 0. ;
 	else {
 	Point num(get_domain(ld)->absol_to_num(xx)) ;
-	
+
 	coef() ;
-	delete [] inside ;
+  MemoryMapper::release_memory<bool>(inside, ndom);
 	return val_zones[ld]->base.summation(num, *val_zones[ld]->cf) ;
 	}
 	}
@@ -318,11 +320,11 @@ double Scalar::val_point(const Point& xx, int sens) const {
 double Scalar::val_point_zeronotdef(const Point& xx, int sens) const {
 
 	assert ((sens==+1) || (sens==-1)) ;
-  
-	bool* inside = new bool[ndom] ;
+
+	bool* inside = MemoryMapper::get_memory<bool>(ndom);
 	for (int l=ndom-1 ; l>=0 ; l--)
 	    inside[l] = get_domain(l)->is_in(xx) ;
-	// First domain in which the point is : 
+	// First domain in which the point is :
 	int ld = -1 ;
 	if (sens == -1) {
 	  for (int l=ndom-1 ; l>=0 ; l--)
@@ -334,18 +336,18 @@ double Scalar::val_point_zeronotdef(const Point& xx, int sens) const {
 	      if ((ld==-1) && (inside[l]))
 		  ld = l ;
 	}
-	    
+
 	if (ld==-1) {
 	    return 0 ;
-	}     
+	}
 	else {
 	if (val_zones[ld]->check_if_zero())
 		return 0. ;
 	else {
 	Point num(get_domain(ld)->absol_to_num(xx)) ;
-	
+
 	coef() ;
-	delete [] inside ;
+  MemoryMapper::release_memory<bool>(inside, ndom);
 	return val_zones[ld]->base.summation(num, *val_zones[ld]->cf) ;
 	}
 	}
@@ -390,7 +392,7 @@ Scalar Scalar::der_abs(int var) const {
 	return res ;
 }
 
-Scalar Scalar::der_spher(int var) const 
+Scalar Scalar::der_spher(int var) const
 {
    Scalar res(*this, false) ;
    for (int dom(0) ; dom < ndom ; ++dom)
@@ -443,4 +445,35 @@ Scalar Scalar::zero(Space const& espace)
    Scalar res(espace);
    res = 0.0;
    return res;
-}}
+}
+double Scalar::val_point_bound(const Point& xx, int bound) const {
+
+	bool* inside = MemoryMapper::get_memory<bool>(ndom);
+
+	for (int l=ndom-1 ; l>=0 ; l--)
+	    inside[l] = get_domain(l)->is_in(xx) ;
+	// First domain in which the point is :
+	int ld = -1 ;
+  for (int l=0 ; l<ndom ; l++)
+    if ((ld==-1) && (inside[l]))
+      ld = l ;
+	
+  if (ld==-1) {
+	     cout << "Point " << xx << "not found in the computational space..." << endl ;
+	     abort() ;
+	}
+	else {
+    if (val_zones[ld]->check_if_zero())
+      return 0. ;
+    else {
+      Point num(get_domain(ld)->absol_to_num_bound(xx, bound)) ;
+
+      coef() ;
+      MemoryMapper::release_memory<bool>(inside, ndom);
+      return val_zones[ld]->base.summation(num, *val_zones[ld]->cf) ;
+	  }
+	}
+}
+
+
+}

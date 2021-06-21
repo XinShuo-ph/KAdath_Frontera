@@ -19,7 +19,7 @@
 
 #include "headcpp.hpp"
 #include "oned.hpp"
-#include "array_math.cpp"
+#include "array.hpp"
 #include "val_domain.hpp"
 namespace Kadath {
 void Domain_oned_ori::find_other_dom (int dom, int bound, int& other_dom, int& other_bound) const {

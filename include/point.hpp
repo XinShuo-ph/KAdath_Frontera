@@ -21,13 +21,15 @@
 #define __POINT_HPP_
 
 #include "headcpp.hpp"
+#include "memory.hpp"
+
 namespace Kadath {
 /**
  * The class \c Point is used to store the coordinates of a point.
  * \ingroup fields
  */
 
-class Point {
+class Point : public MemoryMappable {
     protected:
         int ndim ; ///< Number of dimensions.
 	double* coord ; ///< Array on the coordinates (mainly designed for absolute Cartesian coordinates).
@@ -41,7 +43,7 @@ class Point {
         Point (FILE*) ; ///< Constructor from a file
 	Point (const Point&) ; ///< Constructor by copy.
 	~Point() ; ///< Destuctor
-	
+
 	void save (FILE*) const ; ///< Saving function
 	void operator= (const Point&) ; ///< Assignement to another \c Point
 	double& set(int) ; ///< Read/write of a coordinate
@@ -49,9 +51,12 @@ class Point {
 	/**
 	* @returns the number of dimensions.
 	*/
-	const int& get_ndim() const {return ndim ;} ; 
-	
+	const int& get_ndim() const {return ndim ;} ;
+
 	friend ostream& operator<< (ostream&, const Point&) ; ///< Display
-} ; 
+} ;
 }
+
+#include "implementation/point.cpp"
+
 #endif

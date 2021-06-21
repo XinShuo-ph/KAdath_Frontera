@@ -20,6 +20,7 @@
 #include "headcpp.hpp"
 #include "name_tools.hpp"
 #include "tensor.hpp"
+#include <string>
 namespace Kadath {
 // Removes the spaces in excess from a string
 void trim_spaces (char* dest, const char* name) {
@@ -271,6 +272,14 @@ bool is_tensor (const char* input, const char* name_tensor, int& valence, char*&
 			return true ;
 		}
 	}
+}
+std::string extract_path(std::string fullvar) {
+  return (fullvar.rfind("/") == std::string::npos) ? \
+          "./" : fullvar.substr(0,fullvar.rfind("/")+1);
+}
+
+std::string extract_filename(std::string fullvar) {
+  return fullvar.substr(fullvar.rfind("/")+1, fullvar.size());
 }
 
 }

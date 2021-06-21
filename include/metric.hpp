@@ -20,8 +20,9 @@
 #ifndef __METRIC_HPP_
 #define __METRIC_HPP_
 #include "metric_tensor.hpp"
-#include "vector.hpp" 
+#include "vector.hpp"
 #include "scalar.hpp"
+#include "memory.hpp"
 
 namespace Kadath {
 class Space ;
@@ -32,11 +33,11 @@ class System_of_eqs ;
 class Base_tensor ;
 
 
-/** 
+/**
 * Purely abstract class for metric handling. Can not be instanciated directly. One must use the various derived classes.
 * \ingroup metric
 */
-class Metric {
+class Metric : public MemoryMappable {
 
 	protected:
 		const Space& espace ; ///< The associated \c Space
@@ -57,7 +58,7 @@ class Metric {
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto one component of the Christoffel symbols, in a given \c Domain.
 		*/
-		mutable Term_eq** p_christo ;		
+		mutable Term_eq** p_christo ;
 		/**
 		* Array of pointers on various \c Term_eq.
 		* Each one points onto one component of the Riemann tensor, in a given \c Domain.
@@ -84,12 +85,12 @@ class Metric {
 		*/
 		mutable Term_eq** p_det_cov ;
 		int type_tensor ; ///< States if one works in the CON or COV representation.
-		
+
 	protected:
 		Metric (const Space&) ; ///< Constructor from a \c Space only (internal use only).
 		virtual void compute_con (int) const ; ///< Computes the contravariant representation, in a given \c Domain.
 		virtual void compute_cov (int) const ; ///< Computes the covariant representation, in a given \c Domain.
-		virtual void compute_christo (int) const ; ///< Computes the Christoffel symbols, in a given \c Domain.	
+		virtual void compute_christo (int) const ; ///< Computes the Christoffel symbols, in a given \c Domain.
 		virtual void compute_riemann (int) const ; ///< Computes the Riemann tensor, in a given \c Domain.
 		virtual void compute_ricci_tensor (int) const ; ///< Computes the Ricci tensor, in a given \c Domain.
 		virtual void compute_ricci_scalar (int) const ; ///< Computes the Ricci scalar, in a given \c Domain.
@@ -103,7 +104,7 @@ class Metric {
 		 /** Updates the derived quantities (Christoffels etc..)
 		* This is done only for the ones that are needed, i.e. for the ones that have already been computed.
 		*/
-		virtual void update() ; 
+		virtual void update() ;
 		/** Updates the derived quantities (Christoffels etc..) in a given \c Domain
 		* This is done only for the ones that are needed, i.e. for the ones that have already been computed.
 		* @param dd : the index of the \c Domain.
@@ -118,7 +119,7 @@ class Metric {
 		virtual void manipulate_ind (Term_eq& so, int ind) const ;
 
 		/**
-		* Computes the partial derivative of a \c Term_eq (assumes Cartesian basis of decomposition). 
+		* Computes the partial derivative of a \c Term_eq (assumes Cartesian basis of decomposition).
 		* The index corresponding to the derivation is given a name.
 		* If need be inner summation is performed.
 		* @param typeder : the result is either \f$\partial_i\f$ or \f$\partial^i\f$
@@ -128,7 +129,7 @@ class Metric {
 		*/
 		virtual Term_eq derive_partial (int typeder, char nameder, const Term_eq& so) const ;
 		/**
-		* Computes the covariant derivative of a \c Term_eq (assumes Cartesian basis of decomposition). 
+		* Computes the covariant derivative of a \c Term_eq (assumes Cartesian basis of decomposition).
 		* The index corresponding to the derivation is given a name.
 		* If need be inner summation is performed.
 		* @param typeder : the result is either \f$D_i\f$ or \f$D^i\f$
@@ -139,7 +140,7 @@ class Metric {
 		virtual Term_eq derive (int typeder, char nameder, const Term_eq& so) const ;
 
 		/**
-		* Computes the covariant flat derivative of a \c Term_eq. 
+		* Computes the covariant flat derivative of a \c Term_eq.
 		* The index corresponding to the derivation is given a name.
 		* If need be inner summation is performed.
 		* @param typeder : the result is either \f$\bar{D}_i\f$ or \f$\bar{D}^i\f$
@@ -152,7 +153,7 @@ class Metric {
 		virtual const Metric* get_background() const ; ///< Returns a pointer on the background metric, if it exists.
 
 		virtual int give_type (int) const ; ///< Returns the type of tensorial basis of the covariant representation, in a given \c Domain.
-		
+
 		// Extraction :
 		/**
 		* Gives one representation of the metric, in a \c Domain. This is the \c Term_eq version.
@@ -197,7 +198,7 @@ class Metric {
 		* @return : pointer on the result (being a \c Term_eq).
 		*/
 		const Term_eq* give_det_cov (int dd) const ;
-		
+
 		friend class System_of_eqs ;
 		friend class Metric_flat ;
 		friend class Metric_dirac ;
@@ -223,7 +224,7 @@ class Metric_flat : public Metric {
 
   protected:
     const Base_tensor& basis ; ///< The tensorial basis used.
-  
+
 	public:
 		/**
 		* Standard constructor
@@ -235,11 +236,11 @@ class Metric_flat : public Metric {
 
 	protected:
 		virtual void compute_con (int) const ;
-		virtual void compute_cov (int) const ;		
+		virtual void compute_cov (int) const ;
 		virtual void compute_christo (int) const ;
 		virtual void compute_ricci_tensor (int) const ;
 		virtual void compute_ricci_scalar (int) const ;
-	
+
   private:
 	/**
 	* Computes the partial derivative part of the covariant derivative, in orthonormal spherical coordinates.
@@ -262,7 +263,7 @@ class Metric_flat : public Metric {
 	Term_eq derive_partial_cart (int tder, char indder, const Term_eq& so) const ;
 
 	/**
-	* Computes the partial derivative part of the covariant derivative, in orthonormal coordinates 
+	* Computes the partial derivative part of the covariant derivative, in orthonormal coordinates
 	* where the constant radii sections have a negative curvature.
 	* The result is \f$ \partial_r, \frac{\cos \theta}{r}\partial_\theta, \frac{\cos \theta}{r\sin\theta}\partial_\varphi\f$.
 	* If need be inner summation of the result is performed and index manipulated.
@@ -284,7 +285,7 @@ class Metric_flat : public Metric {
 	*/
 	Term_eq derive_spher (int tder, char indder, const Term_eq& so) const ;
 
-	
+
 	/**
 	* Computes the flat covariant derivative, in Cartesian coordinates.
 	* If need be inner summation of the result is performed and index manipulated.
@@ -343,10 +344,10 @@ class Metric_flat : public Metric {
 	* @return : the result as a \c Term_eq.
 	*/
 	Term_eq derive_with_other_cart (int tder, char indder, const Term_eq& so, const Metric* othermet) const ;
-	
+
 	public:
-		virtual ~Metric_flat() ;	
-		virtual void update() ;	
+		virtual ~Metric_flat() ;
+		virtual void update() ;
 		virtual void update(int) ;
 		virtual void manipulate_ind (Term_eq&, int) const ;
 		virtual Term_eq derive_partial (int, char, const Term_eq&) const ;
@@ -369,8 +370,8 @@ class Metric_flat : public Metric {
 		* @param syst : the \c System_of_eqs.
 		* @param name : name by which the metric will be known in the system (like "g", "f"...)
 		*/
-		virtual void set_system (System_of_eqs& syst, const char* name) ;	
-		
+		virtual void set_system (System_of_eqs& syst, const char* name) ;
+
 		virtual int give_type (int) const ;
 } ;
 
@@ -392,12 +393,12 @@ class Metric_general : public Metric {
 
 	protected:
 		virtual void compute_con (int) const ;
-		virtual void compute_cov (int) const ;		
-		virtual void compute_christo (int) const ;		
-		virtual void compute_riemann (int) const ;		
+		virtual void compute_cov (int) const ;
+		virtual void compute_christo (int) const ;
+		virtual void compute_riemann (int) const ;
 		virtual void compute_ricci_tensor (int) const ;
 		virtual void compute_dirac (int) const ;
-	
+
 	public:
 		virtual ~Metric_general() ;
 		virtual Term_eq derive (int, char, const Term_eq&) const ;
@@ -408,7 +409,7 @@ class Metric_general : public Metric {
 		*/
 		virtual void set_system (System_of_eqs& syst, const char* name) ;
 		virtual Term_eq derive_flat (int, char, const Term_eq&) const ;
-		
+
 		virtual int give_type (int) const ;
 } ;
 /**
@@ -420,7 +421,7 @@ class Metric_const : public Metric_general {
 	public:
 		Metric_const (Metric_tensor&) ; ///< Constructor from a \c Metric_tensor.
 		Metric_const (const Metric_const& ) ; ///< Copy constructor
-	
+
 	protected:
 		virtual void compute_con (int) const ;
 		virtual void compute_cov (int) const ;
@@ -458,15 +459,15 @@ class Metric_conf : public Metric {
 
 	protected:
 		virtual void compute_con (int) const ;
-		virtual void compute_cov (int) const ;		
-		virtual void compute_christo (int) const ;		
-		virtual void compute_riemann (int) const ;		
+		virtual void compute_cov (int) const ;
+		virtual void compute_christo (int) const ;
+		virtual void compute_riemann (int) const ;
 		virtual void compute_ricci_tensor (int) const ;
 		virtual void compute_dirac (int) const ;
-	
+
 	public:
 		virtual ~Metric_conf() ;
-		virtual Term_eq derive (int, char, const Term_eq&) const ;	
+		virtual Term_eq derive (int, char, const Term_eq&) const ;
 		/**
 		* Associate the metric to a given system of equations.
 		* @param syst : the \c System_of_eqs.
@@ -474,7 +475,7 @@ class Metric_conf : public Metric {
 		*/
 		virtual void set_system (System_of_eqs& syst, const char* name) ;
 		virtual Term_eq derive_flat (int, char, const Term_eq&) const ;
-		
+
 		virtual int give_type (int) const ;
 } ;
 
@@ -497,7 +498,7 @@ class Metric_conf : public Metric {
 	protected:
 		virtual void compute_ricci_tensor (int) const ;
 		virtual void compute_ricci_scalar (int) const ;
-		
+
 
 	public:
 		virtual ~Metric_dirac() ;
@@ -520,7 +521,7 @@ class Metric_dirac_const : public Metric_dirac {
 		virtual void compute_cov (int) const ;
 
 	public:
-		virtual ~Metric_dirac_const() ;	
+		virtual ~Metric_dirac_const() ;
 		/**
 		* Associate the metric to a given system of equations.
 		* @param syst : the \c System_of_eqs.
@@ -568,7 +569,7 @@ class Metric_conf_factor : public Metric {
 	  const Base_tensor& basis ; ///< The tensorial basis used.
 	  Metric_flat fmet ; ///< Associated flat metric.
           Scalar conformal ; ///< The conformal factor $\Omega$ (must be a purely radial function)
-	  Vector grad_conf ; ///< flat gradient of the conformal factor 
+	  Vector grad_conf ; ///< flat gradient of the conformal factor
 	  int place_syst ; ///< Gives the location of the metric amongst the various unknowns of the associated \c System_of_eqs.
 
 	public:
@@ -577,11 +578,11 @@ class Metric_conf_factor : public Metric {
 
 	protected:
 		virtual void compute_con (int) const ;
-		virtual void compute_cov (int) const ;		
-		virtual void compute_christo (int) const ;		
-		virtual void compute_riemann (int) const ;		
+		virtual void compute_cov (int) const ;
+		virtual void compute_christo (int) const ;
+		virtual void compute_riemann (int) const ;
 		virtual void compute_ricci_tensor (int) const ;
-	
+
 	public:
 		virtual ~Metric_conf_factor() ;
 		virtual Term_eq derive (int, char, const Term_eq&) const ;
@@ -592,7 +593,7 @@ class Metric_conf_factor : public Metric {
 		*/
 		virtual void set_system (System_of_eqs& syst, const char* name) ;
 		virtual Term_eq derive_flat (int, char, const Term_eq&) const ;
-		
+
 		virtual int give_type (int) const ;
 } ;
 
@@ -645,11 +646,11 @@ class Metric_cfc : public Metric {
 
 	protected:
 		virtual void compute_con (int) const ;
-		virtual void compute_cov (int) const ;			
-		virtual void compute_christo (int) const ;		
-		virtual void compute_riemann (int) const ;		
+		virtual void compute_cov (int) const ;
+		virtual void compute_christo (int) const ;
+		virtual void compute_riemann (int) const ;
 		virtual void compute_ricci_tensor (int) const ;
-		
+
 	public:
 		virtual ~Metric_cfc() ;
 
@@ -659,10 +660,10 @@ class Metric_cfc : public Metric {
 		* @param name : name by which the metric will be known in the system (like "g", "f"...)
 		*/
 		virtual void set_system (System_of_eqs& syst, const char* name) ;
-		
+
 		virtual Term_eq derive (int, char, const Term_eq&) const ;
 		virtual Term_eq derive_flat (int, char, const Term_eq&) const ;
-	
+
 		virtual int give_type (int) const ;
 } ;
 

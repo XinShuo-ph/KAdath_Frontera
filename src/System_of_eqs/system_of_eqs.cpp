@@ -633,7 +633,8 @@ Tensor System_of_eqs::give_val_def (const char* so) const {
     }
     
   if (!found) {
-    cerr << "Definition not found...." << endl ;
+    std::string def(so);
+    cerr << "Definition " << def << " not found" << endl ;
     abort() ;
   }
   

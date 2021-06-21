@@ -19,7 +19,7 @@
 
 #include "base_spectral.hpp"
 #include "headcpp.hpp"
-#include "array.cpp"
+#include "array.hpp"
 namespace Kadath {
 int div_cos_1d_pasprevu (Array<double>&) {
 	cout << "div_cos_1d not implemented." << endl ;
