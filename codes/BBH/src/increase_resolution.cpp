@@ -114,8 +114,7 @@ int main(int argc, char **argv) {
   kadath_config_boost<BIN_INFO> bconfig(in_filename);
   bconfig.set(BIN_RES) = stod(argv[3]);
 
-  auto n = in_filename.rfind(".");
-  std::string in_spacefile = in_filename.substr(0,n)+".dat";
+  std::string in_spacefile = bconfig.space_filename();
   FILE *ff1 = fopen(in_spacefile.c_str(), "r");
 
   Space_bin_bh old_space(ff1) ;
