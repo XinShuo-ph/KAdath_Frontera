@@ -148,6 +148,27 @@ Cold_Table_t<extra_vars,interp_t>::get_extra_quantities(double &rho, error_t &er
   return lintp.interpolate_all(log(rho));
 }
 
+template <int extra_vars,template<typename,int> class interp_t>
+inline double 
+Cold_Table_t<extra_vars,interp_t>::rho_energy_dedp__press_cold(double &energy, double &dedp, double &press,
+    error_t &error){
+  
+  auto rho = rho__press_cold(press,error);
+  
+  double eps;
+  press_cold_eps_cold__rho(eps,rho,error);
+  
+  auto const dpdrho = dpress_cold_drho__rho(rho,error);
+  
+  energy = rho*(1.+eps);
+  auto const rhoh = energy + press;
+  
+   dedp = rhoh/(dpdrho*rho);
+  
+   return rho;
+
+}
+
   // Initialise pointers
 
 //#ifdef COLDTABLE_SETUP

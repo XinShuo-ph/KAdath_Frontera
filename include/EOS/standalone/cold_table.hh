@@ -57,6 +57,8 @@ class Cold_Table_t {
 
   static inline double rho__press_cold(double &press_cold, error_t &error);
   static inline double rho__h_cold(double &press_cold, error_t &error);
+  static inline double rho_energy_dedp__press_cold(double &energy, double &dedp, double &press,
+         error_t &error);
 
   // Hot Slice capabilities
   // Only used for ID

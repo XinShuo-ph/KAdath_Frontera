@@ -510,7 +510,7 @@ public:
     //end   - set NS parameters
 
     //start - set NS stages in config file
-    bconfig.set_stage(PRE)      = true;
+    bconfig.set_stage(PRE)      = false;
     bconfig.set_stage(NOROT_BC) = true;
     bconfig.set_stage(TOTAL_BC) = true;
     //end   - set NS stages

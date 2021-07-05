@@ -22,8 +22,8 @@ The configurator uses meaningful array indexes which are defined in
   $HOME_KADATH/src/Utilities/Configurator/config_enums.cpp
 
 This allows for easily extending the index capabilities while not impacting the underlying algorithms within the Configurator.
-Within the configuration file, the "initial" stores the starting setup of the BH for book keeping purposes only.
-Changes to the initial data are done in the BH section below the initial section.
+Within the configuration file, the "initial" stores the starting setup of the ID for book keeping purposes only.
+Changes to the initial data are done in the NS section below the initial section.
 
 The associated <filename>.dat file contains the numerical space and its domain decomposition as well as the fields defined
 in this space, both constructed by means of the Kadath library.  If one loses the DAT file, the INFO file can be used to
@@ -37,24 +37,27 @@ setup.cpp is used to initialize the numerical space and fields prior to solving 
 to run this at a low resolution of 9 collocation points before going to higher resolution.  This will be discussed further shortly.
 
 Use of `setup` can be done in two different ways:
-  1) Run `setup` without any arguments will result in a basic setup utilizing a cold slice of the TNTYST EOS at beta-equilibrium resulting in a 1.4Msol NS.
+  1) Run `setup` without any arguments will result in a basic setup utilizing a cold slice of the TNTYST 
+     EOS at beta-equilibrium resulting in a 1.4Msol NS.
   2) Run `setup` with a pre-configured *.info file.
-     This will generate an initial setup based on BCO_RES, NC, and RMID for a given EOS. All other settings do not impact the setup code, but will be copied over to the new setup.
+     This will generate an initial setup based on "res", "madm", and the EOS settings. 
+     All other settings do not impact the setup code, but will be copied over to the new setup.
 
 The output of `setup` is always 'initns.info' and 'initns.dat' in the local directory.
-`setup` will generate an initial guess for the solution by setting a constant density throughout the star, with the value 
-everywhere set to the central density based on an input central density (NC) together with the initial estimate for the NS 
-surface of RMID. The spacetime fields are initialized to flat space values.
+`setup` will generate an initial guess for the solution by solving the static TOV equation for the given ADM mass.  This result
+is then used to setup the domain decomposition based on the isotropic radius and interpolates the solution of the lapse and
+conformal factor onto the new variables fields.  Finally, the variable field "logh" is updated by taking the natural log of the specific enthalpy
+using the interpolated solution for the rest mass density as a function of the isotropic radius for the given input EOS.
 
-It is important to note that the solver can be sensitive to the initial guess for the radius of the NS.  The following recommendations should be
-considered when using the current release:
-  1) The radial guess (RMID) should be less than the expected radius, so that the adapted surface is within the star and doesn't start far outside.
-  2) Solve a simple setup first (i.e. 1.4Msol irrotational) before attempting a more extreme or uncertain setup.  This will be discussed more later.
+It is important to highlight that the TOV solver is restricted to static solutions.  Therefore, the input mass, "madm", must be a stable
+for a non-rotating NS for the EOS used.  Once a non-rotating solution has been obtained, one can rerun the solver with a new "madm" and "chi"
+for the desired rotating NS.
 
 # EOS
-To change the EOS, one need only update the initial guess for the central density (NC), fixed_radius, and update the EOS type
-(Cold_PWPoly or Cold_Table), EOS file, and associated parameters.  See $HOME_KADATH/eos for included cold tables and example polytropes.
+To change the EOS, one need only update the desired ADM mass and update the EOS type (Cold_PWPoly or Cold_Table), 
+EOS file, and associated parameters.  See $HOME_KADATH/eos for included cold tables and example polytropes.
 Currently, the cold table format used is in lorene units.  Therefore, any table that has been used in lorene should also work with this code.
+See the end of the README for some examples of the process.
 
 #########
 solve.cpp
@@ -64,42 +67,40 @@ It is recommended to start with solutions at low resolution and rerun such a con
 
 `solve` currently consists of the following stages:
   PRE:
-    The pre-stage will fixed the surface of the NS to the given radius, RMID, in the configuration file.  The irrotational system of equations,
-    those with a vanishing shift, are solved.  In the event of RMID being greater than the true radius, this can lead to an ill-defined enthalpy
+    Note: this stage is normally disregarded and mainly used for development purposes.
+    The pre-stage will fixed the surface of the NS to the given radius, "rmid", in the configuration file.  The irrotational system of equations,
+    those with a vanishing shift, are solved.  In the event of "rmid" being greater than the true radius, this can lead to an ill-defined enthalpy
     within the stellar domains which predominantly lead to a diverging solution in later stages.  Therefore, it is recommended to choose an estimate
-    for RMID well within the final radius idealy from a 1D TOV solver.
+    for "rmid" well within the final radius idealy from a 1D TOV solver.
 
   NOROT_BC:
     In this stage, all irrotational equations are solved consistently while allowing the outermost stellar domain to adapt to the stellar surface
     determined by the vanishing of the logarithmic specifc ethalpy.
-    This code allows to either fix the ADM mass and compute the resulting baryonic mass or vice versa. To do so, one need only steer mb_fixing
+    This code allows to either fix the ADM mass "madm" and compute the resulting baryonic mass "mb" or vice versa. To do so, one need only steer "mb_fixing"
     control in the INFO file.
 
   TOTAL_BC:
     In this stage, the full system of equations is solved together with a finite shift.  
-    The implementation is based on rigidly rotating stars together with boundary conditions on either a fixed ADM mass (MADM)
-    or fixed baryonic mass (MB) if the the sequence control (mb_fixing) is set to yes.
+    The implementation is based on rigidly rotating stars together with boundary conditions on either a fixed ADM mass "madm"
+    or fixed baryonic mass "mb" if the the sequence control "mb_fixing" is set to yes.
     
 Once a solution has been obtained for a given stage, the previous stages do not need to be reran for iterative changes.
 For instance, if we run:
   solve initns.info ./out/
 
-using PRE and NOROT_BC, we can make iterative changes to MADM to obtain additional TOV solutions by only running the NOROT_BC stage.
+using the PRE and NOROT_BC stages, we can make iterative changes to "madm" to obtain additional TOV solutions by only running the NOROT_BC stage.
 Likewise, if one is interested in a rotational solution, one can ignore the PRE and NOROT_BC stages and run only TOTAL_BC with
-different values of CHI to obtain rigidly rotating solutions iteratively. Stages are disabled by default during the solving routine to reflect this.
+different values of "chi" to obtain rigidly rotating solutions iteratively. Stages are disabled by default during the solving routine to reflect this.
 
 NOTES:
-1) An output directory can be specified.  This is optional, but recommended since solutions with the same MAD, CHI, and resolution will have the same
+1) An output directory can be specified.  This is optional, but recommended since solutions with the same "madm", "chi" and "res" will have the same
    filename regardless of the EOS employed to minimize the filename size
 2) In the event a rotational solution does not fully converge, this can sometimes be attributed to a non-ideal domain decomposition.  In this event,
-   on can take one of the checkpoints (e.g. rot_3d_total_bc4.info) and run it through `increase_resolution` without actually changing the resolution.
+   one can take one of the checkpoints (e.g. rot_3d_total_bc4.info) and run it through `increase_resolution` without actually changing the resolution.
    This will result in a more optimal domain decomposition and may solve convergence issues when the solver oscillates around 1e-6 to 1e-7 especially
    in situations near the mass shedding and maximum mass TOV limit.
 3) On 128 cores, an irrotational NS takes <2min to solve from the default setup.  Adding rotation (CHI != 0) and resolving using
    stage (TOTAL_BC) takes approximately 3min depending on the configuration. 
-4) A much more efficient approach for solving the PRE or potentially avoid it altogether would be to employ 
-   a 1D- or 2D-TOV solver to create the initial estimates for the hydro quantities and radius of the stellar surface.  
-   This is an optimization intended for a future release
 
 #########
 increase_resolution.cpp
@@ -139,7 +140,6 @@ Example test case - generating a 1.4MSol NS from scratch using Gamma = 2 Polytro
   2) open 'initns.info' in a text editor
     2.1) change "eostype" to Cold_PWPoly - note this is case sensitive
     2.2) change "eosfile" to gam2.polytrope
-    2.3) change "rmid" to 7
   4) run `solve initns.info` - the final solution should be converged_NS_1.4.0.09.<info/dat>
   5) run `reader converged_NS_1.4.0.09.info` to see interesting diagnostics
 
@@ -150,6 +150,8 @@ Note: it's recommended to copy a previous solution into a default file before mo
   1) copy converged_NS_1.4.0.09.<info/dat> to initns.<info/dat>
   2) open initns.info in a text editor
   3) change "chi" from 0 to 0.3
+    3.1) disable NOROT_BC stage.  If the desired mass is greater than the TOV maximum mass
+      than the NOROT_BC stage would fail.
   4) run `solve initns.info` - the final solution should be converged_NS_1.4.0.3.09.<info/dat>
   5) run `increase_resolution converged_NS_1.4.0.3.09.info initns 11`
   6) run `solve initns.info` - the final solution should be converged_NS_1.4.0.3.11.<info/dat>

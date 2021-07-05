@@ -29,13 +29,16 @@
 #include <fstream>
 #include <string>
 #include <type_traits>
+#include <memory>
 #include "EOS/EOS.hh"
-
+#include "EOS/standalone/tov.hh"
+#include "coord_fields.hpp"
+#include <algorithm>
 using namespace Kadath;
 using namespace Kadath::Margherita;
 
-template<typename Config>
-int norot_3dsetup (Config bconfig);
+template<typename eos_t, typename config_t>
+int norot_3dsetup (config_t bconfig);
 
 int main(int argc, char** argv) {
   // class to load the configuration
@@ -73,6 +76,9 @@ int main(int argc, char** argv) {
 
     EOS<eos_t,PRESSURE>::init(eos_file, h_cut);
     bconfig.set(HC) = EOS<eos_t,PRESSURE>::h_cold__rho(bconfig(NC));
+    
+    // call setup routine, setting up the actual numerical domains
+    int res = norot_3dsetup<eos_t>(bconfig);
   } else if(eos_type == "Cold_Table") {
     using eos_t = Kadath::Margherita::Cold_Table;
 
@@ -81,22 +87,65 @@ int main(int argc, char** argv) {
 
     EOS<eos_t,PRESSURE>::init(eos_file, h_cut, interp_pts);
     bconfig.set(HC) = EOS<eos_t,PRESSURE>::h_cold__rho(bconfig(NC));
+    
+    // call setup routine, setting up the actual numerical domains
+    int res = norot_3dsetup<eos_t>(bconfig);
   }
   else { 
     std::cerr << eos_type << " is not recognized.\n";
     std::_Exit(EXIT_FAILURE);
   }
 
-  // call setup routine, setting up the actual numerical domains
-  int res = norot_3dsetup(bconfig);
   std::cout << bconfig << std::endl;
 
   return 0;
 }
 
-// this function takes a configuration and creates the corresponding numerical setup
-template<typename Config>
-int norot_3dsetup(Config bconfig) {
+// Here we take a TOV solution and create a 1D interpolator for the relevant quantities
+// as a function of the isotropic radius
+template<typename tov_t>
+auto setup_interpolation(tov_t& tov ) {
+  const size_t max_iter = tov->state.size();
+  const size_t start = 0; //number of iterations to skip
+  const size_t num_pts = max_iter - start;
+  
+  std::unique_ptr<double[]> radius_lin_ptr{new double[num_pts]};
+  std::unique_ptr<double[]> conf_lin_ptr{new double[num_pts]};
+  std::unique_ptr<double[]> lapse_lin_ptr{new double[num_pts]};
+  std::unique_ptr<double[]> rho_lin_ptr{new double[num_pts]};
+  
+  for(auto j=0; j < max_iter; ++j) {
+    //lapse est.
+    auto phi = tov->state[j][tov->PHI];
+    
+    lapse_lin_ptr[j] = std::exp(phi);
+    
+    conf_lin_ptr[j] = tov->state[j][tov->CONF];
+
+    radius_lin_ptr[j] = tov->state[j][tov->RISO];
+
+    rho_lin_ptr[j] = tov->state[j][tov->RHOB];
+  }
+  
+  // linear interpolation of conf(r_isotropic), lapse(r_isotropic), and rho(r_isotropic)
+  linear_interp_t<double,3> ltp(num_pts, std::move(radius_lin_ptr), std::move(lapse_lin_ptr), std::move(rho_lin_ptr), std::move(conf_lin_ptr)); 
+  return ltp; 
+}
+
+// this function takes a configuration and handles creating the corresponding numerical setup
+template< typename eos_t, typename config_t>
+int norot_3dsetup(config_t bconfig) {
+  enum ltpQ { LAPSE=0, RHO, CONF }; 
+  // Find 1D TOV solution for a given ADM Mass
+  auto tov = std::make_unique<MargheritaTOV<eos_t>>();
+  tov->solve_for_MADM(bconfig(MADM));
+  
+  // update surface radius estimate
+  bconfig.set(RMID) = tov->state.back()[tov->RISO];
+  
+  // interpolate TOV solution
+  auto lintp = setup_interpolation(tov); 
+  
   // number of dimensions
   const int dim = bconfig(DIM);
 
@@ -126,37 +175,58 @@ int norot_3dsetup(Config bconfig) {
 
   // generate a full single star space including compactification to infinity
   Space_spheric_adapted space(type_coloc, center, res, bounds);
+
   // use a basis of cartesian type
   Base_tensor basis(space, CARTESIAN_BASIS);
 
-  // start to create the fields
+	// generate a radius field for use with the 1D interpolators
+  CoordFields<Space_spheric_adapted> cfg(space);
+  Scalar r_field(cfg.radius());
+
+  // start to create the final fields
 
   // H = log(h), the logarithm of the enthalpy
   Scalar logh(space);
-  // initialize to the central value, which should be picked carefully
-  logh.set_domain(0) = std::log(bconfig(HC));
-  logh.set_domain(1) = std::log(bconfig(HC));
-  // set the coefficients to zero outside of the star
-  for (int d = 2; d < ndom; ++d)
-    logh.set_domain(d).annule_hard();
-  logh.std_base();
+  logh.annule_hard();
 
   // conformal factor is initialized to one, representing flat space as an initial guess
   Scalar conf(space);
   conf = 1.;
-  conf.std_base();
 
   // same for the lapse
   Scalar lapse(conf);
-  lapse.std_base();
+  
+  // update the fields based on TOV solution for a given domain
+  auto update_fields= [&](const size_t dom) {
+    Index pos(space.get_domain(dom)->get_nbr_points());
+    do {
+      double rval = r_field(dom)(pos);
+      auto all_ltp = lintp.interpolate_all(rval);
+      auto h = EOS<eos_t,DENSITY>::h_cold__rho(all_ltp[ltpQ::RHO]);
+      if(pos(0) == 0 && pos(1) == 0 && pos(2) == 0)
+        bconfig.set(HC) = h;
+      logh.set_domain(dom).set(pos) = (std::log(h) < 0) ? 0. : std::log(h); 
+      lapse.set_domain(dom).set(pos) = all_ltp[ltpQ::LAPSE];
+      conf.set_domain(dom).set(pos) = all_ltp[ltpQ::CONF];
+    }while(pos.inc());
+  };
+  for(int i = 0; i < 3; ++i)
+    update_fields(i);
+  
+  for (int d = 2; d < ndom; ++d)
+    logh.set_domain(d).annule_hard();
 
   // shift is zero in the beginning and in general for TOV solutions
   Vector shift(space, CON, basis);
   shift.annule_hard();
   shift.std_base();
+  logh.std_base();
+  conf.std_base();
+  lapse.std_base();
   // finished create the fields
 
   // write space and config to files on one processor
+  bconfig.set_stage(PRE) = false;
   bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
   return EXIT_SUCCESS;
 }

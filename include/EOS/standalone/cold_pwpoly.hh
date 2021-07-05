@@ -51,6 +51,8 @@ class Cold_PWPoly {
 
   static inline double rho__press_cold(double &press_cold, error_t &error);
   static inline double rho__h_cold(double &h_cold, error_t &error);
+  static inline double rho_energy_dedp__press_cold(double &energy, double &dedp, double &press,
+         error_t &error);
 
   // Specific to PWPoly
 

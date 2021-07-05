@@ -138,6 +138,27 @@ inline double Cold_PWPoly::rho__h_cold(double & h_cold, error_t &error) {
   error = check_range(rho);
   return rho;
 }
+
+inline double 
+Cold_PWPoly::rho_energy_dedp__press_cold(double &energy, double &dedp, double &press,
+    error_t &error){
+  
+  auto rho = rho__press_cold(press,error);
+  
+  double eps;
+  press_cold_eps_cold__rho(eps,rho,error);
+  
+  auto const dpdrho = dpress_cold_drho__rho(rho,error);
+  
+  energy = rho*(1.+eps);
+  auto const rhoh = energy + press;
+  
+  dedp = rhoh/(dpdrho*rho);
+  
+  return rho;
+
+}
+
 #ifdef PWPOLY_SETUP
 
 // These are specific to this class
