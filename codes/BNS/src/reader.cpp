@@ -101,6 +101,7 @@ void reader_output(config_t bconfig) {
     bconfig.set(MADM, BCO1) = bconfig(QLMADM, BCO1);
     bconfig.set(MADM, BCO2) = bconfig(QLMADM, BCO2);
   }
+  if(std::isnan(bconfig.set(COMY))) bconfig.set(COMY) = 0.;
 
   // read domain decomposition and fields from binary file
   std::string in_spacefile  = bconfig.space_filename();
@@ -220,6 +221,7 @@ void reader_output(config_t bconfig) {
 
   // "center of mass" and orbital angular frequency parameter
 	syst.add_cst ("xaxis" , bconfig(COM)) ;
+  syst.add_cst ("yaxis" , bconfig(COMY));
 	syst.add_cst ("ome"   , bconfig(GOMEGA)) ;
 
   // the actual fields representing the solution
@@ -264,9 +266,9 @@ void reader_output(config_t bconfig) {
   // check for ADOT so we don't get errors.
   std::string eccstr{};
   if(!std::isnan(bconfig.set(ADOT))) {
-    syst.add_cst    ("adot" , bconfig(ADOT));
-    syst.add_cst    ("r"   , CART);
-    syst.add_def    ("comr^i = r^i - xaxis * ex^i + yaxis * ey^i");
+    syst.add_cst("adot" , bconfig(ADOT));
+    syst.add_cst("r"    , CART);
+    syst.add_def("comr^i = r^i - xaxis * ex^i + yaxis * ey^i");
     eccstr +=" + adot * comr^i";
   }
   std::string omegastr {"omega^i = bet^i + ome * Morb^i" + eccstr};
@@ -392,7 +394,7 @@ void reader_output(config_t bconfig) {
     r_extrema.push_back(bco_utils::get_rmin_rmax(space, dom));
 
     // center-of-mass shifted center
-    xcom[i] = x_nuc[i] - bconfig(COM);
+    xcom[i] = x_nuc[i] + bconfig(COM);
   }
 
   // binary quantities
@@ -459,7 +461,6 @@ void reader_output(config_t bconfig) {
               << FORMAT1 << bns_str[i]+" R_OUT = " << bco_utils::get_radius(space.get_domain(adapted_doms[i]+1), EQUI)
                                                    << std::endl
               << FORMAT1 << "Center_COM = " << "(" << xcom[i] << ", 0, 0)\n"
-              << FORMAT1 << std::fixed << "Center_COM = " << "(" << xcom[i] << ", 0, 0)\n"
               // baryonic mass and fractions per stellar domain covering the star
               << FORMAT1 << "Mb"+idx+" = "         << mbs[i] << " (";
     print_vec(mb_distro[i]);

@@ -57,16 +57,18 @@ int main(int argc, char **argv) {
   Base_tensor basis(shift.get_basis());
   Metric_flat fmet(space, basis);
 	
- 	double xc1 = bco_utils::get_center(space, space.BH1);
- 	double xc2 = bco_utils::get_center(space, space.BH2);
-  double xo  = (xc1 + xc2) / 2.;
+  const std::array<double, 2> x_nuc {
+    bco_utils::get_center(space,space.BH1),
+    bco_utils::get_center(space,space.BH2)
+  };
+  double xo  = (x_nuc[0] + x_nuc[1]) / 2.;
   
   //setup coord fields
   CoordFields<Space_bin_bh> cf_generator(space);
   std::array<Vector*, NUM_VECTORS> coord_vectors {};
   for(auto& el : coord_vectors) el = new Vector(space,CON,basis);
  
-  update_fields(cf_generator, coord_vectors, {}, xo, xc1, xc2);
+  update_fields(cf_generator, coord_vectors, {}, xo, x_nuc[0], x_nuc[1]);
   Vector CART(space, CON, basis);
   CART = cf_generator.cart();
   //end setup coord fields
@@ -129,12 +131,15 @@ int main(int argc, char **argv) {
   ary_d mirrs;
   ary_d mchs;
   ary_d spins;
+  ary_d xcom;
   for(int i : {0,1}) {
     int dom = nuc_doms[i];
     double mirrsq = space.get_domain(dom+2)->integ(syst.give_val_def("intMsq")()(dom+2) , INNER_BC); 
     mirrs[i] = sqrt(mirrsq);
     spins[i] = space.get_domain(dom+2)->integ(syst.give_val_def("intS")()(dom+2) , INNER_BC);
     mchs[i]  = std::sqrt( mirrsq + spins[i] * spins[i] / 4. / mirrsq );
+    // center-of-mass shifted center
+    xcom[i] = x_nuc[i] + bconfig(COM);
   }
   ary_i shells;
   shells[0] = space.BH2 - 3;
@@ -217,8 +222,7 @@ int main(int argc, char **argv) {
     print_shells(nuc_doms[i]+3, bounds[i]);
       std::cout << FORMAT1 << bh_str[i]+" R_OUT = " << bco_utils::get_radius(space.get_domain(bounds[i]-1), EQUI) 
                                                     << std::endl
-                << FORMAT1 << bh_str[i]+" Center = "<< space.get_domain(nuc_doms[i])->get_center()
-                                                    << std::endl
+                << FORMAT1 << "Center_COM = " << "(" << xcom[i] << ", 0, 0)\n"
                 << FORMAT1 << "Mirr "+idx+" = "     << mirrs[i] << std::endl
                 << FORMAT1 << "Mch "+idx+" = "      << mchs[i] << std::endl
                 << FORMAT  << "S "+idx+" = "        << spins[i] << std::endl

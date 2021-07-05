@@ -204,7 +204,7 @@ void reader_output(config_t bconfig, const int output) {
   auto   dHdx     = syst.give_val_def("dH")();
   double dHdx1    = bco_utils::get_boundary_val(space.NS, dHdx, INNER_BC);
   double euler1   = bco_utils::get_boundary_val(space.NS, syst.give_val_def("firstint")(), INNER_BC);
-  double NS_x_com = xc1 - bconfig(COM);
+  double NS_x_com = xc1 + bconfig(COM);
   //END NS Quantities
   
   // BH Quantities
@@ -218,7 +218,7 @@ void reader_output(config_t bconfig, const int output) {
   double rout_bh  = bco_utils::get_radius(space.get_domain(space.OUTER-1), EQUI);
   auto [ lapsemin, lapsemax ] = bco_utils::get_field_min_max(lapse, space.BH+2, INNER_BC);
   auto [ confmin, confmax ] = bco_utils::get_field_min_max(conf, space.BH+2, INNER_BC);
-  double BH_x_com = xc2 - bconfig(COM);
+  double BH_x_com = xc2 + bconfig(COM);
   // END BH Quantities
 
   // binary quantities
