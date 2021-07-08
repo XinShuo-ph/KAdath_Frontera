@@ -83,8 +83,6 @@ int main(int argc, char **argv) {
 	int ndom = old_space.get_nbr_domains() ;
 
   int res = atoi(argv[3]);
-  bconfig(BCO_RES, BCO1) = res;
-  bconfig(BCO_RES, BCO2) = res;
   bconfig(BIN_RES) = res;
 
   if((res % 2) == 0){
