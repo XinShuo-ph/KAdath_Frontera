@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
   if(argc > 2) outputdir = argv[2];
 
   // load and setup the EOS
-  const double h_cut = bconfig.eos<double>(HC);
+  const double h_cut = bconfig.eos<double>(HCUT);
   const std::string eos_file = bconfig.eos<std::string>(EOSFILE);
   const std::string eos_type = bconfig.eos<std::string>(EOSTYPE);
 

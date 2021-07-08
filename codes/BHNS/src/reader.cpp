@@ -340,7 +340,7 @@ int main(int argc, char **argv) {
   kadath_config_boost<BIN_INFO> bconfig(in_filename);
 
   // setup eos
-  const double h_cut = bconfig.eos<double>(HC, BCO1);
+  const double h_cut = bconfig.eos<double>(HCUT, BCO1);
   const std::string eos_file = bconfig.eos<std::string>(EOSFILE, BCO1);
   const std::string eos_type = bconfig.eos<std::string>(EOSTYPE, BCO1);
 

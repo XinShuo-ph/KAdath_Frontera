@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
   if(argc > 2) outputdir = argv[2];
 
   // setup eos to before calling solver
-  const double h_cut = bconfig.eos<double>(HC, BCO1);
+  const double h_cut = bconfig.eos<double>(HCUT, BCO1);
   const std::string eos_file = bconfig.eos<std::string>(EOSFILE, BCO1);
   const std::string eos_type = bconfig.eos<std::string>(EOSTYPE, BCO1);
 

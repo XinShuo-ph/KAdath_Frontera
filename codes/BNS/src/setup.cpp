@@ -128,7 +128,7 @@ kadath_config_boost<BIN_INFO> setup_bin_config(config_t& NSconfig, const space_t
   for(int i = 0; i < NUM_EOS_PARAMS; ++i) { bconfig.set_eos(i, BCO1) = NSconfig.set_eos(i); }
 
   // setup eos and update central density
-  const double h_cut = bconfig.eos<double>(HC, BCO1);
+  const double h_cut = bconfig.eos<double>(HCUT, BCO1);
   const std::string eos_file = bconfig.eos<std::string>(EOSFILE, BCO1);
   const std::string eos_type = bconfig.eos<std::string>(EOSTYPE, BCO1);
 
