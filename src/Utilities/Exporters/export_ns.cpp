@@ -16,7 +16,7 @@ std::array<std::vector<double>,NUM_OUT> KadathExportNS(int const npoints,
   kadath_config_boost<BCO_NS_INFO> bconfig(std::string{fn});
 
   // get const EOS information - used for initializing EOS later
-  const double h_cut = bconfig.eos<double>(HC);
+  const double h_cut = bconfig.eos<double>(HCUT);
   const std::string eos_file = bconfig.eos<std::string>(EOSFILE);
   const std::string eos_type = bconfig.eos<std::string>(EOSTYPE);
 
