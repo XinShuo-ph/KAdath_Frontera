@@ -179,6 +179,7 @@ void reader_output(config_t bconfig, const int output) {
 
 	//NS Quantities
   double loghc1 = bco_utils::get_boundary_val(space.NS, logh, INNER_BC);
+  double pressc1 = EOS<eos_t,PRESSURE>::get(std::exp(loghc1));
   double rhoc1 = EOS<eos_t,DENSITY>::get(std::exp(loghc1));
   
   std::vector<double> baryonic_mass1{};
@@ -277,7 +278,7 @@ void reader_output(config_t bconfig, const int output) {
   std::cout                                     << ")"                                                           << std::endl
               << FORMAT << "NS Omega = "        << bconfig(OMEGA,BCO1)                                           << std::endl
               << FORMAT << "NS EulerC = "       << euler1                                                        << std::endl
-              << FORMAT << "NS H_c = "          << loghc1 << " (nc = "  << rhoc1 << ")"                          << std::endl
+              << FORMAT << "NS H_c = "          << loghc1 << " (nc = "  << rhoc1 << ", pc = " << pressc1 << ")"  << std::endl
               << FORMAT << "dH/dx_c = "         << dHdx1                                                         << std::endl
               << FORMAT << "NS QLS = "          << ql_spinns << " (chi = " << ql_spinns / (Madm1 * Madm1) << ")" << std::endl
               << FORMAT << "NS QL Madm = "      << ql_madm1                                                      << "\n\n"
