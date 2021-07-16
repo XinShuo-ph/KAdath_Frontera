@@ -63,5 +63,5 @@ int main(int argc, char** argv) {
 
   // create copy of data file, none of the fields are actually changed yet
   std::string data_fn = bin_fn.substr(0, bin_fn.size()-5)+".dat";
-  fs::copy(data_fn, ss.str()+".dat");
+  fs::copy(data_fn, bconfig.config_outputdir()+ss.str()+".dat");
 }
