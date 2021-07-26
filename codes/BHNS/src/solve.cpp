@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
   if(argc > 2) outputdir = argv[2];
   
   // setup eos to update central density
-  const double h_cut = bconfig.eos<double>(HC, BCO1);
+  const double h_cut = bconfig.eos<double>(HCUT, BCO1);
   
   const std::string eos_file = bconfig.eos<std::string>(EOSFILE, BCO1);
   const std::string eos_type = bconfig.eos<std::string>(EOSTYPE, BCO1);
@@ -215,7 +215,11 @@ int BHNS_solver (config_t bconfig, std::string outputdir) {
     
     // binary free variables
     syst.add_var ("xaxis" , bconfig(COM)) ;
-    syst.add_var ("ome"   , bconfig(GOMEGA)) ;
+    // determine whether orbital frequency is fixed
+    if(bconfig.control(FIXED_GOMEGA))
+      syst.add_cst("ome"  , bconfig(GOMEGA)) ;
+    else
+      syst.add_var("ome"  , bconfig(GOMEGA)) ;
 
     // variables fields
     syst.add_var ("P"     , conf) ;
@@ -374,7 +378,9 @@ int BHNS_solver (config_t bconfig, std::string outputdir) {
     space.add_eq_int_volume(syst, space.NS, space.ADAPTEDNS, "integvolume(intM) = qlMadm1") ;
     space.add_eq_int_volume(syst, space.NS, space.ADAPTEDNS, "integvolume(intMb) = Mb1") ;
 
-    space.add_eq_int_inf (syst, "integ(intPy) = 0");
+    // determine whether orbital frequency is fixed
+    if(!bconfig.control(FIXED_GOMEGA))
+      space.add_eq_int_inf (syst, "integ(intPy) = 0");
     
     if(stage == TOTAL) {
       //For TOTAL we use the fixed lapse condition

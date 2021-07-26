@@ -35,7 +35,7 @@ class bns_reader_t : public Kadath::python_reader_t<space_t, bns_vars_t> {
                                              config_filename(filename.substr(0,filename.size()-3)+"info"),
                                              bconfig(config_filename) {
     // setup eos to before calling solver
-    const double h_cut = bconfig.eos<double>(HC, BCO1);
+    const double h_cut = bconfig.eos<double>(HCUT, BCO1);
     const std::string eos_file = bconfig.eos<std::string>(EOSFILE, BCO1);
     const std::string eos_type = bconfig.eos<std::string>(EOSTYPE, BCO1);
 

@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
    * See $HOME_KADATH/include/Configurator/config_enums.hpp for
    * possible BCO_PARAMS and EOS_PARAMS index names 
    */
-  const double h_cut = bconfig.eos<double>(HC);
+  const double h_cut = bconfig.eos<double>(HCUT);
   const std::string eos_file = bconfig.eos<std::string>(EOSFILE);
   const std::string eos_type = bconfig.eos<std::string>(EOSTYPE);
 

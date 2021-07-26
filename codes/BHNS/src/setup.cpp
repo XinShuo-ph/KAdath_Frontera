@@ -248,7 +248,7 @@ void setup_binbhns(nsconfig_t& BNSconfig, bhconfig_t& BHconfig, config_t& bconfi
           conf .set_domain(dom).set(new_pos) = nsconf.val_point(absol1) * bhconf.val_point(absol2);
           lapse.set_domain(dom).set(new_pos) = nslapse.val_point(absol1) * bhlapse.val_point(absol2);
           phi  .set_domain(dom).set(new_pos) = nsphi.val_point(absol1);
-          logh .set_domain(dom).set(new_pos) = nslogh.val_point(absol1) + nslogh.val_point(absol2);
+          logh .set_domain(dom).set(new_pos) = nslogh.val_point(absol1);
         }
         else {
           conf .set_domain(dom).set(new_pos) = 1.;
@@ -328,7 +328,7 @@ void bin_config_import_NS(nsconfig_t& BNSconfig, config_t& bconfig, const space_
   for(int i = 0; i < NUM_EOS_PARAMS; ++i) { bconfig.set_eos(i, BCO1) = BNSconfig.set_eos(i, BCO1); }
 
   // setup eos to update central density
-  const double h_cut = bconfig.eos<double>(HC, BCO1);
+  const double h_cut = bconfig.eos<double>(HCUT, BCO1);
   
   const std::string eos_file = bconfig.eos<std::string>(EOSFILE, BCO1);
   const std::string eos_type = bconfig.eos<std::string>(EOSTYPE, BCO1);
