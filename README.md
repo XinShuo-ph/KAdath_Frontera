@@ -39,6 +39,12 @@ tabulated and polytropic EOS - see include/EOS
 stages, and key variables - see include/Configurator  
 5.  Addition of exporters for all the previously mentioned ID types - see src/Utilities/Exporters  
 
+# 3. Public Thorns for use with the Einstein Toolkit
+
+The following workspace includes the publicly available thorns for use with the Einstein Toolkit
+in order to import FUKA ID:
+https://bitbucket.org/fukaws/
+
 # REQUIRED CITATIONS:
 
 1) L. Jens Papenfort, Samuel D. Tootle, Philippe Grandclément, Elias R. Most, Luciano Rezzolla: https://arxiv.org/abs/2103.09911  
