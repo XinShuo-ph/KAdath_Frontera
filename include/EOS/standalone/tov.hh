@@ -27,25 +27,28 @@ namespace Kadath {
 namespace Margherita {
 template <typename EOS> class MargheritaTOV {
   public:
-  enum {RADIUS=0, RHOB, PRESS, MASSR, MASSB, PHI, RISO, CONF, NUMVAR};
+  enum {RADIUS=0, RHOB, PRESS, MASSR, MASSB, PHI, RISO, CONF, TIDALH, TIDALBETA, NUMVAR};
   typedef EOS eos_t;
 
   private:
   using ary_t = std::array<double,NUMVAR>;
   using state_t = std::vector<ary_t>;
   
-  static constexpr size_t max_iter = 10000;
+  static constexpr size_t max_iter = 40000;
   static constexpr double dr0 = 10. / 10000;
   const double loop_eps = 1e-6;
 
   public:
   bool adaptive{true};
   bool rk45{true};
+  bool compact_output{false};
   double radius{0};
   double arealr{0};
   double mass{0};
   double rhoc{0};
   double baryon_mass{0};
+  double tidal_love_k2{0};
+  double press_c{0};
   state_t state{};
 
   void reset(const double& rho_init) {
@@ -54,8 +57,10 @@ template <typename EOS> class MargheritaTOV {
     radius = 0;
     arealr = 0;
     mass = 0;
-    baryon_mass = 0;
     rhoc = rho_init;
+    baryon_mass = 0;
+    tidal_love_k2 = 0;
+    press_c = 0;
   }
   
   /**
@@ -68,11 +73,11 @@ template <typename EOS> class MargheritaTOV {
     using namespace Kadath::Margherita;
     double eps;
     typename EOS::error_t err;
-    double press = EOS::press_cold_eps_cold__rho(eps, rhoc, err);
+    press_c = EOS::press_cold_eps_cold__rho(eps, rhoc, err);
     ary_t initial_conditions {};
 
     initial_conditions[RHOB] = rhoc;
-    initial_conditions[PRESS] = press;
+    initial_conditions[PRESS] = press_c;
     initial_conditions[PHI] = 1.;
     return std::move(initial_conditions);
   }
@@ -112,6 +117,23 @@ template <typename EOS> class MargheritaTOV {
     // eq(18) integral only
     res[RISO] = (std::sqrt(sch_fac) - 1.) / r * h;
     res[MASSB] = std::sqrt(sch_fac) * res[MASSR];
+    
+    auto H = f[TIDALH];
+    auto bet = f[TIDALBETA];
+    if(state.size() == 1) {  
+      H = r2;
+      bet = 2. * r;
+    }
+
+    // eq (11,12) https://arxiv.org/pdf/0911.3535.pdf
+    res[TIDALH] = bet * h;
+    auto tmpvar = m / r2 + 4. * M_PI * r * press;
+    res[TIDALBETA] = 2. * sch_fac * H * (
+      -2. * M_PI * (5. * rhoE + 9. * press + dedp * (rhoE + press))
+      + 3. / r2 + 2. * sch_fac * tmpvar * tmpvar)
+      + 2. * bet / r * sch_fac * (-1. + m / r + 2. * M_PI * r2 * (rhoE - press));
+    res[TIDALBETA] *= h;
+    
     return res;
   }
   
@@ -295,6 +317,27 @@ template <typename EOS> class MargheritaTOV {
   }
 
   /**
+   * calculate dimensionless love number k2
+   *
+   * eq(14) https://arxiv.org/pdf/0911.3535.pdf
+   */
+  inline void calculate_k2() {
+    const auto& sol = state.back();
+    const double y = sol[RADIUS] * sol[TIDALBETA] / sol[TIDALH];
+    const double C = sol[MASSR] / sol[RADIUS];
+    const double C2 = C*C;
+    const double C3 = C2 * C;
+    const double C5 = C3 * C2;
+    const double tmp = (1. - 2. * C);
+    const double tmp2 = tmp * tmp;
+    tidal_love_k2 = 8. * C5 / 5. * tmp2 * (
+        2. + 2. * C * (y - 1.) - y)
+      / (2. * C * (6. - 3. * y + 3. * C * (5. * y - 8.))
+      + 4. * C3 * (13. - 11. * y + C * (3. * y - 2.) + 2. * C2 * (1. + y))
+      + 3. * tmp2 * (2. - y + 2. * C * (y - 1.)) * std::log(tmp));
+  }
+
+  /**
    * solve
    *
    * find a solution to the TOV equations for the given central and EOS
@@ -351,10 +394,12 @@ template <typename EOS> class MargheritaTOV {
       correct_isotropic_r();
       calculate_conformal_factor();
       radius = state.back()[RISO];
+      calculate_k2();
     }
     arealr = state.back()[RADIUS];
     mass = state.back()[MASSR];
     baryon_mass = state.back()[MASSB];
+
   }
   
   /**
@@ -374,11 +419,18 @@ template <typename EOS> class MargheritaTOV {
     double rho_min = rho_min0;
     double rho_max = rho_max0;
     double delrho = (rho_max - rho_min) / 100.;
+    double maxM = 0.;
+    double maxMrho = 0.;
   
     // find bracketing range based on the central density to 
     // to make sure a root exists - i.e. Madm can be found
     for(rhoL = rho_min0; rhoL < rho_max0; rhoL += delrho) {
       solve(rhoL, false);
+      if(mass > maxM) {
+        maxM = mass;
+        maxMrho = rhoL;
+      }
+
       if(mass < M_fin)
         rho_min = rhoL;
       else if(mass > M_fin) {
@@ -388,7 +440,8 @@ template <typename EOS> class MargheritaTOV {
     }
     
     if(rhoL >= rho_max0) {
-      std::cerr << "Maximum density (" << rhoL << ") reached.\n"
+      std::cerr << "Maximum density (" << rhoL << ") reached with mass.\n"
+        << "Mass mass obtained: " << maxM << ", with density: "<< maxMrho << ".\n"
         "The density bracketing range may not be sufficiently constrained for the given EOS\n";
       std::_Exit(EXIT_FAILURE);
     }
@@ -417,7 +470,7 @@ template <typename EOS> class MargheritaTOV {
       count++;
     }
     if(count >= max_iter) {
-      std::cerr << "Maximum iterations (" << max_iter << ") reached.\n"
+      std::cerr << "Maximum iterations (" << max_iter << ") reached .\n"
         "The mass may be too high or the range of rho may not be sufficiently wide\n";
       std::_Exit(EXIT_FAILURE);
     }
@@ -425,7 +478,29 @@ template <typename EOS> class MargheritaTOV {
     correct_phi();
     correct_isotropic_r();
     calculate_conformal_factor();
+    calculate_k2();
     radius = state.back()[RISO];
+  }
+
+  friend std::ostream& operator<< (std::ostream& stream, const MargheritaTOV& tov) {
+
+    if(tov.compact_output){
+    stream << std::setprecision(12);
+    stream << tov.press_c << "\t"
+           << tov.mass << "\t"
+           << tov.baryon_mass << "\t"
+           << tov.radius << "\t"
+           << tov.tidal_love_k2 <<std::endl;
+    }else{
+
+    stream << " Central pressure: " << tov.press_c << std::endl;
+    stream << " Mass: " << tov.mass << std::endl;
+    stream << " Baryon mass: " << tov.baryon_mass << std::endl;
+    stream << " Radius: " << tov.arealr << std::endl;
+    stream << " Love number k2: " << tov.tidal_love_k2 << std::endl;
+    };
+
+    return stream;
   }
 };
 }}
