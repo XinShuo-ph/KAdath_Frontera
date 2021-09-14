@@ -17,11 +17,10 @@ std::array<std::vector<double>,NUM_OUT> KadathExportBHNS(int const npoints,
 
   kadath_config_boost<BIN_INFO> bconfig(filename);
 
-  std::string eos_type = bconfig.template eos<std::string>(EOSTYPE, BCO1);
-  std::string eos_name("");
-
-  if(eos_type == "Cold_Table")
-    eos_name = bconfig.template eos<std::string>(EOSFILE, BCO1);
+  // get const EOS information - used for initializing EOS later
+  const double h_cut = bconfig.eos<double>(HCUT, BCO1);
+  const std::string eos_file = bconfig.eos<std::string>(EOSFILE, BCO1);
+  const std::string eos_type = bconfig.eos<std::string>(EOSTYPE, BCO1);
 
   /* file containing KADATH fields must have same name as config file
    * with only the extension being different */
@@ -71,29 +70,31 @@ std::array<std::vector<double>,NUM_OUT> KadathExportBHNS(int const npoints,
   fmet.set_system(syst, "f");
 
   Param p;
+  // add EOS user defined OPEs based on EOS type
   if(eos_type == "Cold_Table") {
     using namespace Kadath::Margherita;
+    using eos_t = Kadath::Margherita::Cold_Table;
+    
+    const int interp_pts = (bconfig.eos<int>(INTERP_PTS, BCO1) == 0) ? \
+                            2000 : bconfig.eos<int>(INTERP_PTS, BCO1);
 
-    size_t path_pos = filename.rfind("/");
-    if(path_pos != std::string::npos)
-      eos_name = filename.substr(0,path_pos+1) + eos_name;
+    EOS<Cold_Table, PRESSURE>::init(eos_file);
 
-    EOS<Cold_Table, PRESSURE>::init(eos_name);
-
-    syst.add_ope("eps", &EOS<Cold_Table, EPSILON>::action, &p);
-    syst.add_ope("press", &EOS<Cold_Table, PRESSURE>::action, &p);
-    syst.add_ope("rho", &EOS<Cold_Table, DENSITY>::action, &p);
+    EOS<eos_t,PRESSURE>::init(eos_file, h_cut, interp_pts);
+    syst.add_ope("eps", &EOS<eos_t, EPSILON>::action, &p);
+    syst.add_ope("press", &EOS<eos_t, PRESSURE>::action, &p);
+    syst.add_ope("rho", &EOS<eos_t, DENSITY>::action, &p);
   }
 
   if(eos_type == "Cold_PWPoly") {
     using namespace Kadath::Margherita;
+    using eos_t = Kadath::Margherita::Cold_PWPoly;
 
-    EOS<Cold_PWPoly, PRESSURE>::init();
-
-    syst.add_ope("eps", &EOS<Cold_PWPoly, EPSILON>::action, &p);
-    syst.add_ope("press", &EOS<Cold_PWPoly, PRESSURE>::action, &p);
-    syst.add_ope("rho", &EOS<Cold_PWPoly, DENSITY>::action, &p);
-  }
+    EOS<eos_t,PRESSURE>::init(eos_file, h_cut);
+    syst.add_ope("eps", &EOS<eos_t, EPSILON>::action, &p);
+    syst.add_ope("press", &EOS<eos_t, PRESSURE>::action, &p);
+    syst.add_ope("rho", &EOS<eos_t, DENSITY>::action, &p);
+  } // end adding EOS OPEs
 
   syst.add_cst("4piG", bconfig(QPIG));
   syst.add_cst("PI", M_PI);
