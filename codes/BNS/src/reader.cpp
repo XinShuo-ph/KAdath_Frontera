@@ -477,6 +477,7 @@ void reader_output(config_t bconfig) {
               // central values of the Euler constant, log enthalpy and its derivative
               << FORMAT << "EulerC"+idx+" = "     << central_euler[i] << std::endl
               << FORMAT << "H_c"+idx+" = "        << central_logh[i] << std::endl
+              << FORMAT << "Rho_c"+idx+" = "        << central_rho[i] << std::endl
               << FORMAT << "dH/dx_c"+idx+" = "    << central_dHdx[i] << std::endl
               // location of the maximal density (and compared to the nucleus' center)
               << FORMAT1 << "x_max"+idx+" = "     << x_max[i] << " (" << (x_nuc[i] - x_max[i]) / x_nuc[i] << ")"
