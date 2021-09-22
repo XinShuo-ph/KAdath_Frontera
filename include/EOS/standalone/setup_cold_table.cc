@@ -30,7 +30,7 @@
 #include "./spline.hh"
 
 #include "lorene_io.hh"
-
+#include <fstream>
 namespace Kadath {
 namespace Margherita {
 
@@ -59,24 +59,6 @@ void setup_Cold_Table(std::string cold_table_name, int cold_lintp_points, double
   Cold_Table::hmax = h_max;
 
   double K_ext = (h_min - 1) / (2. * Cold_Table::rhomin);
-//  double K_ext = 500000;
-  Cold_PWPoly::num_pieces = 1;
-  Cold_PWPoly::gamma_tab[0] = 2.;
-  Cold_PWPoly::rhomin = 1e-17;
-  Cold_PWPoly::rhomax = 1.0;
-  Cold_PWPoly::k_tab[0] = K_ext;
-  Cold_PWPoly::eps_tab[0] = 0;
-
-
-/*
-  for(int i = 0; i < vectors[0].size(); ++i) {
-    double h = 1. + vectors[1][i] + vectors[2][i] / vectors[0][i];
-    std::cout << vectors[0][i] << "\t" << h << std::endl;
-  }
-*/
-
-//  std::cout << Cold_Table::rhomin << "\t" << Cold_Table::rhomax << std::endl;
-//  std::cout << h_min << "\t" << h_max << std::endl;
 
   // Shift eps to ensure positivity
   if (vectors[1].front() < 0) {
