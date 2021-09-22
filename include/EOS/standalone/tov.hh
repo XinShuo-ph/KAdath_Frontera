@@ -410,37 +410,45 @@ template <typename EOS> class MargheritaTOV {
    * varying the central density
    *
    * @param M_fin desired final ADM mass
+   * @param rho_max0 initial maximum density to search for MADM
+   * @param rho_min0 initial minimum density to search for MADM
    * @param eps precision desired for finding ADM mass
    */
-  inline void solve_for_MADM(const double M_fin, const double eps = 1e-3) {
-    double rhoL;
-    const double rho_max0 = 1e-2;
-    const double rho_min0 = 1e-4;
+  inline void solve_for_MADM(const double M_fin, const double rho_max0=1e-2, 
+    const double rho_min0=5e-4, const double eps = 1e-3) {
+    
+    // rho to evaluate
+    double rho_eval=0.;
+
+    // initial bracketing range
     double rho_min = rho_min0;
     double rho_max = rho_max0;
+
+    // deltarho to find bracket around M_fin
     double delrho = (rho_max - rho_min) / 100.;
+
     double maxM = 0.;
     double maxMrho = 0.;
   
     // find bracketing range based on the central density to 
     // to make sure a root exists - i.e. Madm can be found
-    for(rhoL = rho_min0; rhoL < rho_max0; rhoL += delrho) {
-      solve(rhoL, false);
+    for(rho_eval = rho_min0; rho_eval < rho_max0; rho_eval += delrho) {
+      solve(rho_eval, false);
       if(mass > maxM) {
         maxM = mass;
-        maxMrho = rhoL;
+        maxMrho = rho_eval;
       }
 
       if(mass < M_fin)
-        rho_min = rhoL;
+        rho_min = rho_eval;
       else if(mass > M_fin) {
-        rho_max = rhoL;
+        rho_max = rho_eval;
         break;
       }
     }
-    
-    if(rhoL >= rho_max0) {
-      std::cerr << "Maximum density (" << rhoL << ") reached with mass.\n"
+   
+    if(rho_eval >= rho_max0) {
+      std::cerr << "Maximum density (" << rho_eval << ") reached with mass.\n"
         << "Mass mass obtained: " << maxM << ", with density: "<< maxMrho << ".\n"
         "The density bracketing range may not be sufficiently constrained for the given EOS\n";
       std::_Exit(EXIT_FAILURE);
@@ -451,22 +459,22 @@ template <typename EOS> class MargheritaTOV {
     size_t count = 0;
     double diff = 1;
     while( std::fabs(diff) > eps && count < max_iter) {
-      rhoL = (rho_max + rho_min) / 2.;      
-      solve(rhoL, false);
+      rho_eval = (rho_max + rho_min) / 2.;      
+      solve(rho_eval, false);
       diff = (mass-M_fin);
       
       #ifdef margerita_check_all
       std::cout << "M: " << mass
                 << "\nMb: " << baryon_mass
                 << "\nArealR: " << arealr
-                << "\nNc: " << rhoL
+                << "\nNc: " << rho_eval
                 << "\nDiff: " << diff 
                 << "\nIter: " << count << "\n\n";
       #endif
       if( diff > 0) 
-        rho_max = rhoL;
+        rho_max = rho_eval;
       else
-        rho_min = rhoL;
+        rho_min = rho_eval;
       count++;
     }
     if(count >= max_iter) {
