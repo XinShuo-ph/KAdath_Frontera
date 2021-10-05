@@ -365,7 +365,11 @@ class Domain_polar_shell : public Domain {
 	* @param pos_cf : current position.
 	*/
     void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
-
+     
+    void export_tau_val_domain_boundary_exception_mquant (const Val_domain& so, int mquant, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, 
+		int type_exception, const Val_domain& exception) const ;
+    virtual void export_tau_boundary_exception (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, const Param&, int, 
+							    const Tensor&, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 public:
      virtual ostream& print (ostream& o) const ;
 } ;
