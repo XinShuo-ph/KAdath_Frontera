@@ -459,8 +459,8 @@ int BHNS_solver (config_t bconfig, std::string outputdir) {
 
     // Condition to set PN estimates of omega and adot
     if(std::isnan(bconfig.set(ADOT)) ||
-       std::isnan(bconfig.set(ECC_OMEGA) ||
-       bconfig.control(USE_PN))) {
+       std::isnan(bconfig.set(ECC_OMEGA)) ||
+       bconfig.control(USE_PN)) {
       bco_utils::KadathPNOrbitalParams(bconfig, \
         bconfig(MADM, BCO1), bconfig(MCH,BCO2));
 

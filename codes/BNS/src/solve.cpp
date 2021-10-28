@@ -886,8 +886,8 @@ int BNS_solver (config_t& bconfig, std::string outputdir) {
     // This is useful either when no manual eccentricity iterations are carried out
     // or as a starting point for the latter.
     if(std::isnan(bconfig.set(ADOT)) ||
-       std::isnan(bconfig.set(ECC_OMEGA) ||
-       bconfig.control(USE_PN))) {
+       std::isnan(bconfig.set(ECC_OMEGA)) ||
+       bconfig.control(USE_PN)) {
       bco_utils::KadathPNOrbitalParams(bconfig, \
         bconfig(MADM, BCO1), bconfig(MADM,BCO2));
 
