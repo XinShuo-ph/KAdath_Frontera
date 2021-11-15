@@ -314,7 +314,7 @@ namespace Kadath  {
         * Gives the base using Legendre polynomials, for odd functions in\f$ X\f$ (critic space case)
         * @param so [input] : the returned base.
         */
-         virtual void set_legendre_xodd_base(Base_spectral&) const ;
+         virtual void set_legendre_xodd_base(Base_spectral& so) const ;
         /**
         * Gives the base using Chebyshev polynomials, for odd functions in\f$ T\f$ (critic space case)
         * @param so [input] : the returned base.
@@ -324,7 +324,7 @@ namespace Kadath  {
         * Gives the base using Legendre polynomials, for odd functions in\f$ T\f$ (critic space case)
         * @param so [input] : the returned base.
         */
-         virtual void set_legendre_todd_base(Base_spectral&) const ;
+         virtual void set_legendre_todd_base(Base_spectral& so) const ;
      /**
         * Gives the base using Chebyshev polynomials, for odd functions in\f$ X\f$ and in \f$ T\f$ (critic space case)
         * @param so [input] : the returned base.
@@ -345,7 +345,7 @@ namespace Kadath  {
         * Gives the base using odd Legendre polynomials$
         * @param so [input] : the returned base.
         */
-        virtual void set_legendre_base_odd(Base_spectral&) const ;
+        virtual void set_legendre_base_odd(Base_spectral& so) const ;
 
     /**
         * Gives the base using odd Chebyshev polynomials$ for the radius
@@ -474,7 +474,7 @@ namespace Kadath  {
         * @param so [input] : the input tensor.
         * @returns the tensor in Cartesian tensorial basis in the current domain.
         */
-         virtual Tensor change_basis_spher_to_cart (int dd, const Tensor&) const ;
+         virtual Tensor change_basis_spher_to_cart (int dd, const Tensor& so) const ;
 
         /**
         * Computes the ordinary flat Laplacian for a scalar field with an harmonic index \c m.
@@ -496,21 +496,21 @@ namespace Kadath  {
         * @param so [input] : the input scalar field.
         * @returns the derivative.
         */
-         virtual Val_domain der_r (const Val_domain&) const ;
+         virtual Val_domain der_r (const Val_domain& so) const ;
 
     /**
         * Compute the derivative with respect to \f$ \theta\f$ of a scalar field.
         * @param so [input] : the input scalar field.
         * @returns the derivative.
         */
-         virtual Val_domain der_t (const Val_domain&) const ;
+         virtual Val_domain der_t (const Val_domain& so) const ;
 
     /**
         * Compute the derivative with respect to \f$ \varphi\f$ of a scalar field.
         * @param so [input] : the input scalar field.
         * @returns the derivative.
         */
-         virtual Val_domain der_p (const Val_domain&) const ;
+         virtual Val_domain der_p (const Val_domain& so) const ;
 
     /**
         * Compute the radial derivative multiplied by \f$ r^2\f$ of a scalar field.
@@ -529,25 +529,25 @@ namespace Kadath  {
         * @param so [input] : the input scalar field.
         * @returns the result.
         */
-         virtual Val_domain ddr (const Val_domain&) const ;
+         virtual Val_domain ddr (const Val_domain& so) const ;
     /**
         * Compute the second derivative with respect to \f$\varphi\f$ of a scalar field.
         * @param so [input] : the input scalar field.
         * @returns the result.
         */
-         virtual Val_domain ddp (const Val_domain&) const ;
+         virtual Val_domain ddp (const Val_domain& so) const ;
     /**
         * Compute the second derivative with respect to \f$\theta\f$ of a scalar field.
         * @param so [input] : the input scalar field.
         * @returns the result.
         */
-         virtual Val_domain ddt (const Val_domain&) const ;
+         virtual Val_domain ddt (const Val_domain& so) const ;
     /**
         * Compute the derivative with respect to \f$\theta\f$ of a scalar field.
         * @param so [input] : the input scalar field.
         * @returns the result.
         */
-         virtual Val_domain dt (const Val_domain&) const ;
+         virtual Val_domain dt (const Val_domain& so) const ;
 
 
         /**
@@ -555,14 +555,14 @@ namespace Kadath  {
         * @param so [input] : the input field.
         * @returns the result.
         */
-         virtual Val_domain dtime (const Val_domain&) const ;
+         virtual Val_domain dtime (const Val_domain& so) const ;
 
         /**
         * Computes the second time derivative of a field
         * @param so [input] : the input field.
         * @returns the result
         */
-        virtual Val_domain ddtime (const Val_domain&) const ;
+        virtual Val_domain ddtime (const Val_domain& so) const ;
 
 
         /**
@@ -583,7 +583,7 @@ namespace Kadath  {
         * @param passage [input] : passage matrix describing the spherical harmonics.
         * @returns the multipolar coefficient.
         */
-         virtual double multipoles_sym (int k, int j, int, const Val_domain& so, const Array<double>& passage) const ;
+         virtual double multipoles_sym (int k, int j, int bound, const Val_domain& so, const Array<double>& passage) const ;
 
         /**
         * Extraction of a given multipole, at some boundary, for a anti-symmetric scalar function.
@@ -594,7 +594,7 @@ namespace Kadath  {
         * @param passage [input] : passage matrix describing the spherical harmonics.
         * @returns the multipolar coefficient.
         */
-         virtual double multipoles_asym (int, int, int, const Val_domain&, const Array<double>&) const ;
+         virtual double multipoles_asym (int k, int j, int bound, const Val_domain& so, const Array<double>& passage) const ;
 
         /**
         * Extraction of a given multipole, at some boundary, for a symmetric scalar function.
@@ -662,7 +662,7 @@ namespace Kadath  {
         * @param passage [input] : passage matrix describing the spherical harmonics.
         * @returns the fit.
         */
-         virtual Term_eq harmonics_asym (const Term_eq&, const Term_eq&, int, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param&), const Param&, const Array<double>&) const ;
+         virtual Term_eq harmonics_asym (const Term_eq& so, const Term_eq& omega, int bound, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param&), const Param& param, const Array<double>& passage) const ;
 
         /**
         * Extraction of a given multipole, at some boundary, for the radial derivative a  symmetric scalar function.
@@ -852,7 +852,7 @@ namespace Kadath  {
         * Computes the flat derivative of a \c Term_eq, in spherical orthonormal coordinates.
         * If the index of the derivative is present in the source, appropriate contraction is performed.
         * If the contravariant version is called for, the index is raised using an arbitrary metric.
-        * @param tipe : type of derivative (\t COV or \t CON)
+        * @param tipe : type of derivative (\c COV or \c CON)
         * @param ind : name of the index corresponding to the derivative.
         * @param so : input field.
         * @param manip : pointer on the metric used to manipulate the derivative index, if need be.
@@ -866,7 +866,7 @@ namespace Kadath  {
         * where the constant radii sections have a negative curvature.
         * If the index of the derivative is present in the source, appropriate contraction is performed.
         * If the contravariant version is called for, the index is raised using an arbitrary metric.
-        * @param tipe : type of derivative (\t COV or \t CON)
+        * @param tipe : type of derivative (\c COV or \c CON)
         * @param ind : name of the index corresponding to the derivative.
         * @param so : input field.
         * @param manip : pointer on the metric used to manipulate the derivative index, if need be.
@@ -879,7 +879,7 @@ namespace Kadath  {
         * Computes the flat derivative of a \c Term_eq, in Cartesian coordinates.
         * If the index of the derivative is present in the source, appropriate contraction is performed.
         * If the contravariant version is called for, the index is raised using an arbitrary metric.
-        * @param tipe : type of derivative (\t COV or \t CON)
+        * @param tipe : type of derivative (\c COV or \c CON)
         * @param ind : name of the index corresponding to the derivative.
         * @param so : input field.
         * @param manip : pointer on the metric used to manipulate the derivative index, if need be.
@@ -975,7 +975,7 @@ namespace Kadath  {
          virtual void update_mapping(const Val_domain& shape) {} ;
          /**
         * Updates the variables parts of the \c Domain
-        * @param  double : correction to the variable boundary.
+        * @param  bound : correction to the variable boundary.
         */
          virtual void update_mapping(double bound) {} ;
 
@@ -1021,7 +1021,7 @@ namespace Kadath  {
         * @param so : the input scalar field.
         * @returns  the integral.
         */
-         virtual double integ_volume (const Val_domain&) const ;
+         virtual double integ_volume (const Val_domain& so) const ;
 
         /**
         * Gives the informations corresponding the a touching neighboring domain.
@@ -1052,13 +1052,13 @@ namespace Kadath  {
         * @param bound : boundary at which the integral is computed.
         * @returns the surface integral.
         */
-         virtual double integ (const Val_domain&, int) const ;
+         virtual double integ (const Val_domain& so, int bound) const ;
         /**
         * Volume integral. The volume element is provided by the function (need some cleaning : same as integ_volume)
         * @param so : the input scalar field.
         * @returns the integral.
         */
-         virtual double integrale (const Val_domain&) const ;
+         virtual double integrale (const Val_domain& so) const ;
 
         /**
         * Computes the part of the gradient containing the partial derivative of the field, in spherical orthonormal coordinates.
@@ -1409,7 +1409,7 @@ namespace Kadath  {
         * @param xx : set of values used by the affectation
         * @param conte : current position in the values vector.
         */
-        virtual void xx_to_vars_variable_domains (System_of_eqs* syst, const Array<double>& xx, int& pos) const {};
+        virtual void xx_to_vars_variable_domains (System_of_eqs* syst, const Array<double>& xx, int& conte) const {};
 
         /**
         * Gives the number of the other domains, touching a given boundary.

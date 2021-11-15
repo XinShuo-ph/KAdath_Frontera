@@ -196,7 +196,7 @@ class Metric_nophi_AADS : public Metric {
 	  Metric_tensor* p_met ; ///< Pointer on the \c Metric_tensor describing the coformal metric.
 	  const Base_tensor& basis ; ///< The tensorial basis used.
 	  Metric_flat_nophi fmet ; ///< Associated flat metric.
-          Scalar conformal ; ///< The conformal factor $\Omega$ (must be a purely radial function)
+          Scalar conformal ; ///< The conformal factor \f$\Omega\f$ (must be a purely radial function)
 	  Scalar der_conf ; ///< Radial derivative of the conformal factor 
 	  int place_syst ; ///< Gives the location of the metric amongst the various unknowns of the associated \c System_of_eqs.
 

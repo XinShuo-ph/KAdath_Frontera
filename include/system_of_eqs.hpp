@@ -69,6 +69,8 @@ namespace Kadath {
 		//! Dummy names for the purpose of better readability.
 		enum : bool { DO_NOT_TRANSPOSE = false, TRANSPOSE = true};
 		//enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
+       /*! Sylvain'stuff
+       */
         struct Output_data{
             unsigned n_iter{}; int problem_size{}; double current_error{};
             Duration t_load_matrix{}; Duration t_trans_matrix{}; Duration t_inv_matrix{}; Duration t_newton_update{};

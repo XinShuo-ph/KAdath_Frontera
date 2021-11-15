@@ -145,7 +145,7 @@ namespace Kadath {
         // -----
     protected:
         const Space &espace; ///< The \c Space
-        int ndom; ///< The number of \d Domain
+        int ndom; ///< The number of \c Domain
         int ndim; ///< The dimension/
         int valence; ///< Valence of the tensor (0 = scalar, 1 = vector, etc...)
 
@@ -456,14 +456,14 @@ namespace Kadath {
     public:
 
         /**
-        * Gives the location of a given component in the array used for storage (\C Array version).
+        * Gives the location of a given component in the array used for storage (\c Array version).
         * @param ind : values of the indices.
         * @returns : the storage location.
         */
         virtual int position(const Array<int> &idx) const { return (give_place_array(idx, ndim)); }
 
         /**
-        * Gives the location of a given component in the array used for storage (\C Index version).
+        * Gives the location of a given component in the array used for storage (\c Index version).
         * @param ind : values of the indices.
         * @returns : the storage location.
         */

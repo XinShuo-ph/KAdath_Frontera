@@ -272,7 +272,6 @@ class Metric_flat : public Metric {
 	* @return : the result as a \c Term_eq.
 	*/
 	Term_eq derive_partial_mtz (int tder, char indder, const Term_eq& so) const ;
-	/**
 
 	/**
 	* Computes the flat covariant derivative, in orthonormal spherical coordinates.
@@ -566,7 +565,7 @@ class Metric_conf_factor : public Metric {
 	  Metric_tensor* p_met ; ///< Pointer on the \c Metric_tensor describing the coformal metric.
 	  const Base_tensor& basis ; ///< The tensorial basis used.
 	  Metric_flat fmet ; ///< Associated flat metric.
-          Scalar conformal ; ///< The conformal factor $\Omega$ (must be a purely radial function)
+          Scalar conformal ; ///< The conformal factor \f$\Omega\f$ (must be a purely radial function)
 	  Vector grad_conf ; ///< flat gradient of the conformal factor 
 	  int place_syst ; ///< Gives the location of the metric amongst the various unknowns of the associated \c System_of_eqs.
 
