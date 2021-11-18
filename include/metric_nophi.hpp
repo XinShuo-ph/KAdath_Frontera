@@ -45,6 +45,7 @@ class Metric_flat_nophi : public Metric {
 		/**
 		* Standard constructor
 		* @param sp : the associated \c Space.
+		* @param bb : tensorial basis.
 		*/
 		Metric_flat_nophi (const Space& sp, const Base_tensor& bb) ;
 		Metric_flat_nophi (const Metric_flat_nophi& ) ; ///< Copy constructor
@@ -187,7 +188,7 @@ class Metric_nophi_const : public Metric_nophi {
  * The true metric and the conformal are related via
  * \f$\gamma_{ij} = \frac{1}{\Omega^2}\tilde{\gamma}_{ij}\f$.
  * The conformal factor vanishes at some boundary so that the various quantities (Christoffels) are multiplied by appropriate factors
- * of $\Omega$ to ensure regularity.
+ * of \f$\Omega\f$ to ensure regularity.
  * \ingroup metric
  */
 class Metric_nophi_AADS : public Metric {

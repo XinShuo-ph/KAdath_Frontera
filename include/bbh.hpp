@@ -38,8 +38,8 @@ class Space_bbh : public Space {
      * Standard constructor    
      * @param ttype [input] : the type of basis.
      * @param dist [input] : distance between the centers of the two spheres.
-     * @param r1 [input] : radius of the first hole (assumed spherical at this point).
-     * @param r2 [input] : radius of the second hole (assumed spherical at this point).
+     * @param rbh1 [input] : radius of the first hole (assumed spherical at this point).
+     * @param rbh2 [input] : radius of the second hole (assumed spherical at this point).
      * @param rbi [input] : radius of the outer boundary of the bispherical part.
      * @param rext [input] : outer radius of the. 
      * @param nr [input] : number of points in each dimension 

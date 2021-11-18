@@ -662,7 +662,7 @@ class Space_spheric_adapted : public Space {
      public:
 	/**
      	* Standard constructor ; all the shells are initially not deformed.
-     	* @param ttyp [input] : the type of basis.
+	* @param ttyp [input] : the type of basis.
 	* @param cr [input] : absolute coordinates of the center.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).

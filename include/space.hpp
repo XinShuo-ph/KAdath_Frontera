@@ -129,7 +129,9 @@ namespace Kadath  {
         virtual void do_absol() const ; ///< Computes the absolute coordinates
 
     public:
+    	//! Sylvain's stuff
          void operator= (const Domain&) = delete;
+         //! Sylvain's stuff
          Domain& operator=(Domain &&) noexcept;
 
     private:

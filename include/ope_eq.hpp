@@ -93,7 +93,7 @@ class Ope_id : public Ope_eq {
 		* @param syst : the associated \c System_of_eqs.
 		* @param so : The input \c Term_eq
 		*/
-		Ope_id (const System_of_eqs*, const Term_eq*) ;
+		Ope_id (const System_of_eqs* syst, const Term_eq* so) ;
 		~Ope_id() override; ///< Destructor.
 	public:
 		Term_eq action() const override;
@@ -152,7 +152,7 @@ class Ope_add : public Ope_eq {
 		* @param aa : first term.
 		* @param bb : second term.
 		*/
-		Ope_add(const System_of_eqs*, Ope_eq* aa, Ope_eq* bb) ;
+		Ope_add(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
 		~Ope_add() override ; ///< Destructor
 	
 		Term_eq action() const override;
@@ -903,15 +903,17 @@ class Ope_inverse_nodet : public Ope_eq {
  */
 class Ope_partial_var : public Ope_eq {
 	protected:
+	  /// Index of the variable wrt which the derivative is taken
 	  int which_var ;
 
 	public:
-		/**
-		* Constructor
-		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
-		*/
-		Ope_partial_var (const System_of_eqs* syst, int, Ope_eq* so) ;
+	/**
+	* Constructor
+	* @param syst : the associated \c System_of_eqs.
+	* @param which : index of the variable wrt the derivative is taken
+	* @param so : target		
+	*/
+		Ope_partial_var (const System_of_eqs* syst, int which, Ope_eq* so) ;
 		~Ope_partial_var() override ; ///< Destructor
 
 		Term_eq action() const override;
@@ -932,15 +934,15 @@ class Ope_mode : public Ope_eq {
 		double value ; ///< The result is the coefficient minus value.
 
 	public:
-		/**
-		* Constructor
-		* @param syst : the associated \c System_of_eqs.
-		* @param bb : the boundary
-		* @param ind : which coefficient.
-		* @param val : the value with which the coefficient is "compared"
-		* @param so : target		
-		*/
-		Ope_mode (const System_of_eqs*, int bb, const Index& ind, double val, Ope_eq* so) ;
+	/**
+	* Constructor
+	* @param syst : the associated \c System_of_eqs.
+	* @param bb : the boundary
+	* @param ind : which coefficient.
+	* @param val : the value with which the coefficient is "compared"
+	* @param so : target		
+	*/
+		Ope_mode (const System_of_eqs* syst, int bb, const Index& ind, double val, Ope_eq* so) ;
 		~Ope_mode() override ; ///< Destructor
 
 		Term_eq action() const override;

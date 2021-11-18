@@ -37,6 +37,7 @@ class Tensor;
 **/
 class Index : public Memory_mapped {
 public:
+     /// Type of data
     using Data_type = Memory_mapped_array<int>;
 
 protected:
@@ -59,8 +60,9 @@ public:
      * Copy constructor.
      * @param so source to be copied.
      */
-	Index (const Tensor&) ; ///< Constructor for looping on components of a tensor
+	Index (const Tensor& so) ; ///< Constructor for looping on components of a tensor
 
+	//! Sylvain's stuff
 	void swap(Index & so) {sizes.swap(so.sizes); coord.swap(so.coord);}
 
 	/**
@@ -82,7 +84,8 @@ public:
 	*/
 	Dim_array const& get_sizes() const {return sizes ;} ;
 	
-	void set_start()  ///< Sets the position to zero in all dimensions
+	/// Sets the position to zero in all dimensions
+	void set_start()  
     {
         for (int i=0 ; i<get_ndim() ; i++) coord[i] = 0 ;
     }
@@ -107,6 +110,7 @@ public:
         }
         else return false;
     }
+    /// Increment on one dimension
     bool inc1(int var)  {
         int const ndimm1{get_ndim()-1};
         int i{var};
@@ -121,10 +125,12 @@ public:
             return true;
         }
 	}
+	
+	/// Increment on the first dimension
 	bool inc() {return inc1(0);}
 
 
-	// Increment
+	/// General increment
     bool inc_vanilla (int increm, int var) {
         bool res = ((var >=0) && (var<get_ndim())) ? true : false ;
         if (res) {
@@ -145,6 +151,7 @@ public:
 	 */
 	void operator=(const Index& so) {assert(sizes==so.sizes);for(int i=0 ;i<get_ndim();i++)coord[i] = so.coord[i];}
 	
+	/// Comparison operator
 	bool operator== (const Index& xx) const {
         bool res = (get_ndim()==xx.get_ndim()) ;
         if (res)
@@ -154,6 +161,7 @@ public:
     }
 
 	template <class> friend class Array ;
+	/// Operator<<
 	friend ostream& operator<< (ostream&, const Index&) ;
 } ;
 }

@@ -179,7 +179,7 @@ class Domain_nucleus : public Domain {
      * @param xxx [input] : the absolute Cartesian \f$ (X, Y, Z) \f$ coordinates of the point.
      * @returns the numerical coordinates \f$ (x, \theta^\star, \varphi^\star) \f$.
      */
-     virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num(const Point& xxx) const;
      
      virtual const Point absol_to_num_bound(const Point&, int) const;
       
@@ -239,7 +239,7 @@ class Domain_nucleus : public Domain {
 	* @param llim: limit for the regularity (quantum number wrt \f$\theta\f$).
 	* @returns the number of true unknowns.
 	*/
-     int nbr_unknowns_val_domain (const Val_domain& so, int mlim, int llin) const ;
+     int nbr_unknowns_val_domain (const Val_domain& so, int mlim, int llim) const ;
 	/**
 	* Computes the number of true unknowns of a \c Val_domain.
 	* Intended for the radial component of a vector.
@@ -310,7 +310,7 @@ class Domain_nucleus : public Domain {
 	* @param mlim : mimit for the regularity (quantum number wrt \f$\varphi\f$).
 	* @returns the number of true conditions.
 	*/
-     int nbr_conditions_val_domain_boundary (const Val_domain& so, int mlim) const ;
+     int nbr_conditions_val_domain_boundary (const Val_domain& eq, int mlim) const ;
 	/**
 	* Computes number of discretized equations associated with a given equation on a boundary.
 	* It takes into account the various Galerkin basis used.
@@ -319,7 +319,7 @@ class Domain_nucleus : public Domain {
 	* @param eq : the residual of the equation.
 	* @returns the number of true conditions.
 	*/
-     int nbr_conditions_val_domain_boundary_vr (const Val_domain&) const ;
+     int nbr_conditions_val_domain_boundary_vr (const Val_domain& eq) const ;
 	/**
 	* Computes number of discretized equations associated with a given equation on a boundary.
 	* It takes into account the various Galerkin basis used.
@@ -328,7 +328,7 @@ class Domain_nucleus : public Domain {
 	* @param eq : the residual of the equation.
 	* @returns the number of true conditions.
 	*/
-     int nbr_conditions_val_domain_boundary_vt (const Val_domain&) const ;
+     int nbr_conditions_val_domain_boundary_vt (const Val_domain& eq) const ;
 	/**
 	* Computes number of discretized equations associated with a given equation on a boundary.
 	* It takes into account the various Galerkin basis used.
@@ -337,7 +337,7 @@ class Domain_nucleus : public Domain {
 	* @param eq : the residual of the equation.
 	* @returns the number of true conditions.
 	*/
-     int nbr_conditions_val_domain_boundary_vp (const Val_domain&) const ;
+     int nbr_conditions_val_domain_boundary_vp (const Val_domain& eq) const ;
      
      virtual void export_tau (const Tensor&, int, int, Array<double>&, int&, const Array<int>&,  int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
 	/**
@@ -598,7 +598,7 @@ class Domain_shell : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */
-     virtual void set_cheb_base(Base_spectral&) const ;  
+     virtual void set_cheb_base(Base_spectral& so) const ;  
       virtual void set_cheb_base_with_m(Base_spectral& so, int m) const ;       
    /**
     * Sets the base to the standard one for Legendre polynomials.
@@ -611,7 +611,7 @@ class Domain_shell : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */
-     virtual void set_legendre_base(Base_spectral&) const ;
+     virtual void set_legendre_base(Base_spectral& so) const ;
    /**
     * Sets the base to the standard one for Chebyshev polynomials for functions antisymetric in \f$ z=0 \f$
     * The bases are :
@@ -623,7 +623,7 @@ class Domain_shell : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */
-     virtual void set_anti_cheb_base(Base_spectral&) const ;      
+     virtual void set_anti_cheb_base(Base_spectral& so) const ;      
    /**
     * Sets the base to the standard one for Legendre polynomials for functions antisymetric in \f$ z=0 \f$
     * The bases are :
@@ -635,7 +635,7 @@ class Domain_shell : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */   
-     virtual void set_anti_legendre_base(Base_spectral&) const ;     
+     virtual void set_anti_legendre_base(Base_spectral& so) const ;     
 
      virtual void set_cheb_base_r_spher(Base_spectral&) const ;
      virtual void set_cheb_base_t_spher(Base_spectral&) const ;
@@ -671,7 +671,7 @@ class Domain_shell : public Domain {
      * @param xxx [input] : the absolute Cartesian \f$ (X, Y, Z) \f$ coordinates of the point.
      * @returns the numerical coordinates \f$ (x, \theta^\star, \varphi^\star) \f$.
      */
-     virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num(const Point& xxx) const;
      
       virtual const Point absol_to_num_bound(const Point&, int) const;
      /**
@@ -783,10 +783,17 @@ class Domain_shell : public Domain {
 	* Computes the number of true unknowns of a \c Val_domain.
 	* It takes into account the various symmetries and regularity conditions to determine the precise number of degrees of freedom.
 	* @param so : the field.
-	* @param mlim: limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant: quantum number wrt \f$\varphi\f$.
 	* @returns the number of true unknowns.
 	*/
      int nbr_unknowns_val_domain_mquant (const Val_domain& so, int mquant) const ;
+     /**
+	* Computes the number of true unknowns of a \c Val_domain.
+	* It takes into account the various symmetries and regularity conditions to determine the precise number of degrees of freedom.
+	* @param so : the field.
+	* @param mlim: limit for the regularity.
+	* @returns the number of true unknowns.
+	*/
      int nbr_unknowns_val_domain (const Val_domain& so, int mlim) const ;
      
      virtual Array<int> nbr_conditions (const Tensor&, int, int, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
@@ -794,11 +801,19 @@ class Domain_shell : public Domain {
 	* Computes number of discretized equations associated with a given tensorial equation in the bulk.
 	* It takes into account the various Galerkin basis used.
 	* @param so : the residual of the equation.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param order : order of the equation (i.e. 2 for a Laplacian for instance)
 	* @returns the number of true unknowns.
 	*/ 
      int nbr_conditions_val_domain_mquant (const Val_domain& so, int mquant, int order) const ;
+     	/**
+	* Computes number of discretized equations associated with a given tensorial equation in the bulk.
+	* It takes into account the various Galerkin basis used.
+	* @param so : the residual of the equation.
+	* @param mlim : limit for the regularity.
+	* @param order : order of the equation (i.e. 2 for a Laplacian for instance)
+	* @returns the number of true unknowns.
+	*/ 
      int nbr_conditions_val_domain (const Val_domain& so, int mlim, int order) const ;
      
      virtual Array<int> nbr_conditions_boundary (const Tensor&, int, int, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
@@ -806,11 +821,19 @@ class Domain_shell : public Domain {
 	* Computes number of discretized equations associated with a given equation on a boundary.
 	* It takes into account the various Galerkin basis used.
 	* It is used for implementing boundary conditions and matching ones.
-	* @param eq : the residual of the equation.
-	* @param mlim : mimit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param so : the residual of the equation.
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @returns the number of true conditions.
 	*/
      int nbr_conditions_val_domain_boundary_mquant (const Val_domain& so, int mquant) const ;
+     	/**
+	* Computes number of discretized equations associated with a given equation on a boundary.
+	* It takes into account the various Galerkin basis used.
+	* It is used for implementing boundary conditions and matching ones.
+	* @param so : the residual of the equation.
+	* @param mlim : limit for the regularity.
+	* @returns the number of true conditions.
+	*/
      int nbr_conditions_val_domain_boundary (const Val_domain& so, int mlim) const ;
      
      virtual void export_tau (const Tensor&, int, int, Array<double>&, int&, const Array<int>&,  int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
@@ -818,13 +841,23 @@ class Domain_shell : public Domain {
 	* Exports a residual equation in the bulk.
 	* It makes use of the various Galerkin basis used.
 	* @param eq : the residual of the equation.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param order : describes the order of the equation (2 for a Laplacian for instance).
 	* @param res : The \c Array where the discretized equations are stored.
 	* @param pos_res : current position in res.
 	* @param ncond :  the corresponding number of equations. It is used when the equation is null.
 	*/
      void export_tau_val_domain_mquant (const Val_domain& eq, int mquant, int order, Array<double>& res, int& pos_res, int ncond) const ;
+     	/**
+	* Exports a residual equation in the bulk.
+	* It makes use of the various Galerkin basis used.
+	* @param eq : the residual of the equation.
+	* @param mlim : limit for the regularity .
+	* @param order : describes the order of the equation (2 for a Laplacian for instance).
+	* @param res : The \c Array where the discretized equations are stored.
+	* @param pos_res : current position in res.
+	* @param ncond :  the corresponding number of equations. It is used when the equation is null.
+	*/
      void export_tau_val_domain (const Val_domain& eq, int mlim, int order, Array<double>& res, int& pos_res, int ncond) const ;
      
      virtual void export_tau_boundary (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
@@ -832,25 +865,43 @@ class Domain_shell : public Domain {
 	* Exports all the residual equations corresponding to a tensorial one on a given boundary
 	* It makes use of the various Galerkin basis used.
 	* @param eq : the residual of the equation.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param bound : the boundary at which the equation is enforced.
 	* @param res : The \c Array where the discretized equations are stored.
 	* @param pos_res : current position in res.
 	* @param ncond : the corresponding number of equations. It is used when the residual is null.
 	*/
-     void export_tau_val_domain_boundary_mquant (const Val_domain& eq, int mquant, int bound, Array<double>& res, int& pres_res, int ncond) const ;
-     void export_tau_val_domain_boundary (const Val_domain& eq, int mlim, int bound, Array<double>& res, int& pres_res, int ncond) const ;
+     void export_tau_val_domain_boundary_mquant (const Val_domain& eq, int mquant, int bound, Array<double>& res, int& pos_res, int ncond) const ;
+     	/**
+	* Exports all the residual equations corresponding to a tensorial one on a given boundary
+	* It makes use of the various Galerkin basis used.
+	* @param eq : the residual of the equation.
+	* @param mlim : limit for the regularity.
+	* @param bound : the boundary at which the equation is enforced.
+	* @param res : The \c Array where the discretized equations are stored.
+	* @param pos_res : current position in res.
+	* @param ncond : the corresponding number of equations. It is used when the residual is null.
+	*/
+     void export_tau_val_domain_boundary (const Val_domain& eq, int mlim, int bound, Array<double>& res, int& pos_res, int ncond) const ;
      
      virtual void affecte_tau (Tensor&, int, const Array<double>&, int&) const ;
 	/**
 	* Affects some coefficients to a \c Val_domain.
 	* It takes into account the various symmetries and regularity conditions (by means of Garlekin basis).
 	* @param so : the field to be affected.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param cf : \c Array of the coefficients used.
 	* @param pos_cf : current position in the array of coefficients.
 	*/
      void affecte_tau_val_domain_mquant (Val_domain& so, int mquant, const Array<double>& cf, int& pos_cf) const ;
+     	/**
+	* Affects some coefficients to a \c Val_domain.
+	* It takes into account the various symmetries and regularity conditions (by means of Garlekin basis).
+	* @param so : the field to be affected.
+	* @param mlim : limit for the regularity.
+	* @param cf : \c Array of the coefficients used.
+	* @param pos_cf : current position in the array of coefficients.
+	*/
      void affecte_tau_val_domain (Val_domain& so, int mlim, const Array<double>& cf, int& pos_cf) const ;
      
      virtual void affecte_tau_one_coef (Tensor&, int, int, int&) const ;
@@ -858,11 +909,19 @@ class Domain_shell : public Domain {
 	* Sets at most one coefficient of a \c Val_domain to 1.
 	* It takes into account the various symmetries and regularity conditions (by means of Garlekin basis).
 	* @param so : the \c Val_domain to be affected. It is set to zero if cc does not corresponds to another field.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : limit for the regularity .
 	* @param cc : location, in the overall system, of the coefficient to be set to 1.
 	* @param pos_cf : current position.
 	*/
      void affecte_tau_one_coef_val_domain_mquant (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
+     	/**
+	* Sets at most one coefficient of a \c Val_domain to 1.
+	* It takes into account the various symmetries and regularity conditions (by means of Garlekin basis).
+	* @param so : the \c Val_domain to be affected. It is set to zero if cc does not corresponds to another field.
+	* @param mlim : limit for the regularity.
+	* @param cc : location, in the overall system, of the coefficient to be set to 1.
+	* @param pos_cf : current position.
+	*/
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, int cc, int& pos_cf) const ;
      
      virtual void export_tau_boundary_exception (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, const Param&, int, 
@@ -870,7 +929,7 @@ class Domain_shell : public Domain {
 	/**
 	* Exports all the residual equations corresponding to one tensorial one on a given boundary, excepted for some coefficients where another equation is used.
 	* @param eq : the residual of the equation.
-	* @param mlim :  limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant :  quantum number wrt \f$\varphi\f$.
 	* @param bound : the boundary at which the equation is enforced.
 	* @param res : The \c Array where the discretized equations are stored.
 	* @param pos_res : current position in res.
@@ -881,10 +940,22 @@ class Domain_shell : public Domain {
 	* @returns the number of true conditions.
 	*/    
 	
-     void export_tau_val_domain_boundary_exception_mquant (const Val_domain& so, int mquant, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, 
+     void export_tau_val_domain_boundary_exception_mquant (const Val_domain& eq, int mquant, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, 
 		int type_exception, const Val_domain& exception) const ;
-  
-     void export_tau_val_domain_boundary_exception (const Val_domain& so, int mlim, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, 
+  	/**
+	* Exports all the residual equations corresponding to one tensorial one on a given boundary, excepted for some coefficients where another equation is used.
+	* @param eq : the residual of the equation.
+	* @param mlim :  limit for the regularity.
+	* @param bound : the boundary at which the equation is enforced.
+	* @param res : The \c Array where the discretized equations are stored.
+	* @param pos_res : current position in res.
+	* @param ncond :  the corresponding number of equations. It is used when the equation is null.
+	* @param param : parameters describing the coefficients where the alternative condition is enforced.
+	* @param type_exception : states which type of exception (value or derivative ; current domain or the other one). Highly specialized...
+	* @param exception : the equation used for the alternative condition.
+	* @returns the number of true conditions.
+	*/    
+     void export_tau_val_domain_boundary_exception (const Val_domain& eq, int mlim, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, 
 		int type_exception, const Val_domain& exception) const ;
      
      virtual int nbr_points_boundary (int, const Base_spectral&) const ;
@@ -978,7 +1049,7 @@ class Domain_compact : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */
-     virtual void set_cheb_base(Base_spectral&) const ;     
+     virtual void set_cheb_base(Base_spectral& so) const ;     
       virtual void set_cheb_base_with_m(Base_spectral& so, int m) const ;       
    /**
     * Sets the base to the standard one for Legendre polynomials.
@@ -991,7 +1062,7 @@ class Domain_compact : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */ 
-     virtual void set_legendre_base(Base_spectral&) const ;
+     virtual void set_legendre_base(Base_spectral& so) const ;
      /**
     * Sets the base to the standard one for Chebyshev polynomials for functions antisymetric in \f$ z=0 \f$
     * The bases are :
@@ -1003,7 +1074,7 @@ class Domain_compact : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */
-     virtual void set_anti_cheb_base(Base_spectral&) const ;       
+     virtual void set_anti_cheb_base(Base_spectral& so) const ;       
    /**
     * Sets the base to the standard one for Legendre polynomials for functions antisymetric in \f$ z=0 \f$
     * The bases are :
@@ -1015,7 +1086,7 @@ class Domain_compact : public Domain {
     * If \c type_coloc changes, \c coloc is uupdated and the derivative members destroyed.
     * @param so [output] : the returned base.
     */   
-     virtual void set_anti_legendre_base(Base_spectral&) const ;
+     virtual void set_anti_legendre_base(Base_spectral& so) const ;
 
      virtual void set_cheb_base_r_spher(Base_spectral&) const ;
      virtual void set_cheb_base_t_spher(Base_spectral&) const ;
@@ -1055,7 +1126,7 @@ class Domain_compact : public Domain {
      * @param xxx [input] : the absolute Cartesian \f$ (X, Y, Z) \f$ coordinates of the point.
      * @returns the numerical coordinates \f$ (x, \theta^\star, \varphi^\star) \f$.
      */
-     virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num(const Point& xxx) const;
 
       virtual const Point absol_to_num_bound(const Point&, int) const;
     /**
@@ -1121,10 +1192,17 @@ class Domain_compact : public Domain {
 	* Computes the number of true unknowns of a \c Val_domain.
 	* It takes into account the various symmetries and regularity conditions to determine the precise number of degrees of freedom.
 	* @param so : the field.
-	* @param mlim: limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant: quantum number wrt \f$\varphi\f$.
 	* @returns the number of true unknowns.
 	*/ 
      int nbr_unknowns_val_domain_mquant (const Val_domain& so , int mquant) const ;
+     	/**
+	* Computes the number of true unknowns of a \c Val_domain.
+	* It takes into account the various symmetries and regularity conditions to determine the precise number of degrees of freedom.
+	* @param so : the field.
+	* @param mlim: limit for the regularity.
+	* @returns the number of true unknowns.
+	*/ 
      int nbr_unknowns_val_domain (const Val_domain& so , int mlim) const ;
      
      virtual Array<int> nbr_conditions (const Tensor&, int, int, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
@@ -1132,11 +1210,19 @@ class Domain_compact : public Domain {
 	* Computes number of discretized equations associated with a given tensorial equation in the bulk.
 	* It takes into account the various Galerkin basis used.
 	* @param eq : the residual of the equation.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param order : order of the equation (i.e. 2 for a Laplacian for instance)
 	* @returns the number of true unknowns.
 	*/     
      int nbr_conditions_val_domain_mquant (const Val_domain& eq, int mquant, int order) const ;
+     	/**
+	* Computes number of discretized equations associated with a given tensorial equation in the bulk.
+	* It takes into account the various Galerkin basis used.
+	* @param eq : the residual of the equation.
+	* @param mlim : limit for the regularity .
+	* @param order : order of the equation (i.e. 2 for a Laplacian for instance)
+	* @returns the number of true unknowns.
+	*/    
      int nbr_conditions_val_domain (const Val_domain& eq, int mlim, int order) const ;
      
      virtual Array<int> nbr_conditions_boundary (const Tensor&, int, int, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
@@ -1145,10 +1231,18 @@ class Domain_compact : public Domain {
 	* It takes into account the various Galerkin basis used.
 	* It is used for implementing boundary conditions and matching ones.
 	* @param eq : the residual of the equation.
-	* @param mlim : mimit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @returns the number of true conditions.
 	*/     
      int nbr_conditions_val_domain_boundary_mquant (const Val_domain& eq, int mquant) const ;
+     	/**
+	* Computes number of discretized equations associated with a given equation on a boundary.
+	* It takes into account the various Galerkin basis used.
+	* It is used for implementing boundary conditions and matching ones.
+	* @param eq : the residual of the equation.
+	* @param mlim : limit for the regularity.
+	* @returns the number of true conditions.
+	*/   
      int nbr_conditions_val_domain_boundary (const Val_domain& eq, int mlim) const ;
      
      virtual void export_tau (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
@@ -1156,13 +1250,23 @@ class Domain_compact : public Domain {
 	* Exports a residual equation in the bulk.
 	* It makes use of the various Galerkin basis used.
 	* @param eq : the residual of the equation.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param order : describes the order of the equation (2 for a Laplacian for instance).
 	* @param res : The \c Array where the discretized equations are stored.
 	* @param pos_res : current position in res.
 	* @param ncond : the corresponding number of equations. It is used when the equation is null.
 	*/     
      void export_tau_val_domain_mquant (const Val_domain& eq, int mquant, int order, Array<double>& res, int& pos_res, int ncond) const ;
+     /**
+	* Exports a residual equation in the bulk.
+	* It makes use of the various Galerkin basis used.
+	* @param eq : the residual of the equation.
+	* @param mlim : limit for the regularity.
+	* @param order : describes the order of the equation (2 for a Laplacian for instance).
+	* @param res : The \c Array where the discretized equations are stored.
+	* @param pos_res : current position in res.
+	* @param ncond : the corresponding number of equations. It is used when the equation is null.
+	*/  
      void export_tau_val_domain (const Val_domain& eq, int mlim, int order, Array<double>& res, int& pos_res, int ncond) const ;
      
      virtual void export_tau_boundary (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, int n_cmp=-1, Array<int>** p_cmp=0x0) const ;
@@ -1170,13 +1274,23 @@ class Domain_compact : public Domain {
 	* Exports all the residual equations corresponding to a tensorial one on a given boundary
 	* It makes use of the various Galerkin basis used.
 	* @param eq : the residual of the equation.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param bound : the boundary at which the equation is enforced.
 	* @param res : The \c Array where the discretized equations are stored.
 	* @param pos_res : current position in res.
 	* @param ncond : the corresponding number of equations. It is used when the equation is null. 
 	*/     
      void export_tau_val_domain_boundary_mquant (const Val_domain& eq, int mquant, int bound, Array<double>& res, int& pos_res, int ncond) const ;
+     	/**
+	* Exports all the residual equations corresponding to a tensorial one on a given boundary
+	* It makes use of the various Galerkin basis used.
+	* @param eq : the residual of the equation.
+	* @param mlim : limit for the regularity.
+	* @param bound : the boundary at which the equation is enforced.
+	* @param res : The \c Array where the discretized equations are stored.
+	* @param pos_res : current position in res.
+	* @param ncond : the corresponding number of equations. It is used when the equation is null. 
+	*/     
      void export_tau_val_domain_boundary (const Val_domain& eq, int mlim, int bound, Array<double>& res, int& pos_res, int ncond) const ;
      
      virtual void affecte_tau (Tensor&, int, const Array<double>&, int&) const ;
@@ -1184,11 +1298,19 @@ class Domain_compact : public Domain {
 	* Affects some coefficients to a \c Val_domain.
 	* It takes into account the various symmetries and regularity conditions (by means of Garlekin basis).
 	* @param so : the field to be affected.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param cf : \c Array of the coefficients used.
 	* @param pos_cf : current position in the array of coefficients.
 	*/  
      void affecte_tau_val_domain_mquant (Val_domain& so, int mquant, const Array<double>& cf, int& pos_cf) const ;
+     /**
+	* Affects some coefficients to a \c Val_domain.
+	* It takes into account the various symmetries and regularity conditions (by means of Garlekin basis).
+	* @param so : the field to be affected.
+	* @param mlim : limit for the regularity .
+	* @param cf : \c Array of the coefficients used.
+	* @param pos_cf : current position in the array of coefficients.
+	*/  
      void affecte_tau_val_domain (Val_domain& so, int mlim, const Array<double>& cf, int& pos_cf) const ;
     
      virtual void affecte_tau_one_coef (Tensor&, int, int, int&) const ;
@@ -1196,11 +1318,19 @@ class Domain_compact : public Domain {
 	* Sets at most one coefficient of a \c Val_domain to 1.
 	* It takes into account the various symmetries and regularity conditions (by means of Garlekin basis).
 	* @param so : the \c Val_domain to be affected. It is set to zero if cc does not corresponds to another field.
-	* @param mlim : limit for the regularity (quantum number wrt \f$\varphi\f$).
+	* @param mquant : quantum number wrt \f$\varphi\f$.
 	* @param cc : location, in the overall system, of the coefficient to be set to 1.
 	* @param pos_cf : current position.
 	*/  
      void affecte_tau_one_coef_val_domain_mquant (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
+     	/**
+	* Sets at most one coefficient of a \c Val_domain to 1.
+	* It takes into account the various symmetries and regularity conditions (by means of Garlekin basis).
+	* @param so : the \c Val_domain to be affected. It is set to zero if cc does not corresponds to another field.
+	* @param mlim : limit for the regularity.
+	* @param cc : location, in the overall system, of the coefficient to be set to 1.
+	* @param pos_cf : current position.
+	*/  
      void affecte_tau_one_coef_val_domain (Val_domain& so, int mlim, int cc, int& pos_cf) const ;
  
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
@@ -1220,8 +1350,8 @@ public:
 class Space_spheric : public Space {
      public:
 	/**
-     	* Standard constructor 
-     	* @param ttype [input] : the type of basis.
+	* Standard constructor 
+	* @param ttype [input] : the type of basis.
 	* @param cr [input] : absolute coordinates of the center.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
@@ -1230,8 +1360,8 @@ class Space_spheric : public Space {
 	Space_spheric (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds, bool withzec=true) ;
 	
 	/**
-     	* Constructor with different resolution in each domain
-     	* @param ttype [input] : the type of basis.
+	* Constructor with different resolution in each domain
+	* @param ttype [input] : the type of basis.
 	* @param cr [input] : absolute coordinates of the center.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
@@ -1425,7 +1555,7 @@ class Domain_shell_log : public Domain_shell {
      * @param xxx [input] : the absolute Cartesian \f$ (X, Y, Z) \f$ coordinates of the point.
      * @returns the numerical coordinates \f$ (x, \theta^\star, \varphi^\star) \f$.
      */
-     virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num(const Point& xxx) const;
      
       virtual const Point absol_to_num_bound(const Point&, int) const;
      
@@ -1515,7 +1645,7 @@ class Domain_shell_surr : public Domain_shell {
      * @param xxx [input] : the absolute Cartesian \f$ (X, Y, Z) \f$ coordinates of the point.
      * @returns the numerical coordinates \f$ (x, \theta^\star, \varphi^\star) \f$.
      */
-     virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num(const Point& xxx) const;
      
       virtual const Point absol_to_num_bound(const Point&, int) const;
       

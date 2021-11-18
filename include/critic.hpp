@@ -157,7 +157,7 @@ class Domain_critic_inner : public Domain {
 	* @param cf : \c Array of the coefficients used.
 	* @param pos_cf : current position in the array of coefficients.
 	*/
-     void affecte_tau_val_domain (Val_domain& so, const Array<double>& cf, int& pos_cd) const ;
+     void affecte_tau_val_domain (Val_domain& so, const Array<double>& cf, int& pos_cf) const ;
      virtual void affecte_tau_one_coef (Tensor&, int, int, int&) const ;
 	/**
 	* Sets at most one coefficient of a \c Val_domain to 1.
@@ -355,7 +355,7 @@ class Space_critic : public Space {
 	* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
-	void add_bc_one (System_of_eqs&, const char*, int nused=-1, Array<int>** pused=0x0)  ;
+	void add_bc_one (System_of_eqs& syst, const char* eq, int nused=-1, Array<int>** pused=0x0)  ;
 	/**
 	* Adds an equation saying that one coefficient of a field is zero (at \f$ x_{\rm lim}\f$)
 	* @param syst : the \c System_of_eqs.

@@ -28,6 +28,7 @@ namespace Kadath {
         int position; ///< Corresponding value for 1D indexing .
 
     public:
+        /// Constructor
         explicit Array_iterator(int ndim, int tndim) : sizes{ndim}, steps(ndim + 1), position{0}
         {steps.front()=1; for(int i=0;i<ndim;i++) {steps[i+1] = steps[i]*tndim; sizes.set(i) = tndim;}}
         /**Standard constructor.
@@ -46,10 +47,9 @@ namespace Kadath {
         //! Accessor for the \c value member.
         int get_position() const {return position;}
 
-        //Array_iterator & set_position
-
+        /// Comparison operator
         bool operator==(Array_iterator const & xx) const {return (position == xx.position && get_ndim() == xx.get_ndim());}
-
+	/// Set position
         Array_iterator & set_value(int _position) { position = _position; return *this;}
         /**
          * Set the position of the iterator at the same as the one of the source.
@@ -57,7 +57,9 @@ namespace Kadath {
          * @return a reference toward the current object.
          */
         Array_iterator & set(Array_iterator const &_so) {position = _so.position; return *this;}
+        //! Sylvain's stuff
         bool check_value();
+        /// Sets the iterator at the start
         void set_start() { position = 0;}
         /**
         * Returns all the dimensions

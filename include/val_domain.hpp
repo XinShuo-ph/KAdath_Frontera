@@ -305,40 +305,40 @@ namespace Kadath {
 
 
         friend class Eq_matching_non_std ;
-        friend ostream& operator<< (ostream&, const Val_domain&) ;
-        friend Val_domain sin(const Val_domain& ) ;
-        friend Val_domain cos(const Val_domain& ) ;
-        friend Val_domain sinh(const Val_domain& ) ;
-        friend Val_domain cosh(const Val_domain& ) ;
-        friend Val_domain operator+ (const Val_domain&) ;
-        friend Val_domain operator- (const Val_domain&) ;
-        friend Val_domain operator+ (const Val_domain&, const Val_domain&) ;
-        friend Val_domain operator+ (const Val_domain&, double) ;
-        friend Val_domain operator+ (double, const Val_domain&) ;
-        friend Val_domain operator- (const Val_domain&, const Val_domain&) ;
-        friend Val_domain operator- (const Val_domain&, double) ;
-        friend Val_domain operator- (double, const Val_domain&) ;
-        friend Val_domain operator* (const Val_domain&, const Val_domain&) ;
-        friend Val_domain operator* (const Val_domain&, double) ;
-        friend Val_domain operator* (double, const Val_domain&) ;
-        friend Val_domain operator* (const Val_domain&, int) ;
-        friend Val_domain operator* (int, const Val_domain&) ;
-        friend Val_domain operator* (const Val_domain&, long int) ;
-        friend Val_domain operator* (long int, const Val_domain&) ;
-        friend Val_domain operator/ (const Val_domain&, const Val_domain&) ;
-        friend Val_domain operator/ (const Val_domain&, double) ;
-        friend Val_domain operator/ (double, const Val_domain&) ;
-        friend Val_domain pow (const Val_domain&, int) ;
-        friend Val_domain pow (const Val_domain&, double) ;
-        friend Val_domain sqrt (const Val_domain&) ;
-        friend Val_domain exp (const Val_domain&) ;
-        friend Val_domain log (const Val_domain&) ;
-        friend Val_domain atanh(const Val_domain&);
-        friend Val_domain bessel_jl (const Val_domain&, int) ;
-        friend Val_domain bessel_yl (const Val_domain&, int) ;
-        friend Val_domain atan (const Val_domain&) ;
-        friend double diffmax (const Val_domain&, const Val_domain&) ;
-       friend double maxval (const Val_domain&) ;
+        friend ostream& operator<< (ostream&, const Val_domain&) ; ///< Output operator
+        friend Val_domain sin(const Val_domain& ) ; ///< Sine operator
+        friend Val_domain cos(const Val_domain& ) ; ///< Cosine operator
+        friend Val_domain sinh(const Val_domain& ) ; ///< Hyperbolic sine operator
+        friend Val_domain cosh(const Val_domain& ) ; ///< Hyperbolic cosine operator
+        friend Val_domain operator+ (const Val_domain&) ; ///< Operator + (unitary version)
+        friend Val_domain operator- (const Val_domain&) ; ///< Operator - (unitary version)
+        friend Val_domain operator+ (const Val_domain&, const Val_domain&) ;///< Operator +
+        friend Val_domain operator+ (const Val_domain&, double) ;///< Operator +
+        friend Val_domain operator+ (double, const Val_domain&) ;///< Operator +
+        friend Val_domain operator- (const Val_domain&, const Val_domain&) ;///< Operator -
+        friend Val_domain operator- (const Val_domain&, double) ;///< Operator -
+        friend Val_domain operator- (double, const Val_domain&) ;///< Operator -
+        friend Val_domain operator* (const Val_domain&, const Val_domain&) ;///< Operator *
+        friend Val_domain operator* (const Val_domain&, double) ;///< Operator *
+        friend Val_domain operator* (double, const Val_domain&) ;///< Operator *
+        friend Val_domain operator* (const Val_domain&, int) ;///< Operator *
+        friend Val_domain operator* (int, const Val_domain&) ;///< Operator *
+        friend Val_domain operator* (const Val_domain&, long int) ;///< Operator *
+        friend Val_domain operator* (long int, const Val_domain&) ;///< Operator *
+        friend Val_domain operator/ (const Val_domain&, const Val_domain&) ;///< Operator /
+        friend Val_domain operator/ (const Val_domain&, double) ;///< Operator /
+        friend Val_domain operator/ (double, const Val_domain&) ;///< Operator /
+        friend Val_domain pow (const Val_domain&, int) ;///< Operator power (integer version)
+        friend Val_domain pow (const Val_domain&, double) ;///< Operator power (double version)
+        friend Val_domain sqrt (const Val_domain&) ;///< Operator square root
+        friend Val_domain exp (const Val_domain&) ;///< Operator exponential
+        friend Val_domain log (const Val_domain&) ;///< Operator logarithm
+        friend Val_domain atanh(const Val_domain&);///< Operator atanh
+        friend Val_domain bessel_jl (const Val_domain&, int) ;///< Operator Bessel function
+        friend Val_domain bessel_yl (const Val_domain&, int) ;///< Operator Bessel function
+        friend Val_domain atan (const Val_domain&) ; ///< Operator arctangent
+        friend double diffmax (const Val_domain&, const Val_domain&) ; ///< Maximal difference
+       friend double maxval (const Val_domain&) ; ///< Maximal value
     } ;
 }	
 #endif

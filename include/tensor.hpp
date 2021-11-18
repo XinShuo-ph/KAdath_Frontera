@@ -97,11 +97,11 @@ namespace Kadath {
     int div_m_quant(const Param_tensor &, const Param_tensor &);
     int inv_m_quant(const Param_tensor &);
 
-    /**
-     * Class for handling additional parameters for some \c Tensor.
-     * It can, for instance, store the winding number of the scalar field of a boson star.
-     * \ingroup fields.
-     */
+	/**
+	* Class for handling additional parameters for some \c Tensor.
+	* It can, for instance, store the winding number of the scalar field of a boson star.
+	* \ingroup fields
+	*/
     class Param_tensor : public Memory_mapped {
 
     protected:
@@ -117,18 +117,25 @@ namespace Kadath {
         int get_m_quant() const;  ///< Returns \f$m_{\rm quant}\f$.
         int &set_m_quant(); ///< Sets \f$m_{\rm quant}\f$.
 
+	//! Sylvain's stuff
         void swap(Param_tensor &so) noexcept;
-
+	
+	/// Check of some  parameters are affected
         operator bool() const noexcept { return m_order_affected || m_quant_affected; }
 
+	/// Check if the parameters are not affected
         bool operator!() const noexcept { return !m_order_affected && !m_quant_affected; }
 
+	/// Addition quantum numbers
         friend int add_m_quant(const Param_tensor &, const Param_tensor &);
 
+	/// Multiplication of quantum numbers
         friend int mult_m_quant(const Param_tensor &, const Param_tensor &);
 
+	/// Division of quantum numbers
         friend int div_m_quant(const Param_tensor &, const Param_tensor &);
 
+	/// Inverse of a quantum number
         friend int inv_m_quant(const Param_tensor &);
         
         friend class Tensor;
@@ -198,7 +205,7 @@ namespace Kadath {
         * @param tipe : the type of all the indices (COV vs CON).
         * @param ba : the tensorial basis used.
         */
-        Tensor(const Space &sp, int val, int tipe, const Base_tensor &);
+        Tensor(const Space &sp, int val, int tipe, const Base_tensor & ba);
 
         /**
         * Constructor assuming the dimension of the space and the tensor is different (for dealing with symmetries)
@@ -219,7 +226,7 @@ namespace Kadath {
         * @param ba : the tensorial basis used.
         * @param dim : dimension of the tensor.
         */
-        Tensor(const Space &sp, int val, int tipe, const Base_tensor &, int dim);
+        Tensor(const Space &sp, int val, int tipe, const Base_tensor & ba, int dim);
 
 
         /**
@@ -227,7 +234,7 @@ namespace Kadath {
         * @param so : the input \c Tensor.
         * @param copie : if false only the property of the tensor are copied (valence etc...) not the values of the field that are left undefined.
         */
-        Tensor(const Tensor &, bool copie = true);
+        Tensor(const Tensor & so, bool copie = true);
 
         Tensor(const Space &sp, FILE *); ///< Constructor from a file.
         Tensor(const Space &sp, int dim, FILE *); ///< Constructor from a file with explicit passing of the dimension
@@ -257,7 +264,7 @@ namespace Kadath {
          * @param n_compi : number of components.
          * @param ba : the tensorial basis used.
         */
-        Tensor(const Space &sp, int val, const Array<int> &tipe, int n_compi, const Base_tensor &);
+        Tensor(const Space &sp, int val, const Array<int> &tipe, int n_compi, const Base_tensor & ba);
 
         /**
          * Constructor where the number of components is prescribed (all the indices are of the same type).
@@ -279,7 +286,7 @@ namespace Kadath {
          * @param ba : the tensorial basis used.
          * @param dim : dimension of the tensor
         */
-        Tensor(const Space &sp, int val, const Array<int> &tipe, int n_compi, const Base_tensor &, int dim);
+        Tensor(const Space &sp, int val, const Array<int> &tipe, int n_compi, const Base_tensor & ba, int dim);
 
         /**
          * Constructor where the number of components is prescribed (all the indices are of the same type).
@@ -361,7 +368,7 @@ namespace Kadath {
         /** Returns the value of a component for a tensor of valence 1
          *  (read/write version).
          *
-         * @param i1  value of the first index
+         * @param i  value of the first index
          * @return modifiable reference on the component specified by \c (i1)
          *
          */
@@ -457,14 +464,14 @@ namespace Kadath {
 
         /**
         * Gives the location of a given component in the array used for storage (\c Array version).
-        * @param ind : values of the indices.
+        * @param idx : values of the indices.
         * @returns : the storage location.
         */
         virtual int position(const Array<int> &idx) const { return (give_place_array(idx, ndim)); }
 
         /**
         * Gives the location of a given component in the array used for storage (\c Index version).
-        * @param ind : values of the indices.
+        * @param idx : values of the indices.
         * @returns : the storage location.
         */
         virtual int position(const Index &idx) const { return (give_place_index(idx, ndim)); }
@@ -553,7 +560,7 @@ namespace Kadath {
 
         /** Returns the value of a component (read only version).
          *
-         * @param ind  \cIndex  of size \c valence  containing the
+         * @param ind  \c Index  of size \c valence  containing the
          *		values of each index specifing the component,  with the
          *		following storage convention:
          *			\li \c ind(0)  : value of the first index
@@ -568,7 +575,7 @@ namespace Kadath {
         /** Returns the value of a component for a tensor of valence 1
          *  (read only version).
          *
-         * @param i1  value of the first index
+         * @param i  value of the first index
          * @return the component specified by \c (i1)
          *
          */
@@ -585,6 +592,7 @@ namespace Kadath {
          */
         const Scalar &operator()(int i1, int i2) const;
 
+	//! Sylvain' stuff
         const Scalar &at(int i1, int i2) const;
 
         /** Returns the value of a component for a tensor of valence 3
@@ -661,52 +669,57 @@ namespace Kadath {
 friend class Space_bbh ;
         // Mathematical operators
         // ----------------------
-        friend Tensor operator+(const Tensor &);
-        friend Tensor operator-(const Tensor &);
-        friend Tensor operator+(const Tensor &, const Tensor &);
-        friend Scalar operator+(const Tensor &, const Scalar &);
-        friend Scalar operator+(const Scalar &, const Tensor &);
-        friend Tensor operator+(const Tensor &, double);
-        friend Tensor operator+(double, const Tensor &);
-        friend Tensor operator-(const Tensor &, const Tensor &);
-        friend Scalar operator-(const Tensor &, const Scalar &);
-        friend Scalar operator-(const Scalar &, const Tensor &);
-        friend Tensor operator-(const Tensor &, double);
-        friend Tensor operator-(double, const Tensor &);
-        friend Tensor operator*(const Scalar &, const Tensor &);
-        friend Tensor operator*(const Tensor &, const Scalar &);
-        friend Tensor operator*(double, const Tensor &);
-        friend Tensor operator*(const Tensor &, double);
-        friend Tensor operator*(int, const Tensor &);
-        friend Tensor operator*(const Tensor &, int);
+        friend Tensor operator+(const Tensor &); ///< Operator + (unitary version)
+        friend Tensor operator-(const Tensor &); ///< Operator -
+        friend Tensor operator+(const Tensor &, const Tensor &);///< Operator +
+        friend Scalar operator+(const Tensor &, const Scalar &);///< Operator +
+        friend Scalar operator+(const Scalar &, const Tensor &);///< Operator +
+        friend Tensor operator+(const Tensor &, double);///< Operator +
+        friend Tensor operator+(double, const Tensor &);///< Operator +
+        friend Tensor operator-(const Tensor &, const Tensor &);///< Operator -
+        friend Scalar operator-(const Tensor &, const Scalar &);///< Operator -
+        friend Scalar operator-(const Scalar &, const Tensor &);///< Operator -
+        friend Tensor operator-(const Tensor &, double);///< Operator -
+        friend Tensor operator-(double, const Tensor &);///< Operator -
+        friend Tensor operator*(const Scalar &, const Tensor &);///< Operator *
+        friend Tensor operator*(const Tensor &, const Scalar &);///< Operator *
+        friend Tensor operator*(double, const Tensor &);///< Operator *
+        friend Tensor operator*(const Tensor &, double);///< Operator *
+        friend Tensor operator*(int, const Tensor &);///< Operator *
+        friend Tensor operator*(const Tensor &, int);///< Operator *
         friend Tensor
         operator*(const Tensor &, const Tensor &); ///< Tensor multiplication ; if need be contractions are performed.
-        friend Tensor operator/(const Tensor &, const Scalar &);
-        friend Tensor operator/(const Tensor &, double);
-        friend Tensor operator/(const Tensor &, int);
+        friend Tensor operator/(const Tensor &, const Scalar &);///< Operator /
+        friend Tensor operator/(const Tensor &, double);///< Operator /
+        friend Tensor operator/(const Tensor &, int);///< Operator /
         friend double
         maxval(const Tensor &); ///< Gives the maximum value amongst all the components, at all the collocation points.
         friend double
         minval(const Tensor &);///< Gives the minimum value amongst all the components, at all the collocation points.
-
-        friend void affecte_one_dom(int, Tensor *, const Tensor *);
-        friend Tensor add_one_dom(int, const Tensor &, const Tensor &);
-        friend Tensor add_one_dom(int, const Tensor &, double);
-        friend Tensor add_one_dom(int, double, const Tensor &);
-        friend Tensor sub_one_dom(int, const Tensor &, const Tensor &);
-        friend Tensor sub_one_dom(int, const Tensor &, double);
-        friend Tensor sub_one_dom(int, double, const Tensor &);
-        friend Tensor mult_one_dom(int, const Tensor &, const Tensor &);
-        friend Tensor mult_one_dom(int, const Tensor &, double);
-        friend Tensor mult_one_dom(int, double, const Tensor &);
-        friend Tensor mult_one_dom(int, const Tensor &, int);
-        friend Tensor mult_one_dom(int, int, const Tensor &);
-        friend Tensor div_one_dom(int, const Tensor &, const Tensor &);
-        friend Tensor div_one_dom(int, const Tensor &, double);
-        friend Tensor div_one_dom(int, double, const Tensor &);
-        friend Tensor scal_one_dom(int, const Tensor &, const Tensor &);
-        friend Tensor partial_one_dom(int, char, const Tensor &);
-        friend Tensor sqrt_one_dom(int, const Tensor &);
+        /**
+        * Affectation in one domain only
+        * @param dom [input] : the domain index.
+        * @param out [output] : pointer on the result
+        * @param so [input] : pointer on the input \c Tensor
+        **/
+        friend void affecte_one_dom(int dom, Tensor * out, const Tensor * so);
+        friend Tensor add_one_dom(int, const Tensor &, const Tensor &); ///< Addition (one domain version)
+        friend Tensor add_one_dom(int, const Tensor &, double);///< Addition (one domain version)
+        friend Tensor add_one_dom(int, double, const Tensor &);///< Addition (one domain version)
+        friend Tensor sub_one_dom(int, const Tensor &, const Tensor &);///< Difference (one domain version)
+        friend Tensor sub_one_dom(int, const Tensor &, double);///< Difference (one domain version)
+        friend Tensor sub_one_dom(int, double, const Tensor &);///< Difference (one domain version)
+        friend Tensor mult_one_dom(int, const Tensor &, const Tensor &);///< Multiplication (one domain version)
+        friend Tensor mult_one_dom(int, const Tensor &, double);///< Multiplication (one domain version)
+        friend Tensor mult_one_dom(int, double, const Tensor &);///< Multiplication (one domain version)
+        friend Tensor mult_one_dom(int, const Tensor &, int);///< Multiplication (one domain version)
+        friend Tensor mult_one_dom(int, int, const Tensor &);///< Multiplication (one domain version)
+        friend Tensor div_one_dom(int, const Tensor &, const Tensor &);///< Division (one domain version)
+        friend Tensor div_one_dom(int, const Tensor &, double);///< Division (one domain version)
+        friend Tensor div_one_dom(int, double, const Tensor &);///< Division (one domain version)
+        friend Tensor scal_one_dom(int, const Tensor &, const Tensor &);///< Scalar product (one domain version)
+        friend Tensor partial_one_dom(int, char, const Tensor &); ///< Partial derivative (one domain version)
+        friend Tensor sqrt_one_dom(int, const Tensor &);///< Square root (one domain version)
         friend class Domain_nucleus;
         friend class Domain_shell;
         friend class Domain_bispheric_chi_first;

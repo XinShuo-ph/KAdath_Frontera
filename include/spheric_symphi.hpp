@@ -183,7 +183,7 @@ class Domain_nucleus_symphi : public Domain {
      * @param xxx [input] : the absolute Cartesian \f$ (X, Y, Z) \f$ coordinates of the point.
      * @returns the numerical coordinates \f$ (x, \theta^\star, \varphi^\star) \f$.
      */
-     virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num(const Point& xxx) const;
      
       virtual const Point absol_to_num_bound(const Point&, int) const;
       
@@ -436,49 +436,49 @@ class Domain_shell_symphi : public Domain {
     *
     * @param so [output] : the returned base.
     */
-     void set_cheb_base_forr(Base_spectral&) const ;
+     void set_cheb_base_forr(Base_spectral& so) const ;
 /**
     * Sets the base to the standard one for Chebyshev polynomials for a field like the \f$x\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_cheb_base_forx_cart(Base_spectral&) const ;
+     void set_cheb_base_forx_cart(Base_spectral& so) const ;
 /**
     * Sets the base to the standard one for Chebyshev polynomials for a field like the \f$y\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_cheb_base_fory_cart(Base_spectral&) const ;
+     void set_cheb_base_fory_cart(Base_spectral& so) const ;
    /**
     * Sets the base to the standard one for Chebyshev polynomials for a field like the \f$z\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_cheb_base_forz_cart(Base_spectral&) const ;
+     void set_cheb_base_forz_cart(Base_spectral& so) const ;
  /**
     * Sets the base to the standard one for Legendre polynomials for a field like the radius \f$ r\f$.
     *
     * @param so [output] : the returned base.
     */
-     void set_legendre_base_forr(Base_spectral&) const ;
+     void set_legendre_base_forr(Base_spectral& so) const ;
   /**
     * Sets the base to the standard one for Legendre polynomials for a field like the \f$x\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_legendre_base_forx_cart(Base_spectral&) const ;
+     void set_legendre_base_forx_cart(Base_spectral& so) const ;
    /**
     * Sets the base to the standard one for Legendre polynomials for a field like the \f$y\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_legendre_base_fory_cart(Base_spectral&) const ;
+     void set_legendre_base_fory_cart(Base_spectral& so) const ;
     /**
     * Sets the base to the standard one for Legendre polynomials for a field like the \f$z\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_legendre_base_forz_cart(Base_spectral&) const ;
+     void set_legendre_base_forz_cart(Base_spectral& so) const ;
   
 
      virtual void do_coloc () ;
@@ -502,7 +502,7 @@ class Domain_shell_symphi : public Domain {
      * @param xxx [input] : the absolute Cartesian \f$ (X, Y, Z) \f$ coordinates of the point.
      * @returns the numerical coordinates \f$ (x, \theta^\star, \varphi^\star) \f$.
      */
-     virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num(const Point& xxx) const;
      
       virtual const Point absol_to_num_bound(const Point&, int) const;
       
@@ -655,7 +655,7 @@ class Domain_shell_symphi : public Domain {
 	* @param exception : the equation used for the alternative condition.
 	* @returns the number of true conditions.
 	*/
-     void export_tau_val_domain_boundary_exception (const Val_domain& eq, int mlim, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, int type_exception, const Val_domain& excpetion) const ;
+     void export_tau_val_domain_boundary_exception (const Val_domain& eq, int mlim, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, int type_exception, const Val_domain& exception) const ;
      
      virtual double integ_volume (const Val_domain& so) const ;
      
@@ -753,37 +753,37 @@ class Domain_compact_symphi : public Domain {
     *
     * @param so [output] : the returned base.
     */
-     void set_cheb_base_forx_cart(Base_spectral&) const ;
+     void set_cheb_base_forx_cart(Base_spectral& so) const ;
  /**
     * Sets the base to the standard one for Chebyshev polynomials for a field like the \f$y\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_cheb_base_fory_cart(Base_spectral&) const ;
+     void set_cheb_base_fory_cart(Base_spectral& so) const ;
   /**
     * Sets the base to the standard one for Chebyshev polynomials for a field like the \f$z\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_cheb_base_forz_cart(Base_spectral&) const ;
+     void set_cheb_base_forz_cart(Base_spectral& so) const ;
  /**
     * Sets the base to the standard one for Legendre polynomials for a field like the \f$x\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_legendre_base_forx_cart(Base_spectral&) const ;
+     void set_legendre_base_forx_cart(Base_spectral& so) const ;
   /**
     * Sets the base to the standard one for Legendre polynomials for a field like the \f$y\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_legendre_base_fory_cart(Base_spectral&) const ;
+     void set_legendre_base_fory_cart(Base_spectral& so) const ;
 /**
     * Sets the base to the standard one for Legendre polynomials for a field like the \f$z\f$ component of a vector.
     *
     * @param so [output] : the returned base.
     */
-     void set_legendre_base_forz_cart(Base_spectral&) const ;
+     void set_legendre_base_forz_cart(Base_spectral& so) const ;
   
 
      virtual void do_coloc () ;
@@ -807,7 +807,7 @@ class Domain_compact_symphi : public Domain {
      * @param xxx [input] : the absolute Cartesian \f$ (X, Y, Z) \f$ coordinates of the point.
      * @returns the numerical coordinates \f$ (x, \theta^\star, \varphi^\star) \f$.
      */
-     virtual const Point absol_to_num(const Point&) const;
+     virtual const Point absol_to_num(const Point& xxx) const;
      
       virtual const Point absol_to_num_bound(const Point&, int) const;
       
@@ -962,14 +962,14 @@ class Space_spheric_symphi : public Space {
      */
 	Space_spheric_symphi (int ttype, const Point& cr, const Dim_array& nbr, double bound) ;
 
-	  /**
-     * Standard constructor with several domains
-     * @param ttype [input] : the type of basis.
-     * @param cr [input] : absolute coordinates of the center.
-     * @param nbr [input] : number of points in each domain.
-     * @param bound [input] : radius of the nucleus.
-     * @param withzec [input] : put an outer compactified domain or not ?
-     */
+	/**
+	* Standard constructor with several domains
+	* @param ttype [input] : the type of basis.
+	* @param cr [input] : absolute coordinates of the center.
+	* @param nbr [input] : number of points in each domain.
+	* @param bounds [input] : radius of the nucleus.
+	* @param withzec [input] : put an outer compactified domain or not ?
+	*/
 	Space_spheric_symphi (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds, bool withzec=false) ;
 
 

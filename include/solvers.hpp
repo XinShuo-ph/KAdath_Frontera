@@ -117,6 +117,7 @@ namespace Kadath {
     CXX_17_ATTRIBUTES(maybe_unused) constexpr param_max_nb_iter MaxNbIter;
 
 
+   //! Sylvain's stuff
     struct param_max_elapsed_time : Parameter_base<double,param_max_elapsed_time> {
         static constexpr double default_value{-1.};
         using Base::operator=;
@@ -124,7 +125,7 @@ namespace Kadath {
     };
     CXX_17_ATTRIBUTES(maybe_unused) constexpr param_max_elapsed_time MaxElapsedTime;
 
-
+    //! Sylvain's stuff
     struct param_min_improvement : Parameter_base<double,param_min_improvement> {
         static constexpr double default_value {-1.};
         using Base::operator=;
@@ -132,6 +133,7 @@ namespace Kadath {
     };
     CXX_17_ATTRIBUTES(maybe_unused) constexpr param_min_improvement MinImprovement;
 
+    //! Sylvain's stuff
     struct param_verbosity : Parameter_base<int,param_verbosity> {
         static constexpr int default_value {1};
         using Base::operator=;
@@ -139,6 +141,7 @@ namespace Kadath {
     };
     CXX_17_ATTRIBUTES(maybe_unused) constexpr param_verbosity Verbosity;
 
+    //! Sylvain's stuff
     struct param_output_stream : Parameter_base<std::ostream*,param_output_stream> {
         static constexpr std::ostream * default_value {&std::cout};
         using Base::operator=;

@@ -60,6 +60,7 @@ namespace Kadath {
          */
         template<typename Map_type,Memory_pools_use memory_pools_use = Memory_pools_use::disabled>
         struct Memory_mapper_data_base;
+        //! unknown to me...
         template<typename Map_type> struct Memory_mapper_data_base<Map_type,Memory_pools_use::disabled> {
             static_assert(std::is_default_constructible<Map_type>::value,"The map type must be default constructible.");
             //! Delete functor that will actually delete the memory chunk at the end of the execution.
@@ -238,11 +239,15 @@ namespace Kadath {
          * value defined by the user when the build has been configured).
          */
         struct Memory_mapped {
+            //! Sylvain's stuff
             void *operator new(std::size_t sz) {return Memory_mapper<chosen_memory_map_type,boost_memory_pools_use>::get_memory(sz);}
+            //! Sylvain's stuff
             void operator delete(void *mem_ptr, std::size_t const sz) {
                 Memory_mapper<chosen_memory_map_type,boost_memory_pools_use>::release_memory(mem_ptr, sz);
             }
+            //! Sylvain's stuff
             void *operator new[](std::size_t sz) {return Memory_mapper<chosen_memory_map_type,boost_memory_pools_use>::get_memory(sz);}
+            //! Sylvain's stuff
             void operator delete[](void *mem_ptr, std::size_t const sz) {
                 Memory_mapper<chosen_memory_map_type,boost_memory_pools_use>::release_memory(mem_ptr, sz);
             }

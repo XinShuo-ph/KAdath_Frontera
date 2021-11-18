@@ -909,7 +909,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = ../include/headcpp.hpp ../include/utilities.hpp ../include/flat_hash_map.hpp
+EXCLUDE                = ../include/headcpp.hpp ../include/utilities.hpp ../include/flat_hash_map.hpp ../include/memory_impl.hpp ../include/profiled_object.hpp  ../include/base_fftw.hpp ../include/memory.hpp  ../include/exceptions.hpp ../include/python_reader.hpp ../include/solvers.hpp ../src/System_of_eqs/solvers.cpp ../src/System_of_eqs/do_newton_gpu.cpp ../src/System_of_eqs/do_newton_mpi.cpp ../src/System_of_eqs/do_newton_seq.cpp
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -2171,7 +2171,7 @@ ENABLE_PREPROCESSING   = YES
 # The default value is: NO.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-MACRO_EXPANSION        = NO
+MACRO_EXPANSION        = YES
 
 # If the EXPAND_ONLY_PREDEF and MACRO_EXPANSION tags are both set to YES then
 # the macro expansion is limited to the macros specified with the PREDEFINED and

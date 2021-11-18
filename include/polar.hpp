@@ -57,7 +57,7 @@ class Domain_polar_nucleus : public Domain {
   * @param cr : center of the spherical coordinates.
   * @param nbr : number of points in each dimension.
   */
-  Domain_polar_nucleus (int nim, int ttype, double radius, const Point& cr, const Dim_array& nbr) ;
+  Domain_polar_nucleus (int num, int ttype, double radius, const Point& cr, const Dim_array& nbr) ;
   Domain_polar_nucleus (const Domain_polar_nucleus& so) ; ///< Copy constructor.
   /**
   * Constructor from a file
@@ -365,7 +365,19 @@ class Domain_polar_shell : public Domain {
 	* @param pos_cf : current position.
 	*/
     void affecte_tau_one_coef_val_domain (Val_domain& so, int mquant, int cc, int& pos_cf) const ;
-     
+   /**
+	* Exports all the residual equations corresponding to a tensorial one on a given boundary but for one coefficient where another equation is used.
+	* It makes use of the various Galerkin basis used.
+	* @param so : the residual of the equation.
+	* @param  mquant : the field is the \c mquant harmonic with respexcto to \f$\varphi\f$.
+	* @param bound : the boundary at which the equation is enforced.
+	* @param res : The \c Array where the discretized equations are stored.
+	* @param pos_res : current position in res.
+	* @param ncond : the corresponding number of equations. It is used when the residual is null.
+	* @param param : parameters for the exception (index position and value)
+	* @param type_exception : what is enforced for the exception (see the source code for details)
+	* @param exception : residual associated with the exception
+	*/
     void export_tau_val_domain_boundary_exception_mquant (const Val_domain& so, int mquant, int bound, Array<double>& res, int& pos_res, int ncond, const Param& param, 
 		int type_exception, const Val_domain& exception) const ;
     virtual void export_tau_boundary_exception (const Tensor&, int, int, Array<double>&, int&, const Array<int>&, const Param&, int, 
@@ -562,9 +574,9 @@ public:
  */
 class Space_polar : public Space {
      public:
-    	/**
-     	* Standard constructor 
-     	* @param ttype [input] : the type of basis.
+	/**
+	* Standard constructor 
+	* @param ttype [input] : the type of basis.
 	* @param cr [input] : absolute coordinates of the center.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).

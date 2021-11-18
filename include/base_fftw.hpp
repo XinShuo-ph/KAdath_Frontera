@@ -25,7 +25,7 @@
 #include <unordered_map>
 
 namespace Kadath {
-// buffer and plan, keep them to save time
+/// buffer and plan, keep them to save time
 struct fftw_precomp_t
 {
     using Plan_type = fftw_plan;
