@@ -1410,6 +1410,13 @@ class Space_spheric : public Space {
 	* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 	*/
 	void add_eq (System_of_eqs& syst, const char* eq, int nused=-1, Array<int>** pused=0x0)  ;	
+	
+	/**
+	* Adds a n integral equation on the inner boundary.
+	* @param syst : the \c System_of_eqs.
+	* @param eq : the string describing the equation.
+	*/
+	void add_eq_int_hor (System_of_eqs& sys, const char* nom)  ;
 
 	/**
 	* Adds a matching condition, at all the interface present in a given system.
