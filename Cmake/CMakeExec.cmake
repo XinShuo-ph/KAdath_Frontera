@@ -93,12 +93,6 @@ if (NOT DEFINED PGPLOT_LIBRARIES)
 	endif()
 endif()
 
-if(NOT PAR_VERSION)
-    if (NOT DEFINED SUNDIALS_LIBRARIES)
-	    include(FindSUNDIALS) #SUNDIAL probably only used in sequential mode	
-    endif()
-endif(NOT PAR_VERSION)
-
 if(ENABLE_GPU_USE)
 	if(NOT DEFINED CUDA_LIBRARIES)
 		find_package(CUDA REQUIRED)
