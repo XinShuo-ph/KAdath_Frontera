@@ -80,7 +80,7 @@ class Metric_ADS : public Metric
 	* @param name_back_con : name of the background contravariant metric
 	* @param name_back_ricci : name of the background Ricci tensor.
 	*/
-      void init_system(System_of_eqs& ss, const char* name_back_cov, const char* name_back_con, const char* name_back_ricci);  // put the covariant and contravariant metric in cst of the system
+      void init_system(System_of_eqs& syst, const char* name_back_cov, const char* name_back_con, const char* name_back_ricci);  // put the covariant and contravariant metric in cst of the system
 	/**
 	* Put the covariant and contravariant metric, dans the Ricci background into the \c System_of_eqs, as constants.
 	* @param syst : the \c System_of_eqs.
@@ -89,7 +89,7 @@ class Metric_ADS : public Metric
 	* @param name_back_gam : name of the background Christoffels
 	* @param name_back_ricci : name of the background Ricci tensor.
 	*/
-      void init_system(System_of_eqs& ss, const char* name_back_cov, const char* name_back_con, const char* name_back_gam, const char* name_back_ricci);  // put the covariant and contravariant metric in cst of the system
+      void init_system(System_of_eqs& syst, const char* name_back_cov, const char* name_back_con, const char* name_back_gam, const char* name_back_ricci);  // put the covariant and contravariant metric in cst of the system
 
    private:
 
@@ -175,7 +175,7 @@ class Metric_AADS : public Metric
 	* @param name_back_con : name of the background contravariant description.
 	* @param name_back_ricci : name of the background Ricci tensor.
 	*/
-      void set_system(System_of_eqs& ss, const char* name_met, const char* name_hmet, const char* name_back_cov, const char* name_back_con, const char* name_back_ricci); 
+      void set_system(System_of_eqs& syst, const char* name_met, const char* name_hmet, const char* name_back_cov, const char* name_back_con, const char* name_back_ricci); 
  	/**
 	* Associates the metric to a given system of equations. It also sets the background quantities as constants.
 	* @param syst : the \c System_of_eqs.
@@ -186,7 +186,7 @@ class Metric_AADS : public Metric
 	* @param name_back_gam : name of the background Christoffels.
 	* @param name_back_ricci : name of the backgroundRicci tensor.
 	*/
-      void set_system(System_of_eqs& ss, const char* name_met, const char* name_hmet, const char* name_back_cov, const char* name_back_con, const char* name_back_gam, const char* name_back_ricci); 
+      void set_system(System_of_eqs& syst, const char* name_met, const char* name_hmet, const char* name_back_cov, const char* name_back_con, const char* name_back_gam, const char* name_back_ricci); 
 
       virtual const Metric* get_background() const;                    ///< @return the pointer on the background metric.
       virtual ~Metric_AADS();                               

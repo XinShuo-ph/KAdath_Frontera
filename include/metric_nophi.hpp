@@ -45,6 +45,7 @@ class Metric_flat_nophi : public Metric {
 		/**
 		* Standard constructor
 		* @param sp : the associated \c Space.
+		* @param bb : tensorial basis.
 		*/
 		Metric_flat_nophi (const Space& sp, const Base_tensor& bb) ;
 		Metric_flat_nophi (const Metric_flat_nophi& ) ; ///< Copy constructor
@@ -187,7 +188,7 @@ class Metric_nophi_const : public Metric_nophi {
  * The true metric and the conformal are related via
  * \f$\gamma_{ij} = \frac{1}{\Omega^2}\tilde{\gamma}_{ij}\f$.
  * The conformal factor vanishes at some boundary so that the various quantities (Christoffels) are multiplied by appropriate factors
- * of $\Omega$ to ensure regularity.
+ * of \f$\Omega\f$ to ensure regularity.
  * \ingroup metric
  */
 class Metric_nophi_AADS : public Metric {
@@ -196,7 +197,7 @@ class Metric_nophi_AADS : public Metric {
 	  Metric_tensor* p_met ; ///< Pointer on the \c Metric_tensor describing the coformal metric.
 	  const Base_tensor& basis ; ///< The tensorial basis used.
 	  Metric_flat_nophi fmet ; ///< Associated flat metric.
-          Scalar conformal ; ///< The conformal factor $\Omega$ (must be a purely radial function)
+          Scalar conformal ; ///< The conformal factor \f$\Omega\f$ (must be a purely radial function)
 	  Scalar der_conf ; ///< Radial derivative of the conformal factor 
 	  int place_syst ; ///< Gives the location of the metric amongst the various unknowns of the associated \c System_of_eqs.
 

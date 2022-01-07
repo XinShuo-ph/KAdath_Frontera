@@ -599,12 +599,12 @@ class Space_polar_adapted : public Space {
      public:
 	/**
      	* Standard constructor ; all the shells are initially not deformed.
-     	* @param ttype [input] : the type of basis.
+	* @param ttyp [input] : the type of basis.
 	* @param cr [input] : absolute coordinates of the center.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
 	*/
-	Space_polar_adapted (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds) ;
+	Space_polar_adapted (int ttyp, const Point& cr, const Dim_array& nbr, const Array<double>& bounds) ;
 	Space_polar_adapted (FILE*) ; ///< Constructor from a file
 	virtual ~Space_polar_adapted() ; ///< Destructor        
 	virtual void save(FILE*) const ;

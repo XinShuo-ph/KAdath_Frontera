@@ -24,8 +24,9 @@
 #include "tensor_impl.hpp"
 namespace Kadath {
 
-    template<> Profiled_object_base<std::chrono::duration<double>>::Stat_map
+	   template<> Profiled_object_base<std::chrono::duration<double>>::Stat_map
             Profiled_object_base<std::chrono::duration<double>>::statistic_map{};
+
 
     std::size_t System_of_eqs::default_block_size {64};
 // Constructor

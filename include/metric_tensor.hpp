@@ -46,7 +46,7 @@ namespace Kadath {
             * @param type_descr : the type of the indices (COV or CON)
             * @param ba : the tensorial basis.
             */
-            Metric_tensor (const Space& sp, int type_descr, const Base_tensor&) ;
+            Metric_tensor (const Space& sp, int type_descr, const Base_tensor& ba) ;
             /**
             * Constructor by copy.
             * If copie is false, the properties of the tensor are copied but not its values.

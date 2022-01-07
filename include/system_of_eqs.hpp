@@ -45,6 +45,7 @@ constexpr int VARMAX{1000};
 #define SAVED_DER  1
 
 namespace Kadath {
+
 	class Equation ;
 	class Eq_int ;
 
@@ -58,20 +59,34 @@ namespace Kadath {
 
 	class System_of_eqs : public Profiled_object<System_of_eqs> {
 	public:
-		/*
+		/**
 		 * Defines the sub-matrix size in the scalapack 2D cyclic block decomposition. For optimal performances, this
 		 * value should be set so that three blocks can be loaded simultaneously in the lowest level of cache memory
 		 */
 		static std::size_t default_block_size;
+		//! Sylvain's stuff
 		static constexpr std::size_t nb_core_per_node{24};
 		//! Dummy variable for the purpose of better readability.
 		static constexpr int ALL_COLUMNS {-1};
 		//! Dummy names for the purpose of better readability.
 		enum : bool { DO_NOT_TRANSPOSE = false, TRANSPOSE = true};
 		//enum Matrix_computation_parallel_paradigm: unsigned short {sequential, multi_thread, mpi, hybrid};
+       //! Sylvain'stuff
         struct Output_data{
-            unsigned n_iter{}; int problem_size{}; double current_error{};
-            Duration t_load_matrix{}; Duration t_trans_matrix{}; Duration t_inv_matrix{}; Duration t_newton_update{};
+            //! Sylvain's stuff 
+            unsigned n_iter{}; 
+            //! Sylvain's stuff
+            int problem_size{};  
+            //! Sylvain's stuff
+            double current_error{}; 
+            //! Sylvain's stuff
+            Duration t_load_matrix{};  
+            //! Sylvain's stuff
+            Duration t_trans_matrix{}; 
+            //! Sylvain's stuff
+             Duration t_inv_matrix{};  
+             //! Sylvain's stuff
+             Duration t_newton_update{}; 
         };
         Output_data current_output_data; ///< Data related to the last newton iterations.
 
@@ -146,8 +161,11 @@ namespace Kadath {
 		MMPtr_array<Index> which_coef ; ///< Stores the "true" coefficients on some boundaries (probably deprecated).
 
 		unsigned niter{0u}; ///< Counter toward the number of times the \c do_newton method has been called.
+		 //! Sylvain's stuff
 		int mpi_world_size{1};
-		int mpi_proc_rank{0};
+		 //! Sylvain's stuff
+		int mpi_proc_rank{0}; 
+		//! Sylvain's stuff
 		void init_proc_data() {
 #ifdef PAR_VERSION
             MPI_Comm_rank(MPI_COMM_WORLD,&mpi_proc_rank);
@@ -212,8 +230,9 @@ namespace Kadath {
 		 * Returns the current iteration number.
 		 */
 		unsigned get_niter() const {return niter;}
-        int get_mpi_proc_rank() const {return mpi_proc_rank;}
-        int get_mpi_world_size() const {return mpi_world_size;}
+
+	        int get_mpi_proc_rank() const {return mpi_proc_rank;} ///< Returns the MPI rank
+	        int get_mpi_world_size() const {return mpi_world_size;} ///< Returns the total number of MPI processes
 
 		/**
 		* Returns a pointer on a \c Term_eq corresponding to an unknown number.
@@ -328,9 +347,12 @@ namespace Kadath {
 		/**
 		* Check if a string is an unknown field.
 		* @param target : the string to be tested.
-		* @param which : the index of the found variable (if found).
+		* @param which : the index of the found constant (if found).
+		* @param valence : valence of the result.
+		* @param name_ind : name of the indices of the result.
+		* @param type_ind : type of the indices of the result (COV or CON).
 		*/
-		bool isvar (const char*, int&, int&, char*&, Array<int>*&) const ;
+		bool isvar (const char* target, int& which, int& valence, char*& name_ind, Array<int>*& type_ind) const ;
 		/**
 		* Check if a string is a constant (can required indices manipulation and/or inner contraction).
 		* @param target : the string to be tested.
@@ -498,8 +520,8 @@ namespace Kadath {
 		* Addition of an equation to be solved inside a domain (assumed to be second order).
 		* @param dom : number of the \c Domain.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_inside (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -517,8 +539,8 @@ namespace Kadath {
 		* @param dom : number of the \c Domain.
 		* @param order : order of the equation.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_order (int dom, int order, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -536,8 +558,8 @@ namespace Kadath {
 		* @param dom : number of the \c Domain.
 		* @param bb : the boundary.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_bc (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -555,8 +577,8 @@ namespace Kadath {
 		* @param dom : number of the \c Domain.
 		* @param bb : the boundary.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_matching (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -574,8 +596,8 @@ namespace Kadath {
 		* @param dom : number of the \c Domain.
 		* @param bb : the boundary.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_matching_one_side (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -596,8 +618,8 @@ namespace Kadath {
 		* @param dom : number of the \c Domain.
 		* @param bb : the boundary.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_matching_non_std (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -621,8 +643,8 @@ namespace Kadath {
 		* @param dom : number of the \c Domain.
 		* @param bb : the boundary.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_matching_import (int dom, int bb, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -642,8 +664,8 @@ namespace Kadath {
 		* Addition of an equation to be solved inside a domain (assumed to be zeroth order i.e. with no derivatives).
 		* @param dom : number of the \c Domain.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_full (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -659,8 +681,8 @@ namespace Kadath {
 		* Addition of an equation to be solved inside a domain (assumed to be first order).
 		* @param dom : number of the \c Domain.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_one_side (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -675,17 +697,19 @@ namespace Kadath {
 		/**
 		* Addition of a matching condition, except for one coefficient where an alternative condition is enforced (highly specialized usage).
 		* @param dom : number of the \c Domain.
+		* @param bb : the boundary
 		* @param eq : string defining the equation.
 		* @param par : parameters for the exceptional condition (i.e. which coefficient is concerned basically).
 		* @param eq_exception : the excpetionnal equation used.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_matching_exception (int dom, int bb, const char* eq, const Param& par, const char* eq_exception, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
 		/**
 		* Addition of a matching condition, except for one coefficient where an alternative condition is enforced (highly specialized usage).
 		* @param dom : number of the \c Domain.
+		* @param bb : the boundary
 		* @param eq : string defining the equation.
 		* @param par : parameters for the exceptional condition (i.e. which coefficient is concerned basically).
 		* @param eq_exception : the excpetionnal equation used.
@@ -699,8 +723,8 @@ namespace Kadath {
 		* @param dom : number of the \c Domain.
 		* @param orders : orders of the equation, for each variable.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_order (int dom, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -739,8 +763,8 @@ namespace Kadath {
 		* @param bb : the boundary.
 		* @param orders : orders of the equation, for each variable.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp: number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_bc (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -763,8 +787,8 @@ namespace Kadath {
 		* @param bb : the boundary.
 		* @param orders : orders of the equation, for each variable.
 		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
+		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
+		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
 		virtual void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
@@ -779,19 +803,12 @@ namespace Kadath {
 		*/
 		virtual void add_eq_matching (int dom, int bb, const Array<int>& orders, const char* eq, const List_comp& list) ;
 
-		/**
-		* Addition of an equation representing a first integral.
-		* @param dom : number of the \c Domain.
-		* @param eq : string defining the equation.
-		* @param nused : number of components of \c eq to be considered. All the components are used of it is -1.
-		* @param pused : pointer on the indexes of the components to be considered. Not used of nused = -1 .
-		*/
 	//	virtual void add_eq_first_integral (int dom, const char* eq, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
 
 		/**
 		* Addition of an equation representing a first integral.
-		* @param dommin : index of the first \d Domain
-		* @param dommax : index of the last \d Domain
+		* @param dom_min : index of the first \c Domain
+		* @param dom_max : index of the last \c Domain
 		* @param integ_part : name of the integral quantity
 		* @param const_part : equation fixing the value of the integral.
 		*/
@@ -840,8 +857,10 @@ namespace Kadath {
 		* Copies the various unknowns (doubles and \c Tensors) into their \c Term_eq counterparts.
 		*/
 		void vars_to_terms() ;
+		
+		//! Sylvain's stuff
 		virtual void vars_to_terms_impl();
-
+		//! Sylvain's stuff
 		virtual void compute_nbr_of_conditions();
 		/**
 		* Computes the second member of the Newton-Raphson equations.
@@ -852,7 +871,7 @@ namespace Kadath {
 		* Sets the values the variation of the fields.
 		* @param vder : values of all the variations (essentially the coefficients of all the variations of the unknowns).
 		*/
-		void xx_to_ders(const Array<double>&) ;
+		void xx_to_ders(const Array<double>& vder) ;
 		/**
 		* Sets the values the  of the fields.
 		* @param val : values of all the fields (essentially the coefficients of all the unknowns).
@@ -886,6 +905,7 @@ namespace Kadath {
 										   bool transpose = DO_NOT_TRANSPOSE);
 
 
+		//! Sylvain's stuff
 		virtual void compute_matrix_adjacent(Array<double> &matrix, int n, int first_col= 0, int n_col= ALL_COLUMNS, int num_proc = 1,
 											 bool transpose = DO_NOT_TRANSPOSE, std::vector<std::vector<std::size_t>> *dm = nullptr);
 
@@ -915,7 +935,7 @@ namespace Kadath {
 		/**
 		* Does one step of the Newton-Raphson iteration with a linesearch algorithm.
 		* Only implemented in the parallel version.
-		* @param prec : required precision.
+		* @param precision : required precision.
 		* @param error : achieved precision.
 		* @param ntrymax : first linesearch parameter.
 		* @param stepmax : second linesearch parameter.
@@ -926,7 +946,9 @@ namespace Kadath {
 
 
 		// Parts for implementing gmres
+		/// Performs the Arnoldi algorithm (under developpement)
 		void do_arnoldi (int n, Array<double>& qi, Matrice& Hmat) ;
+		/// Perfoems one step of the GMRES method (under developpement)
 		void update_gmres (const Array<double>&) ;
 
     private:
@@ -985,13 +1007,13 @@ namespace Kadath {
 		template<Computational_model computational_model = default_computational_model>
 		void compute_p(Array<double>& xx, Array<double> const& second, int nn);
 		/**
-		* Tests the positivity of  \f$\delta\f$
+		* Tests the positivity of  \f$\celta\f$
 		* Used by do_newton_with_linesearch ; only implemented in parallel version.
 		*/
 		template<Computational_model computational_model = default_computational_model>
 		void check_positive(double delta);
 		/**
-		* Tests the positivity of  \f$\delta\f$
+		* Tests the positivity of  \f$\celta\f$
 		* Used by do_newton_with_linesearch ; only implemented in parallel version.
 		*/
 		template<Computational_model computational_model = default_computational_model>
@@ -1055,8 +1077,8 @@ namespace Kadath {
 
         /**
          * Constructor
-         * @param dom : Pointer on the \d Domain
-         * @param nd : index of the \d Domain (consistence is not checked).
+         * @param dom : Pointer on the \c Domain
+         * @param nd : index of the \c Domain (consistence is not checked).
          * @param nope : number of operators.
          * @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
          * @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
@@ -1105,7 +1127,7 @@ namespace Kadath {
 		* Check whether the variation of the residual has to be taken into account when computing a given column.
 		* @param target : domain involved in the computation of the given column.
 		*/
-		virtual bool take_into_account (int) const = 0 ;
+		virtual bool take_into_account (int target) const = 0 ;
 
 		friend class System_of_eqs ;
 	} ;
@@ -1121,13 +1143,13 @@ namespace Kadath {
     public:
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param ope : pointer on the operator describing the equation.
 		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
 		*/
-        Eq_inside(const Domain* dom, int nd, Ope_eq* op, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
+        Eq_inside(const Domain* dom, int nd, Ope_eq* ope, int n_cmp = -1, Array<int>** p_cmp=nullptr) ;
         virtual ~Eq_inside() ; ///< Destructor.
 
         void export_val(int&, Term_eq**, Array<double>&, int&) const override;
@@ -1149,13 +1171,13 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param ord : order of the equation (probably only safe with 0, 1 or 2).
 		* @param ope : pointer on the operator describing the equation.
 		* @param ope_constant : condition for the constant part
 		*/
-			Eq_vel_pot(const Domain* dom, int nd, int ord, Ope_eq* op, Ope_eq* op_constant) ;
+			Eq_vel_pot(const Domain* dom, int nd, int ord, Ope_eq* ope, Ope_eq* ope_constant) ;
 			virtual ~Eq_vel_pot() ; ///< Destructor.
 
 			void export_val(int&, Term_eq**, Array<double>&, int&) const override;
@@ -1176,13 +1198,13 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bound : boundary where the condition is enforced
 		* @param ope : pointer on the operator describing the equation.
 		* @param ope_constant : condition for the constant part
 		*/
-			Eq_bc_exception (const Domain* dom, int nd, int bound, Ope_eq* op, Ope_eq* op_constant) ;
+			Eq_bc_exception (const Domain* dom, int nd, int bound, Ope_eq* ope, Ope_eq* ope_constant) ;
 			virtual ~Eq_bc_exception() ; ///< Destructor.
 
 			void export_val(int&, Term_eq**, Array<double>&, int&) const override;
@@ -1202,8 +1224,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param ord : order of the equation (probably only safe with 0, 1 or 2).
 		* @param ope : pointer on the operator describing the equation.
 		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
@@ -1229,8 +1251,8 @@ namespace Kadath {
 			int bound ; ///< The boundary
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bb : boundary where the equation is enforced.
 		* @param ope : pointer on the operator describing the equation.
 		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
@@ -1258,8 +1280,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bb : name of the boundary in the domain of the equation.
 		* @param oz_nd : number of the other domain.
 		* @param oz_bb : name of the boundary in the other domain.
@@ -1292,8 +1314,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bb : name of the boundary in the domain of the equation.
 		* @param oz_nd : number of the other domain.
 		* @param oz_bb : name of the boundary in the other domain.
@@ -1329,8 +1351,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bb : name of the boundary in the domain of the equation.
 		* @param ozers : numbers of the others domains in (0,*) and names of the boundary as seen on the other side in (1,*).
 		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
@@ -1372,8 +1394,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bb : name of the boundary in the domain of the equation.
 		* @param eq : the matching condition. Should be of the form "a = import(b)".
 		* @param ozers : numbers of the others domains in (0,*) and names of the boundary as seen on the other side in (1,*).
@@ -1416,7 +1438,7 @@ namespace Kadath {
 		* @param i : the part to be set.
 		* @param ope : pointer on the operator to be used.
 		*/
-		   void set_part (int, Ope_eq*) ;
+		   void set_part (int i, Ope_eq* ope) ;
 
 		   friend class System_of_eqs ;
 	} ;
@@ -1431,8 +1453,8 @@ namespace Kadath {
 		public:
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param ope : pointer on the operator describing the equation.
 		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
@@ -1455,8 +1477,8 @@ namespace Kadath {
 		public:
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param ope : pointer on the operator describing the equation.
 		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
 		* @param p_cmp : pointer on the indexes of the components to be considered. Not used of nused = -1 .
@@ -1481,8 +1503,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param ord : orders of the equation wrt each variable.
 		* @param ope : pointer on the operator describing the equation.
 		* @param n_cmp : number of components of \c eq to be considered. All the components are used of it is -1.
@@ -1510,8 +1532,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bb : the boundary.
 		* @param ord : orders of the equation wrt each variable.
 		* @param ope : pointer on the operator describing the equation.
@@ -1542,8 +1564,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bb : the boundary.
 		* @param oz_nd : number of the \c Domain on the other side of the boundary.
 		* @param oz_bb : the boundary.
@@ -1576,8 +1598,8 @@ namespace Kadath {
 
 		/**
 		* Constructor
-		* @param dom : Pointer on the \d Domain
-		* @param nd : number of the \d Domain (consistence is not checked).
+		* @param dom : Pointer on the \c Domain
+		* @param nd : number of the \c Domain (consistence is not checked).
 		* @param bb : the boundary.
 		* @param oz_nd : number of the \c Domain on the other side of the boundary.
 		* @param oz_bb : the boundary.
@@ -1611,9 +1633,9 @@ namespace Kadath {
 		/**
 		* Constructor
 		* @param syst : Pointer on the associated \c System_of_eqs
-		* @param dom : Pointer on the first \d Domain (needed for \c Equation constructor)
-		* @param dommin : index of the first \d Domain (consistence is not checked).
-		* @param dommax : index of the last \d Domain
+		* @param dom : Pointer on the first \c Domain (needed for \c Equation constructor)
+		* @param dommin : index of the first \c Domain (consistence is not checked).
+		* @param dommax : index of the last \c Domain
 		* @param integ_part : name of the integral quantity
 		* @param const_part : equation fixing the value of the integral.
 		*/

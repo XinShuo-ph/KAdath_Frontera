@@ -37,12 +37,12 @@ class Space_adapted_bh : public Space {
      public:
 	/**
      	* Standard constructor ; all the shells are initially not deformed.
-     	* @param ttype [input] : the type of basis.
+	* @param base [input] : the type of basis.
 	* @param cr [input] : absolute coordinates of the center.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
 	*/
-	Space_adapted_bh (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds) ;
+	Space_adapted_bh (int base, const Point& cr, const Dim_array& nbr, const Array<double>& bounds) ;
 	Space_adapted_bh (FILE*) ; ///< Constructor from a file
 	virtual ~Space_adapted_bh() ; ///< Destructor        
 	virtual void save(FILE*) const ;

@@ -188,7 +188,7 @@ class Domain_oned_qcq : public Domain {
   * @param num : number of the domain (used by the \c Space).
   * @param ttype : Chebyshev or Legendre type of spectral expansion.
   * @param x_int : inner radius.
-  * @param x_exy : outer radius.
+  * @param x_ext : outer radius.
   * @param nbr : number of points in each dimension.
   */
   Domain_oned_qcq (int num, int ttype, double x_int, double x_ext, const Dim_array& nbr) ;
@@ -457,9 +457,9 @@ public:
  */
 class Space_oned : public Space {
      public:
-    	/**
-     	* Standard constructor 
-     	* @param ttype [input] : the type of basis.
+	/**
+	* Standard constructor 
+	* @param ttype [input] : the type of basis.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
 	*/

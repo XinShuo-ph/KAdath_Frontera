@@ -10,7 +10,6 @@
 
 namespace Kadath {
 
-
 class Unknown_base_error : public std::runtime_error {
 public:
     int base;

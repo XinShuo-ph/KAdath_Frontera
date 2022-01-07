@@ -110,12 +110,13 @@ class Domain_fourD_periodic_nucleus : public Domain {
      virtual Val_domain div_x (const Val_domain&) const ;
 
 
-     /*
+     /**
       * Generates a \c Val_domain, from another one assumed to be on a \c Polar_periodic_nucleus.
       * This is done in the coefficients space.
       * @param so : the input \c Val_domain
       */
      Val_domain translate (const Val_domain& so) const ;
+     
      virtual Tensor change_basis_spher_to_cart (int dd, const Tensor&) const ;
 public:
      virtual ostream& print (ostream& o) const ;
@@ -213,7 +214,7 @@ class Domain_fourD_periodic_shell : public Domain {
      virtual Val_domain div_sin_theta (const Val_domain&) const ;
      virtual Val_domain div_xm1 (const Val_domain&) const ;    
 
-     /*
+     /**
       * Generates a \c Val_domain, from another one assumed to be on a \c Polar_periodic_nucleus.
       * This is done in the coefficients space.
       * @param so : the input \c Val_domain
@@ -237,18 +238,19 @@ public:
  */
 class Space_fourD_periodic : public Space {
      public:
-    	/**
-     	* Standard constructor 
-     	* @param ttype [input] : the type of basis.
+	/**
+	* Standard constructor 
+	* @param tt [input] : the type of basis.
 	* @param omega [input] : the pulsation for the time dependance.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
 	*/
-	Space_fourD_periodic (int ttype, double omega, const Dim_array& nbr, const Array<double>& bounds) ;
+	Space_fourD_periodic (int tt, double omega, const Dim_array& nbr, const Array<double>& bounds) ;
+	
 	Space_fourD_periodic (FILE*) ; ///< Constructor from a file
 	virtual ~Space_fourD_periodic() ;      
 	virtual void save(FILE*) const ;
-
+	/// Returns omega
 	double get_omega() const ;
 } ;
 

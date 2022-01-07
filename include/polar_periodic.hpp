@@ -448,9 +448,9 @@ public:
  */
 class Space_polar_periodic : public Space {
      public:
-    	/**
-     	* Standard constructor 
-     	* @param ttype [input] : the type of basis.
+	/**
+	* Standard constructor 
+	* @param ttype [input] : the type of basis.
 	* @param omega [input] : the pulsation for the time dependance.
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
@@ -465,6 +465,7 @@ class Space_polar_periodic : public Space {
 	virtual void xx_to_ders_variable_domains(const Array<double>&, int&) const ;
 	virtual void xx_to_vars_variable_domains(System_of_eqs*, const Array<double>&, int&) const ;
 */
+	/// Returns omega
 	double get_omega() const ;
 } ;
 

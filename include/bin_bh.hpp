@@ -44,8 +44,8 @@ class Space_bin_bh : public Space {
      * Standard constructor    
      * @param ttype [input] : the type of basis.
      * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
-     * @param r1 [input] : radius \f$ r_1 \f$ of the first sphere.
-     * @param r2 [input] : radius \f$ r_2 \f$ of the second sphere.
+     * @param rbh1 [input] : radius \f$ r_1 \f$ of the first sphere.
+     * @param rbh2 [input] : radius \f$ r_2 \f$ of the second sphere.
      * @param rext [input] : radius \f$ R \f$ of the outer boundary of the bispherical part.
      * @param nr [input] : number of points in each dimension 
      *

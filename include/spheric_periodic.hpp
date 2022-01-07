@@ -405,7 +405,7 @@ class Domain_spheric_periodic_shell : public Domain {
     * @param field : the gravitational term.
     * @param phases : array containing the phases of each harmonic (uncontrained by the equation).
     * @param dim : the dimension.
-    * @param fact : factor in the homogeneous equation.
+    * @param factor : factor in the homogeneous equation.
     * @returns : the fit, being a sum of outgoing waves.
     */
     Term_eq fitwaves_nonflat (const Term_eq& so, const Term_eq& field, const Array<double>& phases, int dim, double factor) const;
@@ -595,10 +595,10 @@ class Space_spheric_periodic : public Space {
 	double omega ; ///< The pulsation of the space.
 	
      public:
-        /**
-     	* Standard constructor 
-     	* @param ttype [input] : the type of basis.	
-        * @param typet [input] : type of time periodicity (to \f$\pi\f$ or \f$\pi/2\f$).
+	/**
+	* Standard constructor 
+	* @param ttype [input] : the type of basis.	
+	* @param typet [input] : type of time periodicity (to \f$\pi\f$ or \f$\pi/2\f$).
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
 	* @param ome [input] : the pulsation.

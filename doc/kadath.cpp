@@ -57,16 +57,14 @@
  */
 
 /** 
- * \defgroup fields 
- * Physical fields.
+ * \defgroup fields  Physical fields.
  *
  * Here are regrouped all the objects used to describe fields, without making reference to systems of equations.
  *
  */
 
 /** 
- * \defgroup metric
- * Metric handling.
+ * \defgroup metric Metric handling.
  * 
  * They differ from the usual fields because they give access to many more methods (covariant derivatives, Ricci etc...)
  * They are also more closely linked to systems of equations.
@@ -75,8 +73,7 @@
 
 
 /** 
- * \defgroup systems
- * Equations management
+ * \defgroup systems Equations management
  * 
  * Are regrouped here the objects needed to solve systems of equations, like the \c Term_eq, the various operators, types of equations...
  */

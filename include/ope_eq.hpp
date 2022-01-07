@@ -67,7 +67,7 @@ namespace Kadath {
 
 /**
  * The operator identity.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_id : public Ope_eq {
 
@@ -93,7 +93,7 @@ class Ope_id : public Ope_eq {
 		* @param syst : the associated \c System_of_eqs.
 		* @param so : The input \c Term_eq
 		*/
-		Ope_id (const System_of_eqs*, const Term_eq*) ;
+		Ope_id (const System_of_eqs* syst, const Term_eq* so) ;
 		~Ope_id() override; ///< Destructor.
 	public:
 		Term_eq action() const override;
@@ -102,7 +102,7 @@ class Ope_id : public Ope_eq {
 
 /**
  * The operator power-law
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_pow : public Ope_eq {
 
@@ -123,7 +123,7 @@ class Ope_pow : public Ope_eq {
 
 /**
  * The operator minus
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_minus : public Ope_eq {
 
@@ -141,7 +141,7 @@ class Ope_minus : public Ope_eq {
 
 /**
  * The operator addition
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_add : public Ope_eq {
 
@@ -152,7 +152,7 @@ class Ope_add : public Ope_eq {
 		* @param aa : first term.
 		* @param bb : second term.
 		*/
-		Ope_add(const System_of_eqs*, Ope_eq* aa, Ope_eq* bb) ;
+		Ope_add(const System_of_eqs* syst, Ope_eq* aa, Ope_eq* bb) ;
 		~Ope_add() override ; ///< Destructor
 	
 		Term_eq action() const override;
@@ -160,7 +160,7 @@ class Ope_add : public Ope_eq {
 
 /**
  * The operator substraction
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_sub : public Ope_eq {
 
@@ -180,7 +180,7 @@ class Ope_sub : public Ope_eq {
 /**
  * The operator Multiplication.
  * When dealing with tensors it takes into account the possible contractions.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_mult : public Ope_eq {
 
@@ -200,7 +200,7 @@ class Ope_mult : public Ope_eq {
 /**
  * The operator Division.
  * The second term must be a double or a \c Scalar
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_div: public Ope_eq {
 
@@ -220,7 +220,7 @@ class Ope_div: public Ope_eq {
 /**
  * The operator Laplacian 3D.
  * Computes the flat 3D Laplacian
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_lap: public Ope_eq {
   
@@ -239,7 +239,7 @@ class Ope_lap: public Ope_eq {
 /**
  * The operator time derivative.
  * Computes the first time derivative
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_dtime: public Ope_eq {
   
@@ -278,7 +278,7 @@ class Ope_ddtime: public Ope_eq {
 /**
  * The operator Laplacian 2D.
  * Computes the flat 2D Laplacian
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_lap2: public Ope_eq {
   
@@ -297,7 +297,7 @@ class Ope_lap2: public Ope_eq {
 /**
  * The operator normal derivative
  * Computes the derivative in the direction normal to a given boundary.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_dn: public Ope_eq {
 
@@ -320,7 +320,7 @@ class Ope_dn: public Ope_eq {
 /**
  * The operator flat gradient
  * Intended for systems where no metric has been defined.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_grad: public Ope_eq {
 
@@ -339,7 +339,7 @@ class Ope_grad: public Ope_eq {
 /**
  * The operator flat scalar product
  * Intended for systems where no metric has been defined.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_scal: public Ope_eq {
 
@@ -359,7 +359,7 @@ class Ope_scal: public Ope_eq {
 /**
  * The operator covariant derivative.
  * Inner summation is performed, if need be.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_der: public Ope_eq {
 
@@ -384,7 +384,7 @@ class Ope_der: public Ope_eq {
 /**
  * The operator covariant derivative with respect to the flat metric.
  * Inner summation is performed, if need be.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_der_flat: public Ope_eq {
 
@@ -409,7 +409,7 @@ class Ope_der_flat: public Ope_eq {
 /**
  * The operator covariant derivative with respect to the background metric.
  * Inner summation is performed, if need be.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_der_background: public Ope_eq {
 
@@ -433,7 +433,7 @@ class Ope_der_background: public Ope_eq {
 
 /**
  * The operator surface integral.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_int: public Ope_eq {
 
@@ -455,7 +455,7 @@ class Ope_int: public Ope_eq {
 
 /**
  * The operator volume integral (in a given \c Domain)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_int_volume: public Ope_eq {
 
@@ -475,7 +475,7 @@ class Ope_int_volume: public Ope_eq {
  * The operator definition.
  * It corresponds to expressions defined by the user in the\c System_of_eqs.
  * Indices may have to be renamed and/or summed, depending on their name.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_def: public Ope_eq {
 	protected:
@@ -498,7 +498,7 @@ class Ope_def: public Ope_eq {
 
 /**
  * The operator multiplication by \f$r\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_mult_r: public Ope_eq {
 
@@ -516,7 +516,7 @@ class Ope_mult_r: public Ope_eq {
 
 /**
  * The operator multiplication by \f$x\f$ (what it means depend on the \c Space considered).
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_mult_x: public Ope_eq {
 
@@ -534,7 +534,7 @@ class Ope_mult_x: public Ope_eq {
 
 /**
  * The operator multiplication by \f$\frac{1}{r} \partial_r\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_srdr: public Ope_eq {
 
@@ -554,7 +554,7 @@ class Ope_srdr: public Ope_eq {
 
 /**
  * The operator second radial derivative
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_ddr: public Ope_eq {
 
@@ -572,7 +572,7 @@ class Ope_ddr: public Ope_eq {
 
 /**
  * The operator first radial derivative
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_dr: public Ope_eq {
 
@@ -590,7 +590,7 @@ class Ope_dr: public Ope_eq {
 
 /**
  * The operator second derivative wrt \f$\varphi\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_ddp: public Ope_eq {
 
@@ -608,7 +608,7 @@ class Ope_ddp: public Ope_eq {
 
 /**
  * The operator first derivative wrt \f$\theta\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_dt: public Ope_eq {
 
@@ -626,7 +626,7 @@ class Ope_dt: public Ope_eq {
 
 /**
  * The operator second derivative wrt \f$\theta\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_ddt: public Ope_eq {
 
@@ -643,8 +643,8 @@ class Ope_ddt: public Ope_eq {
 } ;
 
 /**
- * The operator division by \f$rf$.
- * \ingroup systems.
+ * The operator division by \f$r\f$.
+ * \ingroup systems
  */
 class Ope_div_r: public Ope_eq {
 
@@ -662,7 +662,7 @@ class Ope_div_r: public Ope_eq {
 
 /**
  * The operator division by \f$r\sin\theta\f$.
- * \ingroup systems.
+ * \ingroup system
  */
 class Ope_div_rsint: public Ope_eq {
 
@@ -680,7 +680,7 @@ class Ope_div_rsint: public Ope_eq {
 
 /**
  * The operator multiplication by \f$r\sin\theta\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_mult_rsint: public Ope_eq {
 
@@ -698,7 +698,7 @@ class Ope_mult_rsint: public Ope_eq {
 
 /**
  * The operator division by \f$r\cos\theta\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_div_cost: public Ope_eq {
 
@@ -718,7 +718,7 @@ class Ope_div_cost: public Ope_eq {
 
 /**
  * The operator division by \f$x+1\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_div_xpone: public Ope_eq {
 
@@ -736,7 +736,7 @@ class Ope_div_xpone: public Ope_eq {
 
 /**
  * The operator division by \f$1-x^2\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_div_1mx2: public Ope_eq {
 
@@ -754,7 +754,7 @@ class Ope_div_1mx2: public Ope_eq {
 
 /**
  * The operator division by \f$1-r/L\f$ (for AADS spacetimes).
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_div_1mrsL: public Ope_eq {
 
@@ -772,7 +772,7 @@ class Ope_div_1mrsL: public Ope_eq {
 
 /**
  * The operator multiplication by \f$1-r/L\f$ (for AADS spacetimes).
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_mult_1mrsL: public Ope_eq {
 
@@ -790,7 +790,7 @@ class Ope_mult_1mrsL: public Ope_eq {
 
 /**
  * The operator multiplication by \f$\sin\theta\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_mult_sint: public Ope_eq {
 
@@ -808,7 +808,7 @@ class Ope_mult_sint: public Ope_eq {
 
 /**
  * The operator division by \f$\sin\theta\f$.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_div_sint: public Ope_eq {
 
@@ -827,7 +827,7 @@ class Ope_div_sint: public Ope_eq {
 
 /**
  * The operator partial derivative
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_partial : public Ope_eq {
 	protected:
@@ -847,7 +847,7 @@ class Ope_partial : public Ope_eq {
 
 /**
  * The operator determinant
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_determinant : public Ope_eq {
 	public:
@@ -864,7 +864,7 @@ class Ope_determinant : public Ope_eq {
 
 /**
  * The operator inverse (of a \c Metric_tensor ; i.e. rank 2 symmetric tensor).
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_inverse : public Ope_eq {
 	public:
@@ -882,7 +882,7 @@ class Ope_inverse : public Ope_eq {
 /**
  * The operator inverse (of a \c Metric_tensor ; i.e. rank 2 symmetric tensor).
  * It does not compute the true inverse in the sens that the cofactors are not divided by the determinant.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_inverse_nodet : public Ope_eq {
 	public:
@@ -899,19 +899,21 @@ class Ope_inverse_nodet : public Ope_eq {
 
 /**
  * The operator partial derivative wrt one variable (same thing as Ope_partial ??)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_partial_var : public Ope_eq {
 	protected:
+	  /// Index of the variable wrt which the derivative is taken
 	  int which_var ;
 
 	public:
-		/**
-		* Constructor
-		* @param syst : the associated \c System_of_eqs.
-		* @param so : target		
-		*/
-		Ope_partial_var (const System_of_eqs* syst, int, Ope_eq* so) ;
+	/**
+	* Constructor
+	* @param syst : the associated \c System_of_eqs.
+	* @param which : index of the variable wrt the derivative is taken
+	* @param so : target		
+	*/
+		Ope_partial_var (const System_of_eqs* syst, int which, Ope_eq* so) ;
 		~Ope_partial_var() override ; ///< Destructor
 
 		Term_eq action() const override;
@@ -919,7 +921,7 @@ class Ope_partial_var : public Ope_eq {
 
 /**
  * This operator gives the value of one coefficient of a field, on a given boundary.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_mode : public Ope_eq {
 	protected:	   
@@ -932,15 +934,15 @@ class Ope_mode : public Ope_eq {
 		double value ; ///< The result is the coefficient minus value.
 
 	public:
-		/**
-		* Constructor
-		* @param syst : the associated \c System_of_eqs.
-		* @param bb : the boundary
-		* @param ind : which coefficient.
-		* @param val : the value with which the coefficient is "compared"
-		* @param so : target		
-		*/
-		Ope_mode (const System_of_eqs*, int bb, const Index& ind, double val, Ope_eq* so) ;
+	/**
+	* Constructor
+	* @param syst : the associated \c System_of_eqs.
+	* @param bb : the boundary
+	* @param ind : which coefficient.
+	* @param val : the value with which the coefficient is "compared"
+	* @param so : target		
+	*/
+		Ope_mode (const System_of_eqs* syst, int bb, const Index& ind, double val, Ope_eq* so) ;
 		~Ope_mode() override ; ///< Destructor
 
 		Term_eq action() const override;
@@ -948,7 +950,7 @@ class Ope_mode : public Ope_eq {
 
 /**
  * This operator gives the value of one coefficient of a field.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_val_mode : public Ope_eq {
 	protected:	   
@@ -971,7 +973,7 @@ class Ope_val_mode : public Ope_eq {
 
 /**
  * This operator gives the value of a field at a given collocation point.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_val : public Ope_eq {
 	protected:	   
@@ -992,7 +994,7 @@ class Ope_val : public Ope_eq {
 
 /**
  * This operator gives the value of a field at a point (arbitrary not necesseraly a collocation one)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_point : public Ope_eq {
 	protected:	   
@@ -1013,7 +1015,7 @@ class Ope_point : public Ope_eq {
 
 /**
  * This operator gives the value of a field at the origin
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_val_ori : public Ope_eq {
 
@@ -1032,7 +1034,7 @@ class Ope_val_ori : public Ope_eq {
 
 /**
  * Operator square-root (only defined for a scalar field or a double)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_sqrt: public Ope_eq {
 
@@ -1051,6 +1053,7 @@ class Ope_sqrt: public Ope_eq {
 /**
  * Operator square-root (only defined for a scalar field or a double).
  * Version where the output base is not standard but the anti standard base
+ * \ingroup systems
  */
 class Ope_sqrt_anti: public Ope_eq {
 
@@ -1069,7 +1072,7 @@ class Ope_sqrt_anti: public Ope_eq {
 /**
  * Operator square-root (only defined for a scalar field or a double).
  * Version where the output base is not standard but the one of rho (polar coordinates).
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_sqrt_nonstd: public Ope_eq {
 
@@ -1087,7 +1090,7 @@ class Ope_sqrt_nonstd: public Ope_eq {
 
 /**
  * Operator exponential (only defined for a scalar field or a double)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_exp: public Ope_eq {
 
@@ -1105,7 +1108,7 @@ class Ope_exp: public Ope_eq {
 
 /**
  * Operator logarithm (only defined for a scalar field or a double)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_log: public Ope_eq {
 
@@ -1123,7 +1126,7 @@ class Ope_log: public Ope_eq {
 
 /**
  * Operator  hyperbolic cosine (only defined for a scalar field or a double)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_cosh: public Ope_eq {
 
@@ -1141,7 +1144,7 @@ class Ope_cosh: public Ope_eq {
 
 /**
  * Operator  hyperbolic sine (only defined for a scalar field or a double)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_sinh: public Ope_eq {
 
@@ -1160,7 +1163,7 @@ class Ope_sinh: public Ope_eq {
 
 /**
  * Operator inverse hyperbolic tangent (only defined for a scalar field or a double)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_atanh: public Ope_eq {
 
@@ -1178,7 +1181,7 @@ class Ope_atanh: public Ope_eq {
 
 /**
  * Operator cosine (only defined for a scalar field or a double)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_cos: public Ope_eq {
 
@@ -1196,7 +1199,7 @@ class Ope_cos: public Ope_eq {
 
 /**
  * Operator sine (only defined for a scalar field or a double)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_sin: public Ope_eq {
 
@@ -1214,7 +1217,7 @@ class Ope_sin: public Ope_eq {
 
 /**
  * Operator that fits a field to outgoing waves (highly specialized stuff)
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_fit_waves : public Ope_eq {
 	public:
@@ -1233,7 +1236,7 @@ class Ope_fit_waves : public Ope_eq {
 /**
  * Operator defined by the user in the \c System_of_eqs
  * This version is intended to work with one argument.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_user: public Ope_eq {
 	protected:
@@ -1256,7 +1259,7 @@ class Ope_user: public Ope_eq {
 /**
  * Operator defined by the user in the \c System_of_eqs
  * This version is intended to work with two arguments.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_user_bin: public Ope_eq {
 	protected:
@@ -1280,7 +1283,7 @@ class Ope_user_bin: public Ope_eq {
 
 /**
  * Operator importing the values of a field from a neighborig \c Domain
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_import: public Ope_eq {
 
@@ -1309,7 +1312,7 @@ class Ope_import: public Ope_eq {
 
 /**
  * Operator changin the tensorial basis of a field.
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_change_basis: public Ope_eq {
 
@@ -1355,7 +1358,7 @@ class Ope_def_global : public Ope_eq {
 /**
  * 
  * Complex conjugate (only changes the m_quant parameter so far).
- * \ingroup systems.
+ * \ingroup systems
  */
 class Ope_conjug: public Ope_eq {
   

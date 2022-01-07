@@ -157,33 +157,33 @@ namespace Kadath {
         Term_eq der_abs(int i) const ;
 
         friend ostream& operator<< (ostream&, const Term_eq&) ; ///< Display
-        friend Term_eq operator+ (const Term_eq&, const Term_eq&) ;
-        friend Term_eq operator- (const Term_eq&, const Term_eq&) ;
-        friend Term_eq operator* (const Term_eq&, const Term_eq&) ;
-        friend Term_eq operator/ (const Term_eq&, const Term_eq&) ;
-        friend Term_eq scalar_product (const Term_eq&, const Term_eq&) ;
+        friend Term_eq operator+ (const Term_eq&, const Term_eq&) ; ///< Operator +
+        friend Term_eq operator- (const Term_eq&, const Term_eq&) ;///< Operator -
+        friend Term_eq operator* (const Term_eq&, const Term_eq&) ;///< Operator *
+        friend Term_eq operator/ (const Term_eq&, const Term_eq&) ;///< Operator /
+        friend Term_eq scalar_product (const Term_eq&, const Term_eq&) ;///< Operator scalar product
 
-        friend Term_eq operator* (int, const Term_eq&) ;
-        friend Term_eq operator* (const Term_eq&, int) ;
-        friend Term_eq operator* (double, const Term_eq&) ;
-        friend Term_eq operator* (const Term_eq&, double) ;
-        friend Term_eq operator* (const Scalar&, const Term_eq&) ;
-        friend Term_eq operator/ (const Term_eq&, double) ;
-        friend Term_eq sqrt (const Term_eq&) ;
-        friend Term_eq partial (const Term_eq&, char) ;
+        friend Term_eq operator* (int, const Term_eq&) ;///< Operator *
+        friend Term_eq operator* (const Term_eq&, int) ;///< Operator *
+        friend Term_eq operator* (double, const Term_eq&) ;///< Operator *
+        friend Term_eq operator* (const Term_eq&, double) ;///< Operator *
+        friend Term_eq operator* (const Scalar&, const Term_eq&) ;///< Operator *
+        friend Term_eq operator/ (const Term_eq&, double) ;///< Operator /
+        friend Term_eq sqrt (const Term_eq&) ;///< Operator square root
+        friend Term_eq partial (const Term_eq&, char) ;///< Operator partial derivative
 
-        friend Term_eq div_1mx2 (const Term_eq&) ;
+        friend Term_eq div_1mx2 (const Term_eq&) ; ///< Division by\f$1-x^2\f$
 
-        friend Term_eq bessel_jl (const Term_eq&, int) ;
-        friend Term_eq bessel_yl (const Term_eq&, int) ;
-        friend Term_eq bessel_djl (const Term_eq&, int) ;
-        friend Term_eq bessel_dyl (const Term_eq&, int) ;
-        friend Term_eq fjl (const Space&, int, int , const Term_eq& , const Param& ) ;
-        friend Term_eq fyl (const Space&, int, int , const Term_eq& , const Param& ) ;
+        friend Term_eq bessel_jl (const Term_eq&, int) ; ///< Bessel function
+        friend Term_eq bessel_yl (const Term_eq&, int) ;///< Bessel function
+        friend Term_eq bessel_djl (const Term_eq&, int) ;///< Bessel function
+        friend Term_eq bessel_dyl (const Term_eq&, int) ;///< Bessel function
+        friend Term_eq fjl (const Space&, int, int , const Term_eq& , const Param& ) ;///< Bessel function
+        friend Term_eq fyl (const Space&, int, int , const Term_eq& , const Param& ) ;///< Bessel function
 
-        friend Term_eq operator+ (const Term_eq&, double) ;
-        friend Term_eq operator+ (double, const Term_eq&) ;
-        friend Term_eq operator- (const Term_eq&) ;
+        friend Term_eq operator+ (const Term_eq&, double) ;///< Operator +
+        friend Term_eq operator+ (double, const Term_eq&) ;///< Operator +
+        friend Term_eq operator- (const Term_eq&) ;///< Operator -
 
         friend class Ope_lap ;
         friend class Ope_lap2 ;

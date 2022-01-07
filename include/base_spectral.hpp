@@ -68,7 +68,7 @@ namespace Kadath {
     **/
     class Base_spectral : public Memory_mapped {
     public:
-//        using Bases_container = Memory_mapped_vector<Array<int>*,int>;
+	//! Sylvain'stuff
         using Bases_container = Memory_mapped_array<Array<int>*,int>;
 
     protected:
@@ -84,7 +84,7 @@ namespace Kadath {
     public:
         /**
         * Standard constructor, the \c Base_spectral is not defined.
-        * @param i [input] : number of dimensions.
+        * @param dimensions [input] : number of dimensions.
         */
         explicit Base_spectral(int dimensions) : def{false}, ndim{dimensions}, bases_1d{ndim} {
             for (int i = 0; i < ndim; i++) bases_1d[i] = nullptr;
@@ -115,8 +115,8 @@ namespace Kadath {
 
         Base_spectral & operator= (const Base_spectral&) ; ///< Assignement operator.
 
-        const Array<int>* get_base_1d (int i) const {return bases_1d[i] ;} ; ///< Returns one of the 1d base array.
-
+	/// Returns one of the 1d base array.
+        const Array<int>* get_base_1d (int i) const {return bases_1d[i] ;} ; 
         /**
         * Allocates the various arrays, for a given number of coefficients.
         * @param nbr_coefs [input] : a \c Dim_array storing the number of coefficients in each dimenions.
@@ -160,9 +160,9 @@ namespace Kadath {
         * @returns the coefficients of the field.
         */
         Array<double> coef_i (const Dim_array& nbr_points, const Array<double> & so) const ;
-        /**
-            * Computes the spectral summation.
-            * @param num [input] : numerical coordinates used in the summation.
+	/**
+	* Computes the spectral summation.
+	* @param num [input] : numerical coordinates used in the summation.
         * @param tab [input] : spectral coefficients of the field.
         * @returns the summation.
         */

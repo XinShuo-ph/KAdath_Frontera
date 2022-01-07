@@ -106,11 +106,13 @@ namespace Kadath {
          * returns the number of columns.
          */
         int get_dim(int i) const {return sizes(i) ;};
-
-        Array<double>* get_lu() {return lu ;} ; ///< Returns a pointer  on the \c lu decomposition
-        Array<int>* get_permute() {return permute ;} ;///< Returns a pointer  on the permutation array.
-
-        const Array<double>& get_array() const {return *std; } ; ///< Returns the array of matrix elements
+	/// Returns a pointer  on the \c lu decomposition
+        Array<double>* get_lu() {return lu ;} ; 
+        /// Returns a pointer  on the permutation array.
+        Array<int>* get_permute() {return permute ;} ;
+	/// Returns the array of matrix elements
+        const Array<double>& get_array() const {return *std; } ; 
+        /// Returns the array of matrix elements non const version
         Array<double>& get_array() {return *std;}
 
         // affectation
@@ -124,7 +126,7 @@ namespace Kadath {
         void operator=(const Matrice& ) ; ///< Assignement to another \c Matrice.
         void operator=(const Array<double>& ) ; ///< Assignement to an array.
 
-        //Impression
+        /// Impression
         friend ostream& operator<<(ostream& , const Matrice& ) ;
 
         // extraction d'un element :
@@ -137,7 +139,7 @@ namespace Kadath {
          * @param i [input] column coordinate.
          *
          */
-        double& set(int, int) ;
+        double& set(int i, int j) ;
 
         /**
         * Copies the elements of \c so inside the matrice, starting at the position \f$ (i,j) \f$.
@@ -149,7 +151,7 @@ namespace Kadath {
          * @param j [input] line coordinate.
          * @param i [input] column coordinate.
          */
-        double operator()(int , int) const ;
+        double operator()(int i, int j) const ;
 
         // Passage matrice a bande
         /**
@@ -208,13 +210,13 @@ namespace Kadath {
         void operator/=(double) ; ///< Operator /=
 
         // Operateurs amis
-        friend Matrice operator+ (const Matrice&, const Matrice& ) ;
-        friend Matrice operator- (const Matrice&, const Matrice& ) ;
-        friend Matrice operator- (const Matrice& ) ;
-        friend Matrice operator* (const Matrice&, double ) ;
-        friend Matrice operator* (double, const Matrice& ) ;
-        friend Matrice operator* (const Matrice&, const Matrice& ) ;
-        friend Matrice operator/ (const Matrice&,  double ) ;
+        friend Matrice operator+ (const Matrice&, const Matrice& ) ; ///< Operator + (binary version)
+        friend Matrice operator- (const Matrice&, const Matrice& ) ; ///< Operator - (binary version)
+        friend Matrice operator- (const Matrice& ) ; ///< Operator - (unitary version)
+        friend Matrice operator* (const Matrice&, double ) ; ///< Operator*
+        friend Matrice operator* (double, const Matrice& ) ; ///< Operator*
+        friend Matrice operator* (const Matrice&, const Matrice& ) ; ///< Operator*
+        friend Matrice operator/ (const Matrice&,  double ) ; ///< Operator/
     } ;
     ostream& operator<<(ostream& , const Matrice& ) ;
 

@@ -212,7 +212,7 @@ class Domain_spheric_time_shell : public Domain {
   * @param tmmin :  Initial time.
   * @param tmmax :  Final time/
   * @param r_int : inner radius.
-  * @param r_out : outer radius.
+  * @param r_ext : outer radius.
   * @param nbr : number of points in each dimension.
   */
   Domain_spheric_time_shell (int num, int ttype, double tmmin, double tmmax , double r_int, double r_ext, const Dim_array& nbr) ;
@@ -500,14 +500,14 @@ class Space_spheric_time : public Space {
 	bool withcompact ; ///< Indicator of the presence of a compactified \c Domain.
 	
      public:
-        /**
-     	* Standard constructor 
-     	* @param ttype [input] : the type of basis.	
+	/**
+	* Standard constructor 
+	* @param ttype [input] : the type of basis.	
 	* @param nbr [input] : number of points in each domain.
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
-        * @param tmmin :  Initial time.
-        * @param tmmax :  Final time.
-	* @param wc[input] : With a compactified domain or not ?
+	* @param tmmin :  Initial time.
+	* @param tmmax :  Final time.
+	* @param wc [input] : With a compactified domain or not ?
 	*/
 	Space_spheric_time (int ttype, const Dim_array& nbr, const Array<double>& bounds, double tmmin, double tmmax, bool wc = false) ;
 	Space_spheric_time (FILE*) ; ///< Constructor from a file.

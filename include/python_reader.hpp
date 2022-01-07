@@ -36,6 +36,7 @@ typedef std::vector<var_t> var_vector;
 
 // base class for any collection of quantities defined on some space
 template<typename T>
+//! Sylvain's stuff
 struct vars_base_t {
   static var_vector vars;
 };
@@ -45,6 +46,7 @@ template<typename T> var_vector vars_base_t<T>::vars;
 // general reader class to be used within python
 // fills the internal dictionaries using a quantities type
 template<typename space_t, typename vars_t>
+//! Sylvain's stuff
 class python_reader_t {
   // the file from which gets read
   FILE * file;
