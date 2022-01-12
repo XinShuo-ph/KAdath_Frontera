@@ -190,8 +190,12 @@ double Val_domain::get_coef(const Index& index) const {
 }
 
 double Val_domain::operator()(const Index& index) const {
-	coef_i() ;
-	return (*c)(index) ;
+	if (is_zero)
+		return 0. ;
+	else {
+		coef_i() ;
+		return (*c)(index) ;
+	}
 }
 
 void Val_domain::set_in_conf()  {
