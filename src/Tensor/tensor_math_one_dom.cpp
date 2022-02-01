@@ -116,7 +116,7 @@ Tensor add_one_dom (int dd, const Tensor & t1, const Tensor & t2) {
 
     // Put parameters :
     int m_res = add_m_quant (t1.get_parameters(), t2.get_parameters()) ;
-    if (t1.is_m_quant_affected() || t2.is_m_quant_affected()) {
+    if (m_res!=0) {
       res.set_parameters().set_m_quant() = m_res ;
     }
 
@@ -214,7 +214,7 @@ Tensor sub_one_dom (int dd, const Tensor & t1, const Tensor & t2) {
 
   // Put parameters :
     int m_res = add_m_quant (t1.get_parameters(), t2.get_parameters()) ;
-      if (t1.is_m_quant_affected() || t2.is_m_quant_affected()) {
+      if (m_res!=0) {
       res.set_parameters().set_m_quant() = m_res ;
     }
 
@@ -283,7 +283,7 @@ Tensor mult_one_dom (int dd, const Tensor& t1, const Tensor& t2) {
 	  
 	// Put parameters :
       int m_res = mult_m_quant (t1.get_parameters(), t2.get_parameters()) ;
-        if (t1.is_m_quant_affected() || t2.is_m_quant_affected()) {
+        if (m_res!=0) {
 	res.set_parameters().set_m_quant() = m_res ;
       }
 
@@ -397,7 +397,7 @@ Tensor mult_one_dom (int dd, const Tensor& t1, const Tensor& t2) {
 
 		// Put parameters :
       int m_res = mult_m_quant (t1.get_parameters(), t2.get_parameters()) ;
-        if (t1.is_m_quant_affected() || t2.is_m_quant_affected()) {
+        if (m_res!=0) {
 	res.set_parameters().set_m_quant() = m_res ;
       }
 		return res ;
@@ -433,7 +433,7 @@ Tensor mult_one_dom (int dd, const Tensor& t1, const Tensor& t2) {
 		while (pos_t1.inc()) ;
       // Put parameters :
       int m_res = mult_m_quant (t1.get_parameters(), t2.get_parameters()) ;
-        if (t1.is_m_quant_affected() || t2.is_m_quant_affected()) {
+        if (m_res!=0) {
 	res.set_parameters().set_m_quant() = m_res ;
       }
 		return res ;
@@ -528,7 +528,7 @@ Tensor div_one_dom (int dd, const Tensor& t1, const Tensor& t2) {
  
    // Put parameters :
       int m_res = div_m_quant (t1.get_parameters(), t2.get_parameters()) ;
-        if (t1.is_m_quant_affected() || t2.is_m_quant_affected()) {
+        if (m_res!=0) {
 	res.set_parameters().set_m_quant() = m_res ;
       }
    return res ;
