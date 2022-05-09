@@ -241,4 +241,80 @@ double Domain_shell_inner_adapted::integ_volume (const Val_domain& so) const {
  return val * 2*M_PI ; 
 }
 }
+
+double Domain_shell_inner_adapted::integ (const Val_domain& so, int bound) const {
+
+  if (so.check_if_zero()) 
+    return 0 ;
+  else {
+   	 Val_domain integrant(this) ;
+  	 switch (bound) {
+  	 	case INNER_BC : {
+  
+  	 	Val_domain rad (get_radius()) ; // Radius
+  	 	Val_domain sint2 (get_cart_surr(1)*get_cart_surr(1) + get_cart_surr(2)*get_cart_surr(2)) ; // sin^2 theta (should be able to get that in other manner)
+  	 	Val_domain drdt (inner_radius->der_var(1)) ; // partial r / partial theta
+  	 	Val_domain drdp (inner_radius->der_var(2)) ; // partial r / partial phi
+  	 	Val_domain detq (rad*rad*(rad*rad*sint2 + drdt*drdt + sint2 * drdp*drdp)) ;
+  	 	Val_domain sqrtdetq (sqrt(detq)) ;
+  	 	
+  	 	Val_domain one (this) ;
+  	 	one = 1 ; 
+  	 	one.std_base()  ;
+  	 	Val_domain auxi (one.mult_sin_theta()) ;
+  	 	
+  	 	sqrtdetq.set_base() = auxi.get_base() ;
+  	 	
+  	 	integrant = sqrtdetq * so ;
+	 	break ;
+	 	}
+	 	case OUTER_BC : {
+	 		Val_domain rad (get_radius()) ; // Radius
+  	 		Val_domain sint2 (get_cart_surr(1)*get_cart_surr(1) + get_cart_surr(2)*get_cart_surr(2)) ; // sin^2 theta (should be able to get that in other manner)
+  	 		Val_domain detq (rad*rad*rad*rad*sint2) ;
+  	 		Val_domain sqrtdetq (sqrt(detq)) ;
+  	 		
+	 		Val_domain one (this) ;
+  	 		one = 1 ; 
+  	 		one.std_base()  ;
+  	 		Val_domain auxi (one.mult_sin_theta()) ;
+  	 	
+  	 		sqrtdetq.set_base() = auxi.get_base() ;
+  	 	
+	 		integrant = sqrtdetq * so ;
+	   		break ;
+	   	}
+	   	default : 
+	   		cerr << "Unknown type of boundary in Domain_shell_inner_adapted::integ" << endl ;
+  	}
+  	
+  	double res = 0 ;
+	int baset = (*integrant.get_base().bases_1d[1]) (0) ;
+	Index pcf (nbr_coefs) ;
+	switch (baset) {
+	  case COS_ODD :
+	break ;
+	case SIN_EVEN :
+	  break ;
+	case COS_EVEN : {
+		res += M_PI*val_boundary(bound, integrant, pcf) ;
+	break ;
+    	}
+    	case SIN_ODD : {
+	  	for (int j=0 ; j<nbr_coefs(1) ; j++) {
+	    		pcf.set(1) = j ;
+	    		res += 2./(2*double(j)+1) * val_boundary(bound, integrant, pcf) ;
+	  	}
+      		break ;
+    	}  
+	default : 
+    	  cerr << "Case not yet implemented in Domain_shell::integ" << endl ;
+      	abort() ;
+  	}
+  	
+    	res *= 2*M_PI ;
+   	return res ;
+	}
+	}
 }
+

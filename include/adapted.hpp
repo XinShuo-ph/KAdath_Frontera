@@ -334,6 +334,7 @@ class Domain_shell_inner_adapted : public Domain {
      virtual Tensor import (int, int, int, const Array<int>&,  Tensor**) const ;
   
      virtual double integ_volume (const Val_domain&) const ;
+     virtual double integ (const Val_domain&, int) const ;
 	     
 public:
      virtual ostream& print (ostream& o) const ;
