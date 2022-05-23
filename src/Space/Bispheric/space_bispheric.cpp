@@ -250,7 +250,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     ndom_plus = nplus ;
     nshells = nn ;
     
-    nbr_domains = (withnuc) ? ndom_minus + ndom_plus + nshells + 6 :  ndom_minus + ndom_plus + nshells + 4 ;
+    nbr_domains = ndom_minus + ndom_plus + nshells + 6 ;
     type_base = ttype ;
     domains = new Domain* [nbr_domains] ;
   
@@ -292,14 +292,20 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     Point center_minus (ndim) ;
     center_minus.set(1) = aa*cosh(eta_minus)/sinh(eta_minus) ;
     a_minus = aa*cosh(eta_minus)/sinh(eta_minus) ;
-    if (withnuc) {
+     if (withnuc) {
     	domains[current] = new Domain_nucleus(current, ttype, rminus(0), center_minus, res) ;
     	current ++ ;
-    }
- 
+
     for (int i=1 ; i<ndom_minus ; i++) {
-      domains[current] = new Domain_shell(current, ttype, rminus(i-1), rminus(i), center_minus, res) ;
-      current ++ ;
+	domains[current] = new Domain_shell (current, ttype, rminus(i-1), rminus(i), center_minus, res) ;
+	 current ++ ;
+    	}
+    }
+    else {
+    for (int i=0 ; i<ndom_minus ; i++) {
+	domains[current] = new Domain_shell (current, ttype, rminus(i), rminus(i+1), center_minus, res) ;
+	current ++ ;
+    }
     }
 
     Point center_plus (ndim) ;
@@ -308,12 +314,19 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     if (withnuc) {
   	domains[current] = new Domain_nucleus(current, ttype, rplus(0), center_plus, res) ;
   	current ++ ;
+    
+     for (int i=1 ; i<ndom_plus ; i++) {
+	domains[current] = new Domain_shell (current, ttype, rplus(i-1), rplus(i), center_plus, res) ;
+	current ++ ;
     }
-
-    for (int i=1 ; i<ndom_plus ; i++) {
-       domains[current] = new Domain_shell(current, ttype, rplus(i-1), rplus(i), center_plus, res) ;
-       current ++ ;
     }
+    else {
+      for (int i=0 ; i<ndom_plus ; i++) {
+	domains[current] = new Domain_shell (current, ttype, rplus(i), rplus(i+1), center_plus, res) ;
+	current ++ ;
+    }
+    }
+    
 
     // Bispherical domains antitrigo order: 
     domains[current] = new Domain_bispheric_chi_first(current, ttype, aa, eta_minus, rr(0), chi_lim, res_bi) ;
@@ -357,7 +370,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     ndom_plus = nplus ;
     nshells = nn ;
     
-    nbr_domains = (withnuc) ? ndom_minus + ndom_plus + nshells + 8 : ndom_minus + ndom_plus + nshells + 6  ;
+    nbr_domains = ndom_minus + ndom_plus + nshells + 6  ;
     type_base = ttype ;
     domains = new Domain* [nbr_domains] ;
   
@@ -368,8 +381,8 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     
     // Bispheric :
     // Computation of aa
-    double r1 = rminus(nminus) ;
-    double r2 = rplus(nplus) ;
+    double r1 = rminus(nminus -1 ) ;
+    double r2 = rplus(nplus-1) ;
    
     if (fabs(r1-r2)>1e-12) {
       cerr << "Constructor of Space_bispheric not correct for different radii" << endl ;
@@ -402,8 +415,28 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     if (withnuc) {
     	domains[current] = new Domain_nucleus(current, ttype, rminus(0), center_minus, res) ;
     	current ++ ;
-    }
 
+    for (int i=1 ; i<ndom_minus ; i++) {
+	switch (type_r_minus(i)) {
+	  case STD_TYPE: 
+	    domains[current] = new Domain_shell (current, ttype, rminus(i-1), rminus(i), center_minus, res) ;
+	    current ++ ;
+	    break ;
+	  case LOG_TYPE:
+	    domains[current] = new Domain_shell_log (current, ttype, rminus(i-1), rminus(i), center_minus, res) ;
+	    current ++ ;
+	    break ;
+	  case SURR_TYPE:
+	    domains[current] = new Domain_shell_surr (current, ttype, rminus(i-1), rminus(i), center_minus, res) ;
+            current ++ ;
+	    break ;
+	  default:
+	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
+	     abort() ;
+	}
+    }
+    }
+    else {
     for (int i=0 ; i<ndom_minus ; i++) {
 	switch (type_r_minus(i)) {
 	  case STD_TYPE: 
@@ -422,7 +455,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
 	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
 	     abort() ;
 	}
-
+    }
     }
 
     Point center_plus (ndim) ;
@@ -431,9 +464,29 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     if (withnuc) {
   	domains[current] = new Domain_nucleus(current, ttype, rplus(0), center_plus, res) ;
   	current ++ ;
+    
+     for (int i=1 ; i<ndom_plus ; i++) {
+	switch (type_r_minus(i)) {
+	  case STD_TYPE: 
+	    domains[current] = new Domain_shell (current, ttype, rplus(i-1), rplus(i), center_plus, res) ;
+	    current ++ ;
+	    break ;
+	  case LOG_TYPE:
+	    domains[current] = new Domain_shell_log (current, ttype, rplus(i-1), rplus(i), center_plus, res) ;
+	    current ++ ;
+	    break ;
+	  case SURR_TYPE:
+	    domains[current] = new Domain_shell_surr (current, ttype, rplus(i-1), rplus(i), center_plus, res) ;
+            current ++ ;
+	    break ;
+	  default:
+	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
+	     abort() ;
+	}
     }
-     
-     for (int i=0 ; i<ndom_plus ; i++) {
+    }
+    else {
+      for (int i=0 ; i<ndom_plus ; i++) {
 	switch (type_r_minus(i)) {
 	  case STD_TYPE: 
 	    domains[current] = new Domain_shell (current, ttype, rplus(i), rplus(i+1), center_plus, res) ;
@@ -451,6 +504,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
 	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
 	     abort() ;
 	}
+    }
     }
     
 
@@ -785,7 +839,7 @@ Space_bispheric::Space_bispheric (FILE*fd, int type_minus, int type_plus, int ty
 		current ++ ;
 	}
 
-	int limminus = (nucleus) ? ndom_minus : ndom_minus-1 ;
+	int limminus = (nucleus) ? ndom_minus-1 : ndom_minus ;
 	for (int i=0 ; i<limminus ; i++)
 	  switch (type_minus) {
 	    case STD_TYPE :
@@ -810,7 +864,7 @@ Space_bispheric::Space_bispheric (FILE*fd, int type_minus, int type_plus, int ty
 		current ++ ;
 	}
 	
-	int limplus = (nucleus) ? ndom_plus : ndom_plus-1 ;
+	int limplus = (nucleus) ? ndom_plus-1 : ndom_plus ;
 	for (int i=0 ; i<limplus ; i++)
 	  switch (type_plus) {
 	    case STD_TYPE :
