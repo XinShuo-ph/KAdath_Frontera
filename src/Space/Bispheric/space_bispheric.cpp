@@ -765,22 +765,18 @@ Space_bispheric::Space_bispheric (FILE*fd, int type_shells, bool old) {
 	current ++ ;
 }
 
-Space_bispheric::Space_bispheric (FILE*fd, int type_minus, int type_plus, int type_shells) {
+Space_bispheric::Space_bispheric (FILE*fd, int type_minus, int type_plus, int type_shells, bool nucleus) {
   
+
 	fread_be (&nbr_domains, sizeof(int), 1, fd) ;
 	fread_be (&ndim, sizeof(int), 1, fd) ;
 	fread_be (&type_base, sizeof(int), 1, fd) ;	
 	fread_be (&a_minus, sizeof(double), 1, fd) ;
 	fread_be (&a_plus, sizeof(double), 1, fd) ;
-	
 	fread_be (&ndom_minus, sizeof(int), 1, fd) ;
 	fread_be (&ndom_plus, sizeof(int), 1, fd) ;
 	fread_be (&nshells, sizeof(int), 1, fd) ;
-
-	// Check whether one has nucleii or not
-	double nnuc = nbr_domains - 1 - nshells - ndom_minus - ndom_plus - 5;
-	bool nucleus = (nnuc>=2) ? true : false ;
-		
+	
 	domains = new Domain* [nbr_domains] ;
 
 	int current = 0 ;
@@ -789,7 +785,8 @@ Space_bispheric::Space_bispheric (FILE*fd, int type_minus, int type_plus, int ty
 		current ++ ;
 	}
 
-	for (int i=0 ; i<ndom_minus ; i++)
+	int limminus = (nucleus) ? ndom_minus : ndom_minus-1 ;
+	for (int i=0 ; i<limminus ; i++)
 	  switch (type_minus) {
 	    case STD_TYPE :
 	      domains[current] = new Domain_shell(current, fd) ;
@@ -807,15 +804,14 @@ Space_bispheric::Space_bispheric (FILE*fd, int type_minus, int type_plus, int ty
 	     cerr << "Unknown type of shells in Space_bishperic constructor" << endl ;
 	     abort() ;
 	}
-
-       
 	
 	if (nucleus) {
 		domains[current] = new Domain_nucleus(current, fd) ;
 		current ++ ;
 	}
-
-	for (int i=0 ; i<ndom_plus ; i++)
+	
+	int limplus = (nucleus) ? ndom_plus : ndom_plus-1 ;
+	for (int i=0 ; i<limplus ; i++)
 	  switch (type_plus) {
 	    case STD_TYPE :
 	      domains[current] = new Domain_shell(current, fd) ;
