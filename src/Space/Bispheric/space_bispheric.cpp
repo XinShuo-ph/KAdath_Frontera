@@ -250,7 +250,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     ndom_plus = nplus ;
     nshells = nn ;
     
-    nbr_domains = (withnuc) ? ndom_minus + ndom_plus + nshells + 8 : ndom_minus + ndom_plus + nshells + 6  ;
+    nbr_domains = (withnuc) ? ndom_minus + ndom_plus + nshells + 6 :  ndom_minus + ndom_plus + nshells + 4 ;
     type_base = ttype ;
     domains = new Domain* [nbr_domains] ;
   
@@ -261,8 +261,8 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     
     // Bispheric :
     // Computation of aa
-    double r1 = rminus(nminus) ;
-    double r2 = rplus(nplus) ;
+    double r1 = rminus(nminus-1) ;
+    double r2 = rplus(nplus-1) ;
    
     if (fabs(r1-r2)>1e-12) {
       cerr << "Constructor of Space_bispheric not correct for different radii" << endl ;
@@ -287,7 +287,7 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     double eta_lim = eta_c/2. ;
     double chi_lim = chi_lim_eta (eta_lim, rr(0), aa, chi_c) ;
    
-    // The spheres  
+   // The spheres  
     int current = 0 ;    
     Point center_minus (ndim) ;
     center_minus.set(1) = aa*cosh(eta_minus)/sinh(eta_minus) ;
@@ -296,9 +296,9 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     	domains[current] = new Domain_nucleus(current, ttype, rminus(0), center_minus, res) ;
     	current ++ ;
     }
-
-    for (int i=0 ; i<ndom_minus ; i++) {
-      domains[current] = new Domain_shell(current, ttype, rminus(i), rminus(i+1), center_minus, res) ;
+ 
+    for (int i=1 ; i<ndom_minus ; i++) {
+      domains[current] = new Domain_shell(current, ttype, rminus(i-1), rminus(i), center_minus, res) ;
       current ++ ;
     }
 
@@ -309,9 +309,9 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
   	domains[current] = new Domain_nucleus(current, ttype, rplus(0), center_plus, res) ;
   	current ++ ;
     }
- 
-    for (int i=0 ; i<ndom_plus ; i++) {
-       domains[current] = new Domain_shell(current, ttype, rplus(i), rplus(i+1), center_plus, res) ;
+
+    for (int i=1 ; i<ndom_plus ; i++) {
+       domains[current] = new Domain_shell(current, ttype, rplus(i-1), rplus(i), center_plus, res) ;
        current ++ ;
     }
 
