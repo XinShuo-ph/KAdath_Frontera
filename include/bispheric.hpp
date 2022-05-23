@@ -1477,8 +1477,9 @@ class Space_bispheric : public Space {
 	* @param type_minus : type of the shells around hole 1(assumed to be the same for each one).
 	* @param type_plus : type of the shells around hole 2 (assumed to be the same for each one).
 	* @param shell_type : type of the outer shells (assumed to be the same for each one).
+	* @param withnuc : check whether the inner domaisn have nucleii or not.
 	*/
-	Space_bispheric (FILE*, int type_minus, int type_plus, int shell_type) ;
+	Space_bispheric (FILE*, int type_minus, int type_plus, int shell_type, bool withnuc = true) ;
     
 	/**
 	* Sets a boundary condition at the inner radius of the first sphere.
