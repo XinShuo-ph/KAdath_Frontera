@@ -516,6 +516,63 @@ bool System_of_eqs::do_newton_with_linesearch(double precision, double& error, i
    return res;
 }
 
+bool System_of_eqs::do_newton_seq(double precision, double &error)
+{
+   clock_t begin, end;
+   vars_to_terms();
+   Array<double> second(sec_member());
+   error = max(fabs(second));
+   cout << "Error init = " << error << endl;
+   if (error<precision) return true;
+   int nn(second.get_size(0));
+   if (nbr_unknowns!=nn)
+   {
+      cerr << "N unknowns  = " << nbr_unknowns << endl;
+      cerr << "N equations = " << nn << endl;
+      abort();
+   }
+   cout << "Size = " << nn << endl;
+   cout << "Progression computation : ";
+   cout.flush();
+   begin = clock();
+   Array<double> jx(nn);
+   Matrice ope(nn,nn);
+   for (int col(nn-1) ; col >= 0 ; col--)
+   {
+      if ((col != 0) && (col%int(nn/10) == 0))
+      {
+         cout << "*";
+         cout.flush();
+      }
+      jx = do_col_J(col);
+      for (int line(0) ; line < nn ; line++) ope.set(line,col) = jx(line);
+   }
+   cout << endl;
+   end = clock();
+   cout << "Loading the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
+   begin = clock();
+   ope.set_lu();
+   Array<double> xx(ope.solve(second));
+
+   end = clock();
+   cout << "Inverting the matrix : " << static_cast<double>(end - begin)/CLOCKS_PER_SEC << " seconds" << endl;
+   int conte(0);
+   espace.xx_to_vars_variable_domains(this, xx, conte);
+   double* old_var_double(new double[nvar_double]);
+   for (int i(0) ; i < nvar_double ; ++i) old_var_double[i] = *var_double[i];
+   Tensor** old_fields(new Tensor* [nvar]);
+   for (int i(0) ; i < nvar ; i++) old_fields[i] = new Tensor(*var[i]);
+   xx_to_vars(xx, conte);
+   for (int i(0) ; i < nvar_double ; i++) *var_double[i] = old_var_double[i] - (*var_double[i]);
+   for (int i(0) ; i < nvar ; i++) *var[i] = *old_fields[i] - (*var[i]);
+   delete [] old_var_double;
+   for (int i(0) ; i<nvar ; i++) delete old_fields[i];
+   delete [] old_fields;
+   return false;
+}
+
+
+
 void System_of_eqs::check_positive(double delta)
 {
    if (delta < 0.0)
