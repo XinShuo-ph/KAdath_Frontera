@@ -32,7 +32,7 @@ double zerosec(double (*f)(double, const Param&), const Param& parf,
     double x1, double x2, double precis, int nitermax, int& niter) ;
 
 
-double func_ab (double aa, const Param& par) {
+inline double func_ab (double aa, const Param& par) {
 	double r1 = par.get_double(0) ;
 	double r2 = par.get_double(1) ;
 	double d = par.get_double(2) ;
@@ -478,7 +478,7 @@ Space_bin_bh::Space_bin_bh (int ttype, double dist, const std::vector<double>& B
     auto router1 = BH1_bounds[n_shells1+2];
     auto router2 = BH2_bounds[n_shells2+2];
 
-    nbr_domains = 12 + n_shells1 + n_shells2;
+    nbr_domains = 12 + n_shells1 + n_shells2 + n_shells_outer;
     type_base = ttype ;
     domains = new Domain* [nbr_domains] ;
 
