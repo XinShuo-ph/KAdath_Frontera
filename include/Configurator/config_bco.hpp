@@ -251,6 +251,7 @@ public:
     //start - set BH properties in config file
     //Resolution of the initial setup
     bconfig.set(BCO_RES)      = 9;
+    bconfig.set(DIM)            = 3;
     
     //Units of the system - 4 * PI * G
     bconfig.set(BCO_QPIG)     = 4 * M_PI;
@@ -276,6 +277,9 @@ public:
     //MIRR and MCH are fixing parameters...this is what the resulting BH will be
     bconfig.set(MIRR)         = 0.5 ;
     bconfig.set(MCH)          = 0.5 ;
+
+    bconfig.set(BVELX)        = 0.;
+    bconfig.set(BVELY)        = 0.;
     
     /** 
      * fixed lapse is used for the PRE stage only.  
@@ -293,6 +297,9 @@ public:
     bconfig.set_field(LAPSE) = true;
     bconfig.set_field(SHIFT) = true;
     //end   - set BH fields
+
+    bconfig.seq_setting(INIT_RES) = 9;
+    bconfig.control(SAVE_COS) = true;
   }
 };
 
@@ -317,7 +324,7 @@ class BCO_NS_INFO : public BCO_INFO {
   using EOSMap   = std::map<std::string, EOS_PARAMS>;
 
 private:
-  const std::string node_t{"ns"}; ///< node type
+  std::string node_t{"ns"}; ///< node type
 
   EOSArray eos_params{}; ///< Array storing EOS parameters
 
@@ -470,7 +477,6 @@ public:
   template <typename config_t>
   void set_defaults(config_t& bconfig) {
     //start - set NS properties in config file
-    bconfig.set(RMID)        = 8.;
     bconfig.set_eos(EOSFILE)    = "togashi.lorene";
     bconfig.set_eos(EOSTYPE)    = "Cold_Table";
     bconfig.set_eos(HCUT)       = 0.0;
@@ -494,7 +500,9 @@ public:
     //Radius of outer boundary - matched with compactified domain
     bconfig.set(ROUT)           = 1.5 * bconfig(RMID) ;
     
-    //Additional shells between RIN and RMID - might become deprecated
+    //Additional shells between RIN and RMID
+    bconfig.set(NINSHELLS)        = 0;
+    //Additional shells between RMID and ROUT
     bconfig.set(NSHELLS)        = 0;
     
     //Initial dimensionless spin
@@ -521,6 +529,128 @@ public:
     bconfig.set_field(CONF)     = true;
     bconfig.set_field(LOGH)     = true;
     //end   - set NS fields
+
+    bconfig.seq_setting(INIT_RES) = 9;
+    bconfig.control(SAVE_COS) = true;
+  }
+};
+
+/**
+ * BCO_KSBH_INFO
+ * Child class containing parameters for a KerrSchild BH.
+ * We also store default parameters which is used for an initial setup.
+ */
+
+class BCO_KSBH_INFO : public BCO_INFO {
+private:
+  std::string node_t = "bh"; ///< string containing node type
+
+public:
+  BCO_KSBH_INFO() : BCO_INFO() {
+    bco_stages = MKSBHSTAGE;
+  }
+  BCO_KSBH_INFO(const BCO_KSBH_INFO& b) : BCO_INFO(b) {}
+  BCO_KSBH_INFO(BCO_KSBH_INFO&& b) noexcept : BCO_INFO(std::move(b)) {}
+  BCO_KSBH_INFO& operator=(BCO_KSBH_INFO& b) {
+    this->bco_params = b.bco_params;
+    this->bco_stages = b.bco_stages;
+    return *this;
+  }
+  BCO_KSBH_INFO& operator=(const BCO_KSBH_INFO&& b) noexcept {
+    this->bco_params = std::move(b.bco_params);
+    this->bco_stages = std::move(b.bco_stages);
+    return *this;
+  }
+
+  /**
+   * BCO_KSBH_INFO::give_name_string
+   * Returns BCO type with an added int, 1 or 2.  Needed
+   * for config_binary.hpp 
+   *
+   * @param[input]  N integer to concatenate with type
+   * @param[output] string concatenated string
+   */
+  virtual std::string give_name_string(const int &N) override {
+    return node_t.data() + std::to_string(N);
+  }
+
+  /**
+   * BCO_KSBH_INFO::print_me
+   * Debug function to print stored node_type
+   */
+  virtual void print_me() override {
+    std::cout << node_t << std::endl;
+    std::cout << "-----------------------" << std::endl;
+  }
+
+  /**
+   * BCO_KSBH_INFO::get_type
+   * Returns BCO type
+   *
+   * @param[output] node_t node type
+   */
+  virtual std::string get_type() const override { return node_t; }
+
+  /** 
+   * BCO_KSBH_INFO::set_defaults
+   * Allow the setting of default configurator values for a base BH setup - do not modify 
+   *
+   * @tparam config_t configuration file type
+   * @param bconfig reference to configuration file to be modified
+   */
+  template <typename config_t>
+  void set_defaults(config_t& bconfig) {
+    //start - set BH properties in config file
+    //Resolution of the initial setup
+    bconfig.set(BCO_RES)  = 9;
+    bconfig.set(DIM)      = 3;
+    
+    //Units of the system - 4 * PI * G
+    bconfig.set(BCO_QPIG) = 4 * M_PI;
+    
+    //Nucleus Radius 
+    bconfig.set(RIN)      = 1.;
+    
+    //Initial guess for BH - radius
+    bconfig.set(RMID)     = 2.;
+    
+    //Radius of outer boundary - matched with compactified domain
+    bconfig.set(ROUT)     = 2. * bconfig(RMID) ;
+    
+    //Additional shells can be added between RMID and ROUT for refined resolution
+    bconfig.set(NSHELLS)  = 1;
+    
+    //Initial dimensionless spin
+    bconfig.set(CHI)      = 0;
+    
+    //Initial guess of omega
+    bconfig.set(OMEGA)    = 0;
+
+    //MIRR and MCH are fixing parameters...this is what the resulting BH will be
+    bconfig.set(MIRR)     = 1. ;
+    bconfig.set(MCH)      = 1. ;
+    bconfig.set(KERR_MCH) = 1. ;
+    bconfig.set(KERR_CHI) = 0. ;
+
+    bconfig.set(BVELX)    = 0.;
+    bconfig.set(BVELY)    = 0.;
+    //end   - set BH parameters
+
+    //start - set BH stages in config file
+    bconfig.set_stage(TOTAL_BC) = true;
+    //end   - set BH stages
+
+    //start - set BH fields in config file
+    bconfig.set_field(CONF)  = true;
+    bconfig.set_field(LAPSE) = true;
+    bconfig.set_field(SHIFT) = true;
+    bconfig.set_field(KS_K)  = true;
+    bconfig.set_field(KS_LAPSE)  = true;
+    bconfig.set_field(KS_METRIC)  = true;
+    //end   - set BH fields
+
+    bconfig.seq_setting(INIT_RES) = 9;
+    bconfig.control(SAVE_COS) = true;
   }
 };
 /**

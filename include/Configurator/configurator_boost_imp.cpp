@@ -31,12 +31,15 @@ kadath_config_boost<ParamC>::kadath_config_boost() {
   fields.fill( false );
   stages.fill( false );
   controls.fill( false );
+  seq_settings.fill(std::nan("1"));
+  set_seq_defaults();
 }
 
 template<typename ParamC>
 kadath_config_boost<ParamC>::kadath_config_boost(std::string ifile) : container{} {
   this->set_filename(ifile);
   this->open_config();
+  set_seq_defaults();
 }
 
 template<typename ParamC>
@@ -66,6 +69,8 @@ int kadath_config_boost<ParamC>::open_config()  {
   read_keys(MSTAGE, stages, read_branch(tree, "stages"));
   if(tree.find("sequence_controls") != tree.not_found())
     read_keys(MCONTROLS, controls, read_branch(tree, "sequence_controls"));
+  if(tree.find("sequence_settings") != tree.not_found())
+    read_keys(MSEQ_SETTINGS, seq_settings, read_branch(tree, "sequence_settings"));
   return status;
 }
 
@@ -76,15 +81,6 @@ void kadath_config_boost<ParamC>::write_config(std::string ofile)
   Tree new_tree;
   Tree branch = container.return_branch();
 
-  /**
-   * Note
-   * The \b initial dataset is always saved.  If it doesn't exist, one is written
-   * based on the current configuration.  This is done during the setup process.
-   *
-   * Currently this is not used or updated again.  This could be modified to be updated
-   * every run, but has been left this way to know what parameters the initial ID
-   * started from before moving on to extreme configurations.
-   */
   std::string s{"initial"};
   if(tree.find(s) != tree.not_found()){
     if(this->control(UPDATE_INIT))
@@ -92,7 +88,8 @@ void kadath_config_boost<ParamC>::write_config(std::string ofile)
     else
       new_tree.push_back(std::make_pair(s,tree.get_child(s)));
   } else {
-    new_tree.put_child(s, branch);
+    if(this->control(UPDATE_INIT))
+      new_tree.put_child(s, branch);
   }
  
   // get branch from parameter container 
@@ -114,6 +111,8 @@ void kadath_config_boost<ParamC>::write_config(std::string ofile)
   new_tree.push_back(std::make_pair(s,build_branch<Tree>(stage_map, stages, true)));
   s = "sequence_controls";
   new_tree.push_back(std::make_pair(s,build_branch<Tree>(MCONTROLS, controls, true)));
+  s = "sequence_settings";
+  new_tree.push_back(std::make_pair(s,build_branch<Tree>(MSEQ_SETTINGS, seq_settings)));
 
   if(ofile != "null"){
     //this will update outputdir if ofile includes a path
@@ -185,4 +184,27 @@ const std::string kadath_config_boost<ParamC>::space_filename() const {
   int idx = filename.rfind(".");
   return std::string{outputdir+filename.substr(0,idx)+".dat"};
 }
+
+/**
+ * kadath_config_boost::config_filename_abs
+ *
+ * returns the config filename based with absolute path.  This reduced
+ * a lot of repeat code.
+ * 
+ * @return string with <outputdir/filename.info>
+ */
+template<typename ParamC>
+const std::string kadath_config_boost<ParamC>::config_filename_abs() const {
+  int idx = filename.rfind(".");
+  return std::string{outputdir+filename};
+}
+
+template<typename ParamC>
+inline void kadath_config_boost<ParamC>::set_seq_defaults() {
+  if(std::isnan(seq_settings[PREC]))
+    seq_settings[PREC] = 1e-8;
+  if(std::isnan(seq_settings[MAX_ITER]))
+    seq_settings[MAX_ITER] = 15;
+}
+
 

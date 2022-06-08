@@ -56,17 +56,18 @@ class kadath_config_boost {
   using SArray = std::array<bool, NUM_STAGES>;
   using CArray = std::array<bool, NUM_CONTROLS>;
   private:
-    std::string filename{}; ///< input filename
-    std::string outputdir{"./"}; ///< output directory
-    Tree tree;             ///< input tree 
-    Tree branch_in;        ///< input branch
-    FArray fields{};       ///< Fields storage array
-    SArray stages{};       ///< Stages storage array
-    CArray controls{};     ///< Controls storage array
+    std::string filename{};
+    std::string outputdir{"./"};
+    Tree tree;     
+    Tree branch_in;
+    FArray fields{};       
+    SArray stages{};       
+    CArray controls{};     
+    std::array<double, NUM_SEQ_SETTINGS> seq_settings{};
     ParamC container;      ///< Parameter container
 
   public:
-    kadath_config_boost(); ///<Default constructor
+    kadath_config_boost();
     
     /**
       * Default constructor used for reading in *.info config files
@@ -104,14 +105,29 @@ class kadath_config_boost {
       * kadath_config_boost::config_filename()
       * @return filename: returns constant filename
       */
-    const std::string config_filename() const { return filename; } ///< returns config filename
-    const std::string space_filename()  const;
-    const std::string config_outputdir()const { return outputdir; } ///< returns config outputdir
-    FArray& return_fields()             { return fields; }        ///< returns ref to fields
-    SArray& return_stages()             { return stages; }        ///< returns ref to stages
-    auto& set_field(const int idx)      { return fields[idx]; }   ///< set field element
-    auto& set_stage(const int idx)      { return stages[idx]; }   ///< set stage element
-    auto& control(const int idx)        { return controls[idx]; } ///< read/write control
+    const std::string config_filename() const { return filename; }
+    const std::string config_filename_abs() const;                  ///< config filename including path
+    const std::string space_filename() const;                      ///< space filename including path
+    const std::string config_outputdir()const { return outputdir; }
+
+    FArray const& return_fields() const { return fields; }
+    FArray& return_fields() { return fields; }
+
+    SArray const& return_stages() const { return stages; }
+    SArray& return_stages() { return stages; }
+
+    auto& set_field(const int idx) { return fields[idx]; }
+    auto const & field(const int idx) const { return fields[idx]; }
+
+    auto& set_stage(const int idx) { return stages[idx]; }
+    auto const & set_stage(const int idx) const { return stages[idx]; }
+
+    auto const & control(const int idx) const { return controls[idx]; }   
+    auto& control(const int idx) { return controls[idx]; } 
+
+    auto& seq_setting(const int idx) { return seq_settings[idx]; }
+    auto const & seq_setting(const int idx) const { return seq_settings[idx]; }
+
     void set_outputdir(std::string dir);
     void set_filename(std::string fname);
 
@@ -120,20 +136,20 @@ class kadath_config_boost {
       * initialize binary parameter container based on node types
       * @param[input] bco_types: array containing two strings such as {"bh", "bh"}
       */
-    void  initialize_binary(std::array<std::string, 2> bco_types) { container.init_binary(bco_types); }
+    void initialize_binary(std::array<std::string, 2> bco_types) { container.init_binary(bco_types); }
 
     /**
       * kadath_config_boost::set_defaults
       * for a given parameter container, use the conatainers defaults.
       * Note: this is currently used only for isolated objects such as NS or BH.  Not binaries.
       */
-    void  set_defaults() { container.set_defaults(*this); }
+    void set_defaults() { container.set_defaults(*this); }
 
     /**
       * kadath_config_boost::get_map
       * get map of base parameter container
       */
-    constexpr auto& get_map() const                   { 
+    constexpr auto& get_map() const { 
       return container.get_map();
     }
 
@@ -142,7 +158,7 @@ class kadath_config_boost {
       * get map of child parameter container where idx is the child idx (i.e. BCO1)
       * @param[input] idx: child container array index
       */
-    constexpr auto& get_map(const int idx) const      { 
+    constexpr auto& get_map(const int idx) const { 
       return container.get_map(idx);
     }
 
@@ -151,7 +167,7 @@ class kadath_config_boost {
       * but throws an error when a NaN is encountered
       * @param[input] idx: index of parameter to read/write
       */
-    constexpr auto& operator()(const int idx)         { 
+    constexpr auto& operator()(const int idx) { 
       if(!check_for_nan(container.get_map(), container(idx), idx)) {
         return container(idx);
       }
@@ -179,7 +195,7 @@ class kadath_config_boost {
       * @return parameter
       */
     template<typename... idx_t>
-    auto& set(const idx_t... idxs)                { 
+    constexpr auto& set(const idx_t... idxs) { 
       return container(idxs...);
     }
    
@@ -190,7 +206,9 @@ class kadath_config_boost {
       * @param[input] idxs: index/indices of eos parameter to set
      */
     template<typename... idx_t>
-    auto& set_eos(const idx_t... idxs) { return container.set_eos_param(idxs...); }
+    constexpr auto& set_eos(const idx_t... idxs) { 
+      return container.set_eos_param(idxs...); 
+    }
 
     /**
       * kadath_config_boost::eos()
@@ -205,7 +223,7 @@ class kadath_config_boost {
      */
     template<typename T, typename... idx_t,
     std::enable_if_t<std::is_arithmetic_v<T>, bool> = true>
-    const T eos(idx_t... idx) {
+    constexpr const T eos(idx_t... idx) {
       T var{};
       auto set_var = [&](auto&& v) mutable {
         using v_t = std::decay_t<decltype(v)>;  
@@ -220,7 +238,7 @@ class kadath_config_boost {
 
     template<typename T, typename... idx_t,
     std::enable_if_t<std::is_same_v<T, std::string>, bool> = true>
-    const T eos(idx_t... idx) {
+    constexpr const T eos(idx_t... idx) {
       T var{};
       auto set_var = [&](auto&& v) mutable {
         using v_t = std::decay_t<decltype(v)>;  
@@ -231,6 +249,8 @@ class kadath_config_boost {
       std::visit(set_var, this->set_eos(idx...));
       return var;
     }
+    
+    inline void set_seq_defaults();
 
     friend std::ostream& operator<< <>(std::ostream&, const kadath_config_boost<ParamC>&) ;
 };

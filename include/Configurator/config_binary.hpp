@@ -21,6 +21,8 @@
 #include "configurator_boost.hpp"
 #include <cmath>
 #include <memory>
+#include <array>
+#include <numeric>
 /**
  * \addtogroup Containers
  * @ingroup Configurator
@@ -315,6 +317,70 @@ public:
     throw std::invalid_argument("\nInvalid EOS Parameter indices for reading\n");
   }
   friend std::ostream &operator<<(std::ostream &, const BIN_INFO &);
+
+  /** 
+   * BIN_INFO::set_defaults
+   * Allow the setting of default configurator values for base binary setup
+   *
+   * @tparam config_t configuration file type
+   * @param bconfig reference to configuration file to be modified
+   */
+  template <typename config_t>
+  void set_defaults(config_t& bconfig) {
+    bool includes_matter = false;
+    std::array<double,2> Ms{};
+    // copy Compact Object defaults
+    for(auto& bco : {BCO1, BCO2}) {
+      const auto bcotype = BCOS[bco]->get_type();
+      if(bcotype == "ns") {
+        kadath_config_boost<BCO_NS_INFO> nsconfig;
+        nsconfig.set_defaults();
+        for(int i = 0; i < NUM_BCO_PARAMS; ++i)
+          bconfig.set(i, bco) = nsconfig.set(i);
+        for(int i = 0; i < NUM_EOS_PARAMS; ++i)
+          bconfig.set_eos(i, bco) = nsconfig.set_eos(i);
+        includes_matter = true;
+        Ms[bco] = bconfig(MADM, bco);
+      } else if(bcotype == "bh") {
+        kadath_config_boost<BCO_BH_INFO> bhconfig;
+        bhconfig.set_defaults();
+        for(int i = 0; i < NUM_BCO_PARAMS; ++i)
+          bconfig.set(i, bco) = bhconfig.set(i);
+        Ms[bco] = bconfig(MCH, bco);
+      }
+    }
+    // Set binary defaults
+    bconfig.set(BIN_RES) = 9.;
+    bconfig.set(DIST) = 10. * std::accumulate(Ms.begin(),Ms.end(),0.);
+    bconfig.set(REXT) = 2. * bconfig(DIST);
+    bconfig.set(QPIG) = bconfig(BCO_QPIG, BCO1);
+    bconfig.set(Q) = Ms[1] / Ms[0];
+    bconfig.set(COM) = 0.;
+    bconfig.set(COMY) = 0.;
+    bconfig.set(OUTER_SHELLS) = 0;
+    bconfig.set(GOMEGA) = 0.;
+    
+    // Set default fields
+    bconfig.set_field(SHIFT)    = true;
+    bconfig.set_field(LAPSE)    = true;
+    bconfig.set_field(CONF)     = true;
+    if(includes_matter) {
+      bconfig.set_field(LOGH)   = true;
+      bconfig.set_field(PHI)    = true;
+    }
+
+    // The following controls are required for an
+    // initial solution using the v2 Solvers
+    bconfig.control(SEQUENCES) = true;
+    bconfig.control(USE_BOOSTED_CO) = true;
+    bconfig.control(FIXED_GOMEGA) = true;
+    bconfig.control(SAVE_COS) = true;
+    
+    bconfig.set_stage(TOTAL_BC) = true;
+    bconfig.set_stage(ECC_RED) = true;
+
+    bconfig.seq_setting(INIT_RES) = 9;
+  }
 };
 /**
  * @}*/
