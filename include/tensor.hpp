@@ -609,7 +609,9 @@ class Tensor : public MemoryMappable {
 	friend class Space_bin_bh ;
 	friend class Space_polar_periodic ;
 	friend class Space_adapted_bh ;
+	friend class Space_KerrSchild_bh;
   friend class Space_bbh ;
+	friend class Space_Kerr_bbh ;
 
     // Mathematical operators
     // ----------------------

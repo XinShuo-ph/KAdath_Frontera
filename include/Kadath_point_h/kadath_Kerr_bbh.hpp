@@ -17,11 +17,10 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __KADATH_ADAPTED_BH_HPP_
-#define __KADATH_ADAPTED_BH_HPP_
+#ifndef __KADATH_KERRBIN_BH_HPP_
+#define __KADATH_KERRBIN_BH_HPP_
 
 #include "headcpp.hpp"
-#include "array.hpp"
 #include "array.hpp"
 #include "base_tensor.hpp"
 #include "base_spectral.hpp"
@@ -38,7 +37,6 @@
 #include "term_eq.hpp"
 #include "system_of_eqs.hpp"
 
-#include "adapted_bh.hpp"
-#include "kerrschild_bh.hpp"
+#include "kerrbin_bh.hpp"
 
 #endif
