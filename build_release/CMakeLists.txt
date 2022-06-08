@@ -46,9 +46,9 @@ endif()
 #need to use C++17
 add_definitions(-std=c++17)
 if ("$ENV{KAD_ARCH}" STREQUAL "")
-  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++17")
+  set(CMAKE_CXX_FLAGS_RELEASE "-g -O3 -std=c++17")
 else()
-  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=$ENV{KAD_ARCH} -std=c++17")
+  set(CMAKE_CXX_FLAGS_RELEASE "-g -O3 -march=$ENV{KAD_ARCH} -std=c++17")
 endif()
 
 add_library(kadath ${KADATH_SOURCES})
