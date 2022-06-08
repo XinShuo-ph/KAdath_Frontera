@@ -105,7 +105,7 @@ data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bh.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BH case.  For details on all the parameters you can
-see more in [Configurator README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/include/Configurator/).
+see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/).
 
 ## BH Fixing parameters
 

@@ -107,7 +107,7 @@ Which results in the following:
 ```
 
 The first two blocks contain information related to the component BHs.  These details are covered in the 
-[BH README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/BH/).
+[BH README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/).
 The only additional parameter is the `Center_COM`.  This is the coordinate center of each object when shifted by the
 "center-of-mass" of the binary or, more specifically, the location of the axis of rotation for the binary that can approximate
 a quasi-stationary solution.
@@ -132,7 +132,7 @@ data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bbh.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BBH case.  For details on all the parameters you can
-see more in [Configurator](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/include/Configurator/) README.
+see more in [Configurator](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/) README.
 
 ## BBH Fixing parameters
 
@@ -175,7 +175,7 @@ binary
 
 The above includes parameters that can be fixed by the user as well as parameters that are automated in the background
 and should not be changed.  The parameters for each BH are simply copied from the isolated solution which can be read
-in detail in the [BH README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/BH/) - 
+in detail in the [BH README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/) - 
 the same fixing applies also in the BBH.
 
 The fixing parameters most relevant to the binary are
@@ -359,7 +359,7 @@ Once these estimates are computed an interface code is ran
 which 
 
 - solves each BH configuration in isolation 
-(See the [BH README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/BH/) for more details).  
+(See the [BH README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/) for more details).  
 - obtains boosted isolated solution using the estimated `global_omega`
 
 At this point, the binary numerical space and fields are constructed and the isolated solutions are interpolated onto 

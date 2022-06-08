@@ -35,7 +35,7 @@ where plus and minus simply refer to their location on the x-axis.
 3. This will result in the generation of a pair of files containing the solution: `converged_BHNS_ECC_RED.togashi.35.0.0.2.8.q1.0.0.09.<info/dat>`
 
 Note: In the event you have learned about generating FUKAv2 ID in the recommended order as discussed in the 
-[FUKAv2 README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/) and
+[FUKAv2 README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/) and
 you have not disabled `centralized_cos`; you can look into the solver output to find that the solution of the 1.4M NS generated
 in the previous runs has been reused.
 
@@ -116,8 +116,8 @@ Central Euler Constant = +7.63530e-01
 
 The first two blocks contain information related to the component objects.
 These details are covered in the 
-[NS README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/NS/) and the 
-[BH README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/BH/).
+[NS README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/) and the 
+[BH README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/).
 The only additional parameter is the `Center_COM`.  
 This is the coordinate center of each object when shifted by the
 "center-of-mass" of the binary or, more specifically, the location of the axis of rotation 
@@ -143,7 +143,7 @@ data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bhns.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BHNS case.  For details on all the parameters you can
-read more in the [Configurator README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/include/Configurator/).
+read more in the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/).
 
 ## BHNS Fixing parameters
 
@@ -204,7 +204,7 @@ binary
 
 The above includes parameters that can be fixed by the user as well as parameters that are automated in the background
 and should not be changed.  The parameters for each NS are simply copied from the isolated solution which can be read
-in detail in the [NS README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/NS/) - 
+in detail in the [NS README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/) - 
 the same fixing applies also in the BHNS.  The relevant parameters to discuss are
 
 - `res` The resolution shown for the individual compact objects is the highest resolution the *isolated* dataset will be ran at.  This can be important for TOV solutions as the total baryonic mass is sensitive to the resolution.  `res 11` is recommended for production runs
@@ -216,7 +216,7 @@ The fixing parameters most relevant to the binary are
 - `adot`: This is the radial infall velocity parameter when performing eccentricity reduction.  This will be discussed more
 in the eccentricity reduction section below
 - `distance`: this is in geometric units! It is important to pick something reasonable.  A general rule for a binary with
-a few orbits is `distance = 8 * Mtot`, however this strongly depends on `q` and the spins of component objects
+a few orbits is `distance = 9 * Mtot`, however this strongly depends on `q` and the spins of component objects
 - `outer_shells`: This allows for additional shells to be placed near the compactified domain.  This can be helpful
 for more accurate quasi-equilibrium ID at lower resolution, but otherwise can be ignored and left to zero
 - `q`: this parameter is computed.  Changing it by hand does nothing
@@ -317,7 +317,7 @@ Now that you've generated the simplest case and we have a better understanding o
 1. Run (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bhns.info`
 
 This time around we see the iterative `chi` increase being done for the NS, but overall the only changes 
-observed are related to the isolated NS solver (see the [NS README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/NS/) for details).  The binary solver itself is consistent.
+observed are related to the isolated NS solver (see the [NS README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/) for details).  The binary solver itself is consistent.
 
 This results in the converged dataset of `converged_BHNS_ECC_RED.togashi.28.0.52.0.3.6.q0.487603.0.0.11.info/dat`, however, the other implicit solutions have been saved as well
 

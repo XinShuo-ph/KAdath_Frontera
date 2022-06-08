@@ -63,7 +63,7 @@ Most of the business is stored in `$HOME_KADATH/include/Solvers`
 # Getting Started
 
 The user interface for all the solvers is in the form of a Configurator (config) file.  
-See the [Configurator README](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/include/Configurator/) for details.
+See the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/) for details.
 To this end, using all the ID solvers is the same:
 
 1. Generate the initial config file by running `solve` for the first time
@@ -72,11 +72,11 @@ To this end, using all the ID solvers is the same:
 
 For this reason, it is recommended to learn about using FUKAv2 solvers by generating ID in the following order
 
-1. [Black Hole ID](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/BH/)
-1. [Binary Black Hole ID](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/BBH/)
-1. [Neutron Star ID](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/NS/)
-1. [Binary Neutron Star ID](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/BNS/)
-1. [Black Hole-Neutron Star Binary ID](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/codes/FUKAv2_Solvers/BHNS/)
+1. [Black Hole ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/)
+1. [Binary Black Hole ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BBH/)
+1. [Neutron Star ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/)
+1. [Binary Neutron Star ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BNS/)
+1. [Black Hole-Neutron Star Binary ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BHNS/)
 
 # Acknowledgements
 

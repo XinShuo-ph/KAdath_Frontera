@@ -53,7 +53,7 @@ For code details see `$HOME_KADATH/include/EOS/standalone/`
 
 To interface between KADATH and Margherita, a user-defined module was written by Samuel Tootle and L. Jens Papenfort allowing the use of Margherita within KADATH's System_of_equations framework. For details see `$HOME_KADATH/include/EOS/EOS.hh`.
 
-To initialize Margherita, the following parameters need to be set within the [config](https://bitbucket.org/stootle/kadath/src/solverv2_kerrmerge/include/Configurator/) file
+To initialize Margherita, the following parameters need to be set within the [config](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/) file
 
 ```
   {"eostype",EOSTYPE}, // Options are currently: Cold_PWPoly, Cold_Table
