@@ -52,6 +52,30 @@ Space_spheric_adapted::Space_spheric_adapted (int ttype, const Point& center, co
    pshell_inner->vars_to_terms() ;
 }
 
+Space_spheric_adapted::Space_spheric_adapted (int ttype, const Point& center, const Dim_array& res, const std::vector<double>& bounds) {
+
+    ndim = 3 ;
+    
+    nbr_domains = bounds.size()+1 ;
+    assert (nbr_domains>=4) ;
+    type_base = ttype ;
+    domains = new Domain* [nbr_domains] ;
+    
+    // Nucleus
+    domains[0] = new Domain_nucleus (0, ttype, bounds[0], center, res) ; 
+    domains[1] = new Domain_shell_outer_adapted (*this, 1, ttype, bounds[0], bounds[1], center, res) ;    
+    domains[2] = new Domain_shell_inner_adapted (*this, 2, ttype, bounds[1], bounds[2], center, res) ;
+    for (int i=3 ; i<nbr_domains-1 ; i++)
+       domains[i] = new Domain_shell(i, ttype, bounds[i-1], bounds[i], center, res) ;
+  
+   domains[nbr_domains-1] = new Domain_compact (nbr_domains-1, ttype, bounds[nbr_domains-2], center, res) ;
+   
+   const Domain_shell_outer_adapted* pshell_outer = dynamic_cast<const Domain_shell_outer_adapted*> (domains[1]) ;
+   pshell_outer->vars_to_terms() ;
+   const Domain_shell_inner_adapted* pshell_inner = dynamic_cast<const Domain_shell_inner_adapted*> (domains[2]) ;
+   pshell_inner->vars_to_terms() ;
+}
+
 
 Space_spheric_adapted::Space_spheric_adapted (FILE* fd) {
 	fread_be (&nbr_domains, sizeof(int), 1, fd) ;

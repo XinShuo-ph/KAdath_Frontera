@@ -24,6 +24,7 @@
 #include "term_eq.hpp"
 #include "spheric.hpp"
 #include "metric.hpp"
+#include <vector>
 
 namespace Kadath {
 
@@ -343,7 +344,9 @@ public:
      friend class Space_bhns ;
      friend class Space_bin_bh ;
      friend class Space_adapted_bh ;
+     friend class Space_KerrSchild_bh ;
      friend class Space_bbh ;
+     friend class Space_Kerr_bbh;
 } ;
 
 /**
@@ -655,6 +658,8 @@ public:
      friend class Space_bin_bh ;
      friend class Space_adapted_bh ;     
      friend class Space_bbh ;
+     friend class Space_KerrSchild_bh ;
+     friend class Space_Kerr_bbh ;
 } ;
 
 /**
@@ -671,6 +676,7 @@ class Space_spheric_adapted : public Space {
 	* @param bounds [input] : radii of the various shells (and also determines the total number of domains).
 	*/
 	Space_spheric_adapted (int ttype, const Point& cr, const Dim_array& nbr, const Array<double>& bounds) ;
+     Space_spheric_adapted (int ttype, const Point& cr, const Dim_array& nbr, const std::vector<double>& bounds) ;
 	Space_spheric_adapted (FILE*) ; ///< Constructor from a file
 	virtual ~Space_spheric_adapted() ; ///< Destructor
 	virtual void save(FILE*) const ;
@@ -702,7 +708,17 @@ class Space_spheric_adapted : public Space {
 	* @param eq : the string describing the equation (should contain something like integ(f)=b)
 	*/
 	void add_eq_int_inf (System_of_eqs& syst, const char* eq) ;
+  
 	/**
+	* Adds an equation being a surface integral at an arbitrary domain and boundary so long as it is defined.
+	* @param syst : the \c System_of_eqs.
+  * @param dom : domain to apply equation
+  * @param bc : boundary to integrate at
+	* @param eq : the string describing the equation (should contain something like integ(f)=b)
+	*/
+  void add_eq_int (System_of_eqs& sys, const int dom, const int bc, const char* eq);
+  
+  /**
 	* Adds an equation being a volume integral in the domains below a given number.
 	* @param syst : the \c System_of_eqs.
 	* @param nz : the integral is taken for all the \c Domains which number is \f$ <= nz \f$.
