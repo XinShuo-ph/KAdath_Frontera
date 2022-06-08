@@ -119,7 +119,7 @@ inline void Margherita_setup_polytrope(std::string polytrope_file) {
         rho_unit = 1.0 * RHOGF;
         K_unit = pow(INVRHOGF, gam0m1);
       } else {
-        std::cerr << "Unit system not recognised!\n";
+        std::cerr << "Unit system, " << Units << ", not recognised!\n";
 			  std::_Exit(EXIT_FAILURE);
       }
     }
