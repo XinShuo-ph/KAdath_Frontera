@@ -39,6 +39,11 @@ constexpr double psi = 1.55 ;
 constexpr double psisq = psi * psi;
 constexpr double invpsisq = 1. / psisq;
 
+// this is in principle a joke and came from the need to have
+// a scaling factor (R) s.t. 1.5 < R < 2.
+// Since this worked well, it persists...
+const double gold_ratio = (1 + std::sqrt(5)) / 2.;
+
 /**
  * bco_utils::KadathPNOrbitalParams \n 
  * 3.5 PN orbital parameters for irrotational compact object
@@ -72,8 +77,7 @@ void save_to_file(std::stringstream& base_fname, space_t& space, config_t& bconf
   FILE *ff = fopen(kadath_filename.c_str(), "w");
   space.save(ff) ;
 
-  //All we want to do is call fields.save(ff), but C++ is picky on how to do that with packs
-  (void) std::initializer_list<int>{(fields.save(ff),0)...};
+  (fields.save(ff),...);
   fclose(ff);
 }
 
@@ -100,8 +104,7 @@ void save_to_file(space_t& space, config_t& bconfig, fields_t&... fields) {
   FILE *ff = fopen(kadath_filename.c_str(), "w");
   space.save(ff) ;
 
-  //All we want to do is call fields.save(ff), but C++ is picky on how to do that with packs
-  (void) std::initializer_list<int>{(fields.save(ff),0)...};
+  (fields.save(ff),...);
   fclose(ff);
 }
 
@@ -118,17 +121,19 @@ void save_to_file(space_t& space, config_t& bconfig, fields_t&... fields) {
  * @return a radius of the domain.   */
 template<typename dom_t>
 double get_radius (const dom_t* dom, const int bound) {
-    Index pos(dom->get_nbr_points());
+    auto const npts = dom->get_nbr_points();
+    Index pos(npts);
     switch(bound) {
       case INNER_BC:
         break;
       case OUTER_BC:
-        pos.set(0) = dom->get_nbr_points()(0) - 1;
-        pos.set(1) = dom->get_nbr_points()(1) - 1;
-        pos.set(2) = dom->get_nbr_points()(2) - 1;
+        pos.set(0) = npts(0) - 1;
+        pos.set(1) = npts(1) - 1;
+        pos.set(2) = npts(2) - 1;
         break;
       case EQUI:
-        pos.set(0) = dom->get_nbr_points()(0) - 1;
+        pos.set(0) = npts(0) - 1;
+        pos.set(1) = npts(1) - 1;
         break;
       default:
         std::cout << "Unknown bound sent to get_radius: " << bound << std::endl;
@@ -241,8 +246,9 @@ std::array<double,2> get_rmin_rmax(const space_t& space, const int dom) {
 template<typename dom_t>
 void update_adapted_field (Scalar& res, const int from_dom, const int to_dom, const dom_t* dom, const int bound) {
   Tensor* ptr = &res;
-  Array<int> doms(1);
+  Array<int> doms(2);
   doms.set(0) = from_dom;
+  doms.set(1) = to_dom;
   Scalar import = dom->import(to_dom, bound, 1, doms, &ptr);
   ptr->set().set_domain(to_dom) = import(to_dom);
 }
@@ -366,26 +372,32 @@ void set_radius (const int& dom, const space_t& space, config_t& bconfig, const 
  * @param[input]  bconfig: configuration file
  * @param[input]  bco index: of the NS in the configuration file
  */
-template<typename ary_t, typename config_t>
-void set_NS_bounds (ary_t& bounds, config_t& bconfig, const int bco)  {
+template<typename ary_t, typename config_t, typename... idx_t>
+void set_NS_bounds (ary_t& bounds, config_t& bconfig, idx_t... bco)  {
   //sizes
   const int size    = bounds.size();
-  const int nshells = bconfig(NSHELLS, bco);
+  const int ninshells = (!std::isnan(bconfig.set(NINSHELLS,bco...))) ? bconfig(NINSHELLS, bco...) : 0;
+  const int nshells = (!std::isnan(bconfig.set(NSHELLS,bco...))) ? bconfig(NSHELLS, bco...) : 0;
 
   //indexes
   const int rin     = 0;
   const int rout    = size - 1;
-  const int r       = rin + nshells + 1;
+  const int r       = rin + ninshells + 1;
 
-  bounds[rin]       = bconfig(RIN, bco);
-  bounds[r]         = bconfig(RMID, bco);
-  bounds[rout]      = bconfig(ROUT, bco);
+  bounds[rin]       = bconfig(RIN, bco...);
+  bounds[r]         = bconfig(RMID, bco...);
+  bounds[rout]      = bconfig(ROUT, bco...);
 
   double lower      = bounds[rin] + (bounds[r] - bounds[rin]) * 0.8;
-  double delta_r    = (bounds[r] - lower) / (nshells + 1);
+  double delta_r    = (bounds[r] - lower) / (ninshells + 1.);
 
-  for(int shell = rin+1; shell <= nshells; ++shell){
+  for(int shell = rin+1; shell <= ninshells; ++shell){
     bounds[shell] = delta_r * shell + lower;
+  }
+  
+  delta_r = (bounds[rout] - bounds[r]) / (nshells + 1.);
+  for(int i = 1, shell = r+1; i <= nshells; ++shell, ++i){
+    bounds[shell] = bounds[r] + delta_r * i;
   }
 }
 
@@ -419,6 +431,7 @@ void set_isolated_BH_bounds (ary_t& bounds, config_t& bconfig)  {
 
   for(int i = 0, b = r+1; i < shells; ++b, ++i)
     bounds[b] = bounds[r] + delr * (i + 1);
+//    bounds[b] = bounds[r] + bconfig(ROUT) / M_PI * atan((i + 1)/bconfig(NSHELLS));
   
   bounds[rout] = bconfig(ROUT);
 }
@@ -448,25 +461,61 @@ void set_BH_bounds (ary_t& bounds, config_t& bconfig, const int bco, const bool 
 
   bounds[rin]  = bconfig(RIN, bco);
   bounds[r]    = bconfig(RMID, bco);
+  bounds[rout] = bconfig(ROUT, bco);
   
-  // We compare resolution to the companion and add shells as needed
-  // outside the horizon
-  double delrC  = bconfig(ROUT, bco2)- bconfig(RMID, bco2);
-  double delrBH = bconfig(ROUT, bco) - bconfig(RMID, bco);
-  const int min_shells = int(std::floor(delrBH / delrC)) - 1;
+  const int shells = bconfig(NSHELLS, bco);
+  double sum = 0.;
+  ary_t new_ary;
+  new_ary.push_back(bounds[rin]);
+  new_ary.push_back(bounds[r]);
+
+  // fixme - need to recall how this limit was obtained
+  const double limit = bconfig(ROUT, bco) * invpsisq;
   
-  if(min_shells > bconfig(NSHELLS, bco) && adapt_shells) {
-    std::cerr << "Number of shells for BH is too low.  Minimum required shells is: " << min_shells
-              << ". Setting NSHELLS to the minimum and continuing. \n";
-    rout += (min_shells - bconfig(NSHELLS,bco));
-    bconfig.set(NSHELLS, bco) = min_shells;
-    bounds.resize(size+min_shells);
+  // needed to determine proper shall spacing to not have problems in kadath import?
+  const double scale_fact = bco_utils::gold_ratio;   
+  
+  // y_intercept of new_bound == the location of the first shell
+  const double y_intercept = 2. * scale_fact * bounds[r];
+  
+  // the intercept_fac ensures the y_intercept is just that
+  const double intercept_fac = - scale_fact * std::log(y_intercept);
+  
+  // relation that provides shell locations
+  auto new_bound =[&](int n) { return std::exp((n - intercept_fac) / scale_fact); };
+  
+  // define new shells bounds
+  int N = 0;
+  double next_bound = new_bound(N);
+  while(next_bound < limit && next_bound < bconfig(ROUT, bco)) {
+    new_ary.push_back(next_bound);
+    N++;
+    next_bound = new_bound(N);
+  }  
+  // in case NSHELLS are put in by hand - we add additional ones based on a 
+  // naive even distribution
+  if(new_ary.size() - 2 < bconfig(NSHELLS, bco)) {
+    // determine how many shells have already been defined
+    auto current_shells = new_ary.size() - 2;
+    // how many shells still need to defined
+    auto remaining_shells = shells - current_shells;
+
+    // radius of the last defined shell
+    auto last_shell_r = new_ary.back();
+    // radial distance between last shell and ROUT
+    double delrBH = bconfig(ROUT, bco) - last_shell_r;
+    // determine the equal spacing between reminaing shells
+    double delr = delrBH / (remaining_shells + 1);
+
+    for(int i = 0; i < remaining_shells; ++i)
+      new_ary.push_back(last_shell_r + delr * (i + 1));
   }
-  
-  //setup temporary BH config file to reuse isolated_BH code
-  kadath_config_boost<BCO_BH_INFO> bhconfig;
-  for(int i = 0; i < NUM_BCO_PARAMS; ++i) { bhconfig.set(i) = bconfig.set(i, bco); }
-  set_isolated_BH_bounds(bounds, bhconfig);
+  // define the bound corresponding to ROUT
+  new_ary.push_back(bounds[rout]);
+  // update the number of shells in the event shells have been automatically
+  // added
+  bconfig(NSHELLS, bco) = new_ary.size() - 3;
+  bounds = std::move(new_ary);
 }
 
 /**
@@ -508,6 +557,7 @@ inline double mirr_from_mch(const double chi, const double mch){
  *
  * helper function to compute MCH from a system of equations
  * 
+ * @tparam space_t: space type
  * @param[input]  syst: system of equations
  * @param[input]  space: numerical space
  * @param[input]  eq: equation string to lookup for spin equation (e.g. Sint1, Sint2)
@@ -524,4 +574,202 @@ double syst_mch(System_of_eqs& syst, const space_t& space, const std::string eq,
   return std::sqrt(Mirrsq + S * S / 4. / Mirrsq );
 }
 
+/**
+ * bco_utils::com_estimate
+ *
+ * helper function to compute the Newtonian COM as an initial estimate
+ * 
+ * @param[input]  distance: separation distance
+ * @param[input]  M1: mass of bco1
+ * @param[input]  M2: mass of bco2
+ */
+inline double com_estimate(const double distance, const double M1, const double M2) {
+  double half_dist           = distance/2.;
+  double mass_sum            = M1 + M2;
+  return half_dist * (M1 - M2) / mass_sum;
+}
+
+/**
+ * bco_utils::update_config_NS_radii
+ *
+ * helper function to update NS radii in the config file 
+ * 
+ * @tparam space_t: space type
+ * @tparam config_t: Configurator type
+ * @tparam Idx: parameter pack for Configurator secondary index.
+ * @param[input]  space: numerical space
+ * @param[input]  bconfig: Configurator file reference
+ * @param[input]  dom: domain to pull min/max radii from
+ * @param[input]  idx: Either empty or BCO1/BCO2
+ */
+template<typename space_t, typename config_t, typename ... Idx>
+void update_config_NS_radii(space_t& space, config_t& bconfig, 
+  const size_t dom, Idx ... idx) {
+  
+  auto [r_min, r_max] = bco_utils::get_rmin_rmax(space, dom);
+  bconfig.set(RIN , idx...)    = 0.5 * r_min;
+  bconfig.set(RMID, idx...)    = r_max;
+  bconfig.set(ROUT, idx...)    = 1.5 * r_max;
+}
+
+/**
+ * bco_utils::update_config_BH_radii
+ *
+ * helper function to update BH radii in the config file 
+ * 
+ * @tparam space_t: space type
+ * @tparam config_t: Configurator type
+ * @tparam Idx: parameter pack for Configurator secondary index.
+ * @param[input]  space: numerical space
+ * @param[input]  bconfig: Configurator file reference
+ * @param[input]  dom: domain to pull min/max radii from
+ * @param[input]  conf: conformal factor scalar field
+ * @param[input]  idx: Either empty or BCO1/BCO2
+ */
+template<typename space_t, typename config_t, typename ... Idx>
+void update_config_BH_radii(space_t& space, config_t& bconfig, 
+  const size_t dom, const Scalar& conf, Idx ... idx) {
+
+  auto [ rmin, trmax ] = bco_utils::get_rmin_rmax(space, dom);
+
+  // estimate how small the inner radius should be based on relation
+  // between conformal factor and numerical radius.
+  // see https://arxiv.org/pdf/0805.4192, eq(64)
+  double conf_inner = bco_utils::get_boundary_val(dom+1, conf, INNER_BC);
+  double conf_i_sq  = conf_inner * conf_inner;
+  double est_r_div2 = bconfig(MCH, idx...) / conf_i_sq;
+  bconfig.set(RIN, idx...) =  est_r_div2;
+  
+  // update config RMID based on AH Surface radius
+  bco_utils::set_radius(1, space, bconfig, RMID);
+}
+
+/**
+ * bco_utils::set_decay
+ *
+ * helper function to initialize decay weight when superimposing two
+ * BCOs.  Default is set to their separation distance.
+ *
+ * @tparam config_t: configurator file type
+ * @param[input] bconfig: binary configurator file
+ * @param[input] bco: BCO configurator index
+ * @return: returns 1/weight^4
+ */
+template<typename config_t>
+double set_decay(config_t& bconfig, const size_t bco) {
+  if(std::isnan(bconfig.set(DECAY, bco)))
+    bconfig.set(DECAY, bco) = bconfig(DIST)/2.;
+  const double weight4 = std::pow(bconfig(DECAY, bco), 4.);
+  return 1. / weight4;
+}
+/**
+ * bco_utils::compute_kerr_mirr
+ *
+ * Compute analytical Kerr irreducible mass
+ *
+ * @tparam config_t: configurator file type
+ * @tparam coIdx: optional index of the BH in the binary config file
+ * @param[input] bconfig: configurator file
+ * @param[input] bco: BCO configurator index
+ * @return: returns Mirr
+ */
+template<typename config_t, typename ... coIdx>
+double compute_kerr_mirr(config_t& bconfig, coIdx... bco){
+  // S := CHI * MCH^2
+  const double MCHsq = bconfig(MCH, bco...) * bconfig(MCH, bco...);
+  const double S = bconfig(CHI, bco...) * MCHsq;
+  const double Mirrsq = (MCHsq + std::sqrt(MCHsq * MCHsq - S * S)) / 2;
+  return std::sqrt(Mirrsq);
+}
+
+/**
+ * bco_utils::get_bound_filled_field
+ *
+ * Fills each domain of a scalar field with the value at the respective
+ * boundary
+ *
+ * @param[input] field: input scalar field
+ * @param[input] bound: boundary to evaluate (e.g. INNER_BC, OUTER_BC)
+ * @return: returns a Scalar field
+ */
+inline Scalar get_bound_filled_field(Scalar const & field, int const bound) {
+  int const ndom = field.get_nbr_domains();
+  Scalar out(field, false);
+  for(auto d = 0; d < ndom; ++d) {
+    auto npts = field(d).get_conf().get_dimensions();
+    Index pos(npts);
+    Index pos_b(pos);
+    switch(bound){
+      case INNER_BC:
+        break;
+      case OUTER_BC:
+        pos_b.set(1) = npts(1) - 1;
+        break;
+    }
+    do {
+      pos_b.set(2) = pos(2);
+      pos_b.set(3) = pos(3);
+      out.set_domain(d).set(pos) = field(d)(pos_b);
+    }while(pos.inc());
+    out.set_domain(d).set_base() = field(d).get_base();
+  }
+  return out;
+}
+
+/**
+ * bco_utils::get_bound_filled_field_from_one_dom
+ *
+ * Fills all domains of a scalar field with the value at the respective
+ * boundary from the specified domain only
+ *
+ * @param[input] field: input scalar field
+ * @param[input] bound: boundary to evaluate (e.g. INNER_BC, OUTER_BC)
+ * @param[input] dom: domain to copy to all other domains
+ * @return: returns a Scalar field
+ */
+inline Scalar get_bound_filled_field_from_one_dom(Scalar const & field, int const bound, int const dom) {
+  auto bound_field(get_bound_filled_field(field, bound));
+  int const ndom = field.get_nbr_domains();
+  Scalar out(bound_field);
+  for(auto d = 0; d < ndom; ++d){
+    out.set_domain(d) = bound_field(dom);
+    out.set_domain(d).set_base() = bound_field(dom).get_base();
+  }
+  return out;
+}
+
+/**
+ * bco_utils::print_bounds_from_space
+ *
+ * Utility to print boundaries to cout from space
+ *
+ * @tparam space_t: numerical space type
+ * @param[input] space: numerical space
+ * @param[input] bound: boundary to evaluate (e.g. INNER_BC, OUTER_BC)
+ */
+template<class space_t>
+void print_bounds_from_space(space_t const & space, int bound = OUTER_BC) {
+  for(int i = 0; i < space.get_nbr_domains(); ++i)
+    std::cout << bco_utils::get_radius(space.get_domain(i), bound) << " ";
+  std::cout << std::endl;
+};
+
+/**
+ * bco_utils::print_constant_space_resolution
+ *
+ * Utility to print resolution of the input space assuming
+ * constant resolution amongst all domains
+ *
+ * @tparam space_t: numerical space type
+ * @param[input] space: numerical space
+ */
+template<class space_t>
+void print_constant_space_resolution(space_t const & space){
+  auto dom = space.get_domain(0);
+  auto ndim = dom->get_ndim();  
+  std::array<std::string, 3> directions{"r", "theta", "phi"};
+  for(auto i = 0; i < ndim; ++i)
+  	std::cout << dom->get_nbr_points()(i) << " (" << directions[i] << ")     ";
+  std::cout << "\n";
+};
 }

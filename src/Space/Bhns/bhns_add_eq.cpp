@@ -45,7 +45,7 @@ void Space_bhns::add_eq (System_of_eqs& sys, const char* eq, const char* rac, co
 	sys.add_eq_matching (NS, OUTER_BC, rac, nused, pused) ;
 	sys.add_eq_matching (NS, OUTER_BC, rac_der, nused, pused) ;
 
-  for(int i = 0; i < n_shells1; ++i) {
+  for(int i = 0; i < n_inner_shells1; ++i) {
   	sys.add_eq_inside   (NS+1+i, eq, nused, pused) ;
   	sys.add_eq_matching (NS+1+i, OUTER_BC, rac, nused, pused) ;
   	sys.add_eq_matching (NS+1+i, OUTER_BC, rac_der, nused, pused) ;
@@ -55,23 +55,28 @@ void Space_bhns::add_eq (System_of_eqs& sys, const char* eq, const char* rac, co
 	sys.add_eq_matching (ADAPTEDNS  , OUTER_BC, rac, nused, pused) ;
 	sys.add_eq_matching (ADAPTEDNS  , OUTER_BC, rac_der, nused, pused) ;
 	sys.add_eq_inside   (ADAPTEDNS+1, eq, nused, pused) ;
-
+  
+  for(int i = 0; i < n_shells1; ++i) {
+  	sys.add_eq_matching (ADAPTEDNS+1+i, OUTER_BC, rac, nused, pused) ;
+  	sys.add_eq_matching (ADAPTEDNS+1+i, OUTER_BC, rac_der, nused, pused) ;
+  	sys.add_eq_inside   (ADAPTEDNS+2+i, eq, nused, pused) ;
+  }
 
 	// Matching with bispheric :
-	sys.add_eq_matching_import (ADAPTEDNS+1, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (ADAPTEDNS + 1 + n_shells1, OUTER_BC, rac, nused, pused) ;
 	sys.add_eq_matching_import (OUTER     , INNER_BC, rac_der, nused, pused) ;
 	sys.add_eq_matching_import (OUTER+1   , INNER_BC, rac_der, nused, pused) ;
 
 	// BH :
 	sys.add_eq_inside   (ADAPTEDBH+1, eq, nused, pused) ;
   for(int i = 0; i < n_shells2; ++i) {
-  	sys.add_eq_matching (BH+2+i, OUTER_BC, rac, nused, pused) ;
-  	sys.add_eq_matching (BH+2+i, OUTER_BC, rac_der, nused, pused) ;
-  	sys.add_eq_inside   (BH+3+i, eq, nused, pused) ;
+  	sys.add_eq_matching (ADAPTEDBH+1+i, OUTER_BC, rac, nused, pused) ;
+  	sys.add_eq_matching (ADAPTEDBH+1+i, OUTER_BC, rac_der, nused, pused) ;
+  	sys.add_eq_inside   (ADAPTEDBH+2+i, eq, nused, pused) ;
   }
 
 	// Matching with bispheric :
-	sys.add_eq_matching_import (BH + 2 + n_shells2, OUTER_BC, rac, nused, pused) ;
+	sys.add_eq_matching_import (ADAPTEDBH + 1 + n_shells2, OUTER_BC, rac, nused, pused) ;
 	sys.add_eq_matching_import (OUTER+3, INNER_BC, rac_der, nused, pused) ;
 	sys.add_eq_matching_import (OUTER+4, INNER_BC, rac_der, nused, pused) ;
 
@@ -172,7 +177,6 @@ void Space_bhns::add_eq_int_volume (System_of_eqs& sys, int dmin, int dmax, cons
 		// Construction of the equation
 		int nz = dmax - dmin + 1;
 		sys.eq_int[sys.neq_int] = new Eq_int(nz+1) ;
-//		std::cout << "dmin: " << dmin << ", dmax: " << dmax <<", nz: " << nz << '\n';
 
 		// Affectation of the intregrale parts
 		for (int d=0 ; d<nz ; d++)

@@ -556,7 +556,7 @@ bool System_of_eqs::is_ope_der_var (int dd, const char*name, char*part, int& num
   return res ;
 }
 
-Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
+Ope_eq* System_of_eqs::find_ope (int dd, const char* name, int bound) const {
 	Ope_eq* p_ope = 0x0 ;
 	bool indic ;
 	int which = -1 ;
@@ -1121,9 +1121,15 @@ Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
 	      return p_ope ;
 	  }
 	}
-	
-	assert (p_ope==0x0) ;
-	cerr << "Unknown operator " << name << endl ;
-	abort() ;
+  return p_ope;	
+}
+
+Ope_eq* System_of_eqs::give_ope (int dd, const char* name, int bound) const {
+  auto p_ope = find_ope (dd, name, bound);
+	if(p_ope==0x0) {
+	  cerr << "Unknown operator " << name << endl ;
+	  abort() ;
+  }
+  return p_ope;
 }
 }

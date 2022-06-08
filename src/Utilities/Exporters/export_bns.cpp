@@ -64,8 +64,7 @@ std::array<std::vector<double>,NUM_OUT> KadathExportBNS(int const npoints,
 
   // init coordinate fields
   CoordFields<Space_bin_ns> cfields(space);
-  std::array<Vector*, NUM_VECTORS> coord_vectors {};
-  for(auto& el : coord_vectors) el = new Vector(space,CON,basis);
+  vec_ary_t coord_vectors {default_binary_vector_ary(space)};
   update_fields(cfields, coord_vectors, {}, xo, xc1, xc2);
 
   System_of_eqs syst(space, 0, ndom - 1);

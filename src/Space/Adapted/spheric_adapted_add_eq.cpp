@@ -25,6 +25,39 @@
 #include "system_of_eqs.hpp"
 #include "name_tools.hpp"
 namespace Kadath {
+void Space_spheric_adapted::add_eq_int (System_of_eqs& sys, const int dom, const int bc, const char* eq) {
+
+  sys.eq_int_list.push_back(std::make_tuple(eq,dom,bc));
+
+	// Get the lhs and rhs
+	char p1[LMAX] ;
+	char p2[LMAX] ;
+	bool indic = sys.is_ope_bin(eq, p1, p2, '=') ;
+	if (!indic) {
+		cerr << "= needed for equations" << endl ;
+		abort() ;
+	}
+	else {
+		// Verif lhs = 0 ?
+		indic = ((p2[0]=='0') && (p2[1]==' ') && (p2[2]=='\0')) ?
+			true : false ;
+		
+    // Construction of the equation
+		sys.eq_int[sys.neq_int] = new Eq_int(1) ;
+		  // Affectation :
+		  // no lhs :
+		  if (indic) {
+	  		sys.eq_int[sys.neq_int]->set_part(0, sys.give_ope(dom, p1, bc)) ;
+			}
+		  else {
+		  	sys.eq_int[sys.neq_int]->set_part(0,
+			  	new Ope_sub(&sys, sys.give_ope(dom, p1, bc), sys.give_ope(dom, p2, bc))) ;
+		  }
+
+		sys.neq_int ++ ;
+	  sys.nbr_conditions = -1 ;
+	}
+}
 void Space_spheric_adapted::add_eq_int_inf (System_of_eqs& sys, const char* nom) {
 
 	// Check the last domain is of the right type :

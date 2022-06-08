@@ -19,6 +19,7 @@
 
 #include "headcpp.hpp"
 #include "space.hpp"
+#include "scalar.hpp"
 #include <assert.h>
 namespace Kadath {
 double eta_lim_chi (double chi, double rext, double a, double eta_c) ;
@@ -67,5 +68,51 @@ Array<int> Space::get_indices_matching_non_std(int, int) const {
 	cerr << "get_indices_matching_non_std not implemented for" << endl ;
 	cerr << *this << endl ;
 	abort() ;
+}
+
+Scalar Space::get_cart_field(int const cart) const {
+    assert(cart <= ndim);
+    Scalar cart_field(*this);
+    cart_field.annule_hard();
+    if(domains != 0x0) {
+        for(auto dom = 0; dom < nbr_domains; ++dom)
+            cart_field.set_domain(dom) = domains[dom]->get_cart(cart);
+    }
+    cart_field.std_base();
+    return cart_field;
+}
+
+Scalar Space::get_cart_field_bound(int const cart, int const bound) const {
+    assert(cart <= ndim);
+    Scalar cart_field(*this);
+    cart_field = 1.;
+
+    if(domains != 0x0) {
+        for(auto dom = 0; dom < nbr_domains; ++dom) {
+            auto npts = domains[dom]->get_nbr_points();
+            auto npts_r = npts(0);
+            int bound_idx{0};
+            switch(bound) {
+                case INNER_BC:
+                    break;
+                case OUTER_BC:
+                    bound_idx = npts_r - 1;
+                    break;
+                default:
+                    cerr << "Undefined bound " << bound << "\n";
+                    std::_Exit(EXIT_FAILURE);
+            }
+
+            Index cart_pos(npts);            
+            do {
+                Index bound_pos(npts);
+                bound_pos.set(0) = bound_idx;
+                bound_pos.set(1) = cart_pos(1);
+                bound_pos.set(2) = cart_pos(2);
+                cart_field.set_domain(dom).set(cart_pos) = domains[dom]->get_cart(cart)(bound_pos);
+            }while(cart_pos.inc());
+        }
+    }
+    return cart_field;
 }
 }

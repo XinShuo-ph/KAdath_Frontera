@@ -12,7 +12,8 @@
  *
  *         Author:  Samuel David Tootle, tootle@itp.uni-frankfurt.de
  *   Organization:  Goethe University Frankfurt
- *   Notes: this is a minimal rewrite of the original TOV solver by ERM
+ *   Notes: this is a rewrite of the original TOV solver by ERM based on the needs
+ *   of FUKA.
  *
  * =====================================================================================
  */
@@ -368,7 +369,8 @@ template <typename EOS> class MargheritaTOV {
       auto res = rk_iteration(state.back(), dr);
       
       double delm = std::abs(res[MASSR] - state.back()[MASSR]);
-      if(delm < loop_eps && state.back()[PRESS] < loop_eps)
+      if((delm < loop_eps && state.back()[PRESS] < loop_eps) ||
+          res[PRESS] < 0)
         break;
       state.push_back(res);
       count++;
@@ -414,9 +416,12 @@ template <typename EOS> class MargheritaTOV {
    * @param rho_min0 initial minimum density to search for MADM
    * @param eps precision desired for finding ADM mass
    */
-  inline void solve_for_MADM(const double M_fin, const double rho_max0=1e-2, 
+  inline bool solve_for_MADM(double M_fin, const double rho_max0=1e-2, 
     const double rho_min0=5e-4, const double eps = 1e-3) {
-    
+    // if M_fin < Mmax let the calling code know in case
+    // the calling code intends to solve a rotating NS with M > Mtov
+    bool use_Mmax = false; 
+
     // rho to evaluate
     double rho_eval=0.;
 
@@ -425,33 +430,49 @@ template <typename EOS> class MargheritaTOV {
     double rho_max = rho_max0;
 
     // deltarho to find bracket around M_fin
-    double delrho = (rho_max - rho_min) / 100.;
+    double delrho = (rho_max - rho_min) / 200.;
 
     double maxM = 0.;
     double maxMrho = 0.;
   
     // find bracketing range based on the central density to 
     // to make sure a root exists - i.e. Madm can be found
-    for(rho_eval = rho_min0; rho_eval < rho_max0; rho_eval += delrho) {
-      solve(rho_eval, false);
-      if(mass > maxM) {
-        maxM = mass;
-        maxMrho = rho_eval;
-      }
+    auto rho_bracketing = [&]() {
+      maxM = 0;
+      maxMrho = 0;
+      rho_min = 0;
+      rho_max = 0;
+      for(rho_eval = rho_min0; rho_eval < rho_max0; rho_eval += delrho) {
+        solve(rho_eval, false);
+        if(mass > maxM) {
+          maxM = mass;
+          maxMrho = rho_eval;
+        }
 
-      if(mass < M_fin)
-        rho_min = rho_eval;
-      else if(mass > M_fin) {
-        rho_max = rho_eval;
-        break;
+        if(mass < M_fin)
+          rho_min = rho_eval;
+        else if(mass > M_fin) {
+          rho_max = rho_eval;
+          break;
+        }
       }
-    }
+      std::cout << rho_min << ", " << rho_max << std::endl;
+    };
+    rho_bracketing();
    
     if(rho_eval >= rho_max0) {
-      std::cerr << "Maximum density (" << rho_eval << ") reached with mass.\n"
+      std::cerr << "Maximum density (" << rho_eval << ") reached.\n"
         << "Mass mass obtained: " << maxM << ", with density: "<< maxMrho << ".\n"
         "The density bracketing range may not be sufficiently constrained for the given EOS\n";
-      std::_Exit(EXIT_FAILURE);
+      if(maxM > 1.) {
+        use_Mmax = true;
+        solve(maxMrho, true);
+        return use_Mmax;
+        //M_fin = maxM * 0.95;
+        //rho_bracketing();
+      }
+      else
+        std::_Exit(EXIT_FAILURE);
     }
 
     // from the discovered bracketing range, we now find the ADM Mass using
@@ -488,6 +509,8 @@ template <typename EOS> class MargheritaTOV {
     calculate_conformal_factor();
     calculate_k2();
     radius = state.back()[RISO];
+    
+    return use_Mmax;
   }
 
   friend std::ostream& operator<< (std::ostream& stream, const MargheritaTOV& tov) {
@@ -502,9 +525,11 @@ template <typename EOS> class MargheritaTOV {
     }else{
 
     stream << " Central pressure: " << tov.press_c << std::endl;
+    stream << " Central density: " << tov.rhoc << std::endl;
     stream << " Mass: " << tov.mass << std::endl;
     stream << " Baryon mass: " << tov.baryon_mass << std::endl;
     stream << " Radius: " << tov.arealr << std::endl;
+    stream << " Isotropic Radius: " << tov.radius << std::endl;
     stream << " Love number k2: " << tov.tidal_love_k2 << std::endl;
     };
 

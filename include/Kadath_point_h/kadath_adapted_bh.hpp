@@ -39,5 +39,6 @@
 #include "system_of_eqs.hpp"
 
 #include "adapted_bh.hpp"
+#include "kerrschild_bh.hpp"
 
 #endif

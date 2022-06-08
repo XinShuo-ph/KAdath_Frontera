@@ -35,88 +35,48 @@ namespace Kadath {
 
 class Space_bhns : public Space {
 
-     protected :
-  	int n_shells_outer{0} ; ///< Number of outer shells.
-    int n_shells1{0}; ///< Number of shells around NS nucleus.
-    int n_shells2{0}; ///< Number of shells around BH Horizon.
+   protected :
+  int n_shells_outer{0} ; ///< Number of outer shells.
+  int n_inner_shells1{0}; ///< Number of shells between NS nucleus and outer adapted shell.
+  int n_shells1{0}; ///< Number of shells outside the NS - between RMID and ROUT.
+  int n_shells2{0}; ///< Number of shells around BH Horizon.
 
-     public:
-    int BH{3}; ///< Starting index of the first spheres.
-    int NS{0}; ///< Starting index of the second spheres.
-    int ADAPTEDNS{1}; ///< Starting index of the NS adapted domains.
-    int ADAPTEDBH{4}; ///< Starting index of the BH adapted domains.
-    int OUTER{6}; ///< Starting index of the outer domains.
+   public:
+  int BH{3}; ///< Starting index of the first spheres.
+  int NS{0}; ///< Starting index of the second spheres.
+  int ADAPTEDNS{1}; ///< Starting index of the NS adapted domains.
+  int ADAPTEDBH{4}; ///< Starting index of the BH adapted domains.
+  int OUTER{6}; ///< Starting index of the outer domains.
 
-    /**
-     * Constructor with an outer shell surrounding the bispheric region; stars are initial spherical.
-     * @param ttype [input] : the type of basis.
-     * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
-     * @param rinstar1 [input] : radius  the first nucleus (inside the star).
-     * @param rstar1 [input] : radius  the first shell with variable outer surface (inside the star).
-     * @param routstar1 [input] : radius  the first shell with variable inner surface (outide the star).
-     * @param rinstar2 [input] : radius  the second nucleus (inside the star).
-     * @param rstar2 [input] : radius  the second shell with variable outer surface (inside the star).
-     * @param routstar2 [input] : radius  the second shell with variable inner surface (outide the star).
-     * @param rext [input] : outer radius the bispherical part.
-     * @param rshell [input] : outer radius the outer shell.
-     * @param nr [input] : number of points in each dimension
-     *
-     * The various domains are then :
-     * \li One \c Domain_nucleus, of radius  rinstar1, centered at \f$ x_1 \f$.
-     * \li One \c Domain_shell_outer_adapted  centered at \f$ x_1 \f$.
-     * \li One \c Domain_shell_inner_homothetic  centered at \f$ x_1 \f$.
-     * \li One \c Domain_nucleus, of radius  rinstar2, centered at \f$ x_2 \f$.
-     * \li One \c Domain_shell_outer_adapted  centered at \f$ x_2 \f$.
-     * \li One \c Domain_shell_inner_homothetic  centered at \f$ x_2 \f$.
-     * \li One \c Domain_bispheric_chi_first near the first sphere.
-     * \li One \c Domain_bispheric_rect near the first sphere.
-     * \li One \c Domain_bispheric_eta_first inbetween the two spheres.
-     * \li One \c Domain_bispheric_rect near the second sphere.
-     * \li One \c Domain_bispheric_chi_first near the second sphere.
-     * \li One \c Domain_shell centered on the origin
-     * \li One \c Domain_compact centered on the origin, with inner radius \f$ R \f$.
-     */
-	Space_bhns (int ttype, double dist, double rinstar1, double rstar1, double routstar1,
-			double rinstar2, double rstar2, double routstar2, double rext, double rshell, int nr) ;
-
-    /**
-     * Standard constructor ; stars are initial spherical.
-     * @param ttype [input] : the type of basis.
-     * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
-     * @param rinstar1 [input] : radius  the first nucleus (inside the star).
-     * @param rstar1 [input] : radius  the first shell with variable outer surface (inside the star).
-     * @param routstar1 [input] : radius  the first shell with variable inner surface (outide the star).
-     * @param rinstar2 [input] : radius  the second nucleus (inside the star).
-     * @param rstar2 [input] : radius  the second shell with variable outer surface (inside the star).
-     * @param routstar2 [input] : radius  the second shell with variable inner surface (outide the star).
-     * @param rext [input] : radius \f$ R \f$ of the outer boundary of the bispherical part.
-     * @param nr [input] : number of points in each dimension
-     * @param nshells1 [input] : number of additional shells around the first nucleus
-     * @param nshells2 [input] : number of additional shells around the second nucleus
-     *
-     * The various domains are then :
-     * \li One \c Domain_nucleus, of radius  rinstar1, centered at \f$ x_1 \f$.
-     * \li \f$ nshells1 \f$ \c Domain_shell centered at \f$ x_1 \f$.
-     * \li One \c Domain_shell_outer_adapted  centered at \f$ x_1 \f$.
-     * \li One \c Domain_shell_inner_homothetic  centered at \f$ x_1 \f$.
-     * \li One \c Domain_nucleus, of radius  rinstar2, centered at \f$ x_2 \f$.
-     * \li \f$ nshells2 \f$ \c Domain_shell centered at \f$ x_2 \f$.
-     * \li One \c Domain_shell_outer_adapted  centered at \f$ x_2 \f$.
-     * \li One \c Domain_shell_inner_homothetic  centered at \f$ x_2 \f$.
-     * \li One \c Domain_bispheric_chi_first near the first sphere.
-     * \li One \c Domain_bispheric_rect near the first sphere.
-     * \li One \c Domain_bispheric_eta_first inbetween the two spheres.
-     * \li One \c Domain_bispheric_rect near the second sphere.
-     * \li One \c Domain_bispheric_chi_first near the second sphere.
-     * \li One \c Domain_compact centered on the origin, with inner radius \f$ R \f$.
-     */
-	Space_bhns (int ttype, double dist, double rinstar1, double rstar1, double routstar1,
-			double rinstar2, double rstar2, double routstar2, double rext, int nr, int nshells1 = 0, int nshells2 = 0) ;
-
+  /**
+   * Constructor with an outer shell surrounding the bispheric region; stars are initial spherical.
+   * @param ttype [input] : the type of basis.
+   * @param dist [input] : distance \f$ d \f$ between the centers of the two spheres.
+   * @param NS_bounds [input] : the boundaries of the various NS domains from Nucleus to ROUT
+   * @param BH_bounds [input] : the boundaries of the various BH domains from Nucleus to ROUT
+   * @param outer_bounds [input] : the boundaries of the various outer shell domains from OUTER+5 to ndom-1
+   * @param nr [input] : number of points in each dimension
+   * @param n_inner_shellsNS [input] : number of shells inside the NS
+   *
+   * The various domains are then :
+   * \li One \c Domain_nucleus, of radius  rinstar1, centered at \f$ x_1 \f$.
+   * \li One \c Domain_shell_outer_adapted  centered at \f$ x_1 \f$.
+   * \li One \c Domain_shell_inner_homothetic  centered at \f$ x_1 \f$.
+   * \li One \c Domain_nucleus, of radius  rinstar2, centered at \f$ x_2 \f$.
+   * \li One \c Domain_shell_outer_adapted  centered at \f$ x_2 \f$.
+   * \li One \c Domain_shell_inner_homothetic  centered at \f$ x_2 \f$.
+   * \li One \c Domain_bispheric_chi_first near the first sphere.
+   * \li One \c Domain_bispheric_rect near the first sphere.
+   * \li One \c Domain_bispheric_eta_first inbetween the two spheres.
+   * \li One \c Domain_bispheric_rect near the second sphere.
+   * \li One \c Domain_bispheric_chi_first near the second sphere.
+   * \li One \c Domain_shell centered on the origin
+   * \li One \c Domain_compact centered on the origin, with inner radius \f$ R \f$.
+   */
   Space_bhns (int ttype, double dist, const std::vector<double>& NS_bounds, const std::vector<double>& BH_bounds,
-                              const std::vector<double>& outer_bounds, int nr);
+                              const std::vector<double>& outer_bounds, int nr, const int n_inner_shellsNS = 0);
 
-	Space_bhns (FILE*) ; ///< Constructor from a file
+	Space_bhns (FILE*, bool oldspace = false) ; ///< Constructor from a file
 
  	virtual ~Space_bhns() ; ///< Destructor
 	virtual void save(FILE*) const ;

@@ -48,13 +48,7 @@ std::array<std::vector<double>,NUM_OUT> KadathExportNS(int const npoints,
 
   // fields depending on the coords
   CoordFields<Space_spheric_adapted> cf_generator(space);
-  std::array<Vector*, NUM_VECTORS> coord_vectors {};
-  coord_vectors[GLOBAL_ROT] = new Vector(space,CON,basis);
-  coord_vectors[EX]         = new Vector(space,CON,basis);
-  coord_vectors[EY]         = new Vector(space,CON,basis);
-  coord_vectors[EZ]         = new Vector(space,CON,basis);
-  coord_vectors[S_BCO1]     = new Vector(space,CON,basis);
-  coord_vectors[S_INF]      = new Vector(space,CON,basis);
+  vec_ary_t coord_vectors {default_co_vector_ary(space)};
 
   // get origin of the system and initialize coordinate fields
   double xo = bco_utils::get_center(space,0);
@@ -245,8 +239,5 @@ std::array<std::vector<double>,NUM_OUT> KadathExportNS(int const npoints,
     out[VELY][i] = quant_vals[UY];
     out[VELZ][i] = quant_vals[UZ];
   } // for i
-  // cleanup coord field pointers
-  for(auto& el : coord_vectors) delete el;
-
   return out;
 }

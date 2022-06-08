@@ -451,6 +451,15 @@ class System_of_eqs {
 
 	/**
 	* Function that reads a string and returns a pointer on the generated \c Ope_eq.
+	* It is higly recursive, calling itself unless the full operator is generated. Returns empty pointer if not found
+	* @param dom : number of the \c Domain
+	* @param name : the sting to be read.
+	* @param bb : boundary, if a boundary is needed (depending on the type of equation considered : bulk vs matching for instance).
+	*/
+	Ope_eq* find_ope (int dom, const char* name, int bb=0) const ;
+	
+  /**
+	* Function that reads a string and returns a pointer on the generated \c Ope_eq.
 	* It is higly recursive, calling itslef unless the full operator is generated or an error encoutered.
 	* @param dom : number of the \c Domain
 	* @param name : the sting to be read.
@@ -861,6 +870,8 @@ class System_of_eqs {
 	*/
 	bool do_newton (double, double&, SOLVER solver = NEWTON_RAPHSON) ;
 
+	bool do_newton_seq (double, double&) ;
+
 	/**
 	* Updates the variations of the \c Term_eq that comes from the fact that some \c Domains are variable (i.e. their shape).
 	* @param zedoms : the number of all the variable domains.
@@ -951,7 +962,9 @@ class System_of_eqs {
 	friend class Space_bin_bh ;
 	friend class Space_bin_fake ;
 	friend class Space_polar_periodic ;
-	friend class Space_adapted_bh ; 
+	friend class Space_adapted_bh ;
+	friend class Space_KerrSchild_bh;
+	friend class Space_Kerr_bbh;
 	friend class Space_bbh ;
 	friend class Metric ;
 	friend class Metric_general ;

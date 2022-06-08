@@ -1389,6 +1389,9 @@ class Space : public MemoryMappable {
 	return domains[i] ;
     }
 
+		Scalar get_cart_field(int const cart) const;
+		Scalar get_cart_field_bound(int const cart, int const bound) const;
+
     // Things for adapted domains
 	/**
 	* Gives the number of unknowns coming from the variable shape of the domain.

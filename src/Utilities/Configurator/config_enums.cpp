@@ -26,16 +26,13 @@ const std::map<std::string, BIN_PARAMS> MBIN_PARAMS = {
   {"distance",DIST},            // Separation distance
   {"d_dist",DDIST},             // Change in separation distance
   {"global_omega",GOMEGA},      // Orbital angular velocity
-  {"velx",BVELX},               // Boost along X - Fix Px
-  {"vely",BVELY},               // Boost along Y - Fix Py
   {"com",COM},                  // Center of mass shift along X axis
   {"comy",COMY},                // COM along y axis
   {"qpig",QPIG},                // units scaling - 4*pi*G
   {"rext", REXT},               // fixed exterior radius (~2*DIST)
   {"q", Q},                     // Mass ratio
-  {"adot", ADOT},                
-  {"ecc_omega", ECC_OMEGA},     // Fixed omega used for eccentricity reduction                
-  {"init_res",INIT_RES},        // Initial Resolution to use before res increase
+  {"adot", ADOT},               // Radial infall velocity (for eccentricity reduction) 
+  {"ecc_omega", ECC_OMEGA},     // Fixed omega used for eccentricity reduction 
   {"outer_shells", OUTER_SHELLS}, // Number of shells before compactified domain
 };
 
@@ -60,20 +57,27 @@ const std::map<std::string, BCO_PARAMS> MBCO_PARAMS = {
   {"dim",DIM},
   {"use_tov1d", USE_TOV1D},      // Use 1D TOV estimates for R, NC, and HC
   {"fixed_omega", FIXED_BCOMEGA},// fixed Angular velocity - chi is ignored
+  {"velx",BVELX},               // Boost along X - Fix Px
+  {"vely",BVELY},               // Boost along Y - Fix Py
+  {"decay_limit", DECAY},       // Decay limit to use when importing BCOs into binary
+  {"kerr_chi", KERR_CHI},       // Kerr parameter a=J/M
+  {"kerr_mch", KERR_MCH},       // Mass given to the analytical kerr background
+  {"n_inner_shells",NINSHELLS}, // Shells inside a NS - binary only
 };
 
 const std::map<std::string, EOS_PARAMS> MEOS_PARAMS = {
-  {"eostype",EOSTYPE},
-  {"eosfile",EOSFILE},
-  {"h_cut",HCUT},
-  {"interpolation_pts", INTERP_PTS}
+  {"eostype",EOSTYPE}, // Cold_PWPoly, Cold_Table
+  {"eosfile",EOSFILE}, // Polytrope or Tabulated EOS file
+  {"h_cut",HCUT}, // value to cut the specific enthalpy (0 is default)
+  {"interpolation_pts", INTERP_PTS} // number of points to use for interpolating the table
 };
 
 //required independent of binary, BCO, etc
 const std::map<std::string, NODES> M_REQ_NODES = {
   {"fields",FIELDS},
   {"stages",STAGES},
-  {"sequence_controls",SCONTROLS}
+  {"sequence_controls",SCONTROLS},
+  {"sequence_settings",SSETTINGS},
 };
 
 const std::map<std::string, NODES> MBCO = {
@@ -93,7 +97,10 @@ const std::map<std::string, BCO_FIELDS> MBCO_FIELDS = {
   {"nu", NU},
   {"incA", INCA},
   {"bigA", BIGA},
-  {"np", NP}
+  {"np", NP},
+  {"ks_metric", KS_METRIC},
+  {"ks_lapse", KS_LAPSE},
+  {"ks_k", KS_K}
 };
 
 // Subset of fields that are Scalars and are initialized to 0
@@ -131,6 +138,7 @@ const std::map<std::string, STAGE> MSTAGE = {
   {"grav",GRAV},
   {"vel_pot_only",VEL_POT_ONLY},
   {"ecc_red", ECC_RED},
+  {"binary_boost", BIN_BOOST},
   {"testing",TESTING}
 };
 
@@ -148,10 +156,10 @@ const std::map<std::string, STAGE> MBNSSTAGE = {
   {"ecc_red", ECC_RED},
 };
 const std::map<std::string, STAGE> MBBHSTAGE = {
-  {"pre",PRE},
-  {"fixed_omega",FIXED_OMEGA},
-  {"corot_equal",COROT_EQUAL},
-  {"total",TOTAL},
+  {"pre",PRE},                //deprecated v1 only
+  {"fixed_omega",FIXED_OMEGA},//deprecated v1 only
+  {"corot_equal",COROT_EQUAL},//deprecated v1 only
+  {"total",TOTAL},            //deprecated v1 only
   {"total_bc",TOTAL_BC},
   {"ecc_red", ECC_RED},
 };
@@ -161,14 +169,16 @@ const std::map<std::string, STAGE> MBHNSSTAGE = {
   {"ecc_red", ECC_RED},
 };
 const std::map<std::string, STAGE> MBHSTAGE = {
-  {"pre",PRE},
-  {"total",TOTAL},
-  {"total_bc",TOTAL_BC}
+  {"pre",PRE},                //deprecated v1 only
+  {"total",TOTAL},            //deprecated v1 only
+  {"total_bc",TOTAL_BC},
+  {"binary_boost", BIN_BOOST},
 };
 const std::map<std::string, STAGE> MNSSTAGE = {
-  {"pre",PRE},
+  {"pre",PRE},                //deprecated v1 only
   {"norot_bc",NOROT_BC},
-  {"total_bc",TOTAL_BC}
+  {"total_bc",TOTAL_BC},
+  {"binary_boost", BIN_BOOST},
 };
 
 const std::map<std::string, CONTROLS> MCONTROLS = {
@@ -176,13 +186,31 @@ const std::map<std::string, CONTROLS> MCONTROLS = {
   {"sequences", SEQUENCES},      ///< Enable sequence generation - placeholder
   {"checkpoint", CHECKPOINT},    ///< Disable to only output after each solver stage is successful
   {"use_fixed_r", USE_FIXED_R},  ///< Solve BCO based on FIXED_R instead of Mirr, MADM, MB, etc.
-  {"mb_fixing", MB_FIXING},      ///< For an isolated NS, fix using Baryonic mass
+  {"fixed_mb", MB_FIXING},      ///< For an isolated NS, fix using Baryonic mass
   {"delete_shift", DELETE_SHIFT},///< at the start of the solver, choose to delete the shift
   {"corot_binary", COROT_BIN},   ///< control whether a binary is purely corotating
   
   // Control whether codes such as increase resolution make updates from the config file
   // variables or directly from the numerical space
-  {"use_config_vars", USE_CONFIG_VARS},
-  {"fixed_bin_omega", FIXED_GOMEGA},
-  {"update_initial", UPDATE_INIT},
+  //{"use_config_vars", USE_CONFIG_VARS},
+  {"fixed_bin_omega", FIXED_GOMEGA}, ///< Fix binary orbital frequency
+  {"update_initial", UPDATE_INIT}, ///< historical: add initial section to config
+  {"use_boosted_co", USE_BOOSTED_CO}, ///< use boosted compact objects to construct binary initial guess
+  //{"iterative_chi", ITERATIVE_CHI},
+  {"fixed_lapse", USE_FIXED_LAPSE}, ///< Use fixed lapse BC on black holes
+  {"resolve", RESOLVE}, ///<Force resolve of ID even if a checkpoint exists
+  {"initial_regrid", REGRID}, ///< Regrid before solving from a previous solution
+  {"centralized_cos", SAVE_COS},///< Save CO solutions to a central location for reuse
+  {"co_use_shells", CO_USE_SHELLS}, ///< Isolated Compact objects use defined shells (binary solvers)
+};
+
+const std::map<std::string, SEQ_SETTINGS> MSEQ_SETTINGS = {
+  {"solver_precision", PREC}, ///< Threshold for a converged solution
+  {"solver_max_iterations", MAX_ITER}, ///< Maximum iterations before solver is terminated
+  {"initial_resolution", INIT_RES}, ///< initial resolution to solve from (default 9)
+};
+
+const std::map<std::string, STAGE> MKSBHSTAGE = {
+  {"total_bc",TOTAL_BC},
+  {"binary_boost", BIN_BOOST},
 };
