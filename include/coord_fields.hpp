@@ -21,6 +21,7 @@
 
 #pragma once
 #include "kadath.hpp"
+#include <optional>
 using namespace Kadath;
 
 /**
@@ -30,6 +31,10 @@ using namespace Kadath;
 
 enum coord_vector {GLOBAL_ROT, BCO1_ROT, BCO2_ROT, EX, EY, EZ, S_BCO1, S_BCO2, S_INF, NUM_VECTORS};
 enum coord_scalar {R_BCO1=0, R_BCO2, NUM_SCALARS};
+                   
+using vec_ary_t = std::array<std::optional<Vector>, NUM_VECTORS>;
+using scalar_ary_t = std::array<std::optional<Scalar>, NUM_SCALARS>;
+
 /**
  * gen_cv_names()
  * in order to make sure fields are updated during each solver iteration,
@@ -95,18 +100,18 @@ class CoordFields;
  */
 template<typename space_t>
 void update_fields (CoordFields<space_t> const & cf_generator,
-                   std::array<Vector*, NUM_VECTORS> & coord_vectors,
-                   std::array<Scalar*, NUM_SCALARS> & coord_scalars,
+                   vec_ary_t & coord_vectors,
+                   scalar_ary_t & coord_scalars,
                    const double xo, const double xc1, const double xc2, 
-                   System_of_eqs* syst=0x0);
+                   System_of_eqs* syst=nullptr);
 
 // Helper function to avoid declaring unnecessary coord_scalar arrays
 template<typename space_t>
 void update_fields (CoordFields<space_t> const & cf_generator,
-                   std::array<Vector*, NUM_VECTORS> & coord_vectors,
-                   std::array<Scalar*, NUM_SCALARS>&& coord_scalars,
+                   vec_ary_t & coord_vectors,
+                   scalar_ary_t&& coord_scalars,
                    const double xo, const double xc1, const double xc2, 
-                   System_of_eqs* syst=0x0);
+                   System_of_eqs* syst=nullptr);
 /**
  * update_fields_co
  *
@@ -122,9 +127,16 @@ void update_fields (CoordFields<space_t> const & cf_generator,
  */
 template<typename space_t>
 void update_fields_co(CoordFields<space_t> const & cf_generator,
-                   std::array<Vector*, NUM_VECTORS> & coord_vectors,
-                   std::array<Scalar*, NUM_SCALARS> && coord_scalars, 
-                   const double xo, System_of_eqs* syst=0x0);
+                   vec_ary_t & coord_vectors,
+                   scalar_ary_t & coord_scalars, 
+                   const double xo, System_of_eqs* syst=nullptr);
+
+// Helper function to avoid declaring unnecessary coord_scalar arrays
+template<typename space_t>
+void update_fields_co(CoordFields<space_t> const & cf_generator,
+                   vec_ary_t & coord_vectors,
+                   scalar_ary_t && coord_scalars, 
+                   const double xo, System_of_eqs* syst=nullptr);
 
 /**
  * update_field
@@ -138,6 +150,32 @@ void update_fields_co(CoordFields<space_t> const & cf_generator,
  * @param [input] so: value to apply
  */
 bool update_field(System_of_eqs& syst, int dom, const char* n, Tensor& so);
+
+/**
+ * default_binary_vector_ary
+ *
+ * generates the default array of Vector fields needed for XCTS
+ * binary initial data.
+ *
+ * @tparam space_t type of computation space
+ * @param [input] space: numerical spoace
+ * @return array of Vector fields
+ */
+template<class space_t>
+vec_ary_t default_binary_vector_ary(space_t& space);
+
+/**
+ * default_co_vector_ary
+ *
+ * generates the default array of Vector fields needed for XCTS
+ * isolated compact object initial data.
+ *
+ * @tparam space_t type of computation space
+ * @param [input] space: numerical spoace
+ * @return array of Vector fields
+ */
+template<class space_t>
+vec_ary_t default_co_vector_ary(space_t& space);
 
 /**
  * @class CoordFields
@@ -165,6 +203,7 @@ class CoordFields {
      * @param [input] shift_z: coordinate shift in the z direction
      * @return Vector field containing the shifted cartesian coordinates
      */
+    template<int ind_t = CON>
 		Kadath::Vector cart(double shift_x = 0., double shift_y = 0., double shift_z= 0.) const;
     
     /**
@@ -189,6 +228,7 @@ class CoordFields {
      * @param [input] shift_z: coordinate shift in the z direction
      * @return Vector field containing the shifted rotation field
      */
+    template<int ind_t = CON>
 		Kadath::Vector rot_z(double shift_x = 0., double shift_y = 0., double shift_z= 0.) const;
     
     /**
@@ -201,6 +241,7 @@ class CoordFields {
      * @param [input] shift_z: coordinate shift in the z direction
      * @return Vector field containing the shifted unit vector field
      */
+    template<int ind_t = CON>
 		Kadath::Vector e_rad(double shift_x = 0., double shift_y = 0., double shift_z= 0.) const;
     
     /**
@@ -211,6 +252,7 @@ class CoordFields {
      * @param [input] dir: coordinate direction (e.g. x = 1, y = 2, z = 3)
      * @return Vector field containing the vector field of the specified coordinate direction
      */
+    template<int ind_t = CON>
 		Kadath::Vector e_cart(int dir) const;
 };
 /**
@@ -218,8 +260,9 @@ class CoordFields {
  */
 
 template<typename space_t>
+template<int ind_t>
 Kadath::Vector CoordFields<space_t>::cart(double shift_x, double shift_y, double shift_z) const {
-	Kadath::Vector cart(space, CON, basis);
+	Kadath::Vector cart(space, ind_t, basis);
 
   int ndom = space.get_nbr_domains();
 
@@ -229,9 +272,11 @@ Kadath::Vector CoordFields<space_t>::cart(double shift_x, double shift_y, double
     cart.set(3).set_domain(d) = space.get_domain(d)->get_cart(3) - shift_z;
   }
 
-  cart.set(1).set_domain(ndom - 1) = space.get_domain(ndom-1)->get_cart_surr(1);
-  cart.set(2).set_domain(ndom - 1) = space.get_domain(ndom-1)->get_cart_surr(2);
-  cart.set(3).set_domain(ndom - 1) = space.get_domain(ndom-1)->get_cart_surr(3);
+  // set outter boundary to surface coordinates (1/r) for compact domain
+  // FIXME: these are not coordinate shifted
+  cart.set(1).set_domain(ndom - 1) = space.get_domain(ndom - 1)->get_cart_surr(1);
+  cart.set(2).set_domain(ndom - 1) = space.get_domain(ndom - 1)->get_cart_surr(2);
+  cart.set(3).set_domain(ndom - 1) = space.get_domain(ndom - 1)->get_cart_surr(3);
 
   cart.set(1).std_base();
   cart.set(2).std_base();
@@ -243,21 +288,35 @@ Kadath::Vector CoordFields<space_t>::cart(double shift_x, double shift_y, double
 template<typename space_t>
 Kadath::Scalar CoordFields<space_t>::radius(double shift_x, double shift_y, double shift_z) const {
 	auto coords = this->cart(shift_x, shift_y, shift_z);
-
+  int ndom = space.get_nbr_domains();
+  
 	Kadath::Scalar r_sq = coords(1) * coords(1) + coords(2) * coords(2) + coords(3) * coords(3);
   r_sq.std_base();
 
   Kadath::Scalar r = sqrt(r_sq);
   r.std_base();
+  
+  // set outter boundary to constant large radius 
+  Index pos(space.get_domain(ndom-1)->get_nbr_points());
+  const int npts_r = space.get_domain(ndom-1)->get_nbr_points()(0);
+  for(int i = 1; i <= 3; ++i) {
+    const int dom = ndom - 1;
+    do{
+      if(pos(0) == npts_r - 1) {
+        r.set_domain(dom).set(pos) = 1e10;
+      }
+    }while(pos.inc());
+  }
 
   return r;
 }
 
 template<typename space_t>
+template<int ind_t>
 Kadath::Vector CoordFields<space_t>::rot_z(double shift_x, double shift_y, double shift_z) const {
 	auto coords = this->cart(shift_x, shift_y, shift_z);
 
-	Kadath::Vector rot_z(space, CON, basis);
+	Kadath::Vector rot_z(space, ind_t, basis);
   rot_z.set(1) = -coords(2);
   rot_z.set(2) = coords(1);
   rot_z.set(3) = 0.;
@@ -267,15 +326,33 @@ Kadath::Vector CoordFields<space_t>::rot_z(double shift_x, double shift_y, doubl
 }
 
 template<typename space_t>
+template<int ind_t>
 Kadath::Vector CoordFields<space_t>::e_rad(double shift_x, double shift_y, double shift_z) const {
 	auto coords = this->cart(shift_x, shift_y, shift_z);
 
   int ndom = space.get_nbr_domains();
 
   // this can be problematic around the given origin
-	Kadath::Vector e_rad(space, CON, basis);
+	Kadath::Vector e_rad(space, ind_t, basis);
 	for(int i : {1,2,3}) {
 	  e_rad.set(i) = coords(i) / this->radius(shift_x, shift_y, shift_z);
+    
+    // fix non-finite values likely at (0,0,0)
+    // Note: this fix is sufficient for the FUKA codes as
+    // we are only concerned with e_rad on the surfaces of compact
+    // objects or at infinity.  This fix is to remove NaNs and their
+    // impact on the system of equations
+    for(int dom=0; dom < ndom - 1; ++dom) {
+      Index pos(space.get_domain(dom)->get_nbr_points());
+      const int npts_r = space.get_domain(dom)->get_nbr_points()(0);
+      do{
+        if(!std::isfinite(e_rad(i)(dom)(pos)) && pos(0) == 0) {
+          Index tempos(pos);
+          tempos.set(0) = pos(0) + 1;
+          e_rad.set(i).set_domain(dom).set(pos) = e_rad(i)(dom)(tempos);
+        }
+      }while(pos.inc());
+    }
 
 		// FIXME this is not correct for shifted cartesian coords
     e_rad.set(i).set_domain(ndom - 1) = space.get_domain(ndom - 1)->get_cart_surr(i);
@@ -289,8 +366,9 @@ Kadath::Vector CoordFields<space_t>::e_rad(double shift_x, double shift_y, doubl
 }
 
 template<typename space_t>
+template<int ind_t>
 Kadath::Vector CoordFields<space_t>::e_cart(int dir) const {
-	Kadath::Vector e_cart(space, CON, basis);
+	Kadath::Vector e_cart(space, ind_t, basis);
 	e_cart = 0;
 	e_cart.set(dir) = 1.;
 
@@ -305,33 +383,46 @@ Kadath::Vector CoordFields<space_t>::e_cart(int dir) const {
 
 template<typename space_t>
 void update_fields (CoordFields<space_t> const & cf_generator,
-                   std::array<Vector*, NUM_VECTORS> & coord_vectors,
-                   std::array<Scalar*, NUM_SCALARS> & coord_scalars,
+                   vec_ary_t & coord_vectors,
+                   scalar_ary_t & coord_scalars,
                    const double xo, const double xc1, const double xc2, 
                    System_of_eqs* syst) {
 
-  if(coord_vectors[GLOBAL_ROT]) *coord_vectors[GLOBAL_ROT] = cf_generator.rot_z(xo);
-	if(coord_vectors[BCO1_ROT])   *coord_vectors[BCO1_ROT]   = cf_generator.rot_z(xc1) ;
-	if(coord_vectors[BCO2_ROT])   *coord_vectors[BCO2_ROT]   = cf_generator.rot_z(xc2);
-	if(coord_vectors[EX])         *coord_vectors[EX]         = cf_generator.e_cart(1);
-	if(coord_vectors[EY])         *coord_vectors[EY]         = cf_generator.e_cart(2);
-	if(coord_vectors[EZ])         *coord_vectors[EZ]         = cf_generator.e_cart(3);
-  if(coord_vectors[S_BCO1])     *coord_vectors[S_BCO1]     = cf_generator.e_rad(xc1);
-  if(coord_vectors[S_BCO2])     *coord_vectors[S_BCO2]     = cf_generator.e_rad(xc2);
-  if(coord_vectors[S_INF])      *coord_vectors[S_INF]      = cf_generator.e_rad(xo);
-  if(coord_scalars[R_BCO1])     *coord_scalars[R_BCO1]     = cf_generator.radius(xc1);
-  if(coord_scalars[R_BCO2])     *coord_scalars[R_BCO2]     = cf_generator.radius(xc2);
+  if(coord_vectors[GLOBAL_ROT]) 
+    *coord_vectors[GLOBAL_ROT] = cf_generator.template rot_z(xo);
+	if(coord_vectors[BCO1_ROT])   
+    *coord_vectors[BCO1_ROT]   = cf_generator.template rot_z(xc1) ;
+	if(coord_vectors[BCO2_ROT])   
+    *coord_vectors[BCO2_ROT]   = cf_generator.template rot_z(xc2);
+	if(coord_vectors[EX])
+    *coord_vectors[EX]         = cf_generator.template e_cart<COV>(1);
+	if(coord_vectors[EY])         
+    *coord_vectors[EY]         = cf_generator.template e_cart<COV>(2);
+	if(coord_vectors[EZ])         
+    *coord_vectors[EZ]         = cf_generator.template e_cart<COV>(3);
+  if(coord_vectors[S_BCO1])     
+    *coord_vectors[S_BCO1]     = cf_generator.template e_rad<COV>(xc1);
+  if(coord_vectors[S_BCO2])     
+    *coord_vectors[S_BCO2]     = cf_generator.template e_rad<COV>(xc2);
+  if(coord_vectors[S_INF])      
+    *coord_vectors[S_INF]      = cf_generator.template e_rad<COV>(xo);
+  if(coord_scalars[R_BCO1]) 
+    *coord_scalars[R_BCO1]     = cf_generator.radius(xc1);
+  if(coord_scalars[R_BCO2])     
+    *coord_scalars[R_BCO2]     = cf_generator.radius(xc2);
   
   int ndom = coord_vectors[GLOBAL_ROT]->get_space().get_nbr_domains();
   
   auto update = [&] (auto& name, auto& field) {
     for(int dom = 0; dom < ndom; ++dom){
       bool succ = update_field(*syst, dom, name.c_str(), field);
+      #ifdef DEBUG
       if(!succ)
         std::cout << name << " failed\n";
+      #endif
     }
   };
-  if(syst != 0x0) {
+  if(syst != nullptr) {
     for(int i = 0; i < NUM_VECTORS; ++i) {
       if(coord_vectors[i])
         update(cv_names[i], *coord_vectors[i]);
@@ -344,11 +435,10 @@ void update_fields (CoordFields<space_t> const & cf_generator,
   }
 }
 
-// Helper function to avoid declaring unnecessary coord_scalar arrays
 template<typename space_t>
 void update_fields (CoordFields<space_t> const & cf_generator,
-                   std::array<Vector*, NUM_VECTORS> & coord_vectors,
-                   std::array<Scalar*, NUM_SCALARS>&& coord_scalars,
+                   vec_ary_t & coord_vectors,
+                   scalar_ary_t&& coord_scalars,
                    const double xo, const double xc1, const double xc2, 
                    System_of_eqs* syst) {
   update_fields(cf_generator, coord_vectors, coord_scalars, xo, xc1, xc2, syst);
@@ -356,8 +446,16 @@ void update_fields (CoordFields<space_t> const & cf_generator,
 
 template<typename space_t>
 void update_fields_co (CoordFields<space_t> const & cf_generator,
-                   std::array<Vector*, NUM_VECTORS> & coord_vectors,
-                   std::array<Scalar*, NUM_SCALARS> && coord_scalars,
+                   vec_ary_t & coord_vectors,
+                   scalar_ary_t && coord_scalars,
+                   const double xo, System_of_eqs* syst) {
+  update_fields(cf_generator, coord_vectors, coord_scalars, xo, xo, 0., syst);
+}
+
+template<typename space_t>
+void update_fields_co (CoordFields<space_t> const & cf_generator,
+                   vec_ary_t & coord_vectors,
+                   scalar_ary_t & coord_scalars,
                    const double xo, System_of_eqs* syst) {
   update_fields(cf_generator, coord_vectors, coord_scalars, xo, xo, 0., syst);
 }
@@ -378,4 +476,36 @@ inline bool update_field(System_of_eqs& syst, int dom, const char* n, Tensor& so
     mm->set_val_t(so);
   }
   return found;
+}
+
+template<class space_t>
+vec_ary_t default_binary_vector_ary(space_t& space) {
+  vec_ary_t coord_vectors{};
+  Base_tensor basis (space, CARTESIAN_BASIS) ;
+  for(auto i = 0; i < NUM_VECTORS; ++i) {
+    switch(i) {
+      case GLOBAL_ROT:
+      case BCO1_ROT:
+      case BCO2_ROT:
+        coord_vectors[i] = Vector(space, CON, basis);
+        break;
+      default:
+        coord_vectors[i] = Vector(space, COV, basis);
+    }
+  }
+  return coord_vectors;
+}
+
+template<class space_t>
+vec_ary_t default_co_vector_ary(space_t& space) {
+  vec_ary_t coord_vectors{};
+  Base_tensor basis (space, CARTESIAN_BASIS) ;
+  coord_vectors[GLOBAL_ROT] = Vector(space,CON,basis);
+  coord_vectors[BCO1_ROT]   = Vector(space,CON,basis);
+  coord_vectors[EX]         = Vector(space,COV,basis);
+  coord_vectors[EY]         = Vector(space,COV,basis);
+  coord_vectors[EZ]         = Vector(space,COV,basis);
+  coord_vectors[S_BCO1]     = Vector(space,COV,basis);
+  coord_vectors[S_INF]      = Vector(space,COV,basis);
+  return coord_vectors;
 }
