@@ -37,7 +37,8 @@ void KadathPNOrbitalParams(kadath_config_boost<BIN_INFO>& bconfig, double Madm1,
 
   double adot_pn = rdot / r;
 
-  bconfig.set(GOMEGA) = omega_pn;
+  bconfig.set(ECC_OMEGA) = omega_pn;
   bconfig.set(ADOT) = adot_pn;
+  bconfig.set(GOMEGA) = omega_pn;
 }
 }
