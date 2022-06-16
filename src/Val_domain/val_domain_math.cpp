@@ -137,6 +137,8 @@ Val_domain operator+ (const Val_domain& so) {
 
 Val_domain operator- (const Val_domain& so) {
 	Val_domain res (so) ;
+	if (so.is_zero)
+		return res ;
 	if (so.in_conf)
 		*res.c *= -1 ;
 	if (so.in_coef) 
