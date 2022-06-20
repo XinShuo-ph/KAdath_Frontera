@@ -26,6 +26,7 @@
 #include "Configurator/config_binary.hpp"
 #include "coord_fields.hpp"
 #include "EOS/EOS.hh"
+#include "name_tools.hpp"
 #include <cstdlib>
 #include <string>
 #include <filesystem>
@@ -118,6 +119,13 @@ class Solver {
     }
     
     return exists;
+  }
+
+  template<typename... bco_idx>
+  std::string extract_eos_name(bco_idx... bco) const {
+    const std::string eos_file_abs = bconfig.template eos<std::string>(EOSFILE, bco...);
+    const std::string eos_file = extract_filename(eos_file_abs);
+    return eos_file.substr(0, eos_file.find("."));
   }
 };
 
