@@ -51,6 +51,7 @@ class bns_xcts_solver : Solver<config_t, space_t> {
   using Solver<config_t, space_t>::ndom;
   using Solver<config_t, space_t>::check_max_iter_exceeded;
   using Solver<config_t, space_t>::solution_exists;
+  using Solver<config_t, space_t>::extract_eos_name;
 
   public:
   // solver is not trivially constructable since Kadath containers are not

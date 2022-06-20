@@ -51,8 +51,7 @@ bhns_xcts_solver<eos_t, config_t, space_t>::bhns_xcts_solver(config_t& config_in
 template<class eos_t, typename config_t, typename space_t>
 std::string bhns_xcts_solver<eos_t, config_t, space_t>::converged_filename(
   const std::string& stage) const {
-  const std::string eos_file = bconfig.template eos<std::string>(EOSFILE, BCO1);
-  const std::string eosname = eos_file.substr(0, eos_file.find("."));
+  const std::string eosname{extract_eos_name(BCO1)};
   std::stringstream ss;
   auto res = space.get_domain(0)->get_nbr_points()(0);
   auto M1 = bconfig(MADM, BCO1);

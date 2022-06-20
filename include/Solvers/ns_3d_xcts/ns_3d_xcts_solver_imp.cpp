@@ -26,8 +26,7 @@ template<class eos_t, typename config_t, typename space_t>
 std::string ns_3d_xcts_solver<eos_t, config_t, space_t>::converged_filename(
   const std::string& stage) const {
   auto res = space.get_domain(0)->get_nbr_points()(0);
-  const std::string eos_file = bconfig.template eos<std::string>(EOSFILE);
-  const std::string eosname = eos_file.substr(0, eos_file.find("."));
+  const std::string eosname{extract_eos_name()};
   std::stringstream ss;
   ss << "converged_NS";
   if(stage != "") ss  << "_" << stage << ".";
