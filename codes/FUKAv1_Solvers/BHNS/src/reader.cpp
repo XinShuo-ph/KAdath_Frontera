@@ -136,7 +136,7 @@ void reader_output(config_t bconfig, const int output) {
   syst.add_def ("dtgamma = D_k bet^k + 6 / P * B^k * D_k P");
 
   for (int d=0 ; d<ndom ; d++) {
-    if((d >= space.BH) || d == space.ADAPTEDNS+1){
+    if(d >= space.ADAPTEDNS+1){
         syst.add_def(d,"eqP     = D^i D_i P + A_ij * A^ij / P^7 / 8") ;
         syst.add_def(d,"eqNP    = D^i D_i NP - 7. / 8. * NP / P^8 * A_ij * A^ij");
         syst.add_def(d,"eqbet^i = D_j D^j bet^i + D^i D_j bet^j / 3. - 2. * A^ij * D_j Ntilde");
@@ -202,7 +202,7 @@ void reader_output(config_t bconfig, const int output) {
   double areal_rns =  sqrt(A);
   
   double rin_ns  = bco_utils::get_radius(space.get_domain(space.NS), EQUI);
-  double rout_ns = bco_utils::get_radius(space.get_domain(space.ADAPTEDNS+1), EQUI);
+  double rout_ns = bco_utils::get_radius(space.get_domain(space.ADAPTEDNS+1+bconfig(NSHELLS,BCO1)), EQUI);
   
   auto   dHdx     = syst.give_val_def("dH")();
   double dHdx1    = bco_utils::get_boundary_val(space.NS, dHdx, INNER_BC);
@@ -279,9 +279,9 @@ void reader_output(config_t bconfig, const int output) {
   std::cout   << FORMAT1<< "Coord R = "        << "[" << rmin << "," << rmax << "] ("
                                                << "[" << rmin * M2km << "," << rmax * M2km << "] km)" << std::endl;
   // Print outer shells
-  print_shells(space.NS+2, space.BH-1);  
+  print_shells(space.ADAPTEDNS+1, space.BH-1);  
   std::cout   << FORMAT1<< "Coord R_OUT = "    << rout_ns << std::endl
-              << FORMAT1<< "Areal R = "        << areal_rns << std::endl
+              << FORMAT1<< "Areal R = "        << areal_rns << " [" << areal_rns * M2km << "km]\n"
               << FORMAT1 << "NS Mb = "         << MB1 << " (";
   print_shell_mb(baryonic_mass1);
   std::cout   << ")\n"
@@ -307,7 +307,7 @@ void reader_output(config_t bconfig, const int output) {
               << FORMAT1 << "Coord R = " << r_bh  << " [" << r_bh * M2km << "km]\n";
               print_shells(space.BH+2, space.OUTER-1);
   std::cout   << FORMAT1 << "Coord R_OUT = "        << rout_bh << std::endl
-              << FORMAT1 << "Areal R = "        << areal_rbh << std::endl
+              << FORMAT1 << "Areal R = "        << areal_rbh << " [" << areal_rns * M2km << "km]\n"
               << FORMAT1 <<" LAPSE = ["         << lapsemin << ", " << lapsemax  <<"]\n"
               << FORMAT1 <<" PSI = ["           << confmin  << ", " << confmax   <<"]\n"
               << FORMAT1 << "Mirr = "         << mirr << "\n"
@@ -329,7 +329,7 @@ void reader_output(config_t bconfig, const int output) {
     print_shells(ndom-1-outer_shells,  ndom-1);
   }
   std::cout   << FORMAT1<< "Q = "               << M2 / M1 << std::endl
-              << FORMAT1<< "Separation = "      << bconfig(DIST) << " [" << bconfig(DIST)/mch << "]\n"
+              << FORMAT1<< "Separation = "      << bconfig(DIST) << " [" << bconfig(DIST)/Mtot << "]\n"
               << FORMAT1 << "Orbital Omega = "  << bconfig(GOMEGA) << std::endl
               << FORMAT1 << "Komar mass = "     << komar << std::endl
               << FORMAT1 << "Adm mass = "       << adm_inf 
