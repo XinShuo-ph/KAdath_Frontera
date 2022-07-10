@@ -235,7 +235,7 @@ class bhns_reader_t : public Kadath::python_reader_t<space_t, bhns_vars_t> {
     syst.add_def (space.ADAPTEDNS+1, "intS1 = A_ij * mm^i * sm^j / 8. / PI") ;
 
     for (int d=0 ; d<ndom ; d++) {
-      if((d >= space.BH) || d == space.ADAPTEDNS+1){				//in vacuum the matter terms in the constraint equations are absent 
+      if(d >= space.ADAPTEDNS+1){				//in vacuum the matter terms in the constraint equations are absent 
         syst.add_def(d,"eqP     = D^i D_i P + A_ij * A^ij / P^7 / 8") ;
         syst.add_def(d,"eqNP    = D^i D_i NP - 7. / 8. * NP / P^8 * A_ij * A^ij");
         syst.add_def(d,"eqbet^i = D_j D^j bet^i + D^i D_j bet^j / 3. - 2. * A^ij * D_j Ntilde");
