@@ -44,6 +44,7 @@
 #include "polar.hpp"
 #include "adapted.hpp"
 #include "adapted_polar.hpp"
+#include "adapted_homothetic.hpp"
 #include "bin_bh.hpp"
 #include "bin_fake.hpp"
 #include "bin_ns.hpp"
