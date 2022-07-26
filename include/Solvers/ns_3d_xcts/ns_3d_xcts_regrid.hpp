@@ -83,7 +83,7 @@ int ns_3d_xcts_interpolate_on_new_grid(config_t& bconfig, const int new_res, std
   if(!bconfig.control(USE_CONFIG_VARS)){
     bconfig.set(RIN)  = 0.5 * r_min;
     bconfig.set(ROUT) = 1.5 * r_max;
-    bconfig.set(RMID) = r_min;
+    bconfig.set(RMID) = r_max;
   }
   // end update config
   
