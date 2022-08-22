@@ -69,7 +69,7 @@ int main() {
 	System_of_eqs syst (space, 1) ;
 	met.set_system (syst, "g") ;
 	
-	// One can print the number full number of unknowns
+	// One can print the number of unknowns
 	// This corresponds roughly to the number of coefficients of 6 components.
 	cout << "Number of unknowns : " << syst.get_nbr_unknowns() << endl ;
 
@@ -86,7 +86,7 @@ int main() {
 	// This ensure that the code properly determines the number of conditions
 	Array<double> errors (syst.sec_member()) ;
 	
-	// One can print the number of conditions araising from the equations
+	// One can print the number of conditions arising from the equations
 	cout << "Wrong number of conditions : " << syst.get_nbr_conditions() << endl ;
 
 	// Constructor with two arguments.
@@ -123,7 +123,7 @@ int main() {
 	// This ensure that the code properly determines the number of conditions
 	Array<double> errorstwo (systtwo.sec_member()) ;
 	
-	// One can print the number of conditions araising from the equations
+	// One can print the number of conditions arising from the equations
 	cout << "Right number of conditions : " << systtwo.get_nbr_conditions() << endl ;
 	
 	return EXIT_SUCCESS ;

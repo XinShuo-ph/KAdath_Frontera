@@ -80,7 +80,7 @@ int main() {
 	gouter.std_base() ;
 	
 	// Construction of a unknown metric
-	// The initial value numerical value is contained in a Metric_tensor.
+	// The initial numerical value is contained in a Metric_tensor.
 	Metric_general metgen (gmet) ;
 
 	// Passing it to a new system 

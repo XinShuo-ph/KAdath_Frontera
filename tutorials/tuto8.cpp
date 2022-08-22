@@ -65,9 +65,9 @@ int main() {
 	// Sets the appropriate spectral basis (here the standard one)
 	tenT.std_base() ;
 	
-	// The system of equation in domain 1 only
+	// The system of equations in domain 1 only
 	System_of_eqs syst (space, 1) ;
-	// Pass V as an unknown field
+	// Pass U as an unknown field
 	syst.add_var ("U", vecU) ;
 	// Pass T as a constant
 	syst.add_cst ("T", tenT) ;

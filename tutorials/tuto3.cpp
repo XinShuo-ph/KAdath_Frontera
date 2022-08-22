@@ -74,7 +74,7 @@ int main() {
 	M.set(2) = -3.19 ; // Y coordinate
 	M.set(3) = 1.76 ; // Z coordinate
 
-	// Prints the values of the scalar field at MM
+	// Prints the values of the scalar field at M
 	cout << "The point M is " << M << endl ;
 	cout << "Field value at M " << func.val_point(M) << endl ;
 
