@@ -170,12 +170,6 @@ int Domain_nucleus::nbr_conditions_val_domain_boundary (const Val_domain& so, in
 
 Array<int> Domain_nucleus::nbr_conditions_boundary (const Tensor& tt, int dom, int bound, int n_cmp, Array<int>** p_cmp) const {
 
-	// Check boundary
-	if (bound!=OUTER_BC) {
-		cerr << "Unknown boundary in Domain_nucleus::nbr_conditions_boundary" << endl ;
-		abort() ;
-	}
-
 	int size = (n_cmp==-1) ? tt.get_n_comp() : n_cmp ;
 	Array<int> res (size) ;
 	int val = tt.get_valence() ;

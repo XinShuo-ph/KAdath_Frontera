@@ -351,13 +351,6 @@ void Domain_nucleus::export_tau_val_domain_boundary (const Val_domain& so, int m
 
 void Domain_nucleus::export_tau_boundary (const Tensor& tt, int dom, int bound, Array<double>& res, int& pos_res, const Array<int>& ncond,
 										int n_cmp, Array<int>** p_cmp) const {
-
-	// Check boundary
-	if (bound!=OUTER_BC) {
-		cerr << "Unknown boundary in Domain_nucleus::export_tau_boundary" << endl ;
-		abort() ;
-	}
-
 	int val = tt.get_valence() ;
 	switch (val) {
 		case 0 :
