@@ -43,6 +43,9 @@ enum : int {
 };
 
 namespace Kadath {
+
+    void coef_1d (int, Array<double>&) ;
+
     class Point ;
 
     /**
