@@ -80,7 +80,8 @@ class Domain_shell_inner_homothetic: public Domain_shell_inner_adapted {
 public:
      virtual ostream& print (ostream& o) const ;
           
-   friend class Space_spheric_adapted ;   
+   friend class Space_spheric_adapted ;     
+   friend class Space_spheric_adapted_homothetic ;  
    friend class Space_bin_ns ;
 } ;
 /**
@@ -138,7 +139,8 @@ class Domain_shell_outer_homothetic: public Domain_shell_outer_adapted {
 public:
      virtual ostream& print (ostream& o) const ;
           
-   friend class Space_spheric_adapted ;   
+   friend class Space_spheric_adapted ;     
+   friend class Space_spheric_adapted_homothetic ;   
    friend class Space_bin_ns ;
 } ;
 }

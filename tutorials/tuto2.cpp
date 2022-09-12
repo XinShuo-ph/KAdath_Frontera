@@ -33,16 +33,16 @@ int main() {
     cout << space << endl ;
 
 	// Prints the number of points in the domain 0
-cout << space.get_domain(0)->get_nbr_points() << endl ;
+	cout << space.get_domain(0)->get_nbr_points() << endl ;
 
-// Prints the nulber of coefficients in the domain 1 
-cout << space.get_domain(1)->get_nbr_coefs() << endl ;
+	// Prints the number of coefficients in the domain 1 
+	cout << space.get_domain(1)->get_nbr_coefs() << endl ;
 
-// Returns the radius in the domain 0
-cout << space.get_domain(0)->get_radius() << endl ;
+	// Returns the radius in the domain 0
+	cout << space.get_domain(0)->get_radius() << endl ;
 
-// Returns the X coordinate in the domain 1
-cout << space.get_domain(1)->get_cart(1) << endl ;
+	// Returns the X coordinate in the domain 1
+	cout << space.get_domain(1)->get_cart(1) << endl ;
 
 
 	return EXIT_SUCCESS ;

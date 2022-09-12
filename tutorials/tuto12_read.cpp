@@ -26,7 +26,7 @@ int main() {
 	Scalar field (space, fin) ;
 	Vector vecU (space, fin) ;
 
-	// Dont forget to close the file in the end
+	// Don't forget to close the file in the end
 	fclose(fin) ;
 
 	return EXIT_SUCCESS ;

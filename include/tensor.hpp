@@ -661,6 +661,7 @@ namespace Kadath {
         friend class Ope_id;
         friend class Metric_tensor;
         friend class Space_spheric_adapted;
+        friend class Space_spheric_adapted_homothetic;
         friend class Space_polar_adapted;
         friend class Space_bin_ns;
         friend class Space_bin_bh;

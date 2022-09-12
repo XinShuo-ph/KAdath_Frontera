@@ -270,6 +270,7 @@ namespace Kadath {
         friend class Metric_conf_factor_const ;
         friend class System_of_eqs ;
         friend class Space_spheric_adapted ;
+        friend class Space_spheric_adapted_homothetic ;
         friend class Space_polar_adapted ;
         friend class Space_bin_ns ;
         friend class Space_bin_bh ;

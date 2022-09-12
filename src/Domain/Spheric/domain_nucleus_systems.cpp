@@ -52,6 +52,16 @@ double Domain_nucleus::val_boundary (int bound, const Val_domain& so, const Inde
 				res += so.get_coef(copie_pos) ;
 				}
 			break ;
+		case INNER_BC :
+			// Assumes even basis
+			for (int i=0 ; i<nbr_coefs(0) ; i++) {
+				copie_pos.set(0) = i ;
+				if (i%2==0)
+					res += so.get_coef(copie_pos) ;
+				else
+					res -= so.get_coef(copie_pos) ;
+				}
+			break ;
 		default :
 			cerr << "Unknown boundary type in Domain_nucleus::val_boundary" << endl ;
 			abort() ;
