@@ -163,11 +163,20 @@ public:
    */
   static void init(std::string filename = "", const double h_cut = 0.0, const int interp_pts = 2000) {
     using namespace Kadath::Margherita;
-    const std::string home_kadath{std::getenv("HOME_KADATH")};
+    auto get_default_path = [&]() {
+      std::string default_path{"./"};
+      const std::string kadath_environment_var{"HOME_KADATH"};
+      if(std::getenv(kadath_environment_var.c_str())) {
+        std::string const home_kadath{std::getenv(kadath_environment_var.c_str())}; 
+        default_path = home_kadath + "/eos/";
+      }
+      return default_path;
+    };
+    std::string const default_path{get_default_path()};
 
     //if no path is given, we set the default EOS diretory to look for the relevant table/polytrope
     if( filename.rfind("/") == std::string::npos )
-      filename = home_kadath + "/eos/" + filename;
+      filename = default_path + filename;
 
     if (std::is_same<eos, Cold_PWPoly>::value) 
       Margherita_setup_polytrope(filename);
