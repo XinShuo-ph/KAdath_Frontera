@@ -10,11 +10,15 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::norot_stage(bool fixed) {
   double loghc = std::log(bconfig(HC));
   std::string stagename = (fixed) ? "NOROT_FIXED" : "NOROT_BC";
 
-  auto const current = bconfig.config_filename_abs();
+  // We use `config_filename()` vs `config_filename_abs()` since
+  // `solution_exists` will probe the HOME_KADATH/COs directory
+  auto const current = bconfig.config_filename();
   if(solution_exists(stagename) && !bconfig.control(RESOLVE)) {    
     if(rank == 0)
-      std::cout << "Current: " << current << "\nSolved previously: " << bconfig.config_filename_abs() << std::endl;
-    return (current == bconfig.config_filename_abs()) ? EXIT_SUCCESS : RELOAD_FILE;
+      std::cout << "Solved previously: " \
+                << bconfig.config_filename_abs() << std::endl;
+    return (current == bconfig.config_filename()) ? \
+      EXIT_SUCCESS : RELOAD_FILE;
   }
 
   if (fixed) {
@@ -186,12 +190,14 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::uniform_rot_stage() {
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  auto const current = bconfig.config_filename_abs();
+  // We use `config_filename()` vs `config_filename_abs()` since
+  // `solution_exists` will probe the HOME_KADATH/COs directory
+  auto const current = bconfig.config_filename();
   if(solution_exists("TOTAL_BC") && !bconfig.control(RESOLVE)) {
     if(rank == 0)
       std::cout << "Solved previously: " \
                 << bconfig.config_filename_abs() << std::endl;
-    return (current == bconfig.config_filename_abs()) ? \
+    return (current == bconfig.config_filename()) ? \
       EXIT_SUCCESS : RELOAD_FILE;
   }
   
