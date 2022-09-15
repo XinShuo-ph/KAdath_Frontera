@@ -34,6 +34,11 @@ class Domain_shell_surr ;
 class Term_eq ;
 class Metric ;
 
+Array<double> mat_leg_even(int, int) ;
+Array<double> mat_inv_leg_even(int, int) ;
+Array<double> mat_leg_odd(int, int) ;
+Array<double> mat_inv_leg_odd(int, int) ;
+
 /**
 * Class for a spherical domain containing the origin and a symmetry with respect to the plane \f$ z=0 \f$.
 * \li 3 dimensions.
@@ -741,6 +746,11 @@ class Domain_shell : public Domain {
      virtual Term_eq der_multipoles_sym (int, int, int, const Term_eq&, const Array<double>&) const ;     
      virtual Term_eq der_multipoles_asym (int, int, int, const Term_eq&, const Array<double>&) const ;
 
+     virtual void ylm_leg_even (Array<double>&) const ;
+     virtual void ylm_inv_leg_even (Array<double>&) const ;
+     virtual void ylm_leg_odd (Array<double>&) const ;
+     virtual void ylm_inv_leg_odd (Array<double>&) const ;
+     
 	/**
 	* Gives an matching of the spatial metric, based on homogeneous solutions of outgoing waves.
 	* @param gamma : the metric.

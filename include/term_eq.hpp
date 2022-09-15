@@ -156,6 +156,9 @@ namespace Kadath {
         */
         Term_eq der_abs(int i) const ;
 
+	void ylm() ;
+	void ylm_i() ;
+
         friend ostream& operator<< (ostream&, const Term_eq&) ; ///< Display
         friend Term_eq operator+ (const Term_eq&, const Term_eq&) ; ///< Operator +
         friend Term_eq operator- (const Term_eq&, const Term_eq&) ;///< Operator -

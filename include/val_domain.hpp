@@ -302,7 +302,7 @@ namespace Kadath {
         friend class Domain_polar_periodic_shell ;
         friend class Domain_fourD_periodic_nucleus ;
         friend class Domain_fourD_periodic_shell ;
-
+ 	friend class Term_eq ;
 
         friend class Eq_matching_non_std ;
         friend ostream& operator<< (ostream&, const Val_domain&) ; ///< Output operator

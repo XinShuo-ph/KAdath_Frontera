@@ -79,7 +79,8 @@ Array<double> mat_leg_even (int nt, int np) {
   dims.set(1) = nt ;
   dims.set(2) = nt ;
   Array<double> mat (dims) ;
-
+  mat = 0. ;
+  
   int nt2 = 2*nt - 1 ;
   Array<double> coloc (nt2) ;
 
@@ -122,6 +123,7 @@ Array<double> mat_leg_even (int nt, int np) {
       }
     }
   }
+  
   return mat ; 
 }
 
@@ -133,7 +135,7 @@ Array<double> mat_leg_odd (int nt, int np) {
   dims.set(1) = nt ;
   dims.set(2) = nt ;
   Array<double> mat (dims) ;
-
+  mat = 0.;
   int nt2 = 2*nt - 1 ;
   Array<double> coloc (nt2) ;
 
@@ -188,7 +190,7 @@ Array<double> mat_inv_leg_even (int nt, int np) {
   dims.set(1) = nt ;
   dims.set(2) = nt ;
   Array<double> mat (dims) ;
-
+  mat = 0. ;
   int nt2 = 2*nt - 1 ;
   Array<double> coloc (nt2) ;
 
@@ -242,7 +244,7 @@ Array<double> mat_inv_leg_odd (int nt, int np) {
   dims.set(1) = nt ;
   dims.set(2) = nt ;
   Array<double> mat (dims) ;
-
+  mat = 0. ;
   int nt2 = 2*nt - 1 ;
   Array<double> coloc (nt2) ;
 

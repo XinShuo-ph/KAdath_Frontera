@@ -738,7 +738,12 @@ namespace Kadath  {
         * @returns the fit.
         */
          virtual Term_eq der_harmonics_asym (const Term_eq& so, const Term_eq& omega, int bound, Term_eq (*f) (const Space&, int, int, const Term_eq&, const Param&), const Param& param, const Array<double>& passage) const ;
-
+	    
+	 virtual void ylm_leg_even (Array<double>&) const ;
+	 virtual void ylm_inv_leg_even (Array<double>&) const ;
+ 	 virtual void ylm_leg_odd (Array<double>&) const ;
+	 virtual void ylm_inv_leg_odd (Array<double>&) const ;
+ 
          // Abstract stuff
       protected:
          /**

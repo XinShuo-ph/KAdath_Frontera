@@ -1712,6 +1712,31 @@ Term_eq Domain::der_harmonics_asym (const Term_eq&, const Term_eq&, int, Term_eq
 	abort() ;
 }
 
+void Domain::ylm_leg_even (Array<double>&) const {
+	cerr << "ylm_leg_even not implemented for" << endl ;
+	cerr << *this << endl ;
+	abort() ;
+}
+
+void Domain::ylm_inv_leg_even (Array<double>&) const {
+	cerr << "ylm_inv_leg_even not implemented for" << endl ;
+	cerr << *this << endl ;
+	abort() ;
+}
+
+
+void Domain::ylm_leg_odd (Array<double>&) const {
+	cerr << "ylm_leg_odd not implemented for" << endl ;
+	cerr << *this << endl ;
+	abort() ;
+}
+
+void Domain::ylm_inv_leg_odd (Array<double>&) const {
+	cerr << "ylm_inv_leg_odd not implemented for" << endl ;
+	cerr << *this << endl ;
+	abort() ;
+}
+
 const Term_eq* Domain::give_normal (int, int) const {
   cerr << "give_normal not implemented for" << endl ;
   cerr << *this << endl ;
