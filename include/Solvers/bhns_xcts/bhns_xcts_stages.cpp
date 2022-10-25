@@ -74,13 +74,13 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
   // and orbital angular frequency parameter
   // in this case, both are fixed by the two central force-balance
   // equations
-  syst.add_var("yaxis" , bconfig(COMY));
+  syst.add_var("xaxis" , bconfig(COM));
   if(bconfig.control(FIXED_GOMEGA)){
     syst.add_cst("ome"   , bconfig(GOMEGA));
-    syst.add_cst("xaxis" , bconfig(COM));
+    syst.add_cst("yaxis" , bconfig(COMY));
   }
   else{
-    syst.add_var("xaxis" , bconfig(COM));
+    syst.add_var("yaxis" , bconfig(COMY));
     syst.add_var("ome"   , bconfig(GOMEGA));
   }
 
@@ -256,12 +256,11 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
     // print diagnostics and output configuration as well as the binary data
     if (rank==0) {
       print_diagnostics(syst, ite, conv);
-      if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+      if(bconfig.control(CHECKPOINT) || max_iter_exceeded(ite))
+        checkpoint(max_iter_exceeded(ite));
     }
 
     ite++;
-    check_max_iter_exceeded(rank, ite, conv);
   }
 
   // since the ADM mass at infinite separation is not known
@@ -546,12 +545,11 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
     // print diagnostics and output configuration as well as the binary data
     if (rank==0) {
       print_diagnostics(syst, ite, conv);
-      if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+      if(bconfig.control(CHECKPOINT) || max_iter_exceeded(ite))
+        checkpoint(max_iter_exceeded(ite));
     }
 
     ite++;
-    check_max_iter_exceeded(rank, ite, conv);
   }
 
   // since the ADM mass at infinite separation is not known
