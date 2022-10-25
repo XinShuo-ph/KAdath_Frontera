@@ -69,7 +69,7 @@ class bh_3d_xcts_solver : Solver<config_t, space_t> {
     const int  ite = 0, const double conv = 0) const override;
   
   std::string converged_filename(const std::string& stage="") const override;
-  //void update_stages(config_t& old_config);
+  void checkpoint(bool termination_chkpt = false) const override;
   
   // solve driver
   int solve();

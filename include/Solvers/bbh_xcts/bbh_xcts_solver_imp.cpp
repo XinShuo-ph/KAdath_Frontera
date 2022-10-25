@@ -47,6 +47,19 @@ bbh_xcts_solver<config_t, space_t>::bbh_xcts_solver(config_t& config_in,
   update_fields(cfields, coord_vectors, {}, xo, xc1, xc2);
 }
 
+// Consistent interface for writing a checkpoint within the abstract 
+// Solver class
+template<typename config_t, typename space_t>
+void bbh_xcts_solver<config_t, space_t>::checkpoint(bool 
+  termination_chkpt) const  {
+  bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+  if(termination_chkpt) {
+    std::cerr << "***Writing early termination chkpt " 
+              << bconfig.config_filename() << "***\n";
+    std::_Exit(EXIT_FAILURE);
+  }
+}
+
 // standardized filename for each converged dataset at the end of each stage.
 template<typename config_t, typename space_t>
 std::string bbh_xcts_solver<config_t, space_t>::converged_filename(

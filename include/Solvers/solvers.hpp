@@ -67,22 +67,29 @@ class Solver {
     const double conv) const = 0;
   virtual std::string converged_filename(const std::string& stage) const = 0;
   virtual ~Solver() = default;
+  virtual void checkpoint(bool termination_chkpt = false) const = 0;
 
   void check_max_iter_exceeded(const int& rank, const int& ite, const double& conv) const {
-    bool exceeded = false;
-    if(ite > bconfig.seq_setting(MAX_ITER) && \
+    bool exceeded = (ite > bconfig.seq_setting(MAX_ITER));
+    if(exceeded && \
        conv < 10. * bconfig.seq_setting(PREC)) {
       if(rank == 0)
         std::cout << "Max iterations exceeded at precison, " << conv
                   << "\nFinishing since precision < 10. * PREC....\n"
                   << "Running at higher resolution may help.\n";
-      std::_Exit(EXIT_FAILURE);
     }
-    else if(ite > bconfig.seq_setting(MAX_ITER)) {
+    else if(exceeded) {
       if(rank == 0)
         std::cout << "Max iterations exceeded at precison, " << conv;
-      std::_Exit(EXIT_FAILURE);
     }
+    else {
+      return;
+    }
+    std::_Exit(EXIT_FAILURE);
+  }
+
+  bool max_iter_exceeded(const int& ite) const {
+    return (ite > bconfig.seq_setting(MAX_ITER));
   }
 
   bool solution_exists(std::string last_stage="") {

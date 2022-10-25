@@ -21,6 +21,19 @@ ns_3d_xcts_solver<eos_t, config_t, space_t>::ns_3d_xcts_solver(config_t& config_
   update_fields_co(cfields, coord_vectors,{}, 0.);
 }
 
+// Consistent interface for writing a checkpoint within the abstract 
+// Solver class
+template<class eos_t, typename config_t, typename space_t>
+void ns_3d_xcts_solver<eos_t, config_t, space_t>::checkpoint(bool 
+  termination_chkpt) const  {
+  bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+  if(termination_chkpt) {
+    std::cerr << "***Writing early termination chkpt " 
+              << bconfig.config_filename() << "***\n";
+    std::_Exit(EXIT_FAILURE);
+  }
+}
+
 // standardized filename for each converged dataset at the end of each stage.
 template<class eos_t, typename config_t, typename space_t>
 std::string ns_3d_xcts_solver<eos_t, config_t, space_t>::converged_filename(
