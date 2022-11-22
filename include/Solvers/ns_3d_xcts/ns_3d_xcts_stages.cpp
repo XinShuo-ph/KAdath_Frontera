@@ -13,7 +13,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::norot_stage(bool fixed) {
   // We use `config_filename()` vs `config_filename_abs()` since
   // `solution_exists` will probe the HOME_KADATH/COs directory
   auto const current = bconfig.config_filename();
-  if(solution_exists(stagename) && !bconfig.control(RESOLVE)) {    
+  if(!bconfig.control(RESOLVE) && solution_exists(stagename)) {    
     if(rank == 0)
       std::cout << "Solved previously: " \
                 << bconfig.config_filename_abs() << std::endl;
@@ -193,7 +193,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::uniform_rot_stage() {
   // We use `config_filename()` vs `config_filename_abs()` since
   // `solution_exists` will probe the HOME_KADATH/COs directory
   auto const current = bconfig.config_filename();
-  if(solution_exists("TOTAL_BC") && !bconfig.control(RESOLVE)) {
+  if(!bconfig.control(RESOLVE) && solution_exists("TOTAL_BC")) {
     if(rank == 0)
       std::cout << "Solved previously: " \
                 << bconfig.config_filename_abs() << std::endl;
@@ -334,7 +334,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::binary_boost_stage(
   std::stringstream stage_ss;
   stage_ss << "BIN_BOOST" << "_" << binconfig(DIST) << "_" << binconfig(GOMEGA);
   auto const boost_converged_filename{stage_ss.str()};
-  if(solution_exists(boost_converged_filename) && !bconfig.control(RESOLVE)) {
+  if(!bconfig.control(RESOLVE) && solution_exists(boost_converged_filename)) {
     if(rank == 0)
       std::cout << "Solved previously: " 
                 << bconfig.config_filename_abs() << std::endl;

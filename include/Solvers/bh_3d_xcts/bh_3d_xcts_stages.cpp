@@ -29,9 +29,9 @@ int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage() {
   int exit_status = EXIT_SUCCESS;
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  
+
   auto current_file = bconfig.config_filename_abs();
-  if(solution_exists("TOTAL_BC") && !bconfig.control(RESOLVE)){
+  if(!bconfig.control(RESOLVE) && solution_exists("TOTAL_BC")){
     if(bconfig.config_filename_abs() == current_file){
       if(rank == 0)
         std::cout << "Solved previously: " << bconfig.config_filename_abs() << std::endl;
@@ -128,7 +128,7 @@ int bh_3d_xcts_solver<config_t, space_t>::fixed_lapse_stage() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   auto current_file = bconfig.config_filename_abs();
-  if(solution_exists("TOTAL") && !bconfig.control(RESOLVE)){
+  if(!bconfig.control(RESOLVE) && solution_exists("TOTAL")){
     if(bconfig.config_filename_abs() == current_file){
       if(rank == 0)
         std::cout << "Solved previously: " << bconfig.config_filename_abs() << std::endl;

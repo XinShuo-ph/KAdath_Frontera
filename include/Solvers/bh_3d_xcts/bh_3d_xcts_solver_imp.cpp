@@ -117,8 +117,8 @@ inline int bh_3d_xcts_driver (config_t& bconfig, std::string outputdir,
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  if(std::abs( bconfig(CHI)) > 0.85) {
-    std::cerr << "Unable to handle chi > 0.85\n";
+  if(std::abs( bconfig(CHI)) > 0.84) {
+    std::cerr << "Unable to handle chi > 0.84\n";
     return EXIT_FAILURE;
   }
   bconfig.seq_setting(INIT_RES) = (std::isnan(bconfig.seq_setting(INIT_RES))) ? 
