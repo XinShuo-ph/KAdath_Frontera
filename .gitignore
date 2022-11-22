@@ -12,3 +12,9 @@ JOBID
 src/System_of_eqs/do_newton.cpp
 *build*
 *bin*
+*.info
+*.dat
+*.pyc
+*.pickle
+*.png
+*.pdf

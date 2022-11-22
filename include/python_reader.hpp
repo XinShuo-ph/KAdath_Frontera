@@ -70,10 +70,11 @@ class python_reader_t {
 
   public:
   boost::python::dict vars;
+  boost::python::dict config;
 
   // general construcor, filling the dicts
-  python_reader_t(std::string const & filename) : file(fopen(filename.c_str(), "r")),
-                                                  space(file) {
+  python_reader_t(std::string const & filename) 
+    : file(fopen(filename.c_str(), "r")), space(file) {
     for(auto q : vars_t::vars) {
       switch(q.second) {
         case CONSTANT:
@@ -208,6 +209,7 @@ void constructPythonReader(std::string reader_name) {
   reader.def("getFieldValues", &reader_t::getFieldValues);
   reader.def("getEOSValues", &reader_t::getEOSValues);
   reader.def_readonly("vars", &reader_t::vars);
+  reader.def_readonly("config", &reader_t::config);  
 }
 
 

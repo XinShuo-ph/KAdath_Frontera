@@ -28,7 +28,7 @@ std::ostream &operator<<(std::ostream &out, const BCO_INFO &BCO) {
   out << title << std::endl;
   print_params(BCO.bco_map, BCO.bco_params, out);
   if(auto ns_ptr = dynamic_cast<const BCO_NS_INFO*>(&BCO)) {
-      print_params(ns_ptr->return_eos_map(), ns_ptr->return_eos_params());
+      print_params(ns_ptr->get_eos_map(), ns_ptr->return_eos_params());
   }
   return out;
 }

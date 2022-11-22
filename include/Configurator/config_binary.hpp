@@ -220,10 +220,10 @@ public:
   Tree return_branch() {
     Tree branch;
     branch.put_child(node_t, build_branch<Tree>(MBIN_PARAMS, bin_params));
-    branch.add_child(node_t + "." + BCOS[0]->give_name_string(1),
-                     BCOS[0]->return_branch());
-    branch.add_child(node_t + "." + BCOS[1]->give_name_string(2),
-                     BCOS[1]->return_branch());
+    branch.add_child(node_t + "." + get_name_string(BCO1),
+                     BCOS[BCO1]->return_branch());
+    branch.add_child(node_t + "." + get_name_string(BCO2),
+                     BCOS[BCO2]->return_branch());
     return branch;
   }
 
@@ -248,7 +248,7 @@ public:
    *
    * @param[output] bin_map binary parameter map
    */
-  const Map &get_map() const { return bin_map; }
+  Map const &get_map() const { return bin_map; }
 
   /* BIN_INFO::get_stage_map
    * Returns binary parameter stages map
@@ -264,6 +264,20 @@ public:
    * @param[output] bco_map binary parameter map
    */
   auto &get_map(const int BCOidx) const { return BCOS[BCOidx]->get_map(); };
+  auto &get_eos_map(const int BCOidx = BCO1) const { 
+    if(auto child_ptr = dynamic_cast<BCO_NS_INFO*>(BCOS[BCOidx].get())) {
+      return child_ptr->get_eos_map();
+    }
+    throw std::invalid_argument("\nInvalid EOS Parameter indices for assignment\n");
+  };
+
+  std::string get_name_string(const int BCOidx) const {
+    return BCOS[BCOidx]->get_name_string(BCOidx+1);
+  }
+
+  std::string get_name_string() const {
+    return get_type();
+  }
   
   /* BIN_INFO::operator()
    * This operator returns the requested parameter for a given BCO

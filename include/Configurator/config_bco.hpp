@@ -101,15 +101,15 @@ public:
   }
   
   /**
-   * BCO_INFO::give_name_string
+   * BCO_INFO::get_name_string
    * Returns BCO type with an added int, 1 or 2.  Needed
    * for config_binary.hpp 
    *
    * @param[input]  N integer to concatenate with type
    * @param[output] string concatenated string
    */
-  virtual std::string give_name_string(const int &N) {
-    return node_t.data() + std::to_string(N);
+  virtual std::string get_name_string(const int N = 0) {
+    return (N == 0) ? node_t.data() : node_t.data() + std::to_string(N);
   }
 
   /**
@@ -146,7 +146,7 @@ public:
    *
    * @param[output] bco_map Parameter map
    */
-  const Map &get_map() { return bco_map; }
+  Map const &get_map() const { return bco_map; }
   
   /* BIN_INFO::get_stage_map
    * Returns binary parameter stages map
@@ -211,15 +211,15 @@ public:
   }
 
   /**
-   * BCO_BH_INFO::give_name_string
+   * BCO_BH_INFO::get_name_string
    * Returns BCO type with an added int, 1 or 2.  Needed
    * for config_binary.hpp 
    *
    * @param[input]  N integer to concatenate with type
    * @param[output] string concatenated string
    */
-  virtual std::string give_name_string(const int &N) override {
-    return node_t.data() + std::to_string(N);
+  virtual std::string get_name_string(const int N = 0) override {
+    return (N == 0) ? node_t.data() : node_t.data() + std::to_string(N);
   }
 
   /**
@@ -390,18 +390,18 @@ public:
    * Return a reference to the EOS parameter map
    * param[out] eos_params
    */
-  const EOSMap& return_eos_map() const { return eos_map; }
+  EOSMap const& get_eos_map() const { return eos_map; }
 
   /**
-   * BCO_NS_INFO::give_name_string
+   * BCO_NS_INFO::get_name_string
    * Returns BCO type with an added int, 1 or 2.  Needed
    * for config_binary.hpp 
    *
    * @param[input]  N integer to concatenate with type
    * @param[output] string concatenated string
    */
-  virtual std::string give_name_string(const int &N) override {
-    return node_t.data() + std::to_string(N);
+  virtual std::string get_name_string(const int N = 0) override {
+    return (N == 0) ? node_t.data() : node_t.data() + std::to_string(N);
   }
 
   /**
@@ -563,15 +563,15 @@ public:
   }
 
   /**
-   * BCO_KSBH_INFO::give_name_string
+   * BCO_KSBH_INFO::get_name_string
    * Returns BCO type with an added int, 1 or 2.  Needed
    * for config_binary.hpp 
    *
    * @param[input]  N integer to concatenate with type
    * @param[output] string concatenated string
    */
-  virtual std::string give_name_string(const int &N) override {
-    return node_t.data() + std::to_string(N);
+  virtual std::string get_name_string(const int N = 0) override {
+    return (N == 0) ? node_t.data() : node_t.data() + std::to_string(N);
   }
 
   /**

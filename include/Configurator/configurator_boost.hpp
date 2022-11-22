@@ -249,6 +249,16 @@ class kadath_config_boost {
       std::visit(set_var, this->set_eos(idx...));
       return var;
     }
+
+    template<typename... idx_t>
+    auto get_name_string(idx_t... BCOidx) {
+      return container.get_name_string(BCOidx...);
+    }
+
+    template<typename... idx_t>
+    auto get_eos_map(idx_t... BCOidx) {
+      return container.get_eos_map(BCOidx...);
+    }
     
     inline void set_seq_defaults();
 
