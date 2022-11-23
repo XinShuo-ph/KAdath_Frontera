@@ -8,7 +8,6 @@ pyFUKA_libspath = os.getenv('HOME_KADATH')+'/codes/PythonTools/lib/'
 sys.path.append(pyFUKA_libspath)
 from fuka_plot_tools.setup_argparse import *
 from fuka_plot_tools.setup_utils import *
-from fuka_plot_tools.plot_utils import append_axes
 
 def plot_2d(
   x_coords, 
