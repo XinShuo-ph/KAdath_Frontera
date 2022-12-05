@@ -8,7 +8,20 @@ void syst_vars_hydro(dict_t& vars, System_of_eqs & syst) {
   #ifdef DEBUG
     std::cout << "Loading hydro vars into dictionary.\n";
   #endif
-  vars["cPhi"] = syst.give_val_def("eqphi");
+  {
+    char n[] = "eqphi";
+    char* name;
+    name = new char[LMAX];
+    trim_spaces(name, n);
+    int which = -1 ;
+    int valence;
+    char* name_ind = 0x0  ;
+    Array<int>* type_ind = 0x0 ;
+    bool found = false ;
+
+    if(syst.isdef(0, name, which, valence, name_ind, type_ind))
+      vars["cPhi"] = syst.give_val_def("eqphi");
+  }
   
   vars["rho"] = syst.give_val_def("rho");
   vars["eps"] = syst.give_val_def("eps");
