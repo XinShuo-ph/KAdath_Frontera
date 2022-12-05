@@ -88,6 +88,8 @@ class bh_reader_t : public Kadath::python_reader_t<space_t, bh_vars_t> {
     syst.add_cst("P"  , conf) ;
     syst.add_cst("N"  , lapse) ;
     syst.add_cst("bet", shift) ;
+
+    syst.add_cst("ome", bconfig(OMEGA));
     
     // Avoid excision region (d=0,1) and compactified (d=ndom-1)
     for(auto d = 2; d < ndom-1; ++d) {

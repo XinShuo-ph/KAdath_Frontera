@@ -41,24 +41,6 @@ void syst_init_defs(System_of_eqs & syst) {
   syst.add_def(ndom - 1, "intMadm = -dr(P) / 2 / PI");
   syst.add_def(ndom - 1, "intMk =  dr(N) / 4 / PI");
 
-  // Contractions of definitions and fields for analysis
-  syst.add_def("Axx     = A^ij * ex_i * ex_j ");
-  syst.add_def("Ayy     = A^ij * ey_i * ey_j");
-  syst.add_def("Azz     = A^ij * ez_i * ez_j");
-  syst.add_def("Axy     = A^ij * ex_i * ey_j ");
-  syst.add_def("Ayz     = A^ij * ey_i * ez_j");
-  syst.add_def("Axz     = A^ij * ex_i * ez_j");
-  syst.add_def("TraceA  = A^ij * f_ij");
-
-  // Contractions of definitions and fields for analysis
-  syst.add_def("Bx = B^i  * ex_i ");
-  syst.add_def("By = B^i  * ey_i");
-  syst.add_def("Bz = B^i  * ez_i");
-
-  syst.add_def("betx    = bet^i  * ex_i ");
-  syst.add_def("bety    = bet^i  * ey_i");
-  syst.add_def("betz    = bet^i  * ez_i");
-  
   // Irreducible mass integrand
   syst.add_def("intArea = P^4") ;
   syst.add_def("intMirrsq  = intArea / 4  / 4piG") ;
@@ -85,37 +67,14 @@ void syst_init_contraction_defs_vac(System_of_eqs & syst) {
   syst.add_def("By = B^i  * ey_i");
   syst.add_def("Bz = B^i  * ez_i");
 
-  syst.add_def("betx    = bet^i  * ex_i ");
-  syst.add_def("bety    = bet^i  * ey_i");
-  syst.add_def("betz    = bet^i  * ez_i");
+  syst.add_def("betx = bet^i  * ex_i ");
+  syst.add_def("bety = bet^i  * ey_i");
+  syst.add_def("betz = bet^i  * ez_i");
 }
 
-template<class cfields_t, class config_t>
-void syst_init_binary(System_of_eqs & syst, 
-  cfields_t& coord_vectors, config_t& bconfig, Vector& CART) {
-  #ifdef DEBUG
-    std::cout << "Initializing standard binary fields, constants, and definitions.\n";
-  #endif
+template<class config_t>
+void syst_init_inspiral(System_of_eqs & syst, config_t& bconfig, Vector& CART) {
   int const ndom = syst.get_space().get_nbr_domains();
-  syst.add_cst("4piG", bconfig(QPIG)) ;
-  syst_init_csts(syst, coord_vectors);
-
-  // remaining coordinate fields
-  syst.add_cst("mm", *coord_vectors[BCO1_ROT]) ;
-  syst.add_cst("mp", *coord_vectors[BCO2_ROT]) ;
-
-  syst.add_cst("sm", *coord_vectors[S_BCO1])  ;
-  syst.add_cst("sp", *coord_vectors[S_BCO2])  ;
-
-  // Binary Quantities
-  syst.add_cst("ome"  , bconfig(GOMEGA));
-  syst.add_cst("xaxis", bconfig(COM));
-  syst.add_cst("yaxis", bconfig(COMY));
-
-  // Component quantities
-  syst.add_cst("omesm", bconfig(OMEGA, BCO1)) ;
-  syst.add_cst("omesp", bconfig(OMEGA, BCO2)) ;
-
   std::string eccstr{};
   if(!std::isnan(bconfig.set(ADOT))) {
     syst.add_cst("adot", bconfig(ADOT));
@@ -131,10 +90,27 @@ void syst_init_binary(System_of_eqs & syst,
   std::string Bstr {"B^i= bet^i + ome * Morb^i" + eccstr};
   syst.add_def(Bstr.c_str());
 
-  syst_init_defs(syst); 
-
   // ADM Angular Momentum Def
   syst.add_def(ndom - 1, "intJ = multr(A_ij * Morb^j * einf^i) / 2 / 4piG");
+}
+
+template<class cfields_t, class config_t>
+void syst_init_binary(System_of_eqs & syst, 
+  cfields_t& coord_vectors, config_t& bconfig) {
+  #ifdef DEBUG
+    std::cout << "Initializing standard binary fields, constants, and definitions.\n";
+  #endif
+  int const ndom = syst.get_space().get_nbr_domains();
+  syst.add_cst("4piG", bconfig(QPIG)) ;
+  syst_init_csts(syst, coord_vectors);
+  syst_init_defs(syst);
+
+  // remaining coordinate fields
+  syst.add_cst("mm", *coord_vectors[BCO1_ROT]) ;
+  syst.add_cst("mp", *coord_vectors[BCO2_ROT]) ;
+
+  syst.add_cst("sm", *coord_vectors[S_BCO1])  ;
+  syst.add_cst("sp", *coord_vectors[S_BCO2])  ;
 }
 
 inline
@@ -150,6 +126,7 @@ void syst_init_quasi_local_defs(System_of_eqs& syst,
   }
 }
 
+// FIXME boosts not considered
 template<class cfields_t, class config_t>
 void syst_init_co(System_of_eqs & syst, 
   cfields_t& coord_vectors, config_t& bconfig) {
@@ -161,7 +138,6 @@ void syst_init_co(System_of_eqs & syst,
   syst_init_csts(syst, coord_vectors);
 
   syst.add_cst("sm", *coord_vectors[S_BCO1])  ;
-  syst.add_cst("ome", bconfig(OMEGA));
 
   syst.add_def("B^i = bet^i + ome * mg^i");
   syst_init_defs(syst);

@@ -94,6 +94,15 @@ class bbh_reader_t : public Kadath::python_reader_t<space_t, bbh_vars_t> {
     syst.add_cst("P"    , conf);
     syst.add_cst("N"    , lapse);
     syst.add_cst("bet"  , shift);
+    
+    // Binary Quantities
+    syst.add_cst("ome"  , bconfig(GOMEGA));
+    syst.add_cst("xaxis", bconfig(COM));
+    syst.add_cst("yaxis", bconfig(COMY));
+
+    // Component quantities
+    syst.add_cst("omesm", bconfig(OMEGA, BCO1)) ;
+    syst.add_cst("omesp", bconfig(OMEGA, BCO2)) ;
 
     for(auto d = 0; d < ndom; ++d) {
       if( (d != space.BH1 && d != space.BH1+1) 
@@ -103,7 +112,8 @@ class bbh_reader_t : public Kadath::python_reader_t<space_t, bbh_vars_t> {
       }        
     }
     // Initialize syst with constants, fields, etc...
-    FUKA_Syst_tools::syst_init_binary(syst, coord_vectors, bconfig, CART);
+    FUKA_Syst_tools::syst_init_binary(syst, coord_vectors, bconfig);
+    FUKA_Syst_tools::syst_init_inspiral(syst, bconfig, CART);
 
     // Quasi-local spin definitions
     FUKA_Syst_tools::syst_init_quasi_local_defs(
