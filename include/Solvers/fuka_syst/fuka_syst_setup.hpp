@@ -42,8 +42,8 @@ void syst_init_defs(System_of_eqs & syst) {
   syst.add_def(ndom - 1, "intMk =  dr(N) / 4 / PI");
 
   // Irreducible mass integrand
-  syst.add_def("intArea = P^4") ;
-  syst.add_def("intMirrsq  = intArea / 4  / 4piG") ;
+  syst.add_def("intArea = P^4 / 4piG") ;
+  syst.add_def("intMirrsq  = intArea / 4") ;
 }
 
 inline
