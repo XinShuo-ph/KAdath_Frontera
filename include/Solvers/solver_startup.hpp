@@ -67,6 +67,8 @@ int Initialize_Solver<config_t>::rank = 0;
 
 template<class config_t>
 void Initialize_Solver<config_t>::init_solver(int argc, char** argv) {
+  // Necessary to get default construction
+  Initialize_Solver<config_t>::bconfig = config_t();
   if(argc < 2){
     if(Initialize_Solver::rank == 0) {
       std::cout << "Boost INFO config file missing - generating example setup" << std::endl
