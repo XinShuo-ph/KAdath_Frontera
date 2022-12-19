@@ -140,7 +140,7 @@ void print_params(const map_t& storage_map, const ary_t& storage, std::ostream& 
         }
       }
       else if constexpr (std::is_same_v<var_t,bool>){
-        if(storage[a.second]) {
+        if(arg) {
           out << std::setw(20) << a.first << ": on" << std::endl;
         }
         return;
