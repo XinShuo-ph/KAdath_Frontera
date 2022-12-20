@@ -1,4 +1,5 @@
 #pragma once
+#include "exporter_utilities.hpp"
 #include <string>
 namespace FUKA_Syst_tools {
 
@@ -30,7 +31,8 @@ inline void dict_add_tensor_cmp(System_of_eqs& syst, dict_t& vars,
   int c = 0;
   vars[var.c_str()]  = syst.give_val_def(("Trace"+var).c_str());
   for(std::string coord : {"_11", "_12", "_13", "_22", "_23", "_33"}) {
-    Array<int> ind (field.indices(c));
+    auto tidx = export_utils::R2TensorSymmetricIndices[c];
+    Array<int> ind (field.indices(tidx));
     vars[(var+coord).c_str()] = field(ind);
     c++;
   }
