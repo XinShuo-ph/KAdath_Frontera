@@ -219,7 +219,7 @@ class Space_bhns : public Space {
 	*/
 	void add_eq_int_outer_NS (System_of_eqs& sys, const char* nom) ;
   
-  const int get_n_shells_outer() const { return n_shells_outer; }
+  int const & get_n_shells_outer() const { return n_shells_outer; }
 } ;
 }
 #endif

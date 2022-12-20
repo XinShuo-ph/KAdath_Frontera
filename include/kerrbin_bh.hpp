@@ -185,7 +185,7 @@ class Space_Kerr_bbh : public Space {
 	*/
 	void add_eq_zero_mode_inf (System_of_eqs& syst, const char* f, int jtarget, int ktarget) ;
 
-  const int get_n_shells_outer() const { return n_shells_outer; }
+  int const & get_n_shells_outer() const { return n_shells_outer; }
 } ;
 }
 #endif
