@@ -193,6 +193,15 @@ class bhns_reader_t : public Kadath::python_reader_t<space_t, bhns_vars_t> {
     FUKA_Syst_tools::export_radii(
       space, vars, space.ADAPTEDBH, space.OUTER, "BH_R"
     );
+    
+    Scalar space_radius(space);
+    space_radius.annule_hard();
+    for(int d = 0; d < ndom; ++d){
+      space_radius.set_domain(d) = space.get_domain(d)->get_radius();
+    }
+    space_radius.std_base();
+    vars["rfield"] = space_radius;
+
 	}
 };
 

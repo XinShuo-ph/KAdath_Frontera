@@ -1,5 +1,5 @@
 #pragma once
-#include "fuka_syst_tools.hpp"
+#include "Solvers/fuka_syst/fuka_syst_tools.hpp"
 namespace FUKA_Syst_tools {
 
 template<class dict_t>
