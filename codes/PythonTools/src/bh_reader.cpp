@@ -105,6 +105,7 @@ class bh_reader_t : public Kadath::python_reader_t<space_t, bh_vars_t> {
       syst, vac_Domains,"mg","sm"
     );
     FUKA_Syst_tools::syst_init_eqdefs_vac(syst, vac_Domains);
+    FUKA_Syst_tools::syst_init_contraction_defs_vac(syst);
     
     FUKA_Syst_tools::syst_vars(vars, syst);
     FUKA_Syst_tools::syst_vars_BH(vars, syst, 2);

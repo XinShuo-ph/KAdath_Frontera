@@ -124,6 +124,7 @@ class bbh_reader_t : public Kadath::python_reader_t<space_t, bbh_vars_t> {
     );
     // Add vacuum constraint definitions
     FUKA_Syst_tools::syst_init_eqdefs_vac(syst, vac_Domains);
+    FUKA_Syst_tools::syst_init_contraction_defs_vac(syst);
 
     // Populate vars dictionary
     FUKA_Syst_tools::syst_vars(vars, syst);
