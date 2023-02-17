@@ -239,10 +239,11 @@ namespace Kadath {
 
     Tensor::Tensor (const Space& sp, FILE* fd) :
         espace(sp), ndom(espace.get_nbr_domains()), ndim(espace.get_ndim()),
-        basis(sp, fd), type_indice(fd), name_affected{false}, name_indice{valence}, n_comp{}, cmp{}, parameters{}
+        basis(sp, fd), type_indice(fd), name_affected{false}, name_indice{}, n_comp{}, cmp{}, parameters{}
     {
         fread_be (&valence, sizeof(int), 1, fd) ;
         assert (type_indice.get_size(0) == valence) ;
+        name_indice.resize(valence) ;
         fread_be (&n_comp, sizeof(int), 1, fd) ;
         cmp.resize(n_comp);
         for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace, fd} ;
@@ -254,10 +255,11 @@ namespace Kadath {
 
     Tensor::Tensor (const Space& sp, int dim, FILE* fd) :
         espace(sp), ndom(espace.get_nbr_domains()), ndim(dim),
-        basis(sp, fd), type_indice(fd), name_affected{false}, name_indice{valence}, n_comp{}, cmp{}, parameters{}
+        basis(sp, fd), type_indice(fd), name_affected{false}, name_indice{}, n_comp{}, cmp{}, parameters{}
     {
         fread_be (&valence, sizeof(int), 1, fd) ;
         assert (type_indice.get_size(0) == valence) ;
+        name_indice.resize(valence) ;
         fread_be (&n_comp, sizeof(int), 1, fd) ;
         cmp.resize(n_comp);
         for (int i=0 ; i<n_comp ; i++) cmp[i] = new Scalar{espace, fd} ;
