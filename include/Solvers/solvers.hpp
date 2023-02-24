@@ -70,7 +70,7 @@ class Solver {
   virtual void checkpoint(bool termination_chkpt = false) const = 0;
 
   void check_max_iter_exceeded(const int& rank, const int& ite, const double& conv) const {
-    bool exceeded = (ite > bconfig.seq_setting(MAX_ITER));
+    bool exceeded = (ite > bconfig.seq_setting(MAX_ITER)) && conv >= bconfig.seq_setting(PREC);
     if(exceeded && \
        conv < 10. * bconfig.seq_setting(PREC)) {
       if(rank == 0)
