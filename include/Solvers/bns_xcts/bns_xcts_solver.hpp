@@ -52,6 +52,7 @@ class bns_xcts_solver : Solver<config_t, space_t> {
   using Solver<config_t, space_t>::check_max_iter_exceeded;
   using Solver<config_t, space_t>::solution_exists;
   using Solver<config_t, space_t>::extract_eos_name;
+  using Solver<config_t, space_t>::checkpoint;
 
   public:
   // solver is not trivially constructable since Kadath containers are not
@@ -69,7 +70,10 @@ class bns_xcts_solver : Solver<config_t, space_t> {
     const int  ite = 0, const double conv = 0) const override;
   
   std::string converged_filename(const std::string& stage="") const override;
-  void checkpoint(bool termination_chkpt = false) const override;
+  
+  void save_to_file() const override {
+    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+  }
   
   // solve driver
   int solve();
