@@ -56,7 +56,7 @@ std::string bns_xcts_solver<eos_t, config_t, space_t>::converged_filename(
   bconfig.set(Q) = M2 / M1;
   auto Mtot = M1 + M2;
   std::stringstream ss;
-  ss << "converged_BNS";
+  ss << "BNS";
   if(stage != "") ss  << "_" << stage << ".";
   else ss << ".";
   ss << eosname << "."

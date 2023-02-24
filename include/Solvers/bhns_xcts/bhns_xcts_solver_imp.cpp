@@ -59,7 +59,7 @@ std::string bhns_xcts_solver<eos_t, config_t, space_t>::converged_filename(
   if(M2 > M1) std::swap(M1, M2);
   bconfig.set(Q) = M2 / M1;
   auto Mtot = M1 + M2;
-  ss << "converged_BHNS";
+  ss << "BHNS";
   if(stage != "") ss  << "_" << stage << ".";
   else ss << ".";
   ss << eosname << "."

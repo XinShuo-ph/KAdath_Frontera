@@ -28,7 +28,7 @@ std::string ns_3d_xcts_solver<eos_t, config_t, space_t>::converged_filename(
   auto res = space.get_domain(0)->get_nbr_points()(0);
   const std::string eosname{extract_eos_name()};
   std::stringstream ss;
-  ss << "converged_NS";
+  ss << "NS";
   if(stage != "") ss  << "_" << stage << ".";
   else ss << ".";
   ss << eosname << "."
