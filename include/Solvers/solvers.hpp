@@ -25,6 +25,7 @@
 #include "Configurator/config_bco.hpp"
 #include "Configurator/config_binary.hpp"
 #include "coord_fields.hpp"
+#include "bco_utilities.hpp"
 #include "EOS/EOS.hh"
 #include "name_tools.hpp"
 #include <cstdlib>
@@ -67,7 +68,17 @@ class Solver {
     const double conv) const = 0;
   virtual std::string converged_filename(const std::string& stage) const = 0;
   virtual ~Solver() = default;
-  virtual void checkpoint(bool termination_chkpt = false) const = 0;
+  virtual void save_to_file() const = 0;
+  
+  // Consistent interface for writing a checkpoint
+  void checkpoint(bool termination_chkpt = false) const  {
+    save_to_file();
+    if(termination_chkpt) {
+      std::cerr << "***Writing early termination chkpt " 
+                << bconfig.config_filename() << "***\n";
+      std::_Exit(EXIT_FAILURE);
+    }
+  }
 
   void check_max_iter_exceeded(const int& rank, const int& ite, const double& conv) const {
     bool exceeded = (ite > bconfig.seq_setting(MAX_ITER)) && conv >= bconfig.seq_setting(PREC);
