@@ -70,7 +70,7 @@ class bhns_xcts_solver : Solver<config_t, space_t> {
   void print_diagnostics(const System_of_eqs& syst, 
     const int  ite = 0, const double conv = 0) const override;
   
-  std::string converged_filename(const std::string& stage="") const override;
+  std::string converged_filename(const std::string stage="") const override;
   
   void save_to_file() const override {
     bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
