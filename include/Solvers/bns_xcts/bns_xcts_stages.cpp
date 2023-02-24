@@ -231,7 +231,7 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage() {
     if (rank==0) {
       print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+        checkpoint();
     }
 
     ite++;
@@ -255,7 +255,7 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage() {
 
   // output final configuration and binary data
   if (rank==0)
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+    checkpoint();
   return exit_status;
 }
 
@@ -526,7 +526,7 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const size
     if (rank==0) {
       print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+        checkpoint();
     }
 
     ite++;
@@ -550,7 +550,7 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const size
 
   // output final configuration and binary data
   if (rank==0)
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+    checkpoint();
   return exit_status;
 }
 

@@ -168,7 +168,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::norot_stage(bool fixed) {
       print_diagnostics_norot(syst, ite, conv);
       std::cout << std::endl;
       if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+        checkpoint();
     }
  
     // update all coordinate fields, in case the domain extents have changed
@@ -180,7 +180,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::norot_stage(bool fixed) {
  
   bconfig.set_filename(converged_filename(stagename));
   if (rank == 0) {
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+    checkpoint();
   }
   return exit_status;
 }
@@ -309,7 +309,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::uniform_rot_stage() {
     if (rank == 0) {
       print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+        checkpoint();
     }
     update_fields_co(cfields, coord_vectors, {}, xo, &syst);
     ite++;
@@ -318,7 +318,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::uniform_rot_stage() {
   
   bconfig.set_filename(converged_filename("TOTAL_BC"));
   if (rank == 0) {
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+    checkpoint();
   }
   return EXIT_SUCCESS;
 }
@@ -490,8 +490,10 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::binary_boost_stage(
     
     if (rank == 0) {
       print_diagnostics(syst, ite, conv);
-      if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+      if(bconfig.control(CHECKPOINT)) {
+        // Manual save here since we need to save PHI
+        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+      }
     }
     update_fields_co(cfields, coord_vectors, {}, xo, &syst);
     ite++;
