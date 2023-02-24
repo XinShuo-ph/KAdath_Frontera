@@ -66,7 +66,7 @@ class Solver {
         cfields(space), ndom(space_in.get_nbr_domains()) {}
   virtual void print_diagnostics(const System_of_eqs& syst, const int ite, 
     const double conv) const = 0;
-  virtual std::string converged_filename(const std::string& stage) const = 0;
+  virtual std::string converged_filename(const std::string stage) const = 0;
   virtual ~Solver() = default;
   virtual void save_to_file() const = 0;
   
@@ -96,6 +96,12 @@ class Solver {
     else {
       return;
     }
+    auto s = converged_filename("termination_chkpt");
+    bconfig.set_filename(s);
+    if(rank == 0)
+      checkpoint(true);
+    
+    // FIXME this should be handled better than hard termination
     std::_Exit(EXIT_FAILURE);
   }
 
