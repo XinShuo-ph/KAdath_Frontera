@@ -105,10 +105,6 @@ class Solver {
     std::_Exit(EXIT_FAILURE);
   }
 
-  bool max_iter_exceeded(const int& ite) const {
-    return (ite > bconfig.seq_setting(MAX_ITER));
-  }
-
   bool solution_exists(std::string last_stage="") {
     bool exists = false;
     std::string prev_name{converged_filename(last_stage)};
