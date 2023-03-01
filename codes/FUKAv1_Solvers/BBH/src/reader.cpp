@@ -228,6 +228,10 @@ int main(int argc, char **argv) {
   auto M2 = bconfig(MCH, BCO2);
   if(M2 > M1) std::swap(M1, M2);
   
+  #ifdef FORMAT
+    #undef FORMAT
+  #endif
+
   #define FORMAT std::setw(25) << std::right << std::setprecision(5) << std::scientific << std::showpos
   std::string header(22,'#');
   for(int i = 0; i <= 1; ++i){
