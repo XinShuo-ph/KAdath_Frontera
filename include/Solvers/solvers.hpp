@@ -25,6 +25,7 @@
 #include "Configurator/config_bco.hpp"
 #include "Configurator/config_binary.hpp"
 #include "coord_fields.hpp"
+#include "bco_utilities.hpp"
 #include "EOS/EOS.hh"
 #include "name_tools.hpp"
 #include <cstdlib>
@@ -65,24 +66,43 @@ class Solver {
         cfields(space), ndom(space_in.get_nbr_domains()) {}
   virtual void print_diagnostics(const System_of_eqs& syst, const int ite, 
     const double conv) const = 0;
-  virtual std::string converged_filename(const std::string& stage) const = 0;
+  virtual std::string converged_filename(const std::string stage) const = 0;
   virtual ~Solver() = default;
+  virtual void save_to_file() const = 0;
+  
+  // Consistent interface for writing a checkpoint
+  void checkpoint(bool termination_chkpt = false) const  {
+    save_to_file();
+    if(termination_chkpt) {
+      std::cerr << "***Writing early termination chkpt " 
+                << bconfig.config_filename() << "***\n";
+      std::_Exit(EXIT_FAILURE);
+    }
+  }
 
   void check_max_iter_exceeded(const int& rank, const int& ite, const double& conv) const {
-    bool exceeded = false;
-    if(ite > bconfig.seq_setting(MAX_ITER) && \
+    bool exceeded = (ite > bconfig.seq_setting(MAX_ITER)) && conv >= bconfig.seq_setting(PREC);
+    if(exceeded && \
        conv < 10. * bconfig.seq_setting(PREC)) {
       if(rank == 0)
         std::cout << "Max iterations exceeded at precison, " << conv
                   << "\nFinishing since precision < 10. * PREC....\n"
                   << "Running at higher resolution may help.\n";
-      std::_Exit(EXIT_FAILURE);
     }
-    else if(ite > bconfig.seq_setting(MAX_ITER)) {
+    else if(exceeded) {
       if(rank == 0)
         std::cout << "Max iterations exceeded at precison, " << conv;
-      std::_Exit(EXIT_FAILURE);
     }
+    else {
+      return;
+    }
+    auto s = converged_filename("termination_chkpt");
+    bconfig.set_filename(s);
+    if(rank == 0)
+      checkpoint(true);
+    
+    // FIXME this should be handled better than hard termination
+    std::_Exit(EXIT_FAILURE);
   }
 
   bool solution_exists(std::string last_stage="") {

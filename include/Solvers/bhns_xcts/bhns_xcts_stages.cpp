@@ -74,14 +74,15 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
   // and orbital angular frequency parameter
   // in this case, both are fixed by the two central force-balance
   // equations
-  syst.add_var("yaxis" , bconfig(COMY));
   if(bconfig.control(FIXED_GOMEGA)){
     syst.add_cst("ome"   , bconfig(GOMEGA));
     syst.add_cst("xaxis" , bconfig(COM));
+    syst.add_cst("yaxis" , bconfig(COMY));
   }
   else{
-    syst.add_var("xaxis" , bconfig(COM));
     syst.add_var("ome"   , bconfig(GOMEGA));
+    syst.add_var("xaxis" , bconfig(COM));
+    syst.add_var("yaxis" , bconfig(COMY));
   }
 
   // central (logarithmic) enthalpy is a variable, fixed by the baryonic mass integral
@@ -257,7 +258,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
     if (rank==0) {
       print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+        checkpoint();
     }
 
     ite++;
@@ -280,7 +281,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
 
   // output final configuration and binary data
   if (rank==0)
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+    checkpoint();
   return exit_status;
 }
 
@@ -547,7 +548,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
     if (rank==0) {
       print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+        checkpoint();
     }
 
     ite++;
@@ -570,6 +571,6 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
 
   // output final configuration and binary data
   if (rank==0)
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+    checkpoint();
   return exit_status;
 }

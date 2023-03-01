@@ -176,7 +176,7 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(const size_t stage, std::str
       print_diagnostics(syst, ite, conv);
 
       if(bconfig.control(CHECKPOINT))
-        bco_utils::save_to_file(ss, space, bconfig, conf, lapse, shift);
+        checkpoint();
     }
     update_fields(cfields, coord_vectors, {}, xo, xc1, xc2, &syst);
     ite++ ;
@@ -191,7 +191,7 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(const size_t stage, std::str
 
   bconfig.set_filename(converged_filename(stage_text));
   if(rank == 0)
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+    checkpoint();
 
   return exit_status;
 }

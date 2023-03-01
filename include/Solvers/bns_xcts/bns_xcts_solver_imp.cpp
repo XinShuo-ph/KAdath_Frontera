@@ -47,7 +47,7 @@ bns_xcts_solver<eos_t, config_t, space_t>::bns_xcts_solver(config_t& config_in,
 // standardized filename for each converged dataset at the end of each stage.
 template<class eos_t, typename config_t, typename space_t>
 std::string bns_xcts_solver<eos_t, config_t, space_t>::converged_filename(
-  const std::string& stage) const {
+  const std::string stage) const {
   const std::string eosname{extract_eos_name(BCO1)};
   auto res = space.get_domain(0)->get_nbr_points()(0);
   auto M1 = bconfig(MADM, BCO1);
@@ -56,7 +56,7 @@ std::string bns_xcts_solver<eos_t, config_t, space_t>::converged_filename(
   bconfig.set(Q) = M2 / M1;
   auto Mtot = M1 + M2;
   std::stringstream ss;
-  ss << "converged_BNS";
+  ss << "BNS";
   if(stage != "") ss  << "_" << stage << ".";
   else ss << ".";
   ss << eosname << "."

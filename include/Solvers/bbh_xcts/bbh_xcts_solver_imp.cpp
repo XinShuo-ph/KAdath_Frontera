@@ -50,7 +50,7 @@ bbh_xcts_solver<config_t, space_t>::bbh_xcts_solver(config_t& config_in,
 // standardized filename for each converged dataset at the end of each stage.
 template<typename config_t, typename space_t>
 std::string bbh_xcts_solver<config_t, space_t>::converged_filename(
-  const std::string& stage) const {
+  const std::string stage) const {
   auto res = space.get_domain(0)->get_nbr_points()(0);
   auto M1 = bconfig(MCH, BCO1);
   auto M2 = bconfig(MCH, BCO2);
@@ -58,7 +58,7 @@ std::string bbh_xcts_solver<config_t, space_t>::converged_filename(
   bconfig.set(Q) = M2 / M1;
   auto Mtot = M1 + M2;
   std::stringstream ss;
-  ss << "converged_BBH";
+  ss << "BBH";
   if(stage != "") ss  << "_" << stage << ".";
   else ss << ".";
   ss << bconfig(DIST)      << "."

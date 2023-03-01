@@ -103,7 +103,7 @@ int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage() {
        print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT))
       {
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+        checkpoint();
       }
     }
 
@@ -116,7 +116,7 @@ int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage() {
   bconfig.set(FIXED_LAPSE) = bco_utils::get_boundary_val(2, lapse, INNER_BC) ;
   bconfig.set_filename(converged_filename("TOTAL_BC")) ;
   if(rank == 0)
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift) ;
+    checkpoint();
 
   return exit_status;
 }
@@ -201,7 +201,7 @@ int bh_3d_xcts_solver<config_t, space_t>::fixed_lapse_stage() {
        print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT))
       {
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+        checkpoint();
       }
     }
 
@@ -213,7 +213,7 @@ int bh_3d_xcts_solver<config_t, space_t>::fixed_lapse_stage() {
   bconfig.set(RMID) = bco_utils::get_radius(space.get_domain(1), OUTER_BC) ;
   bconfig.set_filename(converged_filename("TOTAL")) ;
   if(rank == 0)
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift) ;
+    checkpoint();
 
   return exit_status;
 }
@@ -303,7 +303,7 @@ int bh_3d_xcts_solver<config_t, space_t>::binary_boost_stage(
       print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT))
       {
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+        checkpoint();
       }
     }
 
@@ -315,7 +315,7 @@ int bh_3d_xcts_solver<config_t, space_t>::binary_boost_stage(
   bconfig.set(RMID) = bco_utils::get_radius(space.get_domain(1), OUTER_BC) ;
   bconfig.set_filename(converged_filename(boost_converged_filename)) ;
   if(rank == 0)
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift) ;
+    checkpoint();
 
   return exit_status;
 }

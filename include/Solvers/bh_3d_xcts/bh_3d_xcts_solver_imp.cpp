@@ -45,10 +45,10 @@ bh_3d_xcts_solver<config_t, space_t>::bh_3d_xcts_solver(config_t& config_in,
 // standardized filename for each converged dataset at the end of each stage.
 template<typename config_t, typename space_t>
 std::string bh_3d_xcts_solver<config_t, space_t>::converged_filename(
-  const std::string& stage) const {
+  const std::string stage) const {
   auto res = space.get_domain(0)->get_nbr_points()(0);
   std::stringstream ss;
-  ss << "converged_BH";
+  ss << "BH";
   if(stage != "") ss  << "_" << stage << ".";
   else ss << ".";
   ss << bconfig(MCH) << "." 
