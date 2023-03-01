@@ -416,6 +416,9 @@ void reader_output(config_t bconfig) {
   double e_bind   = adm_inf - Minf;
   // end binary quantities
 
+  #ifdef FORMAT
+    #undef FORMAT
+  #endif
 
   #define FORMAT1 std::setw(25) << std::right << std::setprecision(5) << std::fixed << std::showpos
   #define FORMAT std::setw(25) << std::right << std::setprecision(5) << std::scientific << std::showpos

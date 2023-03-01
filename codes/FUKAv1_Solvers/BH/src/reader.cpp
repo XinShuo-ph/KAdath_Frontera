@@ -155,6 +155,10 @@ int main(int argc, char **argv) {
             << FORMAT1 << "Areal R = " << AR << std::endl
             << FORMAT1 <<" LAPSE = "       << "[" << lapsemin << ", " << lapsemax  <<"]\n"
             << FORMAT1 <<" PSI = "         << "[" << confmin  << ", " << confmax   <<"]\n\n";
+  
+  #ifdef FORMAT
+    #undef FORMAT
+  #endif
 
   #define FORMAT std::setw(25) << std::right << std::setprecision(5) << std::scientific << std::showpos
   std::cout << FORMAT1 << "Mirr = "        << mirr << "[" << bconfig(MIRR) << "]\n"

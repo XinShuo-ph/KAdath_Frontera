@@ -246,6 +246,9 @@ void reader_output(config_t bconfig, const int output) {
   double COMz     = space.get_domain(ndom-1)->integ(syst.give_val_def("COMz")()(ndom-1) , OUTER_BC) / adm_inf;
   // END binary quantities
 
+  #ifdef FORMAT
+    #undef FORMAT
+  #endif
   #define FORMAT1 std::setw(25) << std::right << std::setprecision(5) << std::fixed << std::showpos
   #define FORMAT  std::setw(25) << std::right << std::setprecision(5) << std::scientific << std::showpos
   auto print_shells = [&](int dom_min, int dom_max)

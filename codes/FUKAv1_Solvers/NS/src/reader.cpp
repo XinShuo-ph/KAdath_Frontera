@@ -240,6 +240,9 @@ void reader_3d(config_t bconfig) {
   double central_dHdx = syst.give_val_def("dH")().val_point(P);
   double central_euler = syst.give_val_def("firstint")().val_point(P);
 
+  #ifdef FORMAT
+    #undef FORMAT
+  #endif
   #define FORMAT std::setw(25) << std::right << std::setprecision(5) << std::fixed << std::showpos
   auto print_shells = [&](int dom_min, int dom_max)
   {
