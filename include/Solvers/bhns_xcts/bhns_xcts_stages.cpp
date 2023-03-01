@@ -74,14 +74,15 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
   // and orbital angular frequency parameter
   // in this case, both are fixed by the two central force-balance
   // equations
-  syst.add_var("xaxis" , bconfig(COM));
   if(bconfig.control(FIXED_GOMEGA)){
     syst.add_cst("ome"   , bconfig(GOMEGA));
+    syst.add_cst("xaxis" , bconfig(COM));
     syst.add_cst("yaxis" , bconfig(COMY));
   }
   else{
-    syst.add_var("yaxis" , bconfig(COMY));
     syst.add_var("ome"   , bconfig(GOMEGA));
+    syst.add_var("xaxis" , bconfig(COM));
+    syst.add_var("yaxis" , bconfig(COMY));
   }
 
   // central (logarithmic) enthalpy is a variable, fixed by the baryonic mass integral
