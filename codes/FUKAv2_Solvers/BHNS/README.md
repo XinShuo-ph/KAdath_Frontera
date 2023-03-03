@@ -4,7 +4,7 @@
 
 A considerable amount of the effort that went into the FUKAv2 solvers for the isolated objects (BH, NS) along with
 the BBH and BNS solvers built up to constructing this solver.  The BHNS has the benefit of suffering from the sensitivity
-of introducing a NS to a binary setup along with the resolution issues inherant to BH ID.  It has presented quite a challenge
+of introducing a NS to a binary setup along with the resolution issues inherent to BH ID.  It has presented quite a challenge
 even with a fairly abundant basis of literature on the topic, but, in the end, has become a work horse within my group.
 
 With that said, if you have taken the time to work through the BBH and BNS v2 solvers, using the BHNS solver will feel quite familiar.
@@ -19,8 +19,7 @@ where plus and minus simply refer to their location on the x-axis.
 2. `compile` is a symbolic link to the script stored in `$HOME_KADATH/build_release` to ease compiling
 3. `src` directory contains the relevant source files:
     - `solve.cpp`: the one and done solve code
-    - `reader.cpp`: the reader can provide diagonstics from ID solutions that are computed from the ID
-    - `kadath_readers.cpp`: Python libraries to allow for additional analysis of the initial data without needing to evolve it!
+    - `reader.cpp`: the reader can provide diagnostics from ID solutions that are computed from the ID
 
 # Basic Usage
 
@@ -32,18 +31,18 @@ where plus and minus simply refer to their location on the x-axis.
 
 1. Generate the initial config file by running `solve` for the first time
 2. Rerun (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bhns.info`
-3. This will result in the generation of a pair of files containing the solution: `converged_BHNS_ECC_RED.togashi.35.0.0.2.8.q1.0.0.09.<info/dat>`
+3. This will result in the generation of a pair of files containing the solution: `BHNS_ECC_RED.togashi.35.0.0.2.8.q1.0.0.09.<info/dat>`
 
 Note: In the event you have learned about generating FUKAv2 ID in the recommended order as discussed in the 
-[FUKAv2 README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/) and
+[FUKAv2 README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/) and
 you have not disabled `centralized_cos`; you can look into the solver output to find that the solution of the 1.4M NS generated
 in the previous runs has been reused.
 
 We can deconstruct the name to make it understandable:
 
-- `converged_BHNS_ECC_RED.` denotes a converged BHNS solution after the eccentricity reduction stage is completed which uses 
+- `BHNS_ECC_RED.` denotes a converged BHNS solution after the eccentricity reduction stage is completed which uses 
 3.5th order PN estimates for the orbital frequency and radial infall velocity. This is meant to distinguish the solution 
-from earlier stages which will be discussed later. This also distinquishes it from checkpoints that can be turned on which 
+from earlier stages which will be discussed later. This also distinguishes it from checkpoints that can be turned on which 
 are saved to file during each iteration of the solver
 - `togashi`: the leading name of the eosfile
 - `35`: separation distance in geometric units!
@@ -57,7 +56,7 @@ The default configuration for BHNS has a total mass of 2.8M and non-spinning.
 Aside from the diagnostics observed during the solver stage, we can use the reader
 to verify the ID.  This can be done by running:
 
-`./bin/Release/reader converged_BHNS_ECC_RED.togashi.35.0.0.2.8.q1.0.0.09.info`
+`./bin/Release/reader BHNS_ECC_RED.togashi.35.0.0.2.8.q1.0.0.09.info`
 
 Which results in the following:
 
@@ -116,8 +115,8 @@ Central Euler Constant = +7.63530e-01
 
 The first two blocks contain information related to the component objects.
 These details are covered in the 
-[NS README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/) and the 
-[BH README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/).
+[NS README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/) and the 
+[BH README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BH/).
 The only additional parameter is the `Center_COM`.  
 This is the coordinate center of each object when shifted by the
 "center-of-mass" of the binary or, more specifically, the location of the axis of rotation 
@@ -143,7 +142,7 @@ data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bhns.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BHNS case.  For details on all the parameters you can
-read more in the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/).
+read more in the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/).
 
 ## BHNS Fixing parameters
 
@@ -204,7 +203,7 @@ binary
 
 The above includes parameters that can be fixed by the user as well as parameters that are automated in the background
 and should not be changed.  The parameters for each NS are simply copied from the isolated solution which can be read
-in detail in the [NS README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/) - 
+in detail in the [NS README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/) - 
 the same fixing applies also in the BHNS.  The relevant parameters to discuss are
 
 - `res` The resolution shown for the individual compact objects is the highest resolution the *isolated* dataset will be ran at.  This can be important for TOV solutions as the total baryonic mass is sensitive to the resolution.  `res 11` is recommended for production runs
@@ -317,19 +316,19 @@ Now that you've generated the simplest case and we have a better understanding o
 1. Run (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bhns.info`
 
 This time around we see the iterative `chi` increase being done for the NS, but overall the only changes 
-observed are related to the isolated NS solver (see the [NS README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/) for details).  The binary solver itself is consistent.
+observed are related to the isolated NS solver (see the [NS README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/) for details).  The binary solver itself is consistent.
 
-This results in the converged dataset of `converged_BHNS_ECC_RED.togashi.28.0.52.0.3.6.q0.487603.0.0.11.info/dat`, however, the other implicit solutions have been saved as well
+This results in the converged dataset of `BHNS_ECC_RED.togashi.28.0.52.0.3.6.q0.487603.0.0.11.info/dat`, however, the other implicit solutions have been saved as well
 
-1. `converged_BHNS_TOTAL_BC_FIXED_OMEGA.`: is the initial solution after the import of the two isolated solutions have been solved in the binary space for a fixed COM and orbital frequency.  
+1. `BHNS_TOTAL_BC_FIXED_OMEGA.`: is the initial solution after the import of the two isolated solutions have been solved in the binary space for a fixed COM and orbital frequency.  
 The hydro fields are simply rescaled to enforce the
 specified baryonic mass, but the fluid is not in hydrostatic equilibrium
-2. `converged_BHNS_TOTAL_BC.`: this is the solution in complete hydrostatic equilibrium with the ADM linear momenta and the orbital frequency being fixed by the force-balance equation for the NS and varying the COM
-4. `converged_BHNS_ECC_RED.`:  The final solution is one where the orbital frequency and radial infall velocity is fixed to either 3.5th order PN estimates based on the COM obtained in the `TOTAL_BC` stage or the values for `adot` and `ecc_omega` are used in the case of iterative eccentricity reduction
+2. `BHNS_TOTAL_BC.`: this is the solution in complete hydrostatic equilibrium with the ADM linear momenta and the orbital frequency being fixed by the force-balance equation for the NS and varying the COM
+4. `BHNS_ECC_RED.`:  The final solution is one where the orbital frequency and radial infall velocity is fixed to either 3.5th order PN estimates based on the COM obtained in the `TOTAL_BC` stage or the values for `adot` and `ecc_omega` are used in the case of iterative eccentricity reduction
 
 We can of course verify that the ID matches our expectation using
 
-`./bin/Release/reader converged_BHNS_ECC_RED.togashi.35.0.0.52.3.6.q0.487603.0.0.11.info`
+`./bin/Release/reader BHNS_ECC_RED.togashi.35.0.0.52.3.6.q0.487603.0.0.11.info`
 
 ```
 ###################### Neutron Star ######################
@@ -405,7 +404,7 @@ solutions are interpolated onto
 the new grid using the idea of superimposed solutions.  Specifically:
 
 - a decay parameter `decay_limit := w` is chosen such that `w = distance / 2`
-- the fields are interpolated such that the solutions decay exponetially away from each object as, e.g. 
+- the fields are interpolated such that the solutions decay exponentially away from each object as, e.g. 
 `decay_rate = exp(-(r_NS / w)^4)`, where `r_NS` is the coordinate distance from the NS
 - The resulting value at a given point is then simply the sum of the background with the deviations from the background from the isolated solutions
 
@@ -425,7 +424,7 @@ the matter is simply rescaled to achieve the desired baryonic mass.  The reason 
   1. The spacetime fields need to settle to a more accurate estimate before resolving the matter consistently
   2. The fluid velocity potential field `phi` needs to be initialized to the binary configuration
 
-The output file from this stage, `converged_BHNS_TOTAL_BC_FIXED_OMEGA.`, can readily be 
+The output file from this stage, `BHNS_TOTAL_BC_FIXED_OMEGA.`, can readily be 
 discarded once a solution from a later stage is obtained.
 
 ## Hydrostatic Equilibrium
@@ -437,7 +436,7 @@ and varying the COM.
 
 Note: in the event one wants to later increase the resolution or make iterative changes 
 (e.g. make small changes to the MADM, MB, CHI of one or both stars),
-it can only be done using the solution from this stage, `converged_BHNS_TOTAL.*<info/dat>`, 
+it can only be done using the solution from this stage, `BHNS_TOTAL.*<info/dat>`, 
 as the initial starting point.  Using the solutions from the hydro-rescaling stage
 will more often than not cause the solution to diverge.  Therefore, these solutions can be useful
 to retain.
@@ -455,4 +454,4 @@ Using either 3.5PN estimates or, in the case of iterative eccentricity reduction
 `ecc_omega` and `adot` from the config file,
 a final stage of matter rescaling is done based on the changes introduced by 
 `ecc_omega` and `adot`.  This is the recommended
-solution to use for evolutions and it is stored with a filename title of `converged_BHNS_ECC_RED.*<info/dat>`
+solution to use for evolutions and it is stored with a filename title of `BHNS_ECC_RED.*<info/dat>`

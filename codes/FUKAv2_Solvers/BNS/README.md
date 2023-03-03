@@ -3,14 +3,14 @@
 # Overview
 
 Here lies the binary neutron star initial data solver and diagnostic codes.  The initial data is constructed using maximal
-slicing with a flat spacial metric with which it is possible to acheive maximal spins up to 
+slicing with a flat spacial metric with which it is possible to achieve maximal spins up to 
 approximately `[-0.6, 0.6]`.  The v2 code is a considerable improvement over the v1 code as it uses superimposed NS solutions
 to initialize the binary instead of building the binary from equal mass, non-boosted TOV solutions followed by iterative
 changes to the binary components.  When comparing to v1, generating equal-mass non-rotating is automated (i.e. the user no
 longer needs to perform the setup and solve separately), however, generating the ID is slightly slower due to needing to perform
 a stage of fixed orbital frequency prior to solving the hydro fields consistently.  Most importantly, 
 when generating arbitrary spin and unequal mass, the cost savings is roughly (N)x faster 
-where N is, in the case of v1, the number of iterative solutions needed to acheive a given mass ratio and spin configurations.
+where N is, in the case of v1, the number of iterative solutions needed to achieve a given mass ratio and spin configurations.
 
 Note:  When referring to `Mtot` below, we will be referring to the sum of the ADM masses of the TOV solution as measured
 at infinite separation (i.e. isolated TOV solutions) - `Mtot := (MADM_MINUS + MADM_PLUS)`
@@ -22,8 +22,7 @@ where plus and minus simply refer to their location on the x-axis.
 2. `compile` is a symbolic link to the script stored in `$HOME_KADATH/build_release` to ease compiling
 3. `src` directory contains the relevant source files:
     - `solve.cpp`: the one and done solve code
-    - `reader.cpp`: the reader can provide diagonstics from ID solutions that are computed from the ID
-    - `kadath_readers.cpp`: Python libraries to allow for additional analysis of the initial data without needing to evolve it!
+    - `reader.cpp`: the reader can provide diagnostics from ID solutions that are computed from the ID
 
 # Basic Usage
 
@@ -35,13 +34,13 @@ where plus and minus simply refer to their location on the x-axis.
 
 1. Generate the initial config file by running `solve` for the first time
 2. Rerun (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bns.info`
-3. This will result in the generation of a pair of files containing the solution: `converged_BNS_ECC_RED.togashi.28.0.0.2.8.q1.0.0.09.<info/dat>`
+3. This will result in the generation of a pair of files containing the solution: `BNS_ECC_RED.togashi.28.0.0.2.8.q1.0.0.09.<info/dat>`
 
 We can deconstruct the name to make it understandable:
 
-- `converged_BNS_ECC_RED.` denotes a converged BNS solution after the eccentricity reduction stage is completed which uses 
+- `BNS_ECC_RED.` denotes a converged BNS solution after the eccentricity reduction stage is completed which uses 
 3.5th order PN estimates for the orbital frequency and radial infall velocity. This is meant to distinguish the solution 
-from earlier stages which will be discussed later.This also distinquishes it from checkpoints that can be turned on which 
+from earlier stages which will be discussed later.This also distinguishes it from checkpoints that can be turned on which 
 are saved to file during each iteration of the solver
 - `togashi`: the leading name of the eosfile
 - `28`: separation distance in geometric units!
@@ -55,7 +54,7 @@ The default configuration for BNS has a total mass of 2.8M and non-spinning.
 Aside from the diagnostics observed during the solver stage, we can use the reader
 to verify the ID.  This can be done by running:
 
-`./bin/Release/reader converged_BNS_ECC_RED.togashi.28.0.0.2.8.q1.0.0.09.info`
+`./bin/Release/reader BNS_ECC_RED.togashi.28.0.0.2.8.q1.0.0.09.info`
 
 Which results in the following:
 
@@ -106,7 +105,7 @@ Central Euler Constant = -0.28830
 ```
 
 The first two blocks contain information related to the component NSs - the second has been abbreviated since it contains identical information.  
-These details are covered in the [NS README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/).
+These details are covered in the [NS README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/).
 The only additional parameter is the `Center_COM`.  This is the coordinate center of each object when shifted by the
 "center-of-mass" of the binary or, more specifically, the location of the axis of rotation for the binary that can approximate a quasi-stationary solution.
 
@@ -130,7 +129,7 @@ data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bns.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BNS case.  For details on all the parameters you can
-read more in the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/).
+read more in the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/).
 
 ## BNS Fixing parameters
 
@@ -302,17 +301,17 @@ In the event you changed the resolution to 11pts, the solver will solve the bina
 solution in hydrostatic equilibrium has been obtained.  At this point the solution will be regridded to a higher resolution
 at which point the solver will go through all the activated stages (e.g. `TOTAL`, `TOTAL_BC`, and `ECC_RED`).
 
-This results in the converged dataset of `converged_BNS_ECC_RED.togashi.28.0.52.0.3.6.q0.487603.0.0.11.info/dat`, however, the other implicit solutions have been saved as well:
+This results in the converged dataset of `BNS_ECC_RED.togashi.28.0.52.0.3.6.q0.487603.0.0.11.info/dat`, however, the other implicit solutions have been saved as well:
 
-1. `converged_BNS_TOTAL_FIXED_OMEGA.`: is the initial solution after the import of the two isolated solutions have been solved in the binary space for a fixed COM and orbital frequency.  The hydro fields are simply rescaled to enforce the
+1. `BNS_TOTAL_FIXED_OMEGA.`: is the initial solution after the import of the two isolated solutions have been solved in the binary space for a fixed COM and orbital frequency.  The hydro fields are simply rescaled to enforce the
 specified baryonic mass, but the fluid is not in hydrostatic equilibrium
-2. `converged_BNS_TOTAL.`: this is the solution in complete hydrostatic equilibrium with the ADM linear momenta and the orbital frequency being fixed by the force-balance equations for each NS
-3. `converged_BNS_TOTAL_BC.`: is the iterative solution such that the orbital frequency is set to a constant and the remaining linear momenta are driven to zero by varying the COM. In this stage, the fluid deviates from hydrostatic equilibrium since the orbital frequency is a constant
-4. `converged_BNS_ECC_RED.`:  The final solution is one where the orbital frequency and radial infall velocity is fixed to either 3.5th order PN estimates based on the COM obtained in the `TOTAL_BC` stage or the values for `adot` and `ecc_omega` are used in the case of iterative eccentricity reduction
+2. `BNS_TOTAL.`: this is the solution in complete hydrostatic equilibrium with the ADM linear momenta and the orbital frequency being fixed by the force-balance equations for each NS
+3. `BNS_TOTAL_BC.`: is the iterative solution such that the orbital frequency is set to a constant and the remaining linear momenta are driven to zero by varying the COM. In this stage, the fluid deviates from hydrostatic equilibrium since the orbital frequency is a constant
+4. `BNS_ECC_RED.`:  The final solution is one where the orbital frequency and radial infall velocity is fixed to either 3.5th order PN estimates based on the COM obtained in the `TOTAL_BC` stage or the values for `adot` and `ecc_omega` are used in the case of iterative eccentricity reduction
 
 We can of course verify that the ID matches our expectation using
 
-`./bin/Release/reader converged_BNS_ECC_RED.togashi.35.0.52.0.3.6.q0.487603.0.0.11.info`
+`./bin/Release/reader BNS_ECC_RED.togashi.35.0.52.0.3.6.q0.487603.0.0.11.info`
 
 ```
 ###################### NS_MINUS ######################
@@ -388,7 +387,7 @@ ADM masses and the coordinate separation
 Once these estimates are computed an interface code is ran
 which 
 
-- solves each NS configuration in isolation (See the (see the [NS README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/) for more details).  
+- solves each NS configuration in isolation (See the (see the [NS README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/) for more details).  
 - obtains boosted isolated solutions using the estimated `global_omega`
 
 At this point, the binary numerical space and fields are constructed and the isolated solutions are interpolated onto 
@@ -415,7 +414,7 @@ for each NS.  The reason for this is two fold:
   1. The spacetime fields need to settle to a more accurate estimate before resolving the matter consistently
   2. The fluid velocity potential field `phi` needs to initialize to the binary configuration
 
-The output file from this stage, `converged_BNS_TOTAL_FIXED_OMEGA.`, can readily be discarded once a solution from a later
+The output file from this stage, `BNS_TOTAL_FIXED_OMEGA.`, can readily be discarded once a solution from a later
 stage is obtained.
 
 ## Hydrostatic Equilibrium
@@ -425,7 +424,7 @@ hydrostatic equilibrium in the binary configuration.  `global_omega` and one com
 using the force balance equation.
 
 Note: in the event one wants to later increase the resolution or make iterative changes (e.g. make small changes to the MADM, MB, CHI of one or both stars),
-it can only be done using the solution from this stage, `converged_BNS_TOTAL.*<info/dat>`, as the initial starting point.  Using
+it can only be done using the solution from this stage, `BNS_TOTAL.*<info/dat>`, as the initial starting point.  Using
 the solutions from the hydro-rescaling stages will more often than not cause the solution to diverge.  Therefore, these solutions can be useful
 to retain.
 
@@ -443,10 +442,10 @@ and we fix it to the current `global_omega`, however, we now minimize the x and 
 equations to determine the most accurante COM for the given binary.  This is very important prior to the eccentricity reduction
 stage as a precise estimate of the COM is required for the post-Newtonian estimates.
 
-The output file from this stage, `converged_BNS_TOTAL_BC.`, can be discarded when no longer needed.
+The output file from this stage, `BNS_TOTAL_BC.`, can be discarded when no longer needed.
 
 ## Eccentricity Reduction
 
 Using either 3.5PN estimates or, in the case of iterative eccentricity reduction, `ecc_omega` and `adot` from the config file,
 a final stage of matter rescaling is done based on the changes introduced by `ecc_omega` and `adot`.  This is the recommended
-solution to use for evolutions and it is stored with a filename title of `converged_BNS_ECC_RED.*<info/dat>`
+solution to use for evolutions and it is stored with a filename title of `BNS_ECC_RED.*<info/dat>`

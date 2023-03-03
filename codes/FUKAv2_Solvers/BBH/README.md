@@ -22,7 +22,6 @@ where plus and minus simply refer to their location on the x-axis.
 3. `src` directory contains the relevant source files:
     - `solve.cpp`: the one and done solve code
     - `reader.cpp`: the reader can provide diagonstics from ID solutions that are computed from the ID
-    - `kadath_readers.cpp`: Python libraries to allow for additional analysis of the initial data without needing to evolve it!
 
 # Basic Usage
 
@@ -34,11 +33,11 @@ where plus and minus simply refer to their location on the x-axis.
 
 1. Generate the initial config file by running `solve` for the first time
 2. Rerun (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bbh.info`
-3. This will result in the generation of a pair of files containing the solution: `converged_BBH_ECC_RED.10.0.0.1.q1.0.0.09.<info/dat>`
+3. This will result in the generation of a pair of files containing the solution: `BBH_ECC_RED.10.0.0.1.q1.0.0.09.<info/dat>`
 
 We can deconstruct the name to make it understandable:
 
-- `converged_BBH_ECC_RED.` denotes a converged BBH solution after the eccentricity reduction stage is completed which uses 
+- `BBH_ECC_RED.` denotes a converged BBH solution after the eccentricity reduction stage is completed which uses 
 3.5th order PN estimates for the orbital frequency and radial infall velocity. This is meant to distinguish the solution 
 from earlier stages which will be discussed later. This also distinquishes it from checkpoints that can be turned on which 
 are saved to file during each iteration of the solver
@@ -53,7 +52,7 @@ The default configuration for BBH has a total mass of 1M and non-spinning.
 Aside from the diagnostics observed during the solver stage, we can use the reader
 to verify the ID.  This can be done by running:
 
-`./bin/Release/reader converged_BBH_ECC_RED.10.0.0.1.q1.0.0.09.info`
+`./bin/Release/reader BBH_ECC_RED.10.0.0.1.q1.0.0.09.info`
 
 Which results in the following:
 
@@ -107,7 +106,7 @@ Which results in the following:
 ```
 
 The first two blocks contain information related to the component BHs.  These details are covered in the 
-[BH README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/).
+[BH README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BH/).
 The only additional parameter is the `Center_COM`.  This is the coordinate center of each object when shifted by the
 "center-of-mass" of the binary or, more specifically, the location of the axis of rotation for the binary that can approximate
 a quasi-stationary solution.
@@ -132,7 +131,7 @@ data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bbh.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BBH case.  For details on all the parameters you can
-see more in [Configurator](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/) README.
+see more in [Configurator](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/) README.
 
 ## BBH Fixing parameters
 
@@ -175,7 +174,7 @@ binary
 
 The above includes parameters that can be fixed by the user as well as parameters that are automated in the background
 and should not be changed.  The parameters for each BH are simply copied from the isolated solution which can be read
-in detail in the [BH README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/) - 
+in detail in the [BH README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BH/) - 
 the same fixing applies also in the BBH.
 
 The fixing parameters most relevant to the binary are
@@ -289,11 +288,11 @@ This time around we see the iterative `chi` increase being done for the primary 
 observed are related to the isolated BH solvers (see the BH README for details), but the binary solver itself
 is consistent.
 
-This results in the converged dataset of `converged_BBH_ECC_RED.10.-0.5.0.85.1.q0.1.2.0.09.info/dat`, however, the other implicit solutions have been saved as well.
+This results in the converged dataset of `BBH_ECC_RED.10.-0.5.0.85.1.q0.1.2.0.09.info/dat`, however, the other implicit solutions have been saved as well.
 
 We can of course verify that the ID matches our expectation using
 
-`./bin/Release/reader converged_BBH_ECC_RED.10.-0.5.0.85.1.q0.1.2.0.09.info`
+`./bin/Release/reader BBH_ECC_RED.10.-0.5.0.85.1.q0.1.2.0.09.info`
 
 ```
 ###################### BH_MINUS ######################
@@ -359,14 +358,14 @@ Once these estimates are computed an interface code is ran
 which 
 
 - solves each BH configuration in isolation 
-(See the [BH README](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/) for more details).  
+(See the [BH README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BH/) for more details).  
 - obtains boosted isolated solution using the estimated `global_omega`
 
 At this point, the binary numerical space and fields are constructed and the isolated solutions are interpolated onto 
 the new grid using the idea of super-imposed solutions.  Specifically:
 
 - a decay parameter `w` is chosen such that `w = distance / 2 =: decay_limit`
-- the fields are interpolated such that the solutions decay exponetially away from each object as 
+- the fields are interpolated such that the solutions decay exponentially away from each object as 
 `decay_rate = exp(-(r_BH / w)^4)` where `r_BH` is the coordinate distance the respective BH
 - The resulting value at a given point is then simply the sum of the background with the deviations from the background from the isolated solutions
 
@@ -379,9 +378,9 @@ values of the fields, i.e. `lapse = psi = 1`, `shift = 0`.
 
 ## TOTAL_BC Stage
 
-The `TOTAL_BC` stage solves the full XCTS system of equations consistently and all at once.  The only thing that distiguishes 
+The `TOTAL_BC` stage solves the full XCTS system of equations consistently and all at once.  The only thing that distinguishes 
 `TOTAL_BC` from `ECC_RED` is that, by default, `TOTAL_BC` fixes the variable `global_omega` using the quasi-equilibrium 
-assumption of `Madm == Mkomar` where as `ECC_RED` uses userdefined values or 3.5PN estimates of the `global_omega` and `adot`.  
+assumption of `Madm == Mkomar` where as `ECC_RED` uses user-defined values or 3.5PN estimates of the `global_omega` and `adot`.  
 However, when running a new initial data sequence, the `global_omega` is initially fixed in the `TOTAL_BC` stage (you can see 
 the control enabled within the `initial_bbh.info` file) using the initial 3.5PN estimate.
 

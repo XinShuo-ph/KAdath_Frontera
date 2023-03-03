@@ -7,7 +7,13 @@ Included are the Frankfurt initial data solvers and utilities based on the Kadat
   (hereafter denoted as FUKAv1) are located in ./codes/FUKAv1/[BH, NS, BHNS, BNS, BBH] respectively.
   The solvers in the next version release, denoted as FUKAv2, can be found in ./codes/FUKAv2/[BH, NS, BHNS, BNS, BBH] respectively.
 	Both FUKAv1 (v1) and FUKAv2 (v2) includes support for polytropic equations of state as well as tabulated EOS in
-  in the standard LORENE format.  Examples and additional details can be found in the [eos](https://bitbucket.org/fukaws/fuka/src/fukav2/eos/) directory.
+  in the standard LORENE format.  Examples and additional details can be found in the [eos](https://bitbucket.org/fukaws/fuka/src/fuka/eos/) directory.
+
+## FUKAv2.1 Notes:
+This release includes a rewrite and reorganization of the Python readers for FUKA initial data among many bug fixes and quality of life changes.
+The old python readers have thus been removed from the solvers and are now centrally located in the [codes/PythonTools](https://bitbucket.org/fukaws/fuka/src/fuka/codes/PythonTools) directory.
+
+Along side of the FUKAv2.1 release is the official inclusion of the thorns to import FUKA initial data into the Einstein Toolkit - [ticket](https://bitbucket.org/einsteintoolkit/tickets/issues/2692/inclusion-of-fuka-importer-thorns).
 
 ## FUKAv2 Notes: 
 The release of FUKAv2 is considerable step forward in reliable generation of extremal spinning, asymmetric
@@ -15,7 +21,7 @@ binary initial data using the KADATH spectral software.  The v2 solvers aim to m
 isolated solutions to setup the initial guess for binary ID.  Additionally, v2 aims to automate the generation of ID by minimizing
 the workflow for the user.  Finally, v2 allows quite for considerable flexibility in setting up the config file to make ID generation 
 as efficient as possible within the KADATH framework including reusing previously solved implicit isolated solutions.  For more details,
-please see the documentation in the [FUKAv2](https://bitbucket.org/fukaws/fuka/src/fukav2/codes/FUKAv2/).
+please see the documentation in the [FUKAv2](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2/).
 
   - FUKAv1 Specific: There have been some core changes to various utilities used when constructing ID that have required some refactoring of the v1 solvers.  Spot testing has been done to ensure these codes function as originally intended - however - these codes, overall, remain unchanged.
   
@@ -58,10 +64,10 @@ and additions that differ from base Kadath.
 1.  This branch includes memory optimizations that inspired portions of the optimization branch  
 2.  Modification/addition of numerical spaces for the BH, BBH, BNS, and BHNS  
 3.  Addition of an equation of state infrastructure utilizing Margherita standalone to handle
-tabulated and polytropic EOS - see [include/EOS](https://bitbucket.org/fukaws/fuka/src/fukav2/include/EOS)  
+tabulated and polytropic EOS - see [include/EOS](https://bitbucket.org/fukaws/fuka/src/fuka/include/EOS)  
 4.  Addition of the Configurator framework to enable extensibility of solvers by managing controls,
-stages, and key variables - see [include/Configurator](https://bitbucket.org/fukaws/fuka/src/fukav2/include/Configurator)  
-5.  Addition of exporters for all the previously mentioned ID types - see [src/Utilities/Exporters](https://bitbucket.org/fukaws/fuka/src/fukav2src/Utilities/Exporters)
+stages, and key variables - see [include/Configurator](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator)  
+5.  Addition of exporters for all the previously mentioned ID types - see [src/Utilities/Exporters](https://bitbucket.org/fukaws/fuka/src/fuka/src/Utilities/Exporters)
 
 Note: as of summer 2021, the FUKA solvers are based on the deprecated branch of Kadath.  Given the optimizations and changes made
 within the FUKA branch conflict with those implimented in the `master` branch (previously the `optimized` branch), a considerable
@@ -108,16 +114,16 @@ Example using GNU+mpi compilers:
     `cmake -DCMAKE_BUILD_TYPE=Release -DPAR_VERSION=On -DMPI_CXX_COMPILER=mpic++ -DMPI_C_COMPILER=mpicc ..`
 
 In most HPC systems, `cmake` will likely not find the dependency libraries that the user may intend.  Therefore,
-one must specify them manually through the [CMakeLocal.cmake](https://bitbucket.org/fukaws/fuka/src/fukav2/Cmake/CMakeLocal.cmake) file 
+one must specify them manually through the [CMakeLocal.cmake](https://bitbucket.org/fukaws/fuka/src/fuka/Cmake/CMakeLocal.cmake) file 
 (the `fftw` and `scalapack` libraries must usually be provided in this way). 
-Some working [CMakeLocal.cmake](https://bitbucket.org/fukaws/fuka/src/fukav2/Cmake/CMakeLocal.cmake) files are provided for HPC systems in Germany as well
+Some working [CMakeLocal.cmake](https://bitbucket.org/fukaws/fuka/src/fuka/Cmake/CMakeLocal.cmake) files are provided for HPC systems in Germany as well
 as examples for personal computers.
 
 Once cmake has been successfully invoked, use make -j $KAD_NUMC to start the compilation.
 
 ## Compiling the library with the compile script
 
-A script called [compile](https://bitbucket.org/fukaws/fuka/src/fukav2/build_release/compile) is also provided that can be used to facilitate the installation process. So long as the above environment variables are set and the libraries are found, no additional input is necessary.
+A script called [compile](https://bitbucket.org/fukaws/fuka/src/fuka/build_release/compile) is also provided that can be used to facilitate the installation process. So long as the above environment variables are set and the libraries are found, no additional input is necessary.
 Run the compile script within the `build_release` directory using 
 
 `. compile` 
@@ -125,7 +131,7 @@ Run the compile script within the `build_release` directory using
 in order to build the library.  
 
 ## Compiling FUKA solvers
-The above mentioned [compile script](https://bitbucket.org/fukaws/fuka/src/fukav2/build_release/compile) has been added as a symbolic link to the FUKAv1 and FUKAv2 solver directories for convenience in compiling the individual solvers.
+The above mentioned [compile script](https://bitbucket.org/fukaws/fuka/src/fuka/build_release/compile) has been added as a symbolic link to the FUKAv1 and FUKAv2 solver directories for convenience in compiling the individual solvers.
 
 # 5. Dependencies
 

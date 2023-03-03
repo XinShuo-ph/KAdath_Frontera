@@ -15,8 +15,7 @@ with ID that requires an EOS.
 2. `compile` is a symbolic link to the script stored in `$HOME_KADATH/build_release` to ease compiling
 3. `src` directory contains the relevant source files:
     - `solve.cpp`: the one and done solve code
-    - `reader.cpp`: the reader can provide diagonstics from ID solutions that are computed from the ID
-    - `kadath_readers.cpp`: Python libraries to allow for additional analysis of the initial data without needing to evolve it!
+    - `reader.cpp`: the reader can provide diagnostics from ID solutions that are computed from the ID
 
 # Base Usage
 
@@ -29,13 +28,13 @@ with ID that requires an EOS.
 1. Generate the initial config file by running `solve` for the first time
 2. Rerun (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_ns.info`
 3. This will result in the generation of a pair of files containing the solution: 
-`converged_NS_TOTAL_BC.togashi.1.4.0.0.09.<info/dat>`
+`NS_TOTAL_BC.togashi.1.4.0.0.09.<info/dat>`
 
 We can deconstruct the name to make it understandable:
 
-- `converged_NS_TOTAL_BC.` denotes a converged NS solution after the TOTAL_BC stage.
-        This is meant to distinguish the solution from other stages suched as the NOROT_BC and boosted NS stage.
-        This also distinquishes it from checkpoints that can be turned on which our saved to file during each iteration of the solver
+- `NS_TOTAL_BC.` denotes a converged NS solution after the TOTAL_BC stage.
+        This is meant to distinguish the solution from other stages such as the NOROT_BC and boosted NS stage.
+        This also distinguishes it from checkpoints that can be turned on which our saved to file during each iteration of the solver
 - `togashi` denotes the eosfile used in the ID construction
 - `1.4.0.`: In this case, we have a 1.4M NS with a dimensionless spin of zero
 - `0.09.`: the number of *additional* spherical `nshells`is `0` and the resolution in each domain is `9` collocation points in the radial and theta direction with `8` points in the phi direction
@@ -47,7 +46,7 @@ The default configuration for an isolated NS has a mass of 1.4M and non-spinning
 Aside from the diagnostics observed during the solver stage, we can use the reader
 to verify the ID.  This can be done by running:
 
-`./bin/Release/reader converged_NS_TOTAL_BC.togashi.1.4.0.0.09.info`
+`./bin/Release/reader NS_TOTAL_BC.togashi.1.4.0.0.09.info`
 
 Which results in the following:
 
@@ -112,7 +111,7 @@ data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_ns.info`.  We will go through the file,
 but we'll discuss only the details relevant to the NS case.  For details on all the parameters you can
-see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/).
+see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/).
 
 ## NS Fixing parameters
 
@@ -237,7 +236,7 @@ Now that you've generated the simplest case and we have a better understanding o
     - `res 11`
 3. Run (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_ns.info`
 
-Many things will run differently this time!  Most noteably are the following:
+Many things will run differently this time!  Most notably are the following:
 
 1. Even though the resolution was set to `res 11`, the initial solution is always constructed using `initial_resolution` first.
 Currently the default initial resolution is `res 9`.
@@ -255,13 +254,13 @@ procedure is done to maximize the chance for convergence by solving for
 
 3. Once the desired `chi` and `madm` is achieved, the solution is interpolated onto a new numerical grid with the desired final resolution
 4. With the high resolution initial guess, the `TOTAL_BC` stage is reran to obtain the desired ID
-5. This results in the converged dataset of `converged_NS_TOTAL_BC.togashi.2.3.0.6.0.0.11.info/dat`, 
+5. This results in the converged dataset of `NS_TOTAL_BC.togashi.2.3.0.6.0.0.11.info/dat`, 
 however, the other implicit solutions have been saved as well.
 
 
 We can of course verify that the ID matches our expectation using
 
-`./bin/Release/reader converged_NS_TOTAL_BC.togashi.2.3.0.6.0.11.info`
+`./bin/Release/reader NS_TOTAL_BC.togashi.2.3.0.6.0.11.info`
 
 ```
                    RES = [+11,+11,+10]
