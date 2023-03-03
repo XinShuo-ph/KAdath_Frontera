@@ -21,7 +21,7 @@ binary initial data using the KADATH spectral software.  The v2 solvers aim to m
 isolated solutions to setup the initial guess for binary ID.  Additionally, v2 aims to automate the generation of ID by minimizing
 the workflow for the user.  Finally, v2 allows quite for considerable flexibility in setting up the config file to make ID generation 
 as efficient as possible within the KADATH framework including reusing previously solved implicit isolated solutions.  For more details,
-please see the documentation in the [FUKAv2](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2/).
+please see the documentation in the [FUKAv2](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/).
 
   - FUKAv1 Specific: There have been some core changes to various utilities used when constructing ID that have required some refactoring of the v1 solvers.  Spot testing has been done to ensure these codes function as originally intended - however - these codes, overall, remain unchanged.
   
