@@ -9,7 +9,7 @@ License      : GPLv3+ for all other code
 
 # Overview
 
-The FUKAv2 encompasses a rewrite of the original initial data (ID) solvers that were made publically
+The FUKAv2 encompasses a rewrite of the original initial data (ID) solvers that were made publicly
 available in 2021.  Although portions of the original codes have been reused, a significant
 overhaul of the solvers has been done not only to make the interface more accessible to the user, 
 but to also provide a coherent interface between the isolated and binary solvers.
@@ -52,18 +52,18 @@ The solvers are structured as follows:
     2. `compile` is a symbolic link to the script stored in `$HOME_KADATH/build_release` to ease compiling
     3. `src` directory contains the relevant source files:
         - `solve.cpp`: the one and done solve code for each solver
-        - `reader.cpp`: the reader can provide diagonstics from ID solutions that are computed from the ID
+        - `reader.cpp`: the reader can provide diagnostics from ID solutions that are computed from the ID
         - `kadath_readers.cpp`: Python libraries to allow for additional analysis of the initial data without needing to evolve it! 
         For example, the user can assess whether the XCTS system constraint violations are below a satisfactory level or easily inspect the interpolated
         solution of the variable fields
-2. The related `solve.cpp` in most cases is simply a frontend with minimal functionlity.  
+2. The related `solve.cpp` in most cases is simply a frontend with minimal functionality.  
 Most of the business is stored in `$HOME_KADATH/include/Solvers`
 3. The `reader.cpp` and `kadath_readers.cpp` codes are shared between v1 and v2 solvers, therefore symbolic links are used
 
 # Getting Started
 
 The user interface for all the solvers is in the form of a Configurator (config) file.  
-See the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/) for details.
+See the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/) for details.
 To this end, using all the ID solvers is the same:
 
 1. Generate the initial config file by running `solve` for the first time
@@ -72,11 +72,11 @@ To this end, using all the ID solvers is the same:
 
 For this reason, it is recommended to learn about using FUKAv2 solvers by generating ID in the following order
 
-1. [Black Hole ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BH/)
-1. [Binary Black Hole ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BBH/)
-1. [Neutron Star ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/NS/)
-1. [Binary Neutron Star ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BNS/)
-1. [Black Hole-Neutron Star Binary ID](https://bitbucket.org/fukaws/fuka/src/fukav2//codes/FUKAv2_Solvers/BHNS/)
+1. [Black Hole ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BH/)
+1. [Binary Black Hole ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BBH/)
+1. [Neutron Star ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/)
+1. [Binary Neutron Star ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BNS/)
+1. [Black Hole-Neutron Star Binary ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BHNS/)
 
 # Acknowledgements
 

@@ -195,6 +195,18 @@ class kadath_config_boost {
       * @return parameter
       */
     template<typename... idx_t>
+    constexpr void reset(const idx_t... idxs) { 
+      container(idxs...) = std::nan("1");
+    }
+
+    /**
+      * kadath_config_boost::set()
+      * set funct to set parameters from base or child parameter container
+      * @tparam idx_t parameter pack type of indexes
+      * @param[input] idxs: index/indices of parameter to set
+      * @return parameter
+      */
+    template<typename... idx_t>
     constexpr auto& set(const idx_t... idxs) { 
       return container(idxs...);
     }

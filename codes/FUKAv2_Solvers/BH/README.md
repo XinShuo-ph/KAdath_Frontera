@@ -16,7 +16,6 @@ since the interface is similar amongst the v2 solvers by design.
 3. `src` directory contains the relevant source files:
     - `solve.cpp`: the one and done solve code
     - `reader.cpp`: the reader can provide diagonstics from ID solutions that are computed from the ID
-    - `kadath_readers.cpp`: Python libraries to allow for additional analysis of the initial data without needing to evolve it!
 
 # Basic Usage
 
@@ -28,11 +27,11 @@ since the interface is similar amongst the v2 solvers by design.
 
 1. Generate the initial config file by running `solve` for the first time
 2. Rerun (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bh.info`
-3. This will result in the generation of a pair of files containing the solution: `converged_BH_TOTAL_BC.0.5.0.09.<info/dat>`
+3. This will result in the generation of a pair of files containing the solution: `BH_TOTAL_BC.0.5.0.09.<info/dat>`
 
 We can deconstruct the name to make it understandable:
 
-- `converged_BH_TOTAL_BC.` denotes a converged BH solution after the TOTAL_BC stage.
+- `BH_TOTAL_BC.` denotes a converged BH solution after the TOTAL_BC stage.
         This is meant to distinguish the solution from other stages suched as the boosted BH stage.
         This also distinquishes it from checkpoints that can be turned on which our saved to file during each iteration of the solver
 - `0.5.0.`: In this case, we have a 0.5M BH with a dimensionless spin of zero
@@ -44,7 +43,7 @@ The default configuration for an isolated BH has a mass of 0.5M and non-spinning
 Aside from the diagnostics observed during the solver stage, we can use the reader
 to verify the ID.  This can be done by running:
 
-`./bin/Release/reader converged_BH_TOTAL_BC.0.5.0.0.09.info`
+`./bin/Release/reader BH_TOTAL_BC.0.5.0.0.09.info`
 
 Which results in the following:
 
@@ -105,7 +104,7 @@ data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bh.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BH case.  For details on all the parameters you can
-see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fukav2//include/Configurator/).
+see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/).
 
 ## BH Fixing parameters
 
@@ -223,11 +222,11 @@ is done automatically to avoid the solution diverging.  This is done in three st
 
 3. Once the desired `chi` is acheived, the solution is regridded to a new grid with the desired final resolution
 4. With the new initial guess based on the low resolution solution, a final solving stage is conducted to obtain the desired ID
-5. This results in the converged dataset of `converged_BH_TOTAL_BC.1.0.85.0.11.info/dat`, however, the other implicit solutions have been saved as well.
+5. This results in the converged dataset of `BH_TOTAL_BC.1.0.85.0.11.info/dat`, however, the other implicit solutions have been saved as well.
 
 We can of course verify that the ID matches our expectation using
 
-`./bin/Release/reader converged_BH_TOTAL_BC.1.0.85.0.11.info`
+`./bin/Release/reader BH_TOTAL_BC.1.0.85.0.11.info`
 
 ```
                    RES = [+11,+11,+10]
