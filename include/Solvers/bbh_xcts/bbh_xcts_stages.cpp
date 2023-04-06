@@ -57,7 +57,7 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(const size_t stage, std::str
       if(rank == 0)
         std::cout << "### Using PN estimate for adot and omega! ###" << std::endl;
     }
-    bconfig.set(GOMEGA) = bconfig(ECC_OMEGA);
+    bconfig.set(ECC_OMEGA) = bconfig(GOMEGA);
   }
 
   // setup background position vector field - only needed for ECC_RED stage

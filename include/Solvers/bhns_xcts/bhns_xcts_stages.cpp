@@ -282,6 +282,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
   // output final configuration and binary data
   if (rank==0)
     checkpoint();
+  MPI_Barrier(MPI_COMM_WORLD);
   return exit_status;
 }
 
@@ -320,7 +321,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
       if(rank == 0)
         std::cout << "### Using PN estimate for adot and omega! ###" << std::endl;
     }
-    bconfig.set(GOMEGA) = bconfig(ECC_OMEGA);
+    bconfig.set(ECC_OMEGA) = bconfig(GOMEGA);
   }
   
   // setup background position vector field - only needed for ECC_RED stage
