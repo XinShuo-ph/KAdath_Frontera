@@ -289,8 +289,10 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const size
 
       if(rank == 0)
         std::cout << "### Using PN estimate for adot and omega! ###" << std::endl;
+      bconfig.set(ECC_OMEGA) = bconfig(GOMEGA);
+    } else{
+      bconfig.set(GOMEGA) = bconfig(ECC_OMEGA);
     }
-    bconfig.set(ECC_OMEGA) = bconfig(GOMEGA);
   }
   
   // setup background position vector field - only needed for ECC_RED stage
