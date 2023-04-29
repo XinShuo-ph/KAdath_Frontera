@@ -20,7 +20,15 @@
 #include <Configurator/config_enums.hpp>
 #include <string>
 #include <map>
-
+/**
+  * \addtogroup Configurator_enums
+	* \ingroup Configurator
+  * Physically motivated, static enums that allow for flexible reading
+  * of boost::ptree while allowing the ability to add/modify/delete params at a
+  * later date without having to modify BIN/BCO classes that read in data. This
+  * also allows for calling container locations using physically meaningful names
+  * @{
+  */
 const std::map<std::string, BIN_PARAMS> MBIN_PARAMS = {
   {"res",BIN_RES},              // Resolution
   {"distance",DIST},            // Separation distance
@@ -75,7 +83,7 @@ const std::map<std::string, EOS_PARAMS> MEOS_PARAMS = {
 //required independent of binary, BCO, etc
 const std::map<std::string, NODES> M_REQ_NODES = {
   {"fields",FIELDS},
-  {"stages",STAGES},
+  {"stages",CSTAGES},
   {"sequence_controls",SCONTROLS},
   {"sequence_settings",SSETTINGS},
 };
@@ -127,7 +135,7 @@ const std::map<std::string, BCO_FIELDS> MBCO_VFIELDS = {
 };
 
 // all reserved stage names
-const std::map<std::string, STAGE> MSTAGE = {
+const std::map<std::string, STAGES> MSTAGE = {
   {"pre",PRE},
   {"norot_bc",NOROT_BC},
   {"fixed_omega",FIXED_OMEGA},
@@ -150,58 +158,48 @@ const std::map<std::string, STAGE> MSTAGE = {
  * not been assigned such a subset in config_bin.hpp,
  * the default is the full list of stages.
  */
-const std::map<std::string, STAGE> MBNSSTAGE = {
+const std::map<std::string, STAGES> MBNSSTAGE = {
   {"total",TOTAL},
   {"total_bc",TOTAL_BC},
   {"ecc_red", ECC_RED},
 };
-const std::map<std::string, STAGE> MBBHSTAGE = {
-  {"pre",PRE},                //deprecated v1 only
-  {"fixed_omega",FIXED_OMEGA},//deprecated v1 only
-  {"corot_equal",COROT_EQUAL},//deprecated v1 only
-  {"total",TOTAL},            //deprecated v1 only
+const std::map<std::string, STAGES> MBBHSTAGE = {
   {"total_bc",TOTAL_BC},
   {"ecc_red", ECC_RED},
 };
-const std::map<std::string, STAGE> MBHNSSTAGE = {
-  {"total",TOTAL},
+const std::map<std::string, STAGES> MBHNSSTAGE = {
   {"total_bc",TOTAL_BC},
   {"ecc_red", ECC_RED},
 };
-const std::map<std::string, STAGE> MBHSTAGE = {
-  {"pre",PRE},                //deprecated v1 only
-  {"total",TOTAL},            //deprecated v1 only
+const std::map<std::string, STAGES> MBHSTAGE = {
   {"total_bc",TOTAL_BC},
-  {"binary_boost", BIN_BOOST},
 };
-const std::map<std::string, STAGE> MNSSTAGE = {
-  {"pre",PRE},                //deprecated v1 only
+const std::map<std::string, STAGES> MNSSTAGE = {
   {"norot_bc",NOROT_BC},
   {"total_bc",TOTAL_BC},
-  {"binary_boost", BIN_BOOST},
 };
 
 const std::map<std::string, CONTROLS> MCONTROLS = {
   {"use_pn", USE_PN},            ///< Use PN eccentricity parameters - replaces ADOT and ECC_OMEGA
   {"sequences", SEQUENCES},      ///< Enable sequence generation - placeholder
   {"checkpoint", CHECKPOINT},    ///< Disable to only output after each solver stage is successful
-  {"use_fixed_r", USE_FIXED_R},  ///< Solve BCO based on FIXED_R instead of Mirr, MADM, MB, etc.
-  {"fixed_mb", MB_FIXING},      ///< For an isolated NS, fix using Baryonic mass
-  {"delete_shift", DELETE_SHIFT},///< at the start of the solver, choose to delete the shift
+  // {"use_fixed_r", USE_FIXED_R},  ///< Solve BCO based on FIXED_R instead of Mirr, MADM, MB, etc.
+  // {"fixed_mb", MB_FIXING},      ///< For an isolated NS, fix using Baryonic mass
+  // {"delete_shift", DELETE_SHIFT},///< at the start of the solver, choose to delete the shift
   {"corot_binary", COROT_BIN},   ///< control whether a binary is purely corotating
   
   // Control whether codes such as increase resolution make updates from the config file
   // variables or directly from the numerical space
   //{"use_config_vars", USE_CONFIG_VARS},
-  {"fixed_bin_omega", FIXED_GOMEGA}, ///< Fix binary orbital frequency
-  {"update_initial", UPDATE_INIT}, ///< historical: add initial section to config
-  {"use_boosted_co", USE_BOOSTED_CO}, ///< use boosted compact objects to construct binary initial guess
+  // {"fixed_bin_omega", FIXED_GOMEGA}, ///< Fix binary orbital frequency
+  // {"update_initial", UPDATE_INIT}, ///< historical: add initial section to config
+  // {"use_boosted_co", USE_BOOSTED_CO}, ///< use boosted compact objects to construct binary initial guess
   //{"iterative_chi", ITERATIVE_CHI},
   {"fixed_lapse", USE_FIXED_LAPSE}, ///< Use fixed lapse BC on black holes
   {"resolve", RESOLVE}, ///<Force resolve of ID even if a checkpoint exists
-  {"initial_regrid", REGRID}, ///< Regrid before solving from a previous solution
+  // {"initial_regrid", REGRID}, ///< Regrid before solving from a previous solution
   {"centralized_cos", SAVE_COS},///< Save CO solutions to a central location for reuse
-  {"co_use_shells", CO_USE_SHELLS}, ///< Isolated Compact objects use defined shells (binary solvers)
+  // {"co_use_shells", CO_USE_SHELLS}, ///< Isolated Compact objects use defined shells (binary solvers)
 };
 
 const std::map<std::string, SEQ_SETTINGS> MSEQ_SETTINGS = {
@@ -210,7 +208,17 @@ const std::map<std::string, SEQ_SETTINGS> MSEQ_SETTINGS = {
   {"initial_resolution", INIT_RES}, ///< initial resolution to solve from (default 9)
 };
 
-const std::map<std::string, STAGE> MKSBHSTAGE = {
+const std::map<std::string, STAGES> MKSBHSTAGE = {
   {"total_bc",TOTAL_BC},
   {"binary_boost", BIN_BOOST},
 };
+
+const std::map<std::string, CONTROLS> MMIN_CONTROLS = {
+  {"use_pn", USE_PN},            ///< Use PN eccentricity parameters - replaces ADOT and ECC_OMEGA
+  {"checkpoint", CHECKPOINT},    ///< Disable to only output after each solver stage is successful
+  {"corot_binary", COROT_BIN},   ///< control whether a binary is purely corotating
+  {"fixed_lapse", USE_FIXED_LAPSE}, ///< Use fixed lapse BC on black holes
+  {"resolve", RESOLVE}, ///<Force resolve of ID even if a checkpoint exists
+  {"centralized_cos", SAVE_COS},///< Save CO solutions to a central location for reuse
+};
+/** @}*/

@@ -46,7 +46,7 @@ enum EOS_PARAMS {EOSTYPE, EOSFILE, HCUT, INTERP_PTS, NUM_EOS_PARAMS};
 /** @brief enum NODES enumerator over tree node types */
 enum NODES {
   BCO1=0, BCO2=1, BINARY, BH, NS, FIELDS, \
-  STAGES, SCONTROLS, SSETTINGS, NUM_NODES
+  CSTAGES, SCONTROLS, SSETTINGS, NUM_NODES
 };
 /** @brief enum BCO_FILEDS enumerator over BCO field types */
 enum BCO_FIELDS {
@@ -55,10 +55,10 @@ enum BCO_FIELDS {
 };
 
 /** @brief enum STAGES enumerator over solver stages */
-enum STAGE {
+enum STAGES {
   PRE=0, FIXED_OMEGA, NOROT_BC, COROT_EQUAL, \
   TOTAL, TOTAL_BC, TOTAL_FIXED_COM, TESTING, \
-  GRAV,  VEL_POT_ONLY, ECC_RED, BIN_BOOST, NUM_STAGES \
+  GRAV,  VEL_POT_ONLY, ECC_RED, BIN_BOOST, LINBOOST, NUM_STAGES \
 };
 
 /** @brief enum CONTROLS enumerator over sequence controls */
@@ -86,14 +86,15 @@ extern const std::map<std::string, BCO_FIELDS> MBCO_FIELDS;
 extern const std::map<std::string, BCO_FIELDS> MBCO_VFIELDS;
 extern const std::map<std::string, BCO_FIELDS> MBCO_SFIELDS_0;
 extern const std::map<std::string, BCO_FIELDS> MBCO_SFIELDS_1;
-extern const std::map<std::string, STAGE> MSTAGE;
+extern const std::map<std::string, STAGES> MSTAGE;
 extern const std::map<std::string, CONTROLS> MCONTROLS;
 extern const std::map<std::string, SEQ_SETTINGS> MSEQ_SETTINGS;
-extern const std::map<std::string, STAGE> MBNSSTAGE;
-extern const std::map<std::string, STAGE> MBHNSSTAGE;
-extern const std::map<std::string, STAGE> MBBHSTAGE;
-extern const std::map<std::string, STAGE> MBHSTAGE;
-extern const std::map<std::string, STAGE> MKSBHSTAGE;
-extern const std::map<std::string, STAGE> MNSSTAGE;
+extern const std::map<std::string, STAGES> MBNSSTAGE;
+extern const std::map<std::string, STAGES> MBHNSSTAGE;
+extern const std::map<std::string, STAGES> MBBHSTAGE;
+extern const std::map<std::string, STAGES> MBHSTAGE;
+extern const std::map<std::string, STAGES> MKSBHSTAGE;
+extern const std::map<std::string, STAGES> MNSSTAGE;
+extern const std::map<std::string, CONTROLS> MMIN_CONTROLS;
 /**@} end extern group definition*/
 /**@} end config_enums group*/

@@ -37,7 +37,7 @@ We can deconstruct the name to make it understandable:
         This also distinguishes it from checkpoints that can be turned on which our saved to file during each iteration of the solver
 - `togashi` denotes the eosfile used in the ID construction
 - `1.4.0.`: In this case, we have a 1.4M NS with a dimensionless spin of zero
-- `0.09.`: the number of *additional* spherical `nshells`is `0` and the resolution in each domain is `9` collocation points in the radial and theta direction with `8` points in the phi direction
+- `0.09.`: the number of *additional* spherical `nshells` is `0` and the resolution in each domain is `9` collocation points in the radial and theta direction with `8` points in the phi direction
 - `info`: The info file contains all the steering parameters, values used in creating the domain decomposition, 
 EOS parameters, stored fields, stages, settings, and controls
 - `dat`: The dat file is a binary file that contains the numerical space and the variable fields
@@ -65,7 +65,7 @@ Which results in the following:
        Central Density = +1.37405e-03
         Central log(h) = +2.31726e-01
       Central Pressure = +2.34280e-04
-    Central dlog(h)/dx = +2.37839e-13
+    Central dlog(h)/dx = +3.40893e-14
 Central Euler Constant = -2.22137e-01
      Integrated log(h) = +186.08372
 
@@ -86,9 +86,9 @@ The second block includes the
 
 - proper radius of the NS as measured on the stellar surface
 - total baryonic mass
-- ADM mass [fixed value from config file]
+- ADM mass
 - ADM spin angular momentum
-- `chi` the dimensionless spin parameter [fixed value from config file]
+- `chi` the dimensionless spin parameter
 - variable spin frequency `omega`
 - Central density
 - Central log specific enthalpy `h`
@@ -102,16 +102,33 @@ Finally, the third block includes
 - Komar mass
 - ADM linear momenta `P<x,y,z>`
 
-Note: The `Diff` noted by the Komar mass is the symmetric difference between the ADM and Komar mass.
+<b>
+Note: 
+
+1. In all blocks, brackets denote the values stored in the config file that the solution was fixed by
+
+1. The `Diff` noted by the Komar mass is the symmetric difference between the ADM and Komar mass.
+</b>
 
 # Understanding the NS INFO file
-
-Note: It is always best practice to generate new ID using the `initial_NS.info`.  Using old initial
-data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_ns.info`.  We will go through the file,
 but we'll discuss only the details relevant to the NS case.  For details on all the parameters you can
 see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/).
+
+<b>
+Notes: 
+
+1. It is always best practice to generate new ID using the `initial_ns.info`.  Using old initial
+data unless for very small changes in `chi` is inefficient.
+
+2. In FUKAv2.2 a minimal Config file was introduced such that only the basic fixing parameters most
+relevant to users are shown.  This minimal Config file can be bypassed by running: 
+    > `solve full`
+
+    to obtain the full Config file. Although useful for development, there is little advantage to using
+the full Config.
+</b>
 
 ## NS Fixing parameters
 
@@ -119,24 +136,10 @@ see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/inc
 ns
 {
     chi 0
-    dim 3
-    hc 1.26
     madm 1.3999999999999999
-    mb 1.55
-    n_inner_shells 0
-    nc 0.0013699999999999999
-    nshells 0
-    omega 0
-    ql_madm 1.3999999999999999
-    qpig 12.566370614359172
     res 9
-    rin 3.1000000000000001
-    rmid 6.2000000000000002
-    rout 9.3000000000000007
     eosfile togashi.lorene
     eostype Cold_Table
-    h_cut 0
-    interpolation_pts 2000
 }
 ```
 
@@ -145,17 +148,14 @@ and should not be changed.  Those most relevant to generating ID of interest are
 
 - `chi`: the dimensionless spin parameter `~[-0.6, 0.6]`
 - `madm`: the total gravitational mass is a fixing parameter iff  the `mb_fixing` control is set to off
-- `mb`: is a variable parameter iff the `mb_fixing` control is set to off
-- `nshells`: these are additional shells that can be added for resolution outside of the NS surface without increasing
-the global resolution
 - `res`: the final resolution used in each numerical domain (this will be discussed more below)
 
 ## EOS Parameters
 
 - `eosfile`: The EOS file containing the cold table or piecewise polytrope to be used
 - `eostype`: specify the use of a cold table `Cold_Table` or a piecewise polytrope `Cold_PWPoly`
-- `h_cut`: in the event one wants to cut the cold table at a certain specific enthalpy value
-- `interpolation_pts`: number of points to use in order to interpolate a cold table.  Not relevant for `Cold_PWPoly`
+- `h_cut`: (optional) in the event one wants to cut the cold table at a certain specific enthalpy value (default: 0)
+- `interpolation_pts`: (optional) number of points to use in order to interpolate a cold table (default: 2000).  Not relevant for `Cold_PWPoly`
 
 For example, if one wanted to change from the default EOS to a `Gamma = 2` polytrope, they would set in the config file
 
@@ -176,7 +176,7 @@ fields
 }
 ```
 
-`Fields` documents the fields that are used in the solver and stored in the `dat` file.  Changing this has no impact.
+Within the full Config or the output solutions, `Fields` documents the fields that are used in the solver and stored in the `dat` file.  Changing this has no impact.
 
 ## Stages
 
@@ -198,16 +198,13 @@ Old stages available in the original v1 solver are since deprecated.
 sequence_controls
 {
     checkpoint off
-    fixed_mb off
     sequences on
-    update_initial off
 }
 ```
 
 - `checkpoint`: this will result in checkpoints being saved to file during each solving iteration - mainly helpful for high resolution binary ID
-- `fixed_mb`: toggling this control enables using fixed baryonic mass `mb` instead of fixing the gravitational mass `madm`
 - `sequences`: this toggle is enabled by default and essentially tells the driver routine to start from scratch.  If this is enabled when attempting to use a previous solution, the previous solution (i.e. the `dat` file) is ignored and the solver starts from the most basic initial guess
-- `update_initial`: For those familiar with the v1 solvers, there previously existed an `initial` section that would track where your initial guess parameters started at and what you ended up with at the end.  This is a historical artifact and is ignored in the v2 codes by default
+- `fixed_mb`: **(not fully tested)** toggling this control enables using fixed baryonic mass `mb` instead of fixing the gravitational mass `madm`
 
 ## Sequence Settings
 
@@ -222,7 +219,7 @@ sequence_settings
 
 - `solver_max_iterations`: set the number of iterations not to exceed
 - `solver_precision`: Determines what is the maximum precision allowed by the solver that determines whether or not the solution has converged
-- `initial_resolution`: by default all solutions are ran at at a default resolution of `[9,9,8]` prior to regridding to a higher resolution.  In the event one wants to increase the default `initial_resolution`, it can be done here
+- `initial_resolution`: (optional) by default all solutions are ran at at a default resolution of `[9,9,8]` prior to regridding to a higher resolution.  In the event one wants to increase the default `initial_resolution`, it can be done here
 
 
 # Your Second run!
@@ -269,16 +266,19 @@ We can of course verify that the ID matches our expectation using
            Coord R_OUT = +5.95079
 
                Areal R = +6.25539 [+9.23921km]
-                    Mb = +2.65411
+         Baryonic Mass = +2.65411
+              ADM Mass = +2.30000 [+2.30000]
+          ADM Momentum = +3.17400
+                   Chi = +0.60000 [+0.60000]
+                 Omega = +0.06396
        Central Density = +4.56602e-03
+        Central log(h) = +1.46938e+00
       Central Pressure = +1.02698e-02
-             Central h = +4.34656
+    Central dlog(h)/dx = +6.70501e-14
+Central Euler Constant = -7.39008e-01
+     Integrated log(h) = +583.85557
 
                     Mk = +2.29825, Diff: +7.63310e-04
-                  Madm = +2.30000[+2.30000]
-                   Chi = +0.60000[+0.60000]
-                Omega  = +0.06396
-                  Jadm = +3.17400
                     Px = +0.00000
                     Py = +0.00000
                     Pz = +0.00000
@@ -289,7 +289,7 @@ We can of course verify that the ID matches our expectation using
 ## Initial Setup
 
 In initial data generation, the initial setup is the most crucial.  When starting the NS solver from scratch, we need to determine
-an initial guess and what better way than a 1D TOV solution!  In this way, a root finder is attempted for the input mass for the 
+an initial guess and what better way than a 1D TOV solution!  In this way, a root finder is attempted for the input ADM mass for the 
 specific EOS.  Either a solution is found for your input mass (i.e. the input mass is less than the maximum non-rotating TOV 
 mass, Mtov) or the maximum mass is used as the initial guess for the non-rotating solution.  
 In the event an `madm` above Mtov is used with no spin, an error is given.
@@ -306,7 +306,7 @@ With a stable solution to start from, a rotating solution is now found based on 
 
 ### Automated iterative spin
 
-For highly spinning NS configurations it has shown to be most reliable to obtain a slowly spinning solution prior to a highly spinning one.  Therefore, an initial spin of `chi = 0.1` is used before attempting higher spins.
+For highly spinning NS configurations it has been found to be most reliable to obtain a slowly spinning solution prior to a highly spinning one.  Therefore, an initial spin of `chi = +/- 0.1` is used before attempting higher spins.
 
 ### Automated iterative mass
 

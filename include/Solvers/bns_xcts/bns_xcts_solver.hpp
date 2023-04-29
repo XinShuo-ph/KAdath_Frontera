@@ -22,6 +22,12 @@
 #pragma once
 #include "Solvers/solvers.hpp"
 #include "kadath_bin_ns.hpp"
+
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BNS_XCTS
+ * \ingroup FUKA
+ * @{*/
 using namespace Kadath;
 
 template<class eos_t, typename config_t, typename space_t = Kadath::Space_bin_ns>
@@ -53,6 +59,8 @@ class bns_xcts_solver : Solver<config_t, space_t> {
   using Solver<config_t, space_t>::solution_exists;
   using Solver<config_t, space_t>::extract_eos_name;
   using Solver<config_t, space_t>::checkpoint;
+  using Solver<config_t, space_t>::solver_stage;
+
 
   public:
   // solver is not trivially constructable since Kadath containers are not
@@ -93,9 +101,9 @@ class bns_xcts_solver : Solver<config_t, space_t> {
    * therefore the matter scalar fields are simply rescaled
    * based on the fixed baryonic mass of each star.
    *
-   * @param[input] stage: Some changes are made based on TOTAL_BC or ECC_RED stage.
+   * @param[input] stage_text: Some changes are made based on TOTAL_BC or ECC_RED stage.
    */
-  int hydro_rescaling_stages(const size_t stage, std::string stage_text);
+  int hydro_rescaling_stages(std::string stage_text);
 
   // Update bconfig(HC) and bconfig(NC)
   void update_config_quantities(const double& loghc);
@@ -105,6 +113,7 @@ template<typename eos_t>
 inline void bns_setup_boosted_3d(
   kadath_config_boost<BCO_NS_INFO>& NS1config, kadath_config_boost<BCO_NS_INFO>& NS2config,
   kadath_config_boost<BIN_INFO>& bconfig);
-
+/** @}*/
+}
 #include "bns_xcts_solver_imp.cpp"
 #include "bns_xcts_stages.cpp"

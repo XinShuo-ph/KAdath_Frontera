@@ -28,6 +28,11 @@
 #include "Configurator/config_bco.hpp"
 #include "bco_utilities.hpp"
 #include "EOS/standalone/tov.hh"
+namespace FUKA_Solvers {
+/**
+ * \addtogroup Solver_utils
+ * \ingroup FUKA
+ * @{*/
 
 /**
  * solve_NS_from_binary
@@ -69,5 +74,7 @@ std::string solve_BH_from_binary(config_t& bconfig, const size_t bco);
  */
 inline
 void check_dist(double dist, double M1, double M2, double garbage_factor = 2.5);
+/** @}*/
+}
 
 #include "bco_solver_utils_imp.cpp"

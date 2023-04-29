@@ -186,8 +186,23 @@ tree_t build_branch(const map_t& storage_map, const ary_t& storage, const bool i
   return branch;
 }
 
+template <typename map_t, typename key_t>
+std::tuple<std::string, int> get_key_val_pair_from_key(map_t enum_map, key_t key) {
+  
+  auto name = std::find_if(
+            enum_map.begin(),
+            enum_map.end(),
+            [key](const auto& kvpair) {return kvpair.first == key; });
+  
+  if(name != enum_map.end()) {
+    return std::make_tuple(name->first, name->second);
+  }
+
+  throw std::invalid_argument("\nNo valid key-value pair found\n)");
+}
+
 template <typename ary_t, typename map_t>
-std::tuple<std::string, int> get_last_enabled(map_t enum_map, ary_t toggle) {
+std::tuple<std::string, int> get_last_enabled_no_throw(map_t enum_map, ary_t toggle) {
   auto last_enabled = std::distance(std::find(toggle.rbegin(), toggle.rend(), 1), toggle.rend()-1);
   auto name = std::find_if(
             enum_map.begin(),
@@ -195,6 +210,15 @@ std::tuple<std::string, int> get_last_enabled(map_t enum_map, ary_t toggle) {
             [last_enabled](const auto& map) {return map.second == last_enabled; });
   if(name != enum_map.end()) {
     return std::make_tuple(name->first, last_enabled);
+  }
+  return {};
+}
+
+template <typename ary_t, typename map_t>
+std::tuple<std::string, int> get_last_enabled(map_t enum_map, ary_t toggle) {
+  auto res_tuple = get_last_enabled_no_throw(enum_map, toggle);
+  if(!std::get<0>(res_tuple).empty()) {
+    return res_tuple;
   }
   throw std::invalid_argument("\nNo valid stages enabled\n)");
 }

@@ -27,6 +27,12 @@
 #include <math.h>
 #include <sstream>
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BHNS_XCTS
+ * \ingroup FUKA
+ * @{*/
+
 using namespace Kadath;
 using config_t = kadath_config_boost<BIN_INFO>;
 inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
@@ -233,5 +239,5 @@ inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   return EXIT_SUCCESS;
 }
-
-
+/** @}*/
+}

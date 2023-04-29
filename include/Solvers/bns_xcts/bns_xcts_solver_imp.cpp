@@ -24,6 +24,13 @@
 #include "Solvers/bco_solver_utils.hpp"
 #include "Solvers/ns_3d_xcts/ns_3d_xcts_solver.hpp"
 
+
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BNS_XCTS
+ * \ingroup FUKA
+ * @{*/
+
 using namespace Kadath;
 using namespace Kadath::Margherita;
 
@@ -98,21 +105,26 @@ int bns_xcts_solver<eos_t, config_t, space_t>::solve() {
 	}
 
   if(stage_enabled[TOTAL]) {
+    
     if(bconfig.control(FIXED_GOMEGA)) {
+      this->solver_stage = TOTAL_BC;
+      exit_status = hydro_rescaling_stages("TOTAL_FIXED_OMEGA");
       bconfig.control(FIXED_GOMEGA) = false;
-      exit_status = hydro_rescaling_stages(TOTAL_BC, "TOTAL_FIXED_OMEGA");
       if(exit_status != EXIT_SUCCESS) std::_Exit(EXIT_FAILURE);
     }
+    this->solver_stage = TOTAL;
     exit_status = hydrostatic_equilibrium_stage();
     if(exit_status != EXIT_SUCCESS) std::_Exit(EXIT_FAILURE);
   }
   if(stage_enabled[TOTAL_BC]) {
-    exit_status = hydro_rescaling_stages(TOTAL_BC, "TOTAL_BC");
+    this->solver_stage = TOTAL_BC;
+    exit_status = hydro_rescaling_stages("TOTAL_BC");
     if(exit_status != EXIT_SUCCESS) std::_Exit(EXIT_FAILURE);
   }
 
   if(stage_enabled[ECC_RED]) {
-    exit_status = hydro_rescaling_stages(ECC_RED, "ECC_RED");
+    this->solver_stage = ECC_RED;
+    exit_status = hydro_rescaling_stages("ECC_RED");
     if(exit_status != EXIT_SUCCESS) std::_Exit(EXIT_FAILURE);
   }
   
@@ -348,270 +360,5 @@ void bns_xcts_solver<eos_t, config_t, space_t>::update_config_quantities(const d
   bconfig.set(NC) = EOS<eos_t,DENSITY>::get(bconfig(HC));
 }
 
-template<typename eos_t>
-inline void bns_setup_boosted_3d(
-  kadath_config_boost<BCO_NS_INFO>& NS1config, kadath_config_boost<BCO_NS_INFO>& NS2config,
-  kadath_config_boost<BIN_INFO>& bconfig) {
-  int rank = 0;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  
-  // read single NS configuration and data
-  std::string nsspacein  = NS1config.space_filename();
-
-  FILE* ff1 = fopen(nsspacein.c_str(), "r") ;
-	Space_spheric_adapted spacein1(ff1) ;
-	Scalar confin1   (spacein1, ff1) ;
-	Scalar lapsein1  (spacein1, ff1) ;
-	Vector shiftin1  (spacein1, ff1) ;
-  Scalar loghin1   (spacein1, ff1) ;
-  Scalar phiin1    (spacein1, ff1) ;
-	fclose(ff1) ;
-	int ndomin1 = spacein1.get_nbr_domains() ;
-
-  // update NS1config quantities before updating binary configuration file
-  NS1config.set(HC) = std::exp(bco_utils::get_boundary_val(0, loghin1, INNER_BC));
-  NS1config.set(NC) = EOS<eos_t,DENSITY>::get(NS1config(HC)) ;
-  bco_utils::update_config_NS_radii(spacein1, NS1config, 1);
-  
-  // read single NS configuration and data
-  nsspacein  = NS2config.space_filename();
-
-  FILE* ff2 = fopen(nsspacein.c_str(), "r") ;
-	Space_spheric_adapted spacein2(ff1) ;
-	Scalar confin2   (spacein2, ff2) ;
-	Scalar lapsein2  (spacein2, ff2) ;
-	Vector shiftin2  (spacein2, ff2) ;
-  Scalar loghin2   (spacein2, ff2) ;
-  Scalar phiin2    (spacein2, ff2) ;
-	fclose(ff2) ;
-	int ndomin2 = spacein2.get_nbr_domains() ;
-
-  // update NS2config quantities before updating binary configuration file
-  NS2config.set(HC) = std::exp(bco_utils::get_boundary_val(0, loghin2, INNER_BC));
-  NS2config.set(NC) = EOS<eos_t,DENSITY>::get(NS2config(HC)) ;
-  bco_utils::update_config_NS_radii(spacein2, NS2config, 1);
-  
-  // update NS parameters in binary config
-  for(int i = 0; i < NUM_BCO_PARAMS; ++i) 
-    bconfig.set(i, BCO1) = NS1config.set(i) ;
-  
-  for(int i = 0; i < NUM_BCO_PARAMS; ++i) 
-    bconfig.set(i, BCO2) = NS2config.set(i) ;
-
-  auto gen_radius_field = [&](auto& spacein, auto& old_space_radius, 
-    const int ndomin) {
-
-    // get the adapted domain of the single star
-    const Domain_shell_outer_adapted* old_outer_adapted = 
-      dynamic_cast<const Domain_shell_outer_adapted*>(spacein.get_domain(1));
-    for(int i = 0; i < ndomin; ++i)
-      if(i != 1)
-        old_space_radius.set_domain(i) = spacein.get_domain(i)->get_radius();
-    old_space_radius.set_domain(1) = old_outer_adapted->get_outer_radius();
-    old_space_radius.std_base();  
-  };
-
-  auto interp_field = [&](auto& space, int outer_dom, auto& old_phi) {
-    const int d = outer_dom;
-    const Domain_shell_inner_adapted* old_inner = 
-      dynamic_cast<const Domain_shell_inner_adapted*>(space.get_domain(d+1));
-    //interpolate old_phi field outside of the star for import
-    bco_utils::update_adapted_field(old_phi, d, d+1, old_inner, INNER_BC);
-  };
-  // in case we used boosted TOVs, we need to import PHI
-  if(NS1config.set_field(PHI) == true)
-    interp_field(spacein1, 1, phiin1);
-  if(NS2config.set_field(PHI) == true)
-    interp_field(spacein2, 1, phiin2);
-
-  // create scalar field representing the radius in the single star space
-  Scalar old_space_radius1(spacein1);
-  old_space_radius1.annule_hard();
-  gen_radius_field(spacein1, old_space_radius1, ndomin1);
-  
-  // create scalar field representing the radius in the single star space
-  Scalar old_space_radius2(spacein2);
-  old_space_radius2.annule_hard();
-  gen_radius_field(spacein2, old_space_radius2, ndomin2);
-  
-  //start Update config vars
-  double r_max_tot = std::max(bconfig(RMID, BCO1), bconfig(RMID,BCO2));
-  bconfig.set(ROUT, BCO1) = (bconfig(DIST) / 2. - r_max_tot) / 3. + r_max_tot;
-  bconfig.set(ROUT, BCO2) = (bconfig(DIST) / 2. - r_max_tot) / 3. + r_max_tot;
-  //end updating config vars
-
-  // setup domain boundaries
-  std::vector<double> out_bounds(1+bconfig(OUTER_SHELLS));
-  std::vector<double> NS1_bounds(3+bconfig(NSHELLS,BCO1));
-  std::vector<double> NS2_bounds(3+bconfig(NSHELLS,BCO2));
-
-  // scale outer shells by constant steps of 1/4 for the time being
-  for(int e = 0; e < out_bounds.size(); ++e)
-    out_bounds[e] = bconfig(REXT) * (1. + e * 0.25);
-  
-  // set reasonable radii to each stellar domain
-  bco_utils::set_NS_bounds(NS1_bounds, bconfig, BCO1);
-  bco_utils::set_NS_bounds(NS2_bounds, bconfig, BCO2);
-  // end setup domain boundaries
-  
-  // output stellar domain radii
-  if(rank == 0) {
-    std::cout << "Bounds:" << std::endl;
-    bco_utils::print_bounds("Outer", out_bounds);
-    bco_utils::print_bounds("NS1", NS1_bounds);
-    bco_utils::print_bounds("NS2", NS2_bounds);
-  }
-
-  // create a binary neutron star space
-  int typer = CHEB_TYPE ;
-  Space_bin_ns space (typer, bconfig(DIST), NS1_bounds, NS2_bounds, out_bounds, bconfig(BIN_RES));
-  // with cartesian type basis	
-  Base_tensor basis (space, CARTESIAN_BASIS) ;
-
-  // get the domains with inner respectively outer adapted boundary
-  // for each of the stars
-  std::array<const Domain_shell_outer_adapted*, 2> new_outer_adapted {
-    dynamic_cast<const Domain_shell_outer_adapted*>(space.get_domain(space.ADAPTED1)),
-    dynamic_cast<const Domain_shell_outer_adapted*>(space.get_domain(space.ADAPTED2))
-  };
-
-  std::array<const Domain_shell_inner_adapted*, 2> new_inner_adapted {
-    dynamic_cast<const Domain_shell_inner_adapted*>(space.get_domain(space.ADAPTED1+1)),
-    dynamic_cast<const Domain_shell_inner_adapted*>(space.get_domain(space.ADAPTED2+1))
-  };
-
-  // updated the radius mapping for both NS
-  bco_utils::interp_adapted_mapping(new_inner_adapted[0], 1, old_space_radius1);
-  bco_utils::interp_adapted_mapping(new_outer_adapted[0], 1, old_space_radius1);
-  
-  bco_utils::interp_adapted_mapping(new_inner_adapted[1], 1, old_space_radius2);
-  bco_utils::interp_adapted_mapping(new_outer_adapted[1], 1, old_space_radius2);
-  
-  // get and print center of each star
-  double xc1 = bco_utils::get_center(space,space.NS1);
-  double xc2 = bco_utils::get_center(space,space.NS2);
-  
-  if(rank == 0)
-    std::cout << "xc1: " << xc1 << std::endl
-              << "xc2: " << xc2 << std::endl;
-  
-  // start to create the new fields
-  // initialized to zero globally
-  Scalar logh(space);
-  logh.annule_hard();
-  
-  Scalar conf(space);
-  conf.annule_hard();
-
-  Scalar lapse(space);
-  lapse.annule_hard();
-
-  Vector shift(space, CON, basis);
-  for (int i = 1; i <= 3; i++)
-    shift.set(i).annule_hard();
-
-  Scalar phi(space);
-  phi.annule_hard();
-  //end create new fields
-  
-  const double ns1_invw4 = bco_utils::set_decay(bconfig, BCO1);
-  const double ns2_invw4 = bco_utils::set_decay(bconfig, BCO2);
-  
-  if(rank == 0)
-    std::cout << "WeightNS1: " << bconfig(DECAY, BCO1) << ", "
-              << "WeightNS2: " << bconfig(DECAY, BCO2) << std::endl;
-
-  // start importing the fields from the single star
-  int ndom = space.get_nbr_domains();
-  for(int dom = 0; dom < ndom; dom++)
-  {
-    // get an index in each domain to iterate over all colocation points
-		Index new_pos(space.get_domain(dom)->get_nbr_points());
-
-		do {
-      // get cartesian coordinates of the current colocation point
-			double x = space.get_domain(dom)->get_cart(1)(new_pos);
-			double y = space.get_domain(dom)->get_cart(2)(new_pos);
-			double z = space.get_domain(dom)->get_cart(3)(new_pos);
-
-      // define a point shifted suitably to the stellar centers in the binary
-			Point absol1(3);
-			absol1.set(1) = (x - xc1);
-			absol1.set(2) = y;
-			absol1.set(3) = z;
-      double r2 = y * y + z * z; 
-      double r2_1 = (x - xc1) * (x - xc1) + r2;
-      double r4_1  = r2_1 * r2_1;
-      double r4_invw4_1 = r4_1 * ns1_invw4;
-      double decay_1 = std::exp(-r4_invw4_1);
-
-      Point absol2(3);
-			absol2.set(1) = (x - xc2);
-			absol2.set(2) = y;
-			absol2.set(3) = z;
-      double r2_2 = (x - xc2) * (x - xc2) + r2;
-      double r4_2  = r2_2 * r2_2;
-      double r4_invw4_2 = r4_2 * ns2_invw4;
-      double decay_2 = std::exp(-r4_invw4_2);
-      
-      if (dom < ndom - 1) {
-        conf .set_domain(dom).set(new_pos) =              \
-          1. + decay_1 * (confin1.val_point(absol1) - 1.) \
-             + decay_2 * (confin2.val_point(absol2) - 1.);
-        
-        lapse.set_domain(dom).set(new_pos) =               \
-          1. + decay_1 * (lapsein1.val_point(absol1) - 1.) \
-             + decay_2 * (lapsein2.val_point(absol2) - 1.);
-        
-        logh .set_domain(dom).set(new_pos) =       \
-          0. + decay_1 * loghin1.val_point(absol1) \
-             + decay_2 * loghin2.val_point(absol2);
-        
-        phi.set_domain(dom).set(new_pos) = 0;
-        if(NS1config.set_field(PHI) == true)
-          phi.set_domain(dom).set(new_pos) += \
-            decay_1 * phiin1.val_point(absol1);
-        if(NS2config.set_field(PHI) == true)
-          phi.set_domain(dom).set(new_pos) += \
-            decay_2 * phiin2.val_point(absol2);
-
-        for (int i = 1; i <= 3; i++)
-          shift.set(i).set_domain(dom).set(new_pos) =  
-            0. + decay_1 * shiftin1(i).val_point(absol1) \
-               + decay_2 * shiftin2(i).val_point(absol2);
-   
-      } else {
-        // We have to set the compactified domain manually
-        // since the outer collocation point is always
-        // at inf which is undefined numerically
-				conf .set_domain(dom).set(new_pos) = 1.;
-				lapse.set_domain(dom).set(new_pos) = 1.;
-      }
-      // loop over all colocation points
-		} while(new_pos.inc());
-	} //end importing fields
-
-  // set logh and phi to zero outside of stars explicitly
-  //logh.set_domain(space.ADAPTED1+1).annule_hard();
-  for(auto i : {space.ADAPTED1+1, space.ADAPTED2+1}){
-    phi.set_domain(i).annule_hard();
-    logh.set_domain(i).annule_hard();
-  }
-  for(int i = space.OUTER; i < ndom; ++i){
-    phi.set_domain(i).annule_hard();
-    logh.set_domain(i).annule_hard();
-  }
-
-  // employ standard spectral expansion, compatible with the given paraties
-  conf.std_base();
-	lapse.std_base();
-	logh.std_base();
-  shift.std_base();
-  phi.std_base();
-
-  // save everything to a binary file
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+/** @}*/
 }
-
-
-

@@ -1,3 +1,4 @@
+\page readme Configurator
 # Configurator
 
 ## Author(s) : Samuel D. Tootle
@@ -88,3 +89,4 @@ Here we list the relevant compact object parameters
   {"centralized_cos", SAVE_COS},///< Save compact object solutions to a central location for reuse
   {"co_use_shells", CO_USE_SHELLS}, ///< Isolated Compact objects use defined shells (binary solvers)
 ```
+

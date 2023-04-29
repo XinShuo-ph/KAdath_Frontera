@@ -24,8 +24,14 @@
 #include "bco_utilities.hpp"
 #include "mpi.h"
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BH_XCTS
+ * \ingroup FUKA
+ * @{*/
+
 template<typename config_t, typename space_t>
-int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage() {
+int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage(std::string stage_text) {
   int exit_status = EXIT_SUCCESS;
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -237,7 +243,7 @@ int bh_3d_xcts_solver<config_t, space_t>::binary_boost_stage(
   auto const boost_converged_filename{ss.str()};
   
   //check if we have a non-boosted solution
-  if(solution_exists(boost_converged_filename)  && !bconfig.control(RESOLVE)) {
+  if(!bconfig.control(RESOLVE) && solution_exists(boost_converged_filename)) {
     if(rank == 0)
       std::cout << "Solved previously: " 
                 << bconfig.config_filename_abs() << std::endl;
@@ -318,4 +324,6 @@ int bh_3d_xcts_solver<config_t, space_t>::binary_boost_stage(
     checkpoint();
 
   return exit_status;
+}
+/** @}*/
 }

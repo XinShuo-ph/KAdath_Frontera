@@ -26,6 +26,12 @@
 #include "Configurator/config_binary.hpp"
 #include "bco_utilities.hpp"
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BNS_XCTS
+ * \ingroup FUKA
+ * @{*/
+
 using namespace Kadath;
 using bin_space_t = Space_bin_ns;
 
@@ -33,7 +39,7 @@ template<typename config_t>
 int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   int exit_status = EXIT_SUCCESS;
 
-  //file containing KADATH fields must have same name as config file with only the extension being different
+  // file containing KADATH fields must have same name as config file with only the extension being different
   std::string kadath_filename = bconfig.space_filename();
   if(!fs::exists(kadath_filename)) {
     std::cerr << "File: " << kadath_filename << " not found.\n\n";
@@ -62,7 +68,7 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
     old_inner_adapted[i] = dynamic_cast<const Domain_shell_inner_adapted*>(old_space.get_domain(d+1));
   }
 
-  int res = bconfig.set(BIN_RES);
+  int res = bconfig.set(BIN_PARAMS::BIN_RES);
   if((res % 2) == 0){
     std::cout << "New Resolution is invalid.  Must be odd (9,11,13,etc)" << std::endl;
     std::_Exit(EXIT_FAILURE);
@@ -81,7 +87,7 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
 
   int type_coloc = old_space.get_type_base();
 
-  //start Update config vars
+  // start Update config vars
   std::array<double, 2> r_min;
   double r_max_tot = 0.;
   
@@ -89,20 +95,20 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   for(int i = 0; i < 2; ++i) {
     int const dom = old_adapted_doms[i];
 
-    //array of {rmin, rmax}
+    // array of {rmin, rmax}
     auto [ rmin, rmax ] = bco_utils::get_rmin_rmax(old_space, dom);
 	  std::cout << rmin << " " << rmax << std::endl;
 
-    bconfig.set(RIN , i) = 0.5 * rmin;
-    bconfig.set(FIXED_R, i) = rmin;
+    bconfig.set(BCO_PARAMS::RIN , i) = 0.5 * rmin;
+    bconfig.set(BCO_PARAMS::FIXED_R, i) = rmin;
 
     r_max_tot = (rmax > r_max_tot) ? rmax : r_max_tot;
   }
-  bconfig.set(ROUT, BCO1) = (bconfig(DIST) / 2. - r_max_tot) / 3. + r_max_tot;
-  bconfig.set(ROUT, BCO2) = (bconfig(DIST) / 2. - r_max_tot) / 3. + r_max_tot;
-  //end updating config vars
+  bconfig.set(BCO_PARAMS::ROUT, NODES::BCO1) = (bconfig(BIN_PARAMS::DIST) / 2. - r_max_tot) / 3. + r_max_tot;
+  bconfig.set(BCO_PARAMS::ROUT, NODES::BCO2) = (bconfig(BIN_PARAMS::DIST) / 2. - r_max_tot) / 3. + r_max_tot;
+  // end updating config vars
 
-  //create old radius scalar field
+  // create old radius scalar field
   Scalar old_space_radius(old_space);
   old_space_radius.annule_hard();
 
@@ -110,32 +116,32 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
     old_space_radius.set_domain(d) = old_space.get_domain(d)->get_radius();
   }
 
-  //Get adapted domain radii
+  // Get adapted domain radii
   for(int i = 0; i < 2; ++i) {
     int const dom = old_adapted_doms[i];
     old_space_radius.set_domain(dom)   = old_outer_adapted[i]->get_outer_radius();
     
   }
   old_space_radius.std_base();
-  //end create old radius scalar fields
+  // end create old radius scalar fields
 
-  std::vector<double> out_bounds(1+bconfig(OUTER_SHELLS));
-  std::vector<double> NS1_bounds(3+bconfig(NINSHELLS,BCO1));
-  std::vector<double> NS2_bounds(3+bconfig(NINSHELLS,BCO2));
+  std::vector<double> out_bounds(1+bconfig(BIN_PARAMS::OUTER_SHELLS));
+  std::vector<double> NS1_bounds(3+bconfig(BCO_PARAMS::NINSHELLS,NODES::BCO1));
+  std::vector<double> NS2_bounds(3+bconfig(BCO_PARAMS::NINSHELLS,NODES::BCO2));
 
-  /*space needs to be able fixed to add shells*/
+  // space needs to be able fixed to add shells
   for(int e = 0; e < out_bounds.size(); ++e)
-    out_bounds[e] = bconfig(REXT) * (1. + e * 0.25);
+    out_bounds[e] = bconfig(BIN_PARAMS::REXT) * (1. + e * 0.25);
 
-  bco_utils::set_NS_bounds(NS1_bounds, bconfig, BCO1);
-  bco_utils::set_NS_bounds(NS2_bounds, bconfig, BCO2);
+  bco_utils::set_NS_bounds(NS1_bounds, bconfig, NODES::BCO1);
+  bco_utils::set_NS_bounds(NS2_bounds, bconfig, NODES::BCO2);
   
   std::cout << "Bounds:" << std::endl;
   bco_utils::print_bounds("NS1", NS1_bounds);
   bco_utils::print_bounds("NS2", NS2_bounds);
 
 
-  bin_space_t space (type_coloc, bconfig(DIST), NS1_bounds, NS2_bounds, out_bounds, res);
+  bin_space_t space (type_coloc, bconfig(BIN_PARAMS::DIST), NS1_bounds, NS2_bounds, out_bounds, res);
 	ndom = space.get_nbr_domains() ;
 
   Base_tensor basis(space, CARTESIAN_BASIS);
@@ -157,18 +163,18 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   {
 		int const dom = old_adapted_doms[i];
 
-    //Updated mapping for NS
+    // Updated mapping for NS
     bco_utils::interp_adapted_mapping(new_inner_adapted[i], dom, old_space_radius);
     bco_utils::interp_adapted_mapping(new_outer_adapted[i], dom, old_space_radius);
     
-    //interpolate old_phi field outside of the star for import
+    // Interpolate old_phi field outside of the star for import
     bco_utils::update_adapted_field(old_phi, dom, dom+1, old_inner_adapted[i], INNER_BC);
 	}
 
   std::cout << "xc1: " << xc[0] << std::endl;
   std::cout << "xc2: " << xc[1] << std::endl;
 
-  //start Create new fields
+  // start Create new fields
   Scalar conf(space);
   conf = 1.;
 	conf.std_base();
@@ -189,9 +195,9 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   Scalar phi(space);
   phi.annule_hard();
 	phi.std_base();
-  //end Create new fields
+  // end Create new fields
 
-  //start Import fields
+  // start Import fields
   conf.import(old_conf);
   lapse.import(old_lapse);
   logh.import(old_logh);
@@ -200,9 +206,9 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   shift.set(1).import(old_shift.set(1));
   shift.set(2).import(old_shift.set(2));
   shift.set(3).import(old_shift.set(3));
-  //end Import fields
+  // end Import fields
 
-  //start - set matter and velocity potential to zero outside stars
+  // start - set matter and velocity potential to zero outside stars
   for(auto& dom : new_adapted_doms){
     phi.set_domain(dom+1).annule_hard();
     logh.set_domain(dom+1).annule_hard();
@@ -212,7 +218,7 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
     phi.set_domain(i).annule_hard();
     logh.set_domain(i).annule_hard();
   }
-  //end - set phi,logh to zero outside
+  // end - set phi,logh to zero outside
 
   lapse.std_base();
   conf.std_base();
@@ -223,4 +229,6 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   bconfig.set_filename(output_fname);
   bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   return exit_status;
+}
+/** @}*/
 }

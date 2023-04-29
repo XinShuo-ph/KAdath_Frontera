@@ -1,6 +1,12 @@
 #include "mpi.h"
 #include "bco_utilities.hpp"
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup Stages
+ * \ingroup NS_XCTS
+ * @{*/
+
 template<class eos_t, typename config_t, typename space_t>
 int ns_3d_xcts_solver<eos_t, config_t, space_t>::norot_stage(bool fixed) {
   int exit_status = EXIT_SUCCESS;
@@ -505,4 +511,6 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::binary_boost_stage(
     bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   }
   return EXIT_SUCCESS;
+}
+/** @}*/
 }

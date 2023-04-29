@@ -118,9 +118,9 @@ void reader_output(config_t bconfig, const int output) {
 
   syst.add_def ("A^ij   = (D^i bet^j + D^j bet^i - 2. / 3.* D_k bet^k * f^ij) / 2. / Ntilde");
 
-  syst.add_def (ndom-1, "intPx = A_i^j * ex_j * esurf^i / 8 / PI") ;
-  syst.add_def (ndom-1, "intPy = A_i^j * ey_j * esurf^i / 8 / PI") ;
-  syst.add_def (ndom-1, "intPz = A_i^j * ez_j * esurf^i / 8 / PI") ;
+  syst.add_def ("intPx = A_i^j * ex_j * esurf^i / 8 / PI") ;
+  syst.add_def ("intPy = A_i^j * ey_j * esurf^i / 8 / PI") ;
+  syst.add_def ("intPz = A_i^j * ez_j * esurf^i / 8 / PI") ;
   syst.add_def (space.BH+2,"h^ij = f^ij - s2^i * s2^j");
 
   syst.add_def (space.ADAPTEDNS+1, "intS1 = A_ij * m1^i * s1^j / 8. / PI") ;
@@ -208,6 +208,8 @@ void reader_output(config_t bconfig, const int output) {
   double dHdx1    = bco_utils::get_boundary_val(space.NS, dHdx, INNER_BC);
   double euler1   = bco_utils::get_boundary_val(space.NS, syst.give_val_def("firstint")(), INNER_BC);
   double NS_x_com = xc1 + bconfig(COM);
+  double NS_py = space.get_domain(space.ADAPTEDNS+1)->integ(syst.give_val_def("intPy")()(space.ADAPTEDNS+1), OUTER_BC);
+  double NS_px = space.get_domain(space.ADAPTEDNS+1)->integ(syst.give_val_def("intPx")()(space.ADAPTEDNS+1), OUTER_BC);
   //END NS Quantities
   
   // BH Quantities
@@ -224,6 +226,8 @@ void reader_output(config_t bconfig, const int output) {
   auto [ lapsemin, lapsemax ] = bco_utils::get_field_min_max(lapse, space.BH+2, INNER_BC);
   auto [ confmin, confmax ] = bco_utils::get_field_min_max(conf, space.BH+2, INNER_BC);
   double BH_x_com = xc2 + bconfig(COM);
+  double BH_py = space.get_domain(space.ADAPTEDBH+1)->integ(syst.give_val_def("intPy")()(space.ADAPTEDBH+1), INNER_BC);
+  double BH_px = space.get_domain(space.ADAPTEDBH+1)->integ(syst.give_val_def("intPx")()(space.ADAPTEDBH+1), INNER_BC);
   // END BH Quantities
 
   // binary quantities
@@ -297,6 +301,8 @@ void reader_output(config_t bconfig, const int output) {
               << FORMAT1 << "Chi = " << ql_spinns / Madm1 / Madm1 << " [" << bconfig(CHI, BCO1) << "]\n"
               // angular frequency paramter of the star, describing the magnitude of the spin component of the velocity field
               << FORMAT1 << "Omega = " << bconfig(OMEGA, BCO1) << std::endl
+              //<< FORMAT1 << "qlPy = " << NS_py << std::endl
+              //<< FORMAT1 << "qlPx = " << NS_px << std::endl
               << FORMAT << "Central Density = "      << rhoc1 << std::endl
               << FORMAT << "Central log(h) = "       << loghc1 << std::endl
               << FORMAT << "Central Pressure = "     << pressc1 << std::endl
@@ -310,13 +316,15 @@ void reader_output(config_t bconfig, const int output) {
               << FORMAT1 << "Coord R = " << r_bh  << " [" << r_bh * M2km << "km]\n";
               print_shells(space.BH+2, space.OUTER-1);
   std::cout   << FORMAT1 << "Coord R_OUT = "        << rout_bh << std::endl
-              << FORMAT1 << "Areal R = "        << areal_rbh << " [" << areal_rns * M2km << "km]\n"
+              << FORMAT1 << "Areal R = "        << areal_rbh << " [" << areal_rbh * M2km << "km]\n"
               << FORMAT1 <<" LAPSE = ["         << lapsemin << ", " << lapsemax  <<"]\n"
               << FORMAT1 <<" PSI = ["           << confmin  << ", " << confmax   <<"]\n"
               << FORMAT1 << "Mirr = "         << mirr << "\n"
               << FORMAT1 << "Mch = " << mch << " [" << bconfig(MCH, BCO2) << "]\n"
               << FORMAT1 << "Chi = " <<  ql_spinbh / (mch * mch) << " [" << bconfig(CHI, BCO2) << "]\n"
               << FORMAT1 << "S = "   << ql_spinbh << std::endl
+              //<< FORMAT1 << "qlPy = " << BH_py << std::endl
+              //<< FORMAT1 << "qlPx = " << BH_px << std::endl
               << FORMAT1 << "Omega = " << bconfig(OMEGA,BCO2) << "\n\n";
               
 
@@ -331,8 +339,8 @@ void reader_output(config_t bconfig, const int output) {
     std::cout << FORMAT1 << "Outer shell bounds\n";
     print_shells(ndom-1-outer_shells,  ndom-1);
   }
-  std::cout   << FORMAT1<< "Q = "               << M2 / M1 << std::endl
-              << FORMAT1<< "Separation = "      << bconfig(DIST) << " [" << bconfig(DIST)/Mtot << "]\n"
+  std::cout   << FORMAT1 << "Q = "              << M2 / M1 << std::endl
+              << FORMAT1 << std::setprecision(2)<< "Separation = " << bconfig(DIST) << " [" << bconfig(DIST) / Mtot << "] (" << bconfig(DIST) * M2km << "km)" << std::endl
               << FORMAT1 << "Orbital Omega = "  << bconfig(GOMEGA) << std::endl
               << FORMAT1 << "Komar mass = "     << komar << std::endl
               << FORMAT1 << "Adm mass = "       << adm_inf 

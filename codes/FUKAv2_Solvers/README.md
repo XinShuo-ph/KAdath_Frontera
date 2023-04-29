@@ -5,7 +5,8 @@
 Maintainer(s):  
 Samuel D. Tootle - tootle@itp.uni-frankfurt.de  
 License      : GPLv3+ for all other code  
---------------------------------------------------------------------------
+
+---
 
 # Overview
 

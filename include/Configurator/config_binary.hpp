@@ -72,7 +72,7 @@ public:
   BArray BCOS{}; ///< Array of pointers to BCOs
   Array bin_params{}; ///<Array storing Binary parameters
   Map bin_map{MBIN_PARAMS}; ///<Map of parameter strings to enum indexes
-  std::map<std::string, STAGE> bin_stages{MSTAGE}; ///<Map of only relevant stages
+  std::map<std::string, STAGES> bin_stages{MSTAGE}; ///<Map of only relevant stages
 
 
   /** 
@@ -344,56 +344,98 @@ public:
     bool includes_matter = false;
     std::array<double,2> Ms{};
     // copy Compact Object defaults
-    for(auto& bco : {BCO1, BCO2}) {
+    for(auto& bco : {NODES::BCO1, NODES::BCO2}) {
       const auto bcotype = BCOS[bco]->get_type();
       if(bcotype == "ns") {
         kadath_config_boost<BCO_NS_INFO> nsconfig;
         nsconfig.set_defaults();
-        for(int i = 0; i < NUM_BCO_PARAMS; ++i)
+        for(auto i = 0; i < BCO_PARAMS::NUM_BCO_PARAMS; ++i)
           bconfig.set(i, bco) = nsconfig.set(i);
-        for(int i = 0; i < NUM_EOS_PARAMS; ++i)
+        for(auto i = 0; i < EOS_PARAMS::NUM_EOS_PARAMS; ++i)
           bconfig.set_eos(i, bco) = nsconfig.set_eos(i);
         includes_matter = true;
-        Ms[bco] = bconfig(MADM, bco);
+        Ms[bco] = bconfig(BCO_PARAMS::MADM, bco);
       } else if(bcotype == "bh") {
         kadath_config_boost<BCO_BH_INFO> bhconfig;
         bhconfig.set_defaults();
-        for(int i = 0; i < NUM_BCO_PARAMS; ++i)
+        for(int i = 0; i < BCO_PARAMS::NUM_BCO_PARAMS; ++i)
           bconfig.set(i, bco) = bhconfig.set(i);
-        Ms[bco] = bconfig(MCH, bco);
+        Ms[bco] = bconfig(BCO_PARAMS::MCH, bco);
       }
     }
     // Set binary defaults
-    bconfig.set(BIN_RES) = 9.;
-    bconfig.set(DIST) = 10. * std::accumulate(Ms.begin(),Ms.end(),0.);
-    bconfig.set(REXT) = 2. * bconfig(DIST);
-    bconfig.set(QPIG) = bconfig(BCO_QPIG, BCO1);
-    bconfig.set(Q) = Ms[1] / Ms[0];
-    bconfig.set(COM) = 0.;
-    bconfig.set(COMY) = 0.;
-    bconfig.set(OUTER_SHELLS) = 0;
-    bconfig.set(GOMEGA) = 0.;
+    bconfig.set(BIN_PARAMS::BIN_RES) = 9.;
+    bconfig.set(BIN_PARAMS::DIST) = 10. * Ms[0] + Ms[1];
+    bconfig.set(BIN_PARAMS::REXT) = 2. * bconfig(BIN_PARAMS::DIST);
+    bconfig.set(BIN_PARAMS::QPIG) = bconfig(BCO_PARAMS::BCO_QPIG, NODES::BCO1);
+    bconfig.set(BIN_PARAMS::Q) = Ms[1] / Ms[0];
+    bconfig.set(BIN_PARAMS::COM) = 0.;
+    bconfig.set(BIN_PARAMS::COMY) = 0.;
+    bconfig.set(BIN_PARAMS::OUTER_SHELLS) = 0;
+    bconfig.set(BIN_PARAMS::GOMEGA) = 0.;
     
     // Set default fields
-    bconfig.set_field(SHIFT)    = true;
-    bconfig.set_field(LAPSE)    = true;
-    bconfig.set_field(CONF)     = true;
+    bconfig.set_field(BCO_FIELDS::SHIFT)    = true;
+    bconfig.set_field(BCO_FIELDS::LAPSE)    = true;
+    bconfig.set_field(BCO_FIELDS::CONF)     = true;
     if(includes_matter) {
-      bconfig.set_field(LOGH)   = true;
-      bconfig.set_field(PHI)    = true;
+      bconfig.set_field(BCO_FIELDS::LOGH)   = true;
+      bconfig.set_field(BCO_FIELDS::PHI)    = true;
     }
 
     // The following controls are required for an
     // initial solution using the v2 Solvers
-    bconfig.control(SEQUENCES) = true;
-    bconfig.control(USE_BOOSTED_CO) = true;
-    bconfig.control(FIXED_GOMEGA) = true;
-    bconfig.control(SAVE_COS) = true;
+    bconfig.control(CONTROLS::SEQUENCES) = true;
+    bconfig.control(CONTROLS::USE_BOOSTED_CO) = true;
+    bconfig.control(CONTROLS::FIXED_GOMEGA) = true;
     
-    bconfig.set_stage(TOTAL_BC) = true;
-    bconfig.set_stage(ECC_RED) = true;
+    bconfig.set_stage(STAGES::TOTAL_BC) = true;
+    bconfig.set_stage(STAGES::ECC_RED) = true;
 
-    bconfig.seq_setting(INIT_RES) = 9;
+    bconfig.seq_setting(SEQ_SETTINGS::INIT_RES) = 9;
+  }
+
+  /** 
+   * BIN_INFO::set_minimal_defaults
+   * Allow the setting of default configurator values for base binary setup
+   *
+   * @tparam config_t configuration file type
+   * @param bconfig reference to configuration file to be modified
+   */
+  template <typename config_t>
+  void set_minimal_defaults(config_t& bconfig) {
+    bool includes_matter = false;
+    std::array<double,2> Ms{};
+    // copy Compact Object defaults
+    for(auto& bco : {NODES::BCO1, NODES::BCO2}) {
+      const auto bcotype = BCOS[bco]->get_type();
+      if(bcotype == "ns") {
+        kadath_config_boost<BCO_NS_INFO> nsconfig;
+        nsconfig.set_minimal_defaults();
+        for(auto i = 0; i < BCO_PARAMS::NUM_BCO_PARAMS; ++i)
+          bconfig.set(i, bco) = nsconfig.set(i);
+        for(auto i = 0; i < EOS_PARAMS::NUM_EOS_PARAMS; ++i)
+          bconfig.set_eos(i, bco) = nsconfig.set_eos(i);
+        includes_matter = true;
+        Ms[bco] = bconfig(BCO_PARAMS::MADM, bco);
+      } else if(bcotype == "bh") {
+        kadath_config_boost<BCO_BH_INFO> bhconfig;
+        bhconfig.set_minimal_defaults();
+        for(int i = 0; i < BCO_PARAMS::NUM_BCO_PARAMS; ++i)
+          bconfig.set(i, bco) = bhconfig.set(i);
+        Ms[bco] = bconfig(BCO_PARAMS::MCH, bco);
+      }
+    }
+    // Set binary defaults
+    bconfig.set(BIN_PARAMS::BIN_RES) = 9.;
+    bconfig.set(BIN_PARAMS::DIST) = 10. * Ms[0] + Ms[1];
+
+    bconfig.set(BIN_PARAMS::OUTER_SHELLS) = 0;
+
+    bconfig.set_stage(STAGES::TOTAL_BC) = true;
+    bconfig.set_stage(STAGES::ECC_RED) = true;
+
+    bconfig.control(CONTROLS::SAVE_COS) = true;
   }
 };
 /**

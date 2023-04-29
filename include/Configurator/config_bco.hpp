@@ -45,7 +45,7 @@ protected:
    * std::map for mapping configuration strings to enum indexes
    */
   const Map bco_map{MBCO_PARAMS};
-  std::map<std::string, STAGE> bco_stages{MSTAGE};
+  std::map<std::string, STAGES> bco_stages{MSTAGE};
   
   /** 
    *Array to store parameters
@@ -153,7 +153,9 @@ public:
    *
    * @param[output] bin_map binary parameter map
    */
-  virtual const std::map<std::string, STAGE>& get_stage_map() const { return bco_stages; }
+  virtual std::map<std::string, STAGES> const & get_stage_map() const { 
+    return bco_stages; 
+  }
 
   /**
    * BCO_INFO::operator()
@@ -248,58 +250,77 @@ public:
    */
   template <typename config_t>
   void set_defaults(config_t& bconfig) {
-    //start - set BH properties in config file
-    //Resolution of the initial setup
-    bconfig.set(BCO_RES)      = 9;
-    bconfig.set(DIM)            = 3;
+    // start - set BH properties in config file
+    // Resolution of the initial setup
+    bconfig.set(BCO_PARAMS::BCO_RES) = 9;
+    bconfig.set(BCO_PARAMS::DIM)     = 3;
     
-    //Units of the system - 4 * PI * G
-    bconfig.set(BCO_QPIG)     = 4 * M_PI;
+    // Units of the system - 4 * PI * G
+    bconfig.set(BCO_PARAMS::BCO_QPIG) = 4 * M_PI;
     
-    //Nucleus Radius 
-    bconfig.set(RIN)          = 0.1;
+    // Nucleus Radius 
+    bconfig.set(BCO_PARAMS::RIN)  = 0.1;
     
-    //Initial guess for BH - radius
-    bconfig.set(RMID)         = 0.3;
+    // Initial guess for BH - radius
+    bconfig.set(BCO_PARAMS::RMID) = 0.3;
     
-    //Radius of outer boundary - matched with compactified domain
-    bconfig.set(ROUT)         = 5 * bconfig(RMID) ;
+    // Radius of outer boundary - matched with compactified domain
+    bconfig.set(BCO_PARAMS::ROUT) = 5 * bconfig(RMID) ;
     
-    //Additional shells can be added between RMID and ROUT for refined resolution
-    bconfig.set(NSHELLS)      = 0;
+    // Additional shells can be added between RMID and ROUT for refined resolution
+    bconfig.set(BCO_PARAMS::NSHELLS) = 0;
     
-    //Initial dimensionless spin
-    bconfig.set(CHI)          = 0;
+    // Initial dimensionless spin
+    bconfig.set(BCO_PARAMS::CHI) = 0;
     
-    //Initial guess of omega
-    bconfig.set(OMEGA)        = 0;
+    // Initial guess of omega
+    bconfig.set(BCO_PARAMS::OMEGA) = 0;
 
-    //MIRR and MCH are fixing parameters...this is what the resulting BH will be
-    bconfig.set(MIRR)         = 0.5 ;
-    bconfig.set(MCH)          = 0.5 ;
+    // MIRR and MCH are fixing parameters...this is what the resulting BH will be
+    bconfig.set(BCO_PARAMS::MIRR)  = 0.5 ;
+    bconfig.set(BCO_PARAMS::MCH)   = 0.5 ;
 
-    bconfig.set(BVELX)        = 0.;
-    bconfig.set(BVELY)        = 0.;
+    bconfig.set(BCO_PARAMS::BVELX) = 0.;
+    bconfig.set(BCO_PARAMS::BVELY) = 0.;
     
     /** 
      * fixed lapse is used for the PRE stage only.  
      * Once the system is solved using the Neumann lapse condition
      * this value is updated in the config file in the standard solver */
-    bconfig.set(FIXED_LAPSE)  = .3;
+    bconfig.set(BCO_PARAMS::FIXED_LAPSE)  = .3;
     //end   - set BH parameters
 
     //start - set BH stages in config file
-    bconfig.set_stage(TOTAL_BC)    = true;
+    bconfig.set_stage(STAGES::TOTAL_BC) = true;
     //end   - set BH stages
 
     //start - set BH fields in config file
-    bconfig.set_field(CONF)  = true;
-    bconfig.set_field(LAPSE) = true;
-    bconfig.set_field(SHIFT) = true;
+    bconfig.set_field(BCO_FIELDS::CONF)  = true;
+    bconfig.set_field(BCO_FIELDS::LAPSE) = true;
+    bconfig.set_field(BCO_FIELDS::SHIFT) = true;
     //end   - set BH fields
 
-    bconfig.seq_setting(INIT_RES) = 9;
-    bconfig.control(SAVE_COS) = true;
+    bconfig.seq_setting(SEQ_SETTINGS::INIT_RES) = 9;
+    bconfig.control(CONTROLS::SAVE_COS) = true;
+  }
+
+    /** 
+   * BCO_BH_INFO::set_minimal_defaults
+   * Allow the setting of default configurator values for a base BH setup - do not modify 
+   *
+   * @tparam config_t configuration file type
+   * @param bconfig reference to configuration file to be modified
+   */
+  template <typename config_t>
+  void set_minimal_defaults(config_t& bconfig) {
+    //start - set BH properties in config file
+    //Resolution of the initial setup
+    bconfig.set(BCO_PARAMS::BCO_RES) = 9;
+    
+    //Initial dimensionless spin
+    bconfig.set(BCO_PARAMS::CHI) = 0;
+    bconfig.set(BCO_PARAMS::MCH) = 0.5 ;
+    //end   - set BH parameters
   }
 };
 
@@ -476,62 +497,92 @@ public:
    */
   template <typename config_t>
   void set_defaults(config_t& bconfig) {
-    //start - set NS properties in config file
-    bconfig.set_eos(EOSFILE)    = "togashi.lorene";
-    bconfig.set_eos(EOSTYPE)    = "Cold_Table";
-    bconfig.set_eos(HCUT)       = 0.0;
-    bconfig.set_eos(INTERP_PTS) = 2000;
-    bconfig.set(HC)             = 1.26;
-    bconfig.set(NC)             = 1.37e-3;
-
-    //Resolution of the initial setup
-    bconfig.set(BCO_RES)        = 9;
-    bconfig.set(DIM)            = 3;
+    // start - set NS properties in config file
+    bconfig.set_eos(EOS_PARAMS::EOSFILE)    = "togashi.lorene";
+    bconfig.set_eos(EOS_PARAMS::EOSTYPE)    = "Cold_Table";
+    bconfig.set_eos(EOS_PARAMS::HCUT)       = 0.0;
+    bconfig.set_eos(EOS_PARAMS::INTERP_PTS) = 2000;
     
-    //Units of the system - 4 * PI * G
-    bconfig.set(BCO_QPIG)       = 4 * M_PI;
-    
-    //Initial guess for NS - radius
-    bconfig.set(RMID)           = 6.2;
-    
-    //Nucleus Radius 
-    bconfig.set(RIN)            = 0.5 * bconfig(RMID);
+    bconfig.set(BCO_PARAMS::HC) = 1.26;
+    bconfig.set(BCO_PARAMS::NC) = 1.37e-3;
 
-    //Radius of outer boundary - matched with compactified domain
-    bconfig.set(ROUT)           = 1.5 * bconfig(RMID) ;
+    // Resolution of the initial setup
+    bconfig.set(BCO_PARAMS::BCO_RES) = 9;
+    bconfig.set(BCO_PARAMS::DIM)     = 3;
     
-    //Additional shells between RIN and RMID
-    bconfig.set(NINSHELLS)        = 0;
-    //Additional shells between RMID and ROUT
-    bconfig.set(NSHELLS)        = 0;
+    // Units of the system - 4 * PI * G
+    bconfig.set(BCO_PARAMS::BCO_QPIG) = 4 * M_PI;
     
-    //Initial dimensionless spin
-    bconfig.set(CHI)            = 0;
+    // Initial guess for NS - radius
+    bconfig.set(BCO_PARAMS::RMID)     = 6.2;
     
-    //Initial guess of omega
-    bconfig.set(OMEGA)          = 0;
+    // Nucleus Radius 
+    bconfig.set(BCO_PARAMS::RIN)      = 0.5 * bconfig(RMID);
 
-    //We initialize based on fixed MADM
-    bconfig.set(MADM)           = 1.4 ;
-    bconfig.set(QLMADM)         = 1.4 ;
-    bconfig.set(MB)             = 1.55 ;
-    //end   - set NS parameters
+    // Radius of outer boundary - matched with compactified domain
+    bconfig.set(BCO_PARAMS::ROUT)     = 1.5 * bconfig(RMID) ;
+    
+    // Additional shells between RIN and RMID
+    bconfig.set(BCO_PARAMS::NINSHELLS) = 0;
+    // Additional shells between RMID and ROUT
+    bconfig.set(BCO_PARAMS::NSHELLS)   = 0;
+    
+    // Initial dimensionless spin
+    bconfig.set(BCO_PARAMS::CHI)   = 0;
+    
+    // Initial guess of omega
+    bconfig.set(BCO_PARAMS::OMEGA) = 0;
 
-    //start - set NS stages in config file
-    bconfig.set_stage(PRE)      = false;
-    bconfig.set_stage(NOROT_BC) = true;
-    bconfig.set_stage(TOTAL_BC) = true;
-    //end   - set NS stages
+    // We initialize based on fixed MADM
+    bconfig.set(BCO_PARAMS::MADM)    = 1.4 ;
+    bconfig.set(BCO_PARAMS::QLMADM)  = 1.4 ;
+    bconfig.set(BCO_PARAMS::MB)      = 1.55 ;
+    // end   - set NS parameters
 
-    //start - set NS fields in config file
-    bconfig.set_field(SHIFT)    = true;
-    bconfig.set_field(LAPSE)    = true;
-    bconfig.set_field(CONF)     = true;
-    bconfig.set_field(LOGH)     = true;
-    //end   - set NS fields
+    // start - set NS stages in config file
+    bconfig.set_stage(STAGES::PRE)      = false;
+    bconfig.set_stage(STAGES::NOROT_BC) = true;
+    bconfig.set_stage(STAGES::TOTAL_BC) = true;
+    // end   - set NS stages
 
-    bconfig.seq_setting(INIT_RES) = 9;
-    bconfig.control(SAVE_COS) = true;
+    // start - set NS fields in config file
+    bconfig.set_field(BCO_FIELDS::SHIFT)    = true;
+    bconfig.set_field(BCO_FIELDS::LAPSE)    = true;
+    bconfig.set_field(BCO_FIELDS::CONF)     = true;
+    bconfig.set_field(BCO_FIELDS::LOGH)     = true;
+    // end   - set NS fields
+
+    bconfig.seq_setting(SEQ_SETTINGS::INIT_RES) = 9;
+    bconfig.control(CONTROLS::SAVE_COS) = true;
+  }
+
+  /** 
+   * BCO_NS_INFO::set_minimal_defaults
+   * Allow the setting of default configurator values for a base NS setup - do not modify 
+   *
+   * @tparam config_t configuration file type
+   * @param bconfig reference to configuration file to be modified
+   */
+  template <typename config_t>
+  void set_minimal_defaults(config_t& bconfig) {
+    // start - set NS properties in config file
+    bconfig.set_eos(EOS_PARAMS::EOSFILE)    = "togashi.lorene";
+    bconfig.set_eos(EOS_PARAMS::EOSTYPE)    = "Cold_Table";
+
+    // Resolution of the initial setup
+    bconfig.set(BCO_PARAMS::BCO_RES) = 9;
+
+    // Initial dimensionless spin
+    bconfig.set(BCO_PARAMS::CHI)     = 0;
+
+    // We initialize based on fixed MADM
+    bconfig.set(BCO_PARAMS::MADM)    = 1.4 ;
+    // end   - set NS parameters
+
+    // start - set NS stages in config file
+    bconfig.set_stage(STAGES::NOROT_BC) = true;
+    bconfig.set_stage(STAGES::TOTAL_BC) = true;
+    // end   - set NS stages
   }
 };
 

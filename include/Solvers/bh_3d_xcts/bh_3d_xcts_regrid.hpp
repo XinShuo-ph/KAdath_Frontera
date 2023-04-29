@@ -30,10 +30,15 @@
 #include <cmath>
 #include <memory>
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BH_XCTS
+ * \ingroup FUKA
+ * @{*/
 using namespace Kadath;
 
 template<typename config_t>
-int bh_3d_xcts_regrid(config_t& bconfig, const int new_res, std::string outputfile) {
+int bh_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
   int exit_status = EXIT_SUCCESS;
 
   std::string in_spacefile = bconfig.space_filename();
@@ -52,7 +57,7 @@ int bh_3d_xcts_regrid(config_t& bconfig, const int new_res, std::string outputfi
   fclose(ff1) ;
 
 	// FIXME not sure if it's only about oddness...
-  if(((int)new_res % 2) == 0){
+  if(((int)bconfig(BCO_RES) % 2) == 0){
     std::cout << "New Resolution is invalid.  Must be odd (9,11,13,etc)" << std::endl;
     std::_Exit(EXIT_FAILURE);
   }
@@ -70,7 +75,6 @@ int bh_3d_xcts_regrid(config_t& bconfig, const int new_res, std::string outputfi
   bconfig.set(RIN)  =  est_r_div2;
   bconfig.set(ROUT) = 4. * est_r_div2 * 2. ;
 
-  bconfig.set(BCO_RES) = new_res;
   bconfig.set_filename(outputfile);
 
   // Set this to use radii in setup_co
@@ -137,4 +141,5 @@ int bh_3d_xcts_regrid(config_t& bconfig, const int new_res, std::string outputfi
   bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
   return exit_status;
 }
-
+/** @}*/
+}

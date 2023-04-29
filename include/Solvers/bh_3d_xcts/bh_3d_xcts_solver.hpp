@@ -23,10 +23,15 @@
 #include "Solvers/solvers.hpp"
 #include "kadath_adapted_bh.hpp"
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BH_XCTS
+ * \ingroup FUKA
+ * @{*/
 using namespace Kadath;
 
 template<typename config_t, typename space_t = Kadath::Space_adapted_bh>
-class bh_3d_xcts_solver : Solver<config_t, space_t> {
+class bh_3d_xcts_solver : public Solver<config_t, space_t> {
   public:
   using typename Solver<config_t, space_t>::base_config_t;
   using typename Solver<config_t, space_t>::base_space_t;
@@ -51,6 +56,7 @@ class bh_3d_xcts_solver : Solver<config_t, space_t> {
   using Solver<config_t, space_t>::check_max_iter_exceeded;
   using Solver<config_t, space_t>::solution_exists;  
   using Solver<config_t, space_t>::checkpoint;
+  using Solver<config_t, space_t>::solver_stage;
 
   public:
   // solver is not trivially constructable since Kadath containers are not
@@ -80,7 +86,7 @@ class bh_3d_xcts_solver : Solver<config_t, space_t> {
 
   // solver stages
   int fixed_lapse_stage();
-  int von_Neumann_stage();
+  int von_Neumann_stage(std::string stage_text = "TOTAL_BC");
 
   /**
    * binary_boost_stage
@@ -92,30 +98,7 @@ class bh_3d_xcts_solver : Solver<config_t, space_t> {
    */
   int binary_boost_stage(kadath_config_boost<BIN_INFO>& binconfig, const size_t bco);
 };
-
-/**
- * bh_3d_xcts_driver
- *
- * Control computation of 3D BH from setup config/dat file combination
- * filename is pulled from bconfig which should pair with <filename>.dat
- *
- * This code exists to allow the required  BHs to be computed during a BBH
- * or BHNS solver while also simplifying the code for the isolated solver.
- *
- * Also, KADATH at the time of writing, was strict on not allowing trivial
- * construction of base types (Base_tensor, Scalar, Tensor, Space, etc) which
- * means a driver is required to populate the related Solver class.
- *
- * @tparam[int] bconfig - Configurator file
- * @return Success/failure
- */
-template<typename config_t>
-inline int bh_3d_xcts_driver (config_t& bconfig, std::string outputdir, 
- kadath_config_boost<BIN_INFO> binconfig = kadath_config_boost<BIN_INFO>{}, const size_t bco = BCO1);
-
-template<typename config_t>
-inline int bh_3d_xcts_bin_boost_driver (config_t& bconfig,
-  kadath_config_boost<BIN_INFO> binconfig, const size_t bco);
+/** @}*/
+}
 #include "bh_3d_xcts_solver_imp.cpp"
 #include "bh_3d_xcts_stages.cpp"
-

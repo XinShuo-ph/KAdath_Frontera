@@ -17,24 +17,9 @@
 */
 
 #pragma once
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ptree_fwd.hpp>
-#include <boost/property_tree/info_parser.hpp>
-#include <boost/foreach.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/optional.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
+#include "configurator_base.hpp"
 #include "config_enums.hpp"
 #include "config_utils_boost.hpp"
-#include <stdexcept>
-#include <variant>
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <typeinfo>
-#include <sstream>
-#include <cmath>
-#include <utility>
 namespace pt = boost::property_tree;
 using Tree = pt::ptree;
 
@@ -51,14 +36,11 @@ template<typename ParamC> std::ostream& operator<<(std::ostream& out, const kada
  * @tparam ParamC type of parameter container (e.g. BH_INFO, BIN_INFO)
  */
 template <typename ParamC>
-class kadath_config_boost {
+struct kadath_config_boost : public configurator_base {
   using FArray = std::array<bool, NUM_BCO_FIELDS>;
   using SArray = std::array<bool, NUM_STAGES>;
   using CArray = std::array<bool, NUM_CONTROLS>;
-  private:
-    std::string filename{};
-    std::string outputdir{"./"};
-    Tree tree;     
+  protected:
     Tree branch_in;
     FArray fields{};       
     SArray stages{};       
@@ -102,11 +84,20 @@ class kadath_config_boost {
     void write_config(std::string ofile="null");
 
     /**
+      * kadath_config_boost::write_minimal_config()
+      * write a minimal configuration to file
+      *
+      * @tparam ParamC type of parameter container (e.g. BCO_BH_INFO, BIN_INFO)
+      * @param [input] ofile: output filename to use.
+     */
+    void write_minimal_config(std::string ofile="null");
+
+    /**
       * kadath_config_boost::config_filename()
       * @return filename: returns constant filename
       */
     const std::string config_filename() const { return filename; }
-    const std::string config_filename_abs() const;                  ///< config filename including path
+    // const std::string config_filename_abs() const;                  ///< config filename including path
     const std::string space_filename() const;                      ///< space filename including path
     const std::string config_outputdir()const { return outputdir; }
 
@@ -128,9 +119,6 @@ class kadath_config_boost {
     auto& seq_setting(const int idx) { return seq_settings[idx]; }
     auto const & seq_setting(const int idx) const { return seq_settings[idx]; }
 
-    void set_outputdir(std::string dir);
-    void set_filename(std::string fname);
-
     /**
       * kadath_config_boost::initialize_binary
       * initialize binary parameter container based on node types
@@ -141,9 +129,14 @@ class kadath_config_boost {
     /**
       * kadath_config_boost::set_defaults
       * for a given parameter container, use the conatainers defaults.
-      * Note: this is currently used only for isolated objects such as NS or BH.  Not binaries.
       */
     void set_defaults() { container.set_defaults(*this); }
+
+    /**
+      * kadath_config_boost::set_minimal_defaults
+      * for a given parameter container, use the conatainers minimal defaults.
+      */
+    void set_minimal_defaults() { container.set_minimal_defaults(*this); }
 
     /**
       * kadath_config_boost::get_map
@@ -209,6 +202,30 @@ class kadath_config_boost {
     template<typename... idx_t>
     constexpr auto& set(const idx_t... idxs) { 
       return container(idxs...);
+    }
+
+    template<class... T, size_t... I>
+    constexpr auto& operator()(std::tuple<T...> const & t, std::index_sequence<I...>) {
+      auto tt{t};
+      return this->operator()(std::get<I>(std::forward<std::tuple<T...>>(tt))...);
+    }
+
+    template<typename... T>
+    constexpr auto& operator()(std::tuple<T...> const & t)
+    {        
+      return this->operator()(t, std::index_sequence_for<T...>{});
+    }
+
+    template<class... T, size_t... I>
+    constexpr auto& set(std::tuple<T...> const & t, std::index_sequence<I...>) {
+      auto tt{t};
+      return this->set(std::get<I>(std::forward<std::tuple<T...>>(tt))...);
+    }
+
+    template<typename... T>
+    constexpr auto& set(std::tuple<T...> const & t)
+    {        
+      return this->set(t, std::index_sequence_for<T...>{});
     }
    
     /**

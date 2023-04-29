@@ -23,9 +23,14 @@
 #include "mpi.h"
 #include "bco_utilities.hpp"
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BHNS_XCTS
+ * \ingroup FUKA
+ * @{*/
+
 template<class eos_t, typename config_t, typename space_t>
-int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
-  const size_t stage, const std::string stage_text) {
+int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(const std::string stage_text) {
   
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -47,16 +52,16 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
 
   update_fields(cfields, coord_vectors, {}, xo, xc1, xc2);
 
-    if(rank == 0 && stage == TOTAL) 
-      std::cout << "############################################" << std::endl
+    if(rank == 0 && solver_stage == TOTAL) 
+      std::cout << std::string(42,'#') << std::endl
                 << "TOTAL - Hydrostatic equilibrium stage\n"
                 << "using fixed lapse BC on the BH\n"
-                << "############################################" << std::endl;
-    else if(rank == 0 && stage == TOTAL_BC) 
-      std::cout << "############################################" << std::endl
+                << std::string(42,'#') << std::endl;
+    else if(rank == 0 && solver_stage == TOTAL_BC) 
+      std::cout << std::string(42,'#') << std::endl
                 << "TOTAL_BC - Hydrostatic equilibrium stage\n"
-                << "using von Neumann lapse condition on the BH\n"         
-                << "############################################" << std::endl;
+                << "using v.Neumann lapse BC\n"
+                << std::string(42,'#') << std::endl;
 
   update_fields(cfields, coord_vectors, {}, xo, xc1, xc2);
   // setup a system of equations
@@ -211,7 +216,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
     space.add_eq_int_inf(syst, "integ(intPx) = 0");
   }
   
-  if(stage == TOTAL) {
+  if(solver_stage == TOTAL) {
     //For TOTAL we use the fixed lapse condition
     space.add_bc_sphere_two(syst, "N = n0");
   } else {
@@ -287,7 +292,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage(
 }
 
 template<class eos_t, typename config_t, typename space_t>
-int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const size_t stage, std::string stage_text) {
+int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(std::string stage_text) {
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   int exit_status = EXIT_SUCCESS;
@@ -298,20 +303,21 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
   }*/
 
   if(rank == 0) 
-    if(stage == ECC_RED)
-      std::cout << "############################" << std::endl
+    if(solver_stage == ECC_RED)
+      std::cout << std::string(42,'#') << std::endl
                 << "Eccentricity reduction step with fixed omega, chi = "
                 << bconfig(CHI, BCO1) << "," << bconfig(CHI, BCO2)
                 << " and q = " << bconfig(Q) << std::endl
-                << "############################" << std::endl;
+                << std::string(42,'#') << std::endl;
     else
-      std::cout << "############################" << std::endl
-                << "Hydro Rescaling stage using fixed omega, chi = "
-                << bconfig(CHI, BCO1) << "," << bconfig(CHI, BCO2)
+      std::cout << std::string(42,'#') << std::endl
+                << "Hydro Rescaling stage \n"
+                << "using fixed orbital velocity with \n"
+                << "chi = " << bconfig(CHI, BCO1) << "," << bconfig(CHI, BCO2)
                 << " and q = " << bconfig(Q) << std::endl
-                << "############################" << std::endl;
+                << std::string(42,'#') << std::endl;
   
-  if(stage == ECC_RED) {
+  if(solver_stage == ECC_RED) {
     // determine whether to use PN estimates of the orbital frequency and adot
     // in case of the eccentricity stage
     if(std::isnan(bconfig.set(ADOT)) || std::isnan(bconfig.set(ECC_OMEGA)) || bconfig.control(USE_PN)) {
@@ -369,7 +375,8 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
   // populate all the boiler-plate constants, variables, and definitions
   syst_init(syst);
 
-  if(stage != ECC_RED){
+  bool fixed_com = this->solver_stage != ECC_RED;
+  if(fixed_com){
     // "center of mass" on the x-axis, connecting both stellar centers
     // These are fixed on the initial ID import as integrals at INF
     // cause instabilities in the initial solution
@@ -395,7 +402,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
   syst.add_def("Morb^i = mg^i + xaxis * ey^i + yaxis * ex^i");
   
   std::string bigB{"B^i = bet^i + ome * Morb^i"};
-  if(stage == ECC_RED) {
+  if(solver_stage == ECC_RED) {
     syst.add_cst("adot", bconfig(ADOT));
     syst.add_cst("r"   , CART);
     syst.add_def("comr^i = r^i - xaxis * ex^i + yaxis * ey^i");
@@ -503,7 +510,8 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
   space.add_eq_int_volume(syst, space.NS, space.ADAPTEDNS, "integvolume(intM) = qlMadm1") ;
   space.add_eq_int_volume(syst, space.NS, space.ADAPTEDNS, "integvolume(intMb) = Mb1") ;
 
-  if(stage == ECC_RED){
+  // stage == ECC_RED
+  if(!fixed_com){
     space.add_eq_int_inf(syst, "integ(intPx) = 0");
     space.add_eq_int_inf(syst, "integ(intPy) = 0");
   }
@@ -576,4 +584,6 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const siz
   if (rank==0)
     checkpoint();
   return exit_status;
+}
+/** @}*/
 }

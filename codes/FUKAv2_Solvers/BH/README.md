@@ -31,9 +31,9 @@ since the interface is similar amongst the v2 solvers by design.
 
 We can deconstruct the name to make it understandable:
 
-- `BH_TOTAL_BC.` denotes a converged BH solution after the TOTAL_BC stage.
+- `BH_TOTAL_BC.` denotes a converged BH solution after the `TOTAL_BC` stage.
         This is meant to distinguish the solution from other stages suched as the boosted BH stage.
-        This also distinquishes it from checkpoints that can be turned on which our saved to file during each iteration of the solver
+        This also distinquishes it from checkpoints that can be turned on which are saved to file during each iteration of the solver
 - `0.5.0.`: In this case, we have a 0.5M BH with a dimensionless spin of zero
 - `0.09.`: No additional spherical shells have been added and the global resolution is nine collocation points in the radial and theta direction with 8 points in the phi direction
 - `info`: The info file contains all the steering parameters, values used in creating the domain decomposition, stored fields, stages, settings, and controls
@@ -49,24 +49,24 @@ Which results in the following:
 
 ```
                    RES = [+9,+9,+8]
-         BH Coord R_IN = +0.20812
-            BH Coord R = +0.42977
-        BH Coord R_OUT = +1.66493
+            Coord R_IN = +0.20812
+               Coord R = +0.42977
+           Coord R_OUT = +1.66493
 
-            BH Areal R = +1.00000
+               Areal R = +1.00000
                  LAPSE = [+0.43494, +0.43494]
                    PSI = [+1.52539, +1.52539]
 
                   Mirr = +0.50000[+0.50000]
                    Mch = +0.50000[+0.50000]
-                   Chi = +0.00000[+0.00000]
+                   Chi = -0.00000[+0.00000]
 
-                Omega  = -3.44306e-17
+                 Omega = -3.02175e-17
             Komar mass = +4.97314e-01
               Adm mass = +5.00087e-01, Diff: +5.56053e-03
-           Adm moment. = +1.35545e-15
-                    Px = +2.34878e-16
-                    Py = -1.12118e-15
+           Adm moment. = +3.14400e-14
+                    Px = +1.22876e-15
+                    Py = -2.36096e-16
                     Pz = +0.00000e+00
 ```
 
@@ -95,16 +95,32 @@ Finally, the fourth block contains the
 - Komar mass
 - ADM quantities
 
-Note: The `Diff` noted by the ADM mass is the symmetric difference between the ADM and Komar mass.
+<b>
+Note: 
+
+1. In all blocks, brackets denote the values stored in the config file that the solution was fixed by
+
+1. The `Diff` noted by the ADM mass is the symmetric difference between the ADM and Komar mass.
 
 # Understanding the BH INFO file
-
-Note: It is always best practice to generate new ID using the `initial_bh.info`.  Using old initial
-data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bh.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BH case.  For details on all the parameters you can
 see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/).
+
+<b>
+Notes: 
+
+1. It is always best practice to generate new ID using the `initial_bh.info`.  Using old initial
+data unless for very small changes in `chi` is inefficient.
+
+2. In FUKAv2.2 a minimal Config file was introduced such that only the basic fixing parameters most
+relevant to users are shown.  This minimal Config file can be bypassed by running: 
+    > `solve full`
+
+    to obtain the full Config file. Although useful for development, there is little advantage to using
+the full Config.
+</b>
 
 ## BH Fixing parameters
 
@@ -112,35 +128,17 @@ see more in [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/inc
 bh
 {
     chi 0
-    dim 3
-    fixed_lapse 0.29999999999999999
     mch 0.5
-    mirr 0.5
-    nshells 0
-    omega 0
-    qpig 12.566370614359172
     res 9
-    rin 0.10000000000000001
-    rmid 0.29999999999999999
-    rout 1.5
-    velx 0
-    vely 0
 }
 ```
 
 The above includes parameters that can be fixed by the user as well as parameters that are automated in the background
 and should not be changed.  Those most relevant to generating ID of interest are
 
-- `chi`: the dimensionless spin parameter `[-0.85, 0.85]`
+- `chi`: the dimensionless spin parameter `[-0.84, 0.84]`
 - `mch`: the Christodoulou mass
-- `mirr`: is automatically updated based on the input mch.  It does **not** need to be set manually
-- `nshells`: these are additional shells that can be added for more resolution near the black hole without increasing
-the global resolution
 - `res`: the final global resolution of interest (this will be discussed more below)
-- `velx`, `vely`: velocity in the coordinate x or y direction corresponding to a linear boost
-- `fixed_lapse`: This is not recommended, however, a fixed lapse boundary condition can be used on the excision 
-surface when the sequence control `fixed_lapse` is set to "on".  
-The default boundary condition on the lapse uses a von Neumann condition
 
 ## Fields
 
@@ -153,7 +151,7 @@ fields
 }
 ```
 
-Fields documents the fields that are used in the solver and stored in the `dat` file.  Changing this has no impact.
+Within the full Config or the output solutions, `Fields` document the fields that are used in the solver and stored in the `dat` file.  Changing this has no impact.
 
 ## Stages
 
@@ -173,15 +171,11 @@ sequence_controls
 {
     checkpoint off
     fixed_lapse off
-    sequences on
-    update_initial off
 }
 ```
 
 - `checkpoint`: this will result in checkpoints being saved to file during each solving iteration - mainly helpful for high resolution binary ID
 - `fixed_lapse`: toggling this control enables a fixed lapse on the horizon - not recommended
-- `sequences`: this toggle is enabled by default and essentially tells the driver routine to start from scratch.  If this is enabled when attempting to use a previous solution, the previous solution (i.e. the `dat` file) is ignored and the solver starts from the most basic initial guess
-- `update_initial`: For those familiar with the v1 solvers, there previously existed an `initial` section that would track where your initial guess parameters started at and what you ended up with at the end.  This is a historical artifact and is ignored in the v2 codes by default
 
 ## Sequence Settings
 
@@ -205,7 +199,7 @@ Now that you've generated the simplest case and we have a better understanding o
 1. Open the initial config file in your favorite editor
 2. Set
     - `mch 1` 
-    - `chi 0.85`
+    - `chi 0.84`
     - `res 11`
 3. Run (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bh.info`
 
@@ -218,36 +212,36 @@ is done automatically to avoid the solution diverging.  This is done in three st
     
     1. `chi = 0.5`
     2. `chi = 0.8`
-    3. `chi = 0.85`
+    3. `chi = 0.84`
 
-3. Once the desired `chi` is acheived, the solution is regridded to a new grid with the desired final resolution
+3. Once the desired `chi` is achieved, the solution is regridded to a new grid with the desired final resolution
 4. With the new initial guess based on the low resolution solution, a final solving stage is conducted to obtain the desired ID
-5. This results in the converged dataset of `BH_TOTAL_BC.1.0.85.0.11.info/dat`, however, the other implicit solutions have been saved as well.
+5. This results in the converged dataset of `BH_TOTAL_BC.1.0.84.0.11.info/dat`, however, the other implicit solutions have been saved as well.
 
 We can of course verify that the ID matches our expectation using
 
-`./bin/Release/reader BH_TOTAL_BC.1.0.85.0.11.info`
+`./bin/Release/reader BH_TOTAL_BC.1.0.84.0.11.info`
 
 ```
                    RES = [+11,+11,+10]
-         BH Coord R_IN = +0.31950
-            BH Coord R = +0.52821
-        BH Coord R_OUT = +2.55603
+            Coord R_IN = +0.32502
+               Coord R = +0.54163
+           Coord R_OUT = +2.60012
 
-            BH Areal R = +1.74745
-                 LAPSE = [+0.27810, +0.31855]
-                   PSI = [+1.76804, +1.84594]
+               Areal R = +1.75647
+                 LAPSE = [+0.28547, +0.32448]
+                   PSI = [+1.75317, +1.82613]
 
-                  Mirr = +0.87372[+0.87372]
+                  Mirr = +0.87823[+0.87823]
                    Mch = +1.00000[+1.00000]
-                   Chi = +0.85000[+0.85000]
+                   Chi = +0.84000[+0.84000]
 
-                Omega  = -3.11058e-01
-            Komar mass = +1.00571e+00
-              Adm mass = +1.00678e+00, Diff: +1.06244e-03
-           Adm moment. = +8.49703e-01
-                    Px = -1.10911e-16
-                    Py = -3.78006e-15
+                 Omega = -3.03075e-01
+            Komar mass = +1.00517e+00
+              Adm mass = +1.00629e+00, Diff: +1.11392e-03
+           Adm moment. = +8.39740e-01
+                    Px = +4.19768e-15
+                    Py = -3.99361e-15
                     Pz = +0.00000e+00
 ```
 
@@ -255,7 +249,7 @@ We can of course verify that the ID matches our expectation using
 
 ## Initial Setup
 
-In initial data generation, the initial setup is the most crucial.  When starting the BH solver from scratch, we need to determine
+In initial data generation, the initial setup is the most crucial.  When starting the BH solver from scratch we need to determine
 an initial guess for the input mass and aspin - `mch`, `chi`.  For this a crude estimate is generated based on a fixed value of the conformal
 factor of `conf = 1.55` to determine the domain decomposition and initial guess of the excision radius of 
 
@@ -269,7 +263,7 @@ With the initial guess generated, a rotating solution is now found based on the 
 
 ## Automated iterative spin
 
-For highly spinning BH configurations it has shown to be necessary to obtain lower spinning solutions prior to a highly spinning one.  Therefore, an initial spin of `chi = 0.5` is used before attempting spins up to `chi = 0.8`.  For spins near the XCTS spin limit of approximately `chi = 0.85`, an intermediate solution
+For highly spinning BH configurations using a conformally flat background, it has been found to be necessary to obtain lower spinning solutions prior to a highly spinning one.  Therefore, an initial spin of `chi = 0.5` is used before attempting spins up to `chi = 0.8`.  For spins near the XCTS spin limit of approximately `chi = 0.84`, an intermediate solution
 is obtained at `chi = 0.8` before attempting `chi > 0.8`.
 
 ## Automated resolution increase

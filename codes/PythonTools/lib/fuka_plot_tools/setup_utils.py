@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 pyFUKA_libspath = os.getenv('HOME_KADATH')+'/codes/PythonTools/lib/'
 sys.path.append(pyFUKA_libspath)
 
+LabelSize=15
+TickSize=15
+CbarLabelSize=15
+
 # Set default matplotlib settings
 plt.rcParams.update({
     'figure.figsize'    : [8.0, 8.0],
@@ -13,10 +17,12 @@ plt.rcParams.update({
     'xtick.minor.size'  : 3,
     'ytick.major.size'  : 6,
     'ytick.minor.size'  : 3,
+    'xtick.top' : True,
+    'ytick.right' : True,
+    'axes.labelsize' : LabelSize,
+    'legend.fontsize' : LabelSize * 0.75,
 })
-LabelSize=15
-TickSize=15
-CbarLabelSize=15
+
 
 def extract_path_filename(f):
   # extract filename and path

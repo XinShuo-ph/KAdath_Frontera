@@ -1,9 +1,37 @@
+/*
+ * Copyright 2023
+ * This file is part of the KADATH library and published under
+ * https://arxiv.org/abs/2103.09911
+ *
+ * Author: 
+ * Samuel D. Tootle <tootle@itp.uni-frankfurt.de>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 #include "Solvers/solvers.hpp"
+
+namespace FUKA_Solvers {
 using namespace Kadath;
 
+/**
+ * \addtogroup NS_XCTS
+ * \ingroup FUKA
+ * @{*/
+
 template<class eos_t, typename config_t, typename space_t = Kadath::Space_spheric_adapted>
-class ns_3d_xcts_solver : Solver<config_t, space_t> {
+class ns_3d_xcts_solver : public Solver<config_t, space_t> {
   public:
   using typename Solver<config_t, space_t>::base_config_t;
   using typename Solver<config_t, space_t>::base_space_t;
@@ -15,7 +43,7 @@ class ns_3d_xcts_solver : Solver<config_t, space_t> {
   Vector& shift;
   Metric_flat fmet;
 
-  // Specify base class members used to avoid this->
+  /// Specify base class members used to avoid this->
   using Solver<config_t, space_t>::space;
   using Solver<config_t, space_t>::bconfig;
   using Solver<config_t, space_t>::basis;
@@ -26,19 +54,20 @@ class ns_3d_xcts_solver : Solver<config_t, space_t> {
   using Solver<config_t, space_t>::solution_exists;
   using Solver<config_t, space_t>::extract_eos_name;
   using Solver<config_t, space_t>::checkpoint;
+  using Solver<config_t, space_t>::solver_stage;
 
   public:
-  // solver is not trivially constructable since Kadath containers are not
-  // trivially constructable
+  /// solver is not trivially constructable since Kadath containers are not
+  /// trivially constructable
   ns_3d_xcts_solver() = delete;
 
   ns_3d_xcts_solver(config_t& config_in, space_t& space_in, Base_tensor& base_in,  
     Scalar& conf_in, Scalar& lapse_in, Scalar& logh_in, Vector& shift_in);
   
-  // syst always requires the same initialization for the stages
+  /// syst always requires the same initialization for the stages
   void syst_init(System_of_eqs& syst);
   
-  // diagnostics at runtime
+  /// diagnostics at runtime
   void print_diagnostics_norot(const System_of_eqs& syst, 
     const int ite, const double conv) const;
   void print_diagnostics(const System_of_eqs& syst, 
@@ -50,17 +79,17 @@ class ns_3d_xcts_solver : Solver<config_t, space_t> {
     bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
   }
   
-  // solve driver
+  /// solver driver
   int solve();
 
-  // solver stages
+  /// solver stages
   int norot_stage(bool fixed = false);
   int uniform_rot_stage();
   
   /**
    * binary_boost_stage
    *
-   * based on an input binary Configurator file, we boost the BH accordingly
+   * based on an input binary Configurator file, we boost the NS accordingly
    *
    * @param[input] binconfig: binary Configurator file
    * @param[input] bco: index of BCO - needed to determine coordinate shift based on BCO location in binary space
@@ -69,32 +98,9 @@ class ns_3d_xcts_solver : Solver<config_t, space_t> {
 
   // Update bconfig(HC) and bconfig(NC)
   void update_config_quantities(const double& loghc);
- 
-//  template<class eos_t>
-  //bool useful_checkpoint_exists();
 };
-
-/**
- * ns_3d_xcts_driver
- *
- * Control computation of 3D NS from setup config/dat file combination
- * filename is pulled from bconfig which should pair with <filename>.dat
- *
- * This code exists to allow the required  NS' to be computed during a BNS solver
- * while also minimizing the code in an isolated solver.
- *
- * Also, KADATH at the time of writing, was strict on not allowing trivial
- * construction of base types (Base_tensor, Scalar, Tensor, Space, etc) which
- * means a driver is required to populate the related Solver class.
- *
- * @tparam[int] bconfig - Configurator file
- * @return Success/failure
- */
-template<typename config_t>
-inline int ns_3d_xcts_driver (config_t& bconfig, std::string outputdir, 
- kadath_config_boost<BIN_INFO> binconfig = kadath_config_boost<BIN_INFO>{}, 
- const size_t bco = BCO1);
-
+/** @}*/
+}
 
 #include "ns_3d_xcts_solver_imp.cpp"
 #include "ns_3d_xcts_stages.cpp"

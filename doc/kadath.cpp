@@ -81,3 +81,9 @@
  * Are regrouped here the objects needed to solve systems of equations, like the \c Term_eq, the various operators, types of equations...
  */
 
+/**
+ * \defgroup FUKA
+ * Frankfurt extensions to Kadath
+ *
+ * Utilities, solvers, and related codes
+ */

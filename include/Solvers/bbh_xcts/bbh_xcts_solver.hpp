@@ -23,6 +23,12 @@
 #include "Solvers/solvers.hpp"
 #include "Solvers/bh_3d_xcts/bh_3d_xcts_solver.hpp"
 #include "kadath_bin_bh.hpp"
+
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BBH_XCTS
+ * \ingroup FUKA
+ * @{*/
 using namespace Kadath;
 
 template<typename config_t, typename space_t = Kadath::Space_bin_bh>
@@ -53,6 +59,7 @@ class bbh_xcts_solver : Solver<config_t, space_t> {
   using Solver<config_t, space_t>::check_max_iter_exceeded;
   using Solver<config_t, space_t>::solution_exists;
   using Solver<config_t, space_t>::checkpoint;
+  using Solver<config_t, space_t>::solver_stage;
 
   public:
   // solver is not trivially constructable since Kadath containers are not
@@ -78,14 +85,9 @@ class bbh_xcts_solver : Solver<config_t, space_t> {
   // solve driver
   int solve();
 
-  int solve_stage(const size_t stage, std::string stage_text);
+  int solve_stage(std::string stage_text);
 };
-
-inline 
-void bbh_xcts_setup_boosted_3d(
-  kadath_config_boost<BCO_BH_INFO>& BH1config, 
-  kadath_config_boost<BCO_BH_INFO>& BH2config,
-  kadath_config_boost<BIN_INFO>& bconfig);
+/** @}*/
+}
 #include "bbh_xcts_solver_imp.cpp"
 #include "bbh_xcts_stages.cpp"
-

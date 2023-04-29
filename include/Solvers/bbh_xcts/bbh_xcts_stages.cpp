@@ -24,6 +24,12 @@
 #include "bco_utilities.hpp"
 #include "mpi.h"
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BBH_XCTS
+ * \ingroup FUKA
+ * @{*/
+
 inline void print_stage (std::string stage_name) {
   std::cout << "############################" << std::endl
             << stage_name << std::endl
@@ -31,23 +37,28 @@ inline void print_stage (std::string stage_name) {
 }
 
 template<typename config_t, typename space_t>
-int bbh_xcts_solver<config_t, space_t>::solve_stage(const size_t stage, std::string stage_text) {
+int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
   int exit_status = EXIT_SUCCESS;
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  if(stage != ECC_RED && bconfig.control(FIXED_GOMEGA))
+  if(solver_stage != ECC_RED && bconfig.control(FIXED_GOMEGA))
     stage_text += "_FIXED_OMEGA";
 
   std::string const lapse_cond = (bconfig.control(USE_FIXED_LAPSE)) ? \
-    "Total system with Fixed Lapse BC" : "Total system with v.Neumann BC";
-  if(rank == 0 && stage == ECC_RED)
-    print_stage("Ecc. Reduction - Fixed Omega & Adot");
-  if(rank == 0 && bconfig.control(COROT_BIN))
-    print_stage(lapse_cond+" - COROT");
-  else if(rank == 0)
-    print_stage(lapse_cond);
+    "Total system with fixed Lapse BC" : "Total system with v.Neumann BC";
+  if(rank == 0) {
+    std::cout << std::string(42, '#') << '\n';
+    std::cout << lapse_cond << '\n';
 
-  if(stage == ECC_RED) {
+    if(solver_stage == ECC_RED)
+      std::cout << "Ecc. Reduction - fixed Omega & Adot" << '\n';
+    if(bconfig.control(FIXED_GOMEGA))
+      std::cout << "using fixed orbital velocity" << '\n';
+    if(bconfig.control(COROT_BIN))
+      std::cout << "and co-rotation conditions" << '\n';
+  }
+
+  if(solver_stage == ECC_RED) {
     // determine whether to use PN estimates of the orbital frequency and adot
     // in case of the eccentricity stage
     if(std::isnan(bconfig.set(ADOT)) || std::isnan(bconfig.set(ECC_OMEGA)) || bconfig.control(USE_PN)) {
@@ -71,7 +82,7 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(const size_t stage, std::str
   // allow for a shift of the "center of mass" on the x-axis
   // enforced by a vanishing ADM linear momentum
   // determine whether orbital frequency is fixed
-  if(bconfig.control(FIXED_GOMEGA) || stage == ECC_RED) {
+  if(bconfig.control(FIXED_GOMEGA) || solver_stage == ECC_RED) {
     syst.add_cst("ome"  , bconfig(GOMEGA)) ;
   } else {
     syst.add_var("ome"  , bconfig(GOMEGA)) ;
@@ -82,7 +93,7 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(const size_t stage, std::str
 
  
   std::string bigB{"B^i = bet^i + ome * Morb^i"};
-  if(stage == ECC_RED) {
+  if(solver_stage == ECC_RED) {
     syst.add_cst("adot", bconfig(ADOT));
     syst.add_cst("r"   , CART);
     syst.add_def("comr^i = r^i - xaxis * ex^i + yaxis * ey^i");
@@ -110,7 +121,7 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(const size_t stage, std::str
   syst.add_eq_bc(ndom-1, OUTER_BC     , "bet^i = 0") ;
 
   // quasi-equallibrium condition if binary orbital frequency is not fixed
-  if(!bconfig.control(FIXED_GOMEGA) && stage != ECC_RED) {
+  if(!bconfig.control(FIXED_GOMEGA) && solver_stage != ECC_RED) {
     space.add_eq_int_inf(syst, "integ(dn(N) + 2 * dn(P)) = 0");
     
   }
@@ -197,4 +208,6 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(const size_t stage, std::str
     checkpoint();
 
   return exit_status;
+}
+/** @}*/
 }

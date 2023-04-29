@@ -1,5 +1,25 @@
+/*
+ * Copyright 2023
+ * This file is part of the KADATH library and published under
+ * https://arxiv.org/abs/2103.09911
+ *
+ * Author: 
+ * Samuel D. Tootle <tootle@itp.uni-frankfurt.de>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
-
 #include "kadath.hpp"
 #include <math.h> 
 #include <sstream>
@@ -7,10 +27,15 @@
 #include "Solvers/co_solver_utils.hpp"
 #include "bco_utilities.hpp"
 
+namespace FUKA_Solvers {
 using space_t = Space_spheric_adapted;
+/**
+ * \addtogroup NS_XCTS
+ * \ingroup FUKA
+ * @{*/
 
 template<typename config_t>
-int ns_3d_xcts_interpolate_on_new_grid(config_t& bconfig, const int new_res, std::string outputfile) {
+int ns_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
   int exit_status = 0;
 
   std::string kadath_filename = bconfig.space_filename();
@@ -60,7 +85,6 @@ int ns_3d_xcts_interpolate_on_new_grid(config_t& bconfig, const int new_res, std
 
   // set new resolutions in each spatial dimension
   Dim_array res(ndim);
-  bconfig.set(BCO_RES) = new_res;
   res.set(0) = bconfig(BCO_RES);
   res.set(1) = res(0);
   res.set(2) = res(0) - 1;
@@ -153,4 +177,6 @@ int ns_3d_xcts_interpolate_on_new_grid(config_t& bconfig, const int new_res, std
   bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
 
   return EXIT_SUCCESS;
+}
+/** @}*/
 }

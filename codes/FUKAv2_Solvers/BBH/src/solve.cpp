@@ -19,23 +19,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "kadath_bin_bh.hpp"
 #include "mpi.h"
+#include "kadath_bin_bh.hpp"
 #include "Solvers/solver_startup.hpp"
 #include "Solvers/bbh_xcts/bbh_xcts_solver.hpp"
-#include "Solvers/bbh_xcts/bbh_xcts_regrid.hpp"
-#include <filesystem>
-#include <type_traits>
-namespace fs = std::filesystem;
-using namespace Kadath;
-using config_t = kadath_config_boost<BIN_INFO>;
+#include "Solvers/bbh_xcts/bbh_xcts_driver.hpp"
+#include "Solvers/bbh_xcts/bbh_xcts_setup.hpp"
+#include "Solvers/sequences/parameter_sequence.hpp"
 
-// Foward declarations
-int bbh_xcts_driver (config_t& bconfig, std::string outputdir="");
-inline void bbh_xcts_setup_space (config_t& bconfig);
-inline void bbh_xcts_setup_bin_config(config_t& bconfig);
-inline void bbh_xcts_superimposed_import(config_t& bconfig, std::array<std::string, 2> BHfilenames);
-// end Forward declarations
+using namespace Kadath;
+using namespace FUKA_Solvers;
 
 int main(int argc, char** argv) {
   int rc = MPI_Init(&argc, &argv) ;
@@ -46,6 +39,7 @@ int main(int argc, char** argv) {
   int rank = 0 ;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
 
+  using config_t = kadath_config_boost<BIN_INFO>;
   using InitSolver = Initialize_Solver<config_t>;
   
   // Initialize static member variables
@@ -60,191 +54,54 @@ int main(int argc, char** argv) {
   if(InitSolver::example_setup) {
     if(rank == 0) {
       bconfig.initialize_binary({"bh","bh"});
-      bconfig.set_defaults();
-      bbh_xcts_setup_bin_config(bconfig);
-      bconfig.write_config();
+      if(InitSolver::minimal_config) {
+        bconfig.set_minimal_defaults();
+      } else {
+        bconfig.set_defaults();
+      }
+      
+      bconfig.set(BIN_PARAMS::DIST) = 10.;
+      bconfig.control(CONTROLS::SEQUENCES) = InitSolver::setup_first;
+
+      if(InitSolver::minimal_config) {        
+        bconfig.write_minimal_config();
+      } else {        
+        bbh_xcts_setup_bin_config(bconfig);
+        bconfig.write_config();
+      }
     }
   } else {
     bconfig.open_config();
-    // solve at low res first    
-    int const final_res = bconfig(BIN_RES);
-    int const init_res = (std::isnan(bconfig.seq_setting(INIT_RES))) ? 
-      9 : bconfig.seq_setting(INIT_RES);
+    bconfig.control(CONTROLS::SEQUENCES) = InitSolver::setup_first;
     
-    bool const res_inc = (final_res != init_res);
-  
-    if(InitSolver::setup_first) {
-      bconfig.set_filename("initbin");
-      bconfig.set(BIN_RES) = init_res;
-      bbh_xcts_setup_bin_config(bconfig);
-      bbh_xcts_setup_space(bconfig);
+    auto tree = bconfig.get_config_tree();
+    auto N = number_of_sequences_binary(tree);
+    if(N > 1) {
+      if(rank == 0) {
+        std::cerr << "Only sequences along one component is allowed.\n";
+        std::_Exit(EXIT_FAILURE);
+      }
     }
 
-    auto regrid = [&]() {
-      std::string fname{"bbh_regrid"};
+    auto resolution = parse_seq_tree(tree, "binary", "res", BIN_PARAMS::BIN_RES);
 
-      if(rank == 0)
-        bbh_xcts_regrid(bconfig, fname);
-      bconfig.set_filename(fname);
-      MPI_Barrier(MPI_COMM_WORLD);
-    };
-    
-    if(bconfig.control(REGRID) && !InitSolver::setup_first)
-      regrid();
+    auto seq = find_sequence_binary(tree);
+    auto seq_bin = find_sequence(tree, MBIN_PARAMS, "binary");
 
-    int err = bbh_xcts_driver(bconfig, InitSolver::outputdir);
-
-    if(res_inc) {
-      bconfig.set(BIN_RES) = final_res;
-      regrid();
-    
-      // Rerun with new grid
-      err = bbh_xcts_driver(bconfig, InitSolver::outputdir);
+    if(!(seq.is_set() || seq_bin.is_set()) && !bconfig.control(CONTROLS::SEQUENCES))
+      int err = bbh_xcts_driver(bconfig, resolution, InitSolver::outputdir);
+    else {
+      verify_resolution_sequence(bconfig, resolution);
+      
+      auto [ branch_name, key, val ] = find_leaf(tree, "N");
+      if(!key.empty()) seq.set_N(std::stoi(val));
+      if(seq.is_set())
+        bbh_xcts_sequence(bconfig, seq, resolution, InitSolver::outputdir);
+      else
+        bbh_xcts_sequence(bconfig, seq_bin, resolution, InitSolver::outputdir);
     }
+
   }
   MPI_Finalize();
   return EXIT_SUCCESS;
-}
-
-/**
- * bbh_xcts_setup_bin
- *
- * Ensure proper binary settings
- *
- * @param[input] bconfig: BBH Configurator file
- */
-inline void bbh_xcts_setup_bin_config(config_t& bconfig){
-  check_dist(bconfig(DIST), bconfig(MCH, BCO1), bconfig(MCH, BCO2));
-
-  // Binary Parameters
-  bconfig.set(REXT) = 2 * bconfig(DIST);
-  bconfig.set(Q) = bconfig(MCH, BCO2) / bconfig(MCH, BCO1);
-  
-  // classical Newtonian estimate
-  bconfig.set(COM) = 
-    bco_utils::com_estimate(bconfig(DIST), bconfig(MCH, BCO1), bconfig(MCH, BCO2));
-  
-  // obtain 3PN estimate for the global, orbital omega
-  bco_utils::KadathPNOrbitalParams(bconfig, \
-        bconfig(MCH, BCO1), bconfig(MCH,BCO2));
-
-  // delete ADOT, this can always be recalculated during
-  // the eccentricity reduction stage
-  bconfig.set(ADOT) = std::nan("1");
-}
-
-/**
- * bbh_xcts_driver
- *
- * Control computation of BBH from setup config/dat file combination
- * filename is pulled from bconfig which should pair with <filename>.dat
- *
- * Also, KADATH at the time of writing, was strict on not allowing trivial
- * construction of base types (Base_tensor, Scalar, Tensor, Space, etc) which
- * means a driver is required to populate the related Solver class.
- *
- * @return Success/failure
- */
-int bbh_xcts_driver (config_t& bconfig, std::string outputdir) {
-  int exit_status = 0;
-  int rank = 0;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  
-  // make sure outputdir directory exists for outputs
-  if(rank == 0)
-    std::cout << "Solutions will be stored in: " << outputdir << "\n" \
-              << "Directory will be created if it doesn't exist.\n";
-
-  std::string spacein = bconfig.space_filename();
-  if(!fs::exists(spacein)) {
-    // For debugging MPI bugs
-    if(rank == 0) {
-      std::cerr << "File: " << spacein << " not found.\n\n";
-    } else {
-      std::cerr << "File: " << spacein << " not found for another rank.\n\n";
-    }
-    std::_Exit(EXIT_FAILURE);
-  }
-
-  // just so you really know
-  if(rank == 0) {
-    std::cout << "Config File: " 
-              << bconfig.config_outputdir()+bconfig.config_filename() << std::endl
-              << "Fields File: " << spacein << std::endl
-              << bconfig << std::endl;
-  }
-  FILE* ff1 = fopen (spacein.c_str(), "r") ;
-  if(ff1 == NULL){
-    // mainly for debugging MPI bugs
-    std::cerr << spacein.c_str() << " failed to open for rank " << rank << "\n";
-    std::_Exit(EXIT_FAILURE);
-  }
-  Space_bin_bh space (ff1) ;
-	Scalar conf   (space, ff1) ;
-	Scalar lapse  (space, ff1) ;
-  Vector shift  (space, ff1) ;
-	fclose(ff1) ;
-  Base_tensor basis(space, CARTESIAN_BASIS);
-  
-  if(outputdir != "") {
-    fs::create_directory(outputdir);
-    bconfig.set_outputdir(outputdir) ;
-  }
-  if(bconfig.control(DELETE_SHIFT))
-    shift.annule_hard();
-
-  bbh_xcts_solver<decltype(bconfig), decltype(space)> 
-      bbh_solver(bconfig, space, basis, conf, lapse, shift);
-  bbh_solver.solve();
-  
-  return exit_status;
-}
-
-/**
- * bbh_xcts_setup_space
- *
- * Create the numerical space and initial guess for the BBH by
- * obtaining the isolated BH solutions, updating the BBH
- * config file, and importing the BH solutions into the BBH space.
- *
- * @param[input] bconfig: BBH Configurator file
- */
-inline void bbh_xcts_setup_space (config_t& bconfig) {
-  int rank = 0;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  std::array<int,2> bcos{BCO1, BCO2};
-  std::array<std::string, 2> filenames;
-
-  for(int i = 0; i < 2; ++i)
-    filenames[i] = solve_BH_from_binary(bconfig, bcos[i]);  
-
-  if(rank == 0)
-    bbh_xcts_superimposed_import(bconfig, filenames);
-  MPI_Barrier(MPI_COMM_WORLD);
-
-  bconfig.open_config();
-  bconfig.control(SEQUENCES) = false;
-}
-
-/**
- * bbh_xcts_superimposed_import
- *
- * Flow control to initialize the binary space based on
- * superimposing two isolated compact object solutions.
- * These are simply read from file here before being passed
- * to bbh_xcts_setup_boosted_3d for computing the initial
- * guess
- *
- * @param[input] bconfig: binary configurator
- * @param[input] BHfilenames: array of filenames for isolated solutions
- */
-inline void bbh_xcts_superimposed_import(config_t& bconfig, std::array<std::string, 2> BHfilenames) {
-  // load single BH configuration
-  std::string bh1filename{BHfilenames[0]};
-  kadath_config_boost<BCO_BH_INFO> BH1config(bh1filename);
-  
-  std::string bh2filename{BHfilenames[1]};
-  kadath_config_boost<BCO_BH_INFO> BH2config(bh2filename);
-
-  bbh_xcts_setup_boosted_3d(BH1config, BH2config, bconfig);
 }

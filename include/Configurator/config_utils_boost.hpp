@@ -139,10 +139,25 @@ template <typename tree_t, typename map_t, typename ary_t>
 tree_t build_branch(const map_t& storage_map, const ary_t& storage, const bool inc_off=false);
 
 /**
-  * get_last_enabled
+  * get_last_enabled_no_throw
   *
   * from an array of bools, determine the last enabled, true, in the array
   * and determine the associated mapping.  Returns a tuple with the name and index
+  * 
+  * @tparam ary_t array type
+  * @tparam map_t map type
+  * @param[input] storage_map: map of boolean parameters
+  * @param[input] storage array: of boolean parameters
+  * @return       std::tuple tuple of index and associated mapped string
+  */
+template <typename ary_t, typename map_t>
+std::tuple<std::string, int> get_last_enabled(map_t enum_map, ary_t toggle); 
+
+/**
+  * get_last_enabled
+  *
+  * Same as get_last_enabled_no_throw only an exception will throw if an
+  * active stage is not found
   * 
   * @tparam ary_t array type
   * @tparam map_t map type
@@ -171,6 +186,48 @@ std::tuple<std::string, int> get_last_enabled(map_t enum_map, ary_t toggle);
  */
 template <typename map_t, typename boolary_t>
 map_t append_map (const map_t& full_map, const map_t& partial_map, const boolary_t& storage);
+
+
+template <class tree_t>
+auto find_leaf(tree_t const & tree, std::string key) {
+  
+  std::string branch_name{};
+
+  auto search_branch = [&](auto& branch) -> std::tuple<std::string, std::string> {
+    for(auto const & node : branch) {
+      if(node.second.empty())
+        if(node.first == key) {
+          return std::make_tuple(node.first, node.second.data());
+        }
+    }
+    return {};
+  };
+  std::function<std::tuple<std::string,std::string,std::string>(tree_t const &)> recursive_search;
+  recursive_search = [&](auto& branch) -> std::tuple<std::string,std::string,std::string> {
+    auto tmp = search_branch(branch);
+
+    if(!std::get<0>(tmp).empty()) {  
+      #ifdef DEBUG
+      std::cout << branch_name << ", " << std::get<0>(tmp) << "," << std::get<1>(tmp) << std::endl;
+      #endif
+      return std::make_tuple(branch_name, std::get<0>(tmp), std::get<1>(tmp));
+    }
+    for(auto const & node : branch) {
+      if(!node.second.empty()) {
+        branch_name = node.first;
+        tree_t t_branch = read_branch(branch, branch_name);
+        auto tmp_tuple = recursive_search(t_branch);
+        if(!std::get<0>(tmp_tuple).empty()) {
+          return tmp_tuple;
+        }
+      }
+    }
+    return {};
+  };
+  auto res = recursive_search(tree);
+  
+  return res;
+}
 
 /** @} end config_utils group */
 

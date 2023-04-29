@@ -30,6 +30,13 @@
 
 
 namespace Kadath {
+/** @defgroup pyConfigurator
+  * @ingroup Configurator
+	* Utility functions to enable parsing and saving Configurator files currently
+	* based on the BOOST proprietary INFO format.  In principle this can be changed easily
+	* by changing the include to another BOOST parser, however, this is untested.
+  * @{
+  */
 
   /**
    * @brief Build configuration dictionary for python
@@ -175,3 +182,4 @@ namespace Kadath {
     reader.def_readonly("config", &reader_t::config);
   }
 }
+/** @} end pyConfigurator group */

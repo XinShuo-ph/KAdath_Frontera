@@ -25,6 +25,11 @@
 #include "bh_3d_xcts_solver.hpp"
 #include "bh_3d_xcts_regrid.hpp"
 
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BH_XCTS
+ * \ingroup FUKA
+ * @{*/
 using namespace Kadath;
 using namespace Kadath::Margherita;
 
@@ -64,20 +69,19 @@ int bh_3d_xcts_solver<config_t, space_t>::solve() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   int exit_status = EXIT_SUCCESS;
   
-  std::array<bool, NUM_STAGES> stage_enabled = bconfig.return_stages();
-  auto [ last_stage, last_stage_idx ] = get_last_enabled(MSTAGE, stage_enabled);
+  std::array<bool, NUM_STAGES>& stage_enabled = bconfig.return_stages();
+  auto [ last_stage, last_stage_idx ] = get_last_enabled_no_throw(MSTAGE, stage_enabled);
 
-  //check if we have a non-boosted solution
-  auto current_file = bconfig.config_filename_abs();
+  // Save in case of iterative solutions
   auto const & final_chi = bconfig.seq_setting(FINAL_CHI);
   
   if(stage_enabled[TOTAL]) {
+    this->solver_stage = TOTAL;
     exit_status = fixed_lapse_stage();
-    if(exit_status == RELOAD_FILE)
-      return exit_status;
   }
 
-  if(stage_enabled[TOTAL_BC]) {    
+  if(stage_enabled[TOTAL_BC] && exit_status != RELOAD_FILE) {    
+    this->solver_stage = TOTAL_BC;
     if(bconfig.control(ITERATIVE_CHI)) {      
       while(bconfig.control(ITERATIVE_CHI)) {        
         
@@ -86,8 +90,9 @@ int bh_3d_xcts_solver<config_t, space_t>::solve() {
         #endif
 
         exit_status = von_Neumann_stage();
+        stage_enabled[STAGES::TOTAL_BC] = true;
         if(exit_status == RELOAD_FILE)
-          return exit_status;
+          break;
         
         if((std::abs(final_chi) <= 0.8)
           || (std::abs(bconfig(CHI)) >= 0.8)) {
@@ -95,128 +100,19 @@ int bh_3d_xcts_solver<config_t, space_t>::solve() {
         } else if(std::abs(bconfig(CHI)) < 0.8)
           bconfig(CHI) = std::copysign(0.8, final_chi);
       }
-      bconfig(CHI) = final_chi;
+      if(exit_status != RELOAD_FILE)
+        bconfig(CHI) = final_chi;
     }
-    exit_status = von_Neumann_stage();
-    if(exit_status == RELOAD_FILE)
-      return exit_status;
+    if(exit_status != RELOAD_FILE)
+      exit_status = von_Neumann_stage();
   }
   
   // Barrier needed in case we need to read from the previous output
   MPI_Barrier(MPI_COMM_WORLD);
-  if(last_stage_idx == BIN_BOOST)
+  if(last_stage_idx == BIN_BOOST && exit_status != RELOAD_FILE)
     exit_status = RUN_BOOST;
   return exit_status;
 
-}
-
-template<typename config_t>
-inline int bh_3d_xcts_driver (config_t& bconfig, std::string outputdir,
-  kadath_config_boost<BIN_INFO> binconfig, const size_t bco){
-  int exit_status = RELOAD_FILE;
-  int rank = 0;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  if(std::abs( bconfig(CHI)) > 0.84) {
-    std::cerr << "Unable to handle chi > 0.84\n";
-    return EXIT_FAILURE;
-  }
-  bconfig.seq_setting(INIT_RES) = (std::isnan(bconfig.seq_setting(INIT_RES))) ? 
-    9 : bconfig.seq_setting(INIT_RES);
-
-  // solve at low res first ? probably not needed
-  const int final_res = bconfig(BCO_RES);
-  bool res_inc = (bconfig.seq_setting(INIT_RES) < final_res);
-  bconfig.set(BCO_RES) = bconfig.seq_setting(INIT_RES);
-
-  // In the event we wish to solve for a highly spinning solution
-  // we need to do an initial slow rotating solution before going to 
-  // faster rotations otherwise the solution will diverge.
-  bconfig.control(ITERATIVE_CHI) = std::abs(bconfig(CHI)) > 0.5;
-  
-  // We need to store the final desired CHI in case of iterative chi
-  bconfig.seq_setting(FINAL_CHI) = bconfig(CHI);
-  // Lower chi in case of iterative chi
-  bconfig(CHI) = (bconfig.control(ITERATIVE_CHI)) ? 
-    std::copysign(0.5, bconfig.seq_setting(FINAL_CHI)) : bconfig(CHI);
- 
-  // make sure BH directory exists for outputs
-  if(rank == 0)
-    std::cout << "Solutions will be stored in: " << outputdir << "\n" \
-              << "Directory will be created if it doesn't exist.\n";
-  fs::create_directory(outputdir);
-  
-  if(bconfig.control(SEQUENCES)) {
-    bconfig.set_filename("initbh");
-    if(rank == 0) {
-      setup_co<BH>(bconfig);
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-    // make sure all ranks have the same config
-    bconfig.open_config();
-    // FIXME - should this be turned off?
-    bconfig.control(SEQUENCES) = false;
-  }
-
-  std::array<bool, NUM_STAGES> stage_enabled = bconfig.return_stages();
-  auto [ last_stage, last_stage_idx ] = get_last_enabled(MSTAGE, stage_enabled);
-
-  std::string spacein = bconfig.space_filename();
-  if(!fs::exists(spacein)) {
-    // mainly for debugging MPI bugs
-    if(rank == 0) {
-      std::cerr << "File: " << spacein << " not found.\n\n";
-    } else {
-      std::cerr << "File: " << spacein << " not found for another rank.\n\n";
-    }
-    std::_Exit(EXIT_FAILURE);
-  }
-  
-  while(exit_status == RELOAD_FILE || exit_status == RUN_BOOST) { 
-    spacein = bconfig.space_filename();
-    // just so you really know
-    if(rank == 0) {
-      std::cout << "Config File: " 
-                << bconfig.config_outputdir()+bconfig.config_filename() << std::endl
-                << "Fields File: " << spacein << std::endl
-                << bconfig << std::endl;
-    }
-    FILE* ff1 = fopen (spacein.c_str(), "r") ;
-    if(ff1 == NULL){
-      // mainly for debugging MPI bugs
-      std::cerr << spacein.c_str() << " failed to open for rank " << rank << "\n";
-      std::_Exit(EXIT_FAILURE);
-    }
-    Space_adapted_bh space (ff1) ;
-    Scalar conf   (space, ff1) ;
-    Scalar lapse  (space, ff1) ;
-    Vector shift  (space, ff1) ;
-    fclose(ff1) ;
-    Base_tensor basis(space, CARTESIAN_BASIS);
-    
-    if(outputdir != "") bconfig.set_outputdir(outputdir) ;
-    if(bconfig.control(DELETE_SHIFT))
-      shift.annule_hard();
-
-    bh_3d_xcts_solver<decltype(bconfig), decltype(space)> 
-        bh_solver(bconfig, space, basis, conf, lapse, shift);
-    exit_status = bh_solver.solve();
-    if(exit_status == RUN_BOOST) {
-      exit_status = bh_solver.binary_boost_stage(binconfig, bco);
-    } else if(res_inc && exit_status != RELOAD_FILE) {
-      res_inc = false;
-      
-      if(rank == 0)
-        exit_status = bh_3d_xcts_regrid(bconfig, final_res, "initbh");
-      bconfig.set_filename("initbh");
-      bconfig.control(ITERATIVE_CHI) = false;
-      MPI_Barrier(MPI_COMM_WORLD);
-      bconfig.open_config();
-      exit_status = RELOAD_FILE;
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-  }
-  return exit_status;
 }
 
 template<typename config_t, typename space_t>
@@ -320,3 +216,5 @@ void bh_3d_xcts_solver<config_t, space_t>::print_diagnostics(System_of_eqs const
   std::cout.flags(f);
   std::cout << "=======================================" << "\n\n";
 } // end print diagnostics rot
+/** @}*/
+}

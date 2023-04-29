@@ -22,6 +22,12 @@
 #pragma once
 #include "Solvers/solvers.hpp"
 #include "bhns.hpp"
+
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BHNS_XCTS
+ * \ingroup FUKA
+ * @{*/
 using namespace Kadath;
 
 template<class eos_t, typename config_t, typename space_t = Kadath::Space_bhns>
@@ -54,6 +60,7 @@ class bhns_xcts_solver : Solver<config_t, space_t> {
   using Solver<config_t, space_t>::solution_exists;
   using Solver<config_t, space_t>::extract_eos_name;
   using Solver<config_t, space_t>::checkpoint;
+  using Solver<config_t, space_t>::solver_stage;
 
   public:
   // solver is not trivially constructable since Kadath containers are not
@@ -86,7 +93,7 @@ class bhns_xcts_solver : Solver<config_t, space_t> {
    * in addition to solving the relativisitc Euler equation
    * to obtain a binary in with the NS in hydrostatic equilibrium.
    */
-  int hydrostatic_equilibrium_stage(const size_t stage, const std::string stage_text);
+  int hydrostatic_equilibrium_stage(const std::string stage_text);
   /**
    * hydro_rescaling_stage
    *
@@ -96,12 +103,13 @@ class bhns_xcts_solver : Solver<config_t, space_t> {
    *
    * @param[input] stage: Some changes are made based on TOTAL_BC or ECC_RED stage.
    */
-  int hydro_rescaling_stages(const size_t stage, std::string stage_text);
+  int hydro_rescaling_stages(std::string stage_text);
 
   // Update bconfig(HC) and bconfig(NC)
   void update_config_quantities(const double& loghc);
 };
-
+/** @}*/
+}
 #include "bhns_xcts_solver_imp.cpp"
 #include "bhns_xcts_stages.cpp"
 

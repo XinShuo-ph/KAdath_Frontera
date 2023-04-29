@@ -2,12 +2,12 @@
 
 # Overview
 
-Here lies the binary black hole initial data solver and diagnostic codes.  The initial data is constructed using maximal
+Here lies the binary black hole initial data solver and diagnostic code.  The initial data is constructed using maximal
 slicing with a flat spacial metric.  Therefore, the dimensionless spins of the black holes are limited to 
-approximately `[-0.85, 0.85]`.  The v2 code is a vast improvement over the v1 code as it uses super-imposed BH solutions
+approximately `[-0.84, 0.84]`.  The v2 code is a vast improvement over the v1 code as it uses super-imposed BH solutions
 to initialize the binary instead of building the binary from flat space.  When comparing to FUKAv1, generating equal-mass non-rotating
 ID is roughly `>4x` faster due to the reduced number of stages.  When comparing to FUKAv1, generating arbitrary spin and unequal mass, the cost savings is roughly `(4 + N)x` faster 
-where N is, in the case of FUKAv1, the number of iterative solutions needed to acheive a given mass ratio and spin.
+where N is, in the case of FUKAv1, the number of iterative solutions needed to achieve a given mass ratio and spin.
 
 Note:  
 
@@ -68,40 +68,29 @@ Which results in the following:
                   Mirr = +0.50000[+0.50000]
                    Mch = +0.50000[+0.50000]
                    Chi = +0.00000[+0.00000]
-                     S = +1.03396e-12
+                     S = +1.03401e-12
                  Omega = +2.54278e-02
 ###################### BH_PLUS ######################
             Center_COM = (+5.00000, 0, 0)
-            Coord R_IN = +0.21488
-               Coord R = +0.40658
-           Coord R_OUT = +1.39076
-               Areal R = +1.00000
-                 LAPSE = [+0.39165, +0.42362]
-                   PSI = [+1.56539, +1.57119]
-                  Mirr = +0.50000[+0.50000]
-                   Mch = +0.50000[+0.50000]
-                   Chi = +0.00000[+0.00000]
-                     S = +1.03402e-12
-                 Omega = +2.54278e-02
+...
 ###################### Binary ######################
                    RES = [+9,+9,+8]
                      Q = +1.00000
-            Separation = +10.00000[+10.00000]
+            Separation = +10.00 [+10.00] (+14.77km)
          Orbital Omega = +2.79950e-02
             Komar mass = +9.88086e-01
-            Adm   mass = +9.89694e-01, Diff: +1.62621e-03
+              Adm mass = +9.89694e-01, Diff: +1.62621e-03
             Total Mirr = +1.00000
              Total Mch = +1.00000
            Adm moment. = +9.63771e-01
         Binding energy = -1.03061e-02
                M * Ome = +2.79950e-02
               E_b / mu = -4.12245e-02
-                  Axis = -0.00000
-                    Px = -4.31131e-16
-                    Py = +4.59808e-16
+                    Px = +7.16056e-16
+                    Py = -5.75227e-16
                     Pz = +0.00000e+00
-                  COMx = -2.21951e-13, A-COMx = -1.67758e-11
-                  COMy = -2.28587e-13, A-COMy = +1.68405e-11
+                  COMx = -4.47100e-13, A-COMx = +7.73112e-12
+                  COMy = +1.43039e-13, A-COMy = -2.21596e-11
                 A-COMz = +0.00000e+00
 ```
 
@@ -122,58 +111,52 @@ The third block contains information specifically related to the binary
 - `COM<x/y>`: shift in the coordinates to find a helical killing vector
 - `A-COM<x/y/z>`: A numerical calculation of the COM based on the analytical prescription from Osokine+ (REF)
 
-Note: The `Diff` noted by the ADM mass is the symmetric difference between the ADM and Komar mass.
+**Note: The `Diff` noted by the ADM mass is the symmetric difference between the ADM and Komar mass.**
 
 # Understanding the BBH INFO file
-
-Note: It is always best practice to generate new ID using the `initial_bbh.info`.  Using old initial
-data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bbh.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BBH case.  For details on all the parameters you can
 see more in [Configurator](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/) README.
+
+<b>
+Notes: 
+
+1. It is always best practice to generate new ID using the `initial_bbh.info`.  Using old initial
+data unless for very small changes in `chi` is inefficient.
+
+2. In FUKAv2.2 a minimal Config file was introduced such that only the basic fixing parameters most
+relevant to users are shown.  This minimal Config file can be bypassed by running: 
+    > `solve full`
+
+    to obtain the full Config file. Although useful for development, there is little advantage to using
+the full Config.
+</b>
 
 ## BBH Fixing parameters
 
 ```
 binary
 {
-    com 0
-    comy 0
     distance 10
-    ecc_omega 0.02799495935918607
-    global_omega 0.02799495935918607
     outer_shells 0
-    q 1
-    qpig 12.566370614359172
     res 9
-    rext 20
     bh1
     {
         chi 0
-        dim 3
-        fixed_lapse 0.29999999999999999
         mch 0.5
-        mirr 0.5
-        nshells 0
-        omega 0
-        qpig 12.566370614359172
         res 9
-        rin 0.10000000000000001
-        rmid 0.29999999999999999
-        rout 1.5
-        velx 0
-        vely 0
     }
     bh2
     {
-        ....
+        chi 0
+        mch 0.5
+        res 9
     }
 }
 ```
 
-The above includes parameters that can be fixed by the user as well as parameters that are automated in the background
-and should not be changed.  The parameters for each BH are simply copied from the isolated solution which can be read
+The above includes parameters that must be fixed by the user.  The parameters for each BH are simply copied from the isolated solution which can be read
 in detail in the [BH README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BH/) - 
 the same fixing applies also in the BBH.
 
@@ -183,9 +166,9 @@ The fixing parameters most relevant to the binary are
 a few orbits is `distance = 8 * Mtot`, however this strongly depends on `q` and the spins of component objects
 - `outer_shells`: This allows for additional shells to be placed near the compactified domain.  This can be helpful
 for more accurate quasi-equilibrium ID at lower resolution, but otherwise can be ignored and left to zero
-- `q`: this parameter is computed.  Changing it by hand does nothing
 - `res`: global resolution of the binary!
-- `global_omega`: the orbital frequency of the binary.  This will be discussed in detail in the relevant sections below
+- `adot`: (optional) This is the radial infall velocity parameter when performing eccentricity reduction.  This will be discussed more in the eccentricity reduction section below
+- `ecc_omega`: (optional) This is the fixed orbital velocity parameter used when performing eccentricity reduction.  This will be discussed more in the eccentricity reduction section below
 
 ## Fields
 
@@ -197,18 +180,13 @@ fields
     shift on
 }
 ```
-
-Fields documents the fields that are used in the solver and stored in the `dat` file.  Changing this has no impact.
+Within the full Config or the output solutions, `Fields` document the fields that are used in the solver and stored in the `dat` file.  Changing this has no impact.
 
 ## Stages
 
 ```
 stages
 {
-    corot_equal off ; deprecated - v1 stage
-    fixed_omega off ; deprecated - v1 stage
-    pre off         ; deprecated - v1 stage
-    total off       ; deprecated - v1 stage
     ecc_red on
     total_bc on
 }
@@ -221,18 +199,13 @@ For the BBH, only the `TOTAL_BC` and `ECC_RED` stages are relevant.  Old stages 
 ```
 sequence_controls
 {
+    centralized_cos on
     checkpoint off
     corot_binary off
-    fixed_bin_omega on
     fixed_lapse off
-    sequences on
-    update_initial off
-    use_boosted_co on
-    use_pn off
     resolve off
-    centralized_cos on
-    co_use_shells off
-    initial_regrid off
+    sequences on
+    use_pn off
 }
 ```
 
@@ -240,21 +213,12 @@ sequence_controls
 resolution binary ID where walltimes or server failures are a concern prior to a converged solution being obtained
 - `corot_binary`: the objects are no longer fixed based on `chi` and instead provide a corotating ID solution
 - `fixed_lapse`: toggling this control enables a fixed lapse on the horizon - not recommended
-- `fixed_bin_omega`: toggling this allows a fixed omega to be used even during the `TOTAL_BC` stage.  This is primarily used in the background for generating
-a solution.  Use of the `ECC_RED` is recommended instead
 - `sequences`: this toggle is enabled by default and essentially tells the driver routine to start from scratch.  
 If this is enabled when attempting to use a previous solution, the previous fields and numerical space (i.e. the `dat` file) is ignored
-- `update_initial`: For those familiar with the v1 solvers, there previously existed an `initial` section that would track 
-where your initial guess parameters started at and what you ended up with at the end.  This is a historical artifact and mostly ignored with the v2 codes
-- `use_boosted_co`: toggle whether to boost the isolated solutions prior to import.  This is essential when starting from scratch hence it is enabled by default
 - `use_pn`: toggle whether to always use 3.5PN estimates.  It is important to ensure this is off if the user wants to specify their own `adot` and `global_omega`
 parameters by hand (e.g. for iterative eccentricity reduction)
 - `resolve`: force all implicit compact object solutions to be resolved regardless of an existing previous solution
 - `centralized_cos`: stores all implicit COs into `$HOME_KADATH/COs`
-- `initial_regrid`: in the event one wants to regrid the solution prior to resolving a previous converged solution, this can be enabled.  This is helpful when
-  - One wants to resolve a previous solution with additional shells added
-  - One wants to resolve using the default regrid of the converged solution.  This will provide a slightly more optimized domain decomposition and could possibly add additional spherical shells by default.
-- `co_use_shells`: toggle whether isolated object solvers use additional spherical shells `nshells` as noted in the binary config file.  If this is disabled, `nshells` is only used when constructing the binary space.  For BBH ID, it is recommended to leave this `off`
 
 ## Sequence Settings
 
@@ -276,6 +240,7 @@ sequence_settings
 Now that you've generated the simplest case and we have a better understanding of the config file, we can try something more interesting
 
 1. Open the initial config file in your favorite editor
+1. Set the binary resolution: `res 11` 
 2. For BH1 set:
     - `mch 0.1` 
     - `chi -0.5`
@@ -288,60 +253,63 @@ This time around we see the iterative `chi` increase being done for the primary 
 observed are related to the isolated BH solvers (see the BH README for details), but the binary solver itself
 is consistent.
 
-This results in the converged dataset of `BBH_ECC_RED.10.-0.5.0.85.1.q0.1.2.0.09.info/dat`, however, the other implicit solutions have been saved as well.
+This results in the converged dataset of `BBH_ECC_RED.10.-0.5.0.84.1.q0.111111.4.0.11.info/dat`, however, the other implicit solutions have been saved as well.
 
 We can of course verify that the ID matches our expectation using
 
-`./bin/Release/reader BBH_ECC_RED.10.-0.5.0.85.1.q0.1.2.0.09.info`
+`./bin/Release/reader BBH_ECC_RED.10.-0.5.0.84.1.q0.111111.4.0.11.info`
 
 ```
 ###################### BH_MINUS ######################
-            Center_COM = (-9.03205, 0, 0)
-            Coord R_IN = +0.04067
+            Center_COM = (-9.03164, 0, 0)
+            Coord R_IN = +0.03655
                Coord R = +0.06982
-                SHELL1 = +0.25145
-                SHELL2 = +0.46651
-           Coord R_OUT = +1.53569
+                SHELL1 = +0.23658
+                SHELL2 = +0.43893
+                SHELL3 = +0.81773
+                SHELL4 = +1.19654
+           Coord R_OUT = +1.57535
                Areal R = +0.19319
-                 LAPSE = [+0.32625, +0.37747]
-                   PSI = [+1.64806, +1.68725]
+                 LAPSE = [+0.32657, +0.37619]
+                   PSI = [+1.64808, +1.68739]
                   Mirr = +0.09659[+0.09659]
                    Mch = +0.10000[+0.10000]
                    Chi = -0.50000[-0.50000]
                      S = -5.00000e-03
-                 Omega = +1.22944e+00
+                 Omega = +1.22833e+00
 ###################### BH_PLUS ######################
-            Center_COM = (+0.96795, 0, 0)
-            Coord R_IN = +0.28755
-               Coord R = +0.47065
-           Coord R_OUT = +1.53569
-               Areal R = +1.57270
-                 LAPSE = [+0.27142, +0.31501]
-                   PSI = [+1.77690, +1.86146]
-                  Mirr = +0.78635[+0.78635]
+            Center_COM = (+0.96836, 0, 0)
+            Coord R_IN = +0.28990
+               Coord R = +0.48258
+           Coord R_OUT = +1.57535
+               Areal R = +1.58082
+                 LAPSE = [+0.27855, +0.32071]
+                   PSI = [+1.76198, +1.84146]
+                  Mirr = +0.79041[+0.79041]
                    Mch = +0.90000[+0.90000]
-                   Chi = +0.85000[+0.85000]
-                     S = +6.88500e-01
-                 Omega = -3.14511e-01
+                   Chi = +0.84000[+0.84000]
+                     S = +6.80400e-01
+                 Omega = -3.05617e-01
 ###################### Binary ######################
-                   RES = [+9,+9,+8]
-                     Q = +9.00000
-            Separation = +10.00000[+10.00000]
+                   RES = [+11,+11,+10]
+                     Q = +0.11111
+            Separation = +10.00 [+10.00] (+14.77km)
          Orbital Omega = +2.76358e-02
-            Komar mass = +1.00257e+00
-            Adm   mass = +1.00232e+00, Diff: +2.49557e-04
-            Total Mirr = +0.88294
+            Komar mass = +1.00280e+00
+              Adm mass = +1.00178e+00, Diff: +1.02289e-03
+            Total Mirr = +0.88700
              Total Mch = +1.00000
-           Adm moment. = +1.01572e+00
-        Binding energy = +2.31537e-03
+           Adm moment. = +1.00876e+00
+        Binding energy = +1.77658e-03
                M * Ome = +2.76358e-02
-              E_b / mu = +2.57263e-02
-                    Px = -5.56455e-16
-                    Py = -4.41494e-16
+              E_b / mu = +1.97398e-02
+                    Px = +2.44642e-15
+                    Py = +3.84685e-15
                     Pz = +0.00000e+00
-                  COMx = -4.03205e+00, A-COMx = -4.01449e+00
-                  COMy = +7.34448e-03, A-COMy = -9.13143e-03
+                  COMx = -4.03164e+00, A-COMx = -4.01375e+00
+                  COMy = +7.86537e-03, A-COMy = -9.38194e-03
                 A-COMz = +0.00000e+00
+
 ```
 
 # How BBH ID is Generated
@@ -366,7 +334,7 @@ the new grid using the idea of super-imposed solutions.  Specifically:
 
 - a decay parameter `w` is chosen such that `w = distance / 2 =: decay_limit`
 - the fields are interpolated such that the solutions decay exponentially away from each object as 
-`decay_rate = exp(-(r_BH / w)^4)` where `r_BH` is the coordinate distance the respective BH
+`decay_rate = exp(-(r_BH / w)^4)` where `r_BH` is the coordinate distance to the respective BH center
 - The resulting value at a given point is then simply the sum of the background with the deviations from the background from the isolated solutions
 
 For example, if we wanted to compute the initial guess for the lapse at a given point `x`, it would be
@@ -380,18 +348,17 @@ values of the fields, i.e. `lapse = psi = 1`, `shift = 0`.
 
 The `TOTAL_BC` stage solves the full XCTS system of equations consistently and all at once.  The only thing that distinguishes 
 `TOTAL_BC` from `ECC_RED` is that, by default, `TOTAL_BC` fixes the variable `global_omega` using the quasi-equilibrium 
-assumption of `Madm == Mkomar` where as `ECC_RED` uses user-defined values or 3.5PN estimates of the `global_omega` and `adot`.  
-However, when running a new initial data sequence, the `global_omega` is initially fixed in the `TOTAL_BC` stage (you can see 
-the control enabled within the `initial_bbh.info` file) using the initial 3.5PN estimate.
+assumption of `Madm == Mkomar` where as `ECC_RED` uses user-defined value for `ecc_omega` and `adot` or the built-in 3.5PN estimates.  
+However, when running a new initial data sequence, the `global_omega` is initially fixed in the `TOTAL_BC` stage using the initial 3.5PN estimate prior to obtaining a quasi-equilibrium solution.
 
 There is of course a very simple reason for this - otherwise the solution would diverge.  Put simply, in ID generation of 
 binary objects the shift is very sensitive in such systems and, as such, can cause wild changes in the solution before 
-converge is obtained, if at all.  Additionally, the quasi-equilibrium equations are evaluated at infinity on the surface of
+convergence is obtained, if at all.  Additionally, the quasi-equilibrium equations for BBHs are evaluated at "infinity" on the surface of
  the compatified domain which is incredibly course.  To get around these challenges, `global_omega` is fixed for one solving 
  stage to allow all the fields to converge to a reasonable initial solution.
 
-After this initial solution is obtained, the `fixed_omega` control is deactivated and the `TOTAL_BC` stage is reran with 
-quasi-equilibrium.  This is also done to ensure an accurate `COM` is found before obtaining 3.5PN estimates of the 
+After this initial solution is obtained, the `fixed_omega` control is deactivated and the `TOTAL_BC` stage is reran with the
+quasi-equilibrium constraint.  This is also done to ensure an accurate `COM` is found before obtaining 3.5PN estimates of the 
 `global_omega` and `adot` within the `ECC_RED` stage.
 
 ## ECC_RED Stage

@@ -22,9 +22,13 @@
 #include "Configurator/config_bco.hpp"
 #include "Configurator/config_binary.hpp"
 #include <sstream>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
 using namespace Kadath;
 
 #define EQUI -11
+#define INNER_EQUI -12
 
 /**
  * @namespace bco_utils
@@ -41,8 +45,8 @@ constexpr double invpsisq = 1. / psisq;
 
 // this is in principle a joke and came from the need to have
 // a scaling factor (R) s.t. 1.5 < R < 2.
-// Since this worked well, it persists...
-const double gold_ratio = (1 + std::sqrt(5)) / 2.;
+// Since this works well, it embarrassingly persists...
+const double gold_ratio = (1 + std::sqrt(5.)) / 2.;
 
 /**
  * bco_utils::KadathPNOrbitalParams \n 
@@ -133,7 +137,10 @@ double get_radius (const dom_t* dom, const int bound) {
         break;
       case EQUI:
         pos.set(0) = npts(0) - 1;
-        pos.set(1) = npts(1) - 1;
+        pos.set(2) = npts(2) - 1;
+        break;
+      case INNER_EQUI:
+        pos.set(2) = npts(2) - 1;
         break;
       default:
         std::cout << "Unknown bound sent to get_radius: " << bound << std::endl;
@@ -298,7 +305,7 @@ void interp_adapted_mapping(const adapted_t* new_shell, const int old_outer_adap
 }
 
 /**
- * bco_utils::get_center\n 
+ * bco_utils::get_center
  * Quickly get the X coordinate of the  cartesian center of a domain\n 
  * while using the correct Index and letting it be deleted when we're done.
  *
@@ -314,7 +321,7 @@ double get_center (const space_t& space, const int dom) {
 }
 
 /**
- * bco_utils::get_boundary_val\n 
+ * bco_utils::get_boundary_val
  * Quickly get the value at a specified boundary of a scalar field in a given domain\n 
  * and letting the setup be deleted when we're done.
  *
@@ -347,8 +354,8 @@ inline double get_boundary_val (const int dom, const Scalar& field, const int bo
 }
 
 /**
- * bco_utils::set_radius\n 
- * Quickly get the basic outer radius of a given domain to update the corresponding\n 
+ * bco_utils::set_radius 
+ * Quickly get the basic outer radius of a given domain to update the corresponding 
  * radius in the config file based on the provides indexes 
  * 
  * @tparam space_t type of numerical space
@@ -365,7 +372,7 @@ void set_radius (const int& dom, const space_t& space, config_t& bconfig, const 
 /**
  * bco_utils::set_NS_bounds
  *
- * Set boundaries for a NS companion based on the config file parameters\n 
+ * Set boundaries for a NS companion based on the config file parameters 
  * 
  * @tparam space_t type of numerical space
  * @param[input]  bounds: array of bounds to update
@@ -437,7 +444,7 @@ void set_isolated_BH_bounds (ary_t& bounds, config_t& bconfig)  {
 }
 
 /**
- * bco_utils::set_BH_bounds
+ * bco_utils::set_BH_bounds -- deprecated
  *
  * Set boundaries for a BH companion based on the config file parameters
  * and it's companion
@@ -516,6 +523,181 @@ void set_BH_bounds (ary_t& bounds, config_t& bconfig, const int bco, const bool 
   // added
   bconfig(NSHELLS, bco) = new_ary.size() - 3;
   bounds = std::move(new_ary);
+}
+
+/**
+ * bco_utils::gen_shell_bound_radius
+ *
+ * Recursive routine to Generate the next shell boundary radius 
+ * using the input field.  
+ * By default, field is intended to be \partial_r^2(Psi).  
+ * This has not been tested with other input fields.
+ * 
+ * @tparam T return type (double most likely)
+ * @param[input]  field: e.g. \partial_r^2(Psi)
+ * @param[input]  r0: fixed inner radius
+ * @param[input]  r1: outer radius guess
+ * @return r1: new shell radius
+ */
+template<class T>
+T gen_shell_bound_radius(Scalar& field, T r0, T r1, 
+  T xc = 0., T threshold = 0.9, T fac = 1.) 
+{
+  auto reldiff = [](auto ref, auto cmp) {
+    return 1. - cmp / ref;
+  };
+
+  // Setup points relative to coordinate center
+  Point pt_r0(3);
+  pt_r0.set(1) = xc + r0;
+
+  Point pt_r1(3);
+  pt_r1.set(1) = xc + r1;
+  // end point setup
+
+  // relative difference of ddrP at both radii
+  auto ddrP_rel_diff = std::abs(
+    reldiff(
+      field.val_point(pt_r0),
+      field.val_point(pt_r1)
+    )
+  );
+
+  // relative difference to the desired threshold
+  auto relth = std::abs(
+    reldiff(
+      threshold,
+      ddrP_rel_diff
+    )
+  );
+
+  #ifdef DEBUG
+  std::cout << "r0: " << r0 
+            << "\t ddrP0: " << field.val_point(pt_r0)
+            << "\t P: " << pt_r0 << '\n'
+            << "r1: " << r1
+            << "\t ddrP1: " << field.val_point(pt_r1) << "\t ddrP_rel_diff: " << ddrP_rel_diff 
+            << "\t P: " << pt_r1 << '\n'
+            << "\t relth: " << relth << "\t r1 / r0: " << r1/r0 << '\n';
+  std::cout << pt_r0 << "," << pt_r1 << '\n';
+  #endif
+
+  auto dr = r1 - r0;
+  
+  if(ddrP_rel_diff > threshold) {
+    auto new_fac = 0.5 * fac;
+    r1 = r0 + dr * new_fac;
+    r1 = gen_shell_bound_radius(
+      field, 
+      r0, 
+      r1,
+      xc,
+      threshold,
+      new_fac
+    );
+  } else {
+    // If the radii are far enough apart we found a good radius
+    if(r1 / r0 > bco_utils::gold_ratio)
+      return r1;
+    else { 
+      auto new_fac = fac + fac * 0.1;
+      r1 = r0 + (1. / fac) * dr * new_fac;
+      r1 = gen_shell_bound_radius(
+        field, 
+        r0, 
+        r1,
+        xc,
+        threshold,
+        new_fac
+      );
+    }
+  }
+  return r1;  
+}
+
+/**
+ * bco_utils::set_arb_bounds
+ *
+ * Generate bounds for the local shells around compact objects using
+ * \partial_r^2(Psi) for binary initial data
+ * 
+ * @tparam config_t Configurator type
+ * @param[input]  bconfig: Configurator
+ * @param[input]  bco: index of compact object data (BCO1/BCO2)
+ * @param[input]  ddrconf_sol: Estimate or true solution of \partial_r^2(Psi)
+ * @param[input]  adapted_dom_sol: domain index of the inner adapted boundary
+ * @param[input]  threshold: the threshold to meet when finding a shell radius
+ * @return bounds: vector of bounds
+ */
+template<typename config_t>
+std::vector<double> set_arb_bounds (config_t& bconfig, const int bco, 
+  Scalar& ddrconf_sol, const int adapted_dom_sol, 
+    const double threshold = 0.95)  {
+  
+  // Generate a new vector for bounds
+  // FIXME: this ignores shells inside of NS'
+  std::vector<double> bounds;
+  bounds.push_back(bconfig(RIN, bco));
+  bounds.push_back(bconfig(RMID, bco));
+
+  auto adapted_dom(ddrconf_sol.get_space().get_domain(adapted_dom_sol));
+  
+  // Coordinate centered point
+  Point pt(adapted_dom->get_center());
+  double xc{pt(1)};
+  
+  // Initial radii starting at the inner adapted radius on the
+  // equitorial plane since this should be the largest radius
+  auto r0{get_radius(adapted_dom, INNER_EQUI)};
+  // We only add shells out to ROUT
+  auto r1{bconfig(ROUT,bco)};
+  auto Rout{r1};
+
+  // some upper bound that should never be hit!
+  auto max_shells = std::ceil((Rout - r0)/(3.* r0));
+  for(auto i = 0; i < max_shells; ++i) {
+
+    pt.set(1) = xc + r0;
+
+    // stop looking for shells once \partial_r^2 \Psi
+    // is roughly flat
+    // FIXME:? this will fail at local extrema!
+    if (ddrconf_sol.val_point(pt) < 0.01)
+      break;
+
+    // get new shell boundary outer radius
+    r1 = gen_shell_bound_radius(ddrconf_sol, r0, r1, xc, threshold);
+    
+    // check for minimum spacing between last shell boundary
+    // and Rout
+    if (Rout / r1 > bco_utils::gold_ratio) {
+      #ifdef DEBUG
+      cout << "Rout/r1: " << Rout / r1 << ", Success.\n";
+      #endif
+      bounds.push_back(r1);
+    }
+    else {
+      #ifdef DEBUG
+      cout << "Rout/r1: " << Rout / r1 << ", failed.\n";
+      #endif
+      break;
+    }
+    
+    // update variables for finding next shell
+    r0 = r1;
+    r1 = Rout;
+    if(i == max_shells - 1){
+      std::cerr << "Max iterations hit in setting CO bounds. Something went very wrong!\n";
+      std::cerr << "r0: "  << r0 << '\n'
+                << "r1: "  << r1 << '\n'
+                << "max_shells: " << (Rout - r0)/(3.* r0) << '\n';
+      std::_Exit(EXIT_FAILURE);
+    }
+  }
+  // Add ROUT as the last bound
+  bounds.push_back(Rout);
+  bconfig(NSHELLS, bco) = bounds.size() - 3;
+  return bounds;
 }
 
 /**

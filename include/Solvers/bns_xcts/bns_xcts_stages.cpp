@@ -22,7 +22,11 @@
  */
 #include "mpi.h"
 #include "bco_utilities.hpp"
-
+namespace FUKA_Solvers {
+/**
+ * \addtogroup BNS_XCTS
+ * \ingroup FUKA
+ * @{*/
 template<class eos_t, typename config_t, typename space_t>
 int bns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage() {
   int rank = 0;
@@ -260,27 +264,27 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage() {
 }
 
 template<class eos_t, typename config_t, typename space_t>
-int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const size_t stage, std::string stage_text) {
+int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(std::string stage_text) {
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   int exit_status = EXIT_SUCCESS;
 
   if(rank == 0) 
-    if(stage == TOTAL_BC)
+    if(solver_stage == TOTAL_BC)
       std::cout << "############################" << std::endl
                 << "Py fixing without first integral and fixed omega, chi = "
                 << bconfig(CHI, BCO1) << "," << bconfig(CHI, BCO2)
                 << " and q = " << bconfig(Q) << std::endl
                 << "with Py BC fixing" << std::endl
                 << "############################" << std::endl;
-    else if(stage == ECC_RED)
+    else if(solver_stage == ECC_RED)
       std::cout << "############################" << std::endl
                 << "Eccentricity reduction step with fixed omega, chi = "
                 << bconfig(CHI, BCO1) << "," << bconfig(CHI, BCO2)
                 << " and q = " << bconfig(Q) << std::endl
                 << "############################" << std::endl;
   
-  if(stage == ECC_RED) {
+  if(solver_stage == ECC_RED) {
     // determine whether to use PN estimates of the orbital frequency and adot
     // in case of the eccentricity stage
     if(std::isnan(bconfig.set(ADOT)) || std::isnan(bconfig.set(ECC_OMEGA)) || bconfig.control(USE_PN)) {
@@ -365,7 +369,7 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const size
   syst.add_def("Morb^i = mg^i + xaxis * ey^i + yaxis * ex^i");
   
   std::string bigB{"B^i = bet^i + ome * Morb^i"};
-  if(stage == ECC_RED) {
+  if(solver_stage == ECC_RED) {
     syst.add_cst("adot", bconfig(ADOT));
     syst.add_cst("r"   , CART);
     syst.add_def("comr^i = r^i - xaxis * ex^i + yaxis * ey^i");
@@ -555,4 +559,5 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(const size
     checkpoint();
   return exit_status;
 }
-
+/** @}*/
+}

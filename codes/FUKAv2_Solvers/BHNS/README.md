@@ -9,9 +9,9 @@ even with a fairly abundant basis of literature on the topic, but, in the end, h
 
 With that said, if you have taken the time to work through the BBH and BNS v2 solvers, using the BHNS solver will feel quite familiar.
 
-Note:  When referring to `Mtot` below, we will be referring to the sum of the ADM mass of the TOV solution as measured
+**Note:  When referring to `Mtot` below, we will be referring to the sum of the ADM mass of the TOV solution as measured
 at infinite separation with that of the Christodoulou mass of the companion BH - `Mtot := (MADM_MINUS + MCH_PLUS)`
-where plus and minus simply refer to their location on the x-axis.
+where plus and minus simply refer to their location on the x-axis.**
 
 # Organization
 
@@ -33,10 +33,10 @@ where plus and minus simply refer to their location on the x-axis.
 2. Rerun (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bhns.info`
 3. This will result in the generation of a pair of files containing the solution: `BHNS_ECC_RED.togashi.35.0.0.2.8.q1.0.0.09.<info/dat>`
 
-Note: In the event you have learned about generating FUKAv2 ID in the recommended order as discussed in the 
+**Note: In the event you have learned about generating FUKAv2 ID in the recommended order as discussed in the 
 [FUKAv2 README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/) and
 you have not disabled `centralized_cos`; you can look into the solver output to find that the solution of the 1.4M NS generated
-in the previous runs has been reused.
+in the previous runs has been reused.**
 
 We can deconstruct the name to make it understandable:
 
@@ -46,13 +46,13 @@ from earlier stages which will be discussed later. This also distinguishes it fr
 are saved to file during each iteration of the solver
 - `togashi`: the leading name of the eosfile
 - `35`: separation distance in geometric units!
-- `0.0.`: In this case, both NSs are not spinning
-- `2.8.q1`: the total mass `2.8` and mass ratio `1`
+- `0.0.`: In this case, both objects are not spinning
+- `2.8.q1`: the total mass is `2.8` with mass ratio `1`
 - `0.0.09`: `nshells = 0` for `ns1`, `nshells = 0` for `bh2` where the resolution in each domain is `9` collocation points in the radial and theta direction with `8` points in the phi direction
 - `info`: The info file contains all the steering parameters, values used in creating the domain decomposition, stored fields, stages, settings, and controls
 - `dat`: The dat file is a binary file that contains the numerical space and the variable fields
 
-The default configuration for BHNS has a total mass of 2.8M and non-spinning.
+The default configuration for BHNS has a total mass of 2.8M and is non-spinning.
 Aside from the diagnostics observed during the solver stage, we can use the reader
 to verify the ID.  This can be done by running:
 
@@ -62,54 +62,57 @@ Which results in the following:
 
 ```
 ###################### Neutron Star ######################
-            Center_COM = (-17.55727, 0, 0)
+            Center_COM = (-17.49060, 0, 0)
             Coord R_IN = +3.03469
-               Coord R = [+5.76967,+6.26370] ([+8.52180,+9.25148] km)
+               Coord R = [+5.99138,+6.13698] ([+8.84927,+9.06431] km)
            Coord R_OUT = +9.10407
-               Areal R = +7.79621
-                 NS Mb = +1.55255 (+0.46443,+1.08812,)
+               Areal R = +7.79418 [+11.51200km]
+                 NS Mb = +1.55255 (+0.46406,+1.08849,)
      Isolated ADM Mass = +1.40000
-      Quasi-local Madm = +1.37888 Diff:+0.01508
-         Quasi-local S = +0.00000
-                   Chi = +0.00000 [+0.00000]
-                 Omega = +0.00005
-       Central Density = +1.37054e-03
-        Central log(h) = +2.30573e-01
-      Central Pressure = +2.32291e-04
-    Central dlog(h)/dx = -1.39736e-15
-Central Euler Constant = +7.63530e-01
-     Integrated log(h) = +186.01316
+      Quasi-local Madm = +1.38021 Diff:+0.01414
+         Quasi-local S = -0.00000
+                   Chi = -0.00000 [+0.00000]
+                 Omega = +0.00003
+       Central Density = +1.37441e-03
+        Central log(h) = +2.31847e-01
+      Central Pressure = +2.34489e-04
+    Central dlog(h)/dx = -1.55064e-15
+Central Euler Constant = +7.60031e-01
+     Integrated log(h) = +186.25550
 
 ###################### Black Hole ######################
-            Center_COM = (+17.44273, 0, 0)
+            Center_COM = (+17.50940, 0, 0)
             Coord R_IN = +0.58273
-               Coord R = +1.14670 [+1.69368km]
+               Coord R = +1.15112 [+1.70020km]
+                SHELL1 = +2.19094
+                SHELL2 = +3.58265
            Coord R_OUT = +9.10407
-               Areal R = +2.80000
-                LAPSE = [+0.40653, +0.43436]
-                  PSI = [+1.56000, +1.56521]
+               Areal R = +2.80000 [+4.13560km]
+                LAPSE = [+0.39855, +0.42684]
+                  PSI = [+1.55732, +1.56189]
                   Mirr = +1.40000
                    Mch = +1.40000 [+1.40000]
-                   Chi = -0.00009 [+0.00000]
-                     S = -0.00018
+                   Chi = +0.00000 [+0.00000]
+                     S = +0.00000
                  Omega = +0.00679
 
 ###################### Binary ######################
+                   RES = [+9,+9,+8]
                      Q = +1.00000
-            Separation = +35.00000 [+25.00000]
+            Separation = +35.00 [+12.50] (+51.69km)
          Orbital Omega = +0.00732
-            Komar mass = +2.61945
-              Adm mass = +2.84343, Diff: +0.08200
+            Komar mass = +2.77835
+              Adm mass = +2.77635, Diff: +0.00072
             Total Mass = +2.80000 [+2.80000]
-           Adm moment. = +8.15384
-        Binding energy = +0.04343
+           Adm moment. = +8.13724
+        Binding energy = -0.02365
             Minf * Ome = +0.02051
-            E_b / Minf = +0.01551
-                    Px = -1.40775e-15
-                    Py = -1.49499e-15
+            E_b / Minf = -0.00845
+                    Px = +9.05584e-17
+                    Py = -8.54493e-16
                     Pz = +0.00000e+00
-                  COMx = -0.05727, A-COMx = -0.42814
-                  COMy = -0.18749, A-COMy = -0.15731
+                  COMx = +0.00940, A-COMx = +0.00041
+                  COMy = -0.07950, A-COMy = -0.07997
                 A-COMz = +0.00000
 ```
 
@@ -133,94 +136,72 @@ The third block contains information specifically related to the binary
 - `COM<x/y>`: shift in the coordinates to find a helical killing vector
 - `A-COM<x/y/z>`: A numerical calculation of the COM based on the analytical prescription from Osokine+ (REF)
 
-Note: The `Diff` noted by the ADM mass is the symmetric difference between the ADM and Komar mass.
+**Note: The `Diff` noted by the ADM mass is the symmetric difference between the ADM and Komar mass.**
 
 # Understanding the BHNS INFO file
-
-Note: It is always best practice to generate new ID using the `initial_bhns.info`.  Using old initial
-data unless for very small changes is inefficient.
 
 Using your favorite text editor, you can open up the `initial_bhns.info`.  We will go through the file,
 but we'll discuss only the details relevant to the BHNS case.  For details on all the parameters you can
 read more in the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/).
+
+<b>
+Notes: 
+
+1. It is always best practice to generate new ID using the `initial_bhns.info`.  Using old initial
+data unless for very small changes in `chi` is inefficient.
+
+2. In FUKAv2.2 a minimal Config file was introduced such that only the basic fixing parameters most
+relevant to users are shown.  This minimal Config file can be bypassed by running: 
+    > `solve full`
+
+    to obtain the full Config file. Although useful for development, there is little advantage to using
+the full Config.
+</b>
 
 ## BHNS Fixing parameters
 
 ```
 binary
 {
-    com 0
-    comy 0
     distance 35
-    ecc_omega 0.0073243699259383068
-    global_omega 0.0073243699259383068
     outer_shells 0
-    q 1
-    qpig 12.566370614359172
     res 9
-    rext 70
     ns1
     {
         chi 0
-        dim 3
-        hc 1.26
         madm 1.3999999999999999
-        mb 1.55
-        n_inner_shells 0
-        nc 0.0013699999999999999
-        nshells 0
-        omega 0
-        ql_madm 1.3999999999999999
-        qpig 12.566370614359172
         res 9
-        rin 3.1000000000000001
-        rmid 6.2000000000000002
-        rout 9.3000000000000007
         eosfile togashi.lorene
         eostype Cold_Table
-        h_cut 0
-        interpolation_pts 2000
     }
     bh2
     {
         chi 0
-        dim 3
-        fixed_lapse 0.29999999999999999
         mch 1.3999999999999999
-        mirr 0.5
-        nshells 0
-        omega 0
-        qpig 12.566370614359172
         res 9
-        rin 0.10000000000000001
-        rmid 0.29999999999999999
-        rout 1.5
-        velx 0
-        vely 0
     }
 }
 ```
 
-The above includes parameters that can be fixed by the user as well as parameters that are automated in the background
-and should not be changed.  The parameters for each NS are simply copied from the isolated solution which can be read
-in detail in the [NS README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/) - 
-the same fixing applies also in the BHNS.  The relevant parameters to discuss are
+During the various steps to construct the initial binary guess 
+the parameters for each object are copied to construct the isolated solutions as discussed
+in detail in the respective readmes ([NS README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/), 
+[BH README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BH/)) - 
+the same fixing parameters also apply for the BHNS.  The relevant parameters to discuss are
 
-- `res` The resolution shown for the individual compact objects is the highest resolution the *isolated* dataset will be ran at.  This can be important for TOV solutions as the total baryonic mass is sensitive to the resolution.  `res 11` is recommended for production runs
-- `n_inner_shells` these are additional spherical shells that can be placed in the stellar interior (only for the binary).  These are not recommended to be used as the solution is very sensitive to the domain decomposition.
-- `nshells` describes the number of Additional spherical shells outside of the stellar or excision surface used in the binary ID solver and, optionally, used in the isolated ID solvers when the control `co_use_shells` is set to `on`.
+- `res` The resolution shown for the individual compact objects is the highest resolution the *isolated* dataset will be solved at.  This can be important for TOV solutions as the total baryonic mass is sensitive to the resolution.  `res 11` is recommended for 
+production runs for neutron stars.
 
 The fixing parameters most relevant to the binary are
 
-- `adot`: This is the radial infall velocity parameter when performing eccentricity reduction.  This will be discussed more
-in the eccentricity reduction section below
 - `distance`: this is in geometric units! It is important to pick something reasonable.  A general rule for a binary with
-a few orbits is `distance = 9 * Mtot`, however this strongly depends on `q` and the spins of component objects
+a few orbits is `distance = 10 * Mtot`, however this strongly depends on `q` and the spins of component objects
 - `outer_shells`: This allows for additional shells to be placed near the compactified domain.  This can be helpful
-for more accurate quasi-equilibrium ID at lower resolution, but otherwise can be ignored and left to zero
+for more accurate quasi-equilibrium ID at lower resolution, but otherwise can be ignored and left to `0`
 - `q`: this parameter is computed.  Changing it by hand does nothing
 - `res`: global resolution of the binary!
-- `global_omega`: the orbital frequency of the binary.  This will be discussed in detail in the relevant sections below
+- `adot`: (optional) This is the radial infall velocity parameter when performing eccentricity reduction.  This will be discussed more in the eccentricity reduction section below
+- `ecc_omega`: (optional) This is the fixed orbital velocity parameter used when performing eccentricity reduction.  This will be discussed more in the eccentricity reduction section below
 
 ## Fields
 
@@ -235,16 +216,15 @@ fields
 }
 ```
 
-Fields documents the fields that are used in the solver and stored in the `dat` file.  Changing this has no impact.
+Within the full Config or the output solutions, `Fields` document the fields that are used in the solver and stored in the `dat` file.  Changing this has no impact.
 
 ## Stages
 
 ```
 stages
 {
-    total off       ; v1 stage, deprecated
     total_bc on     ; hydrostatic-equilibrium stage
-    ecc_red on      ; eccentricity reduction stage - hydro-rescaling with fixed `global_omega`
+    ecc_red on      ; eccentricity reduction stage - hydro-rescaling with fixed `global_omega` and `adot`
 }
 ```
 
@@ -253,16 +233,13 @@ stages
 ```
 sequence_controls
 {
+    centralized_cos off
     checkpoint off
     corot_binary off
-    fixed_bin_omega off
     fixed_lapse off
-    sequences on
-    update_initial off
-    use_boosted_co on
-    use_pn off
     resolve off
-    centralized_cos on
+    sequences on
+    use_pn off
 }
 ```
 
@@ -270,18 +247,11 @@ sequence_controls
 resolution binary ID where walltimes or server failures are a concern prior to a converged solution being obtained
 - `corot_binary`: the objects are no longer fixed based on `chi` and instead provide a corotating ID solution
 - `fixed_lapse`: toggling this control enables a fixed lapse on the horizon - not recommended
-- `fixed_bin_omega`: toggling this allows a fixed omega to be used even when the `TOTAL` stage is activated.  This is primarily used in the background for generating
-a solution from scratch.  Use of the `ECC_RED` or `TOTAL_BC` stage is recommended when doing this intentionally
 - `sequences`: this toggle is enabled by default and essentially tells the driver routine to start from scratch.  
 If this is enabled when attempting to use a previous solution, the previous fields and numerical space (i.e. the `dat` file) is ignored
-- `update_initial`: For those familiar with the v1 solvers, there previously existed an `initial` section that would track 
-where your initial guess parameters started at and what you ended up with at the end.  This is a historical artifact and mostly ignored with the v2 codes
-- `use_boosted_co`: toggle whether to boost the isolated solutions prior to import.  This is essential when starting from scratch hence it is enabled by default
-- `use_pn`: toggle whether to always use 3.5PN estimates.  It is important to ensure this is off if the user wants to specify their own `adot` and `global_omega`
-parameters by hand (e.g. for iterative eccentricity reduction)
+- `use_pn`: toggle whether to always use 3.5PN estimates.  It is important to ensure this is off if the user wants to specify their own `adot` and `global_omega` parameters by hand (e.g. for iterative eccentricity reduction)
 - `resolve`: force all implicit compact object solutions to be resolved regardless of an existing previous solution
 - `centralized_cos`: stores all implicit COs into `$HOME_KADATH/COs`
-- `co_use_shells`: toggle whether isolated object solvers use additional spherical shells `nshells` as noted in the binary config file.  If this is disabled, `nshells` is only used when constructing the binary space.
 
 ## Sequence Settings
 
@@ -301,7 +271,7 @@ resolution
 
 # Your Second run!
 
-Now that you've generated the simplest case and we have a better understanding of the config file, we can try something more interesting
+Now that you've generated the simplest case and we have a better understanding of the Config file, we can try something more interesting
 
 1. Open the initial config file in your favorite editor
 1. Set `distance 35`
@@ -315,75 +285,77 @@ Now that you've generated the simplest case and we have a better understanding o
     - `chi 0.52`
 1. Run (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_bhns.info`
 
-This time around we see the iterative `chi` increase being done for the NS, but overall the only changes 
-observed are related to the isolated NS solver (see the [NS README](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/) for details).  The binary solver itself is consistent.
+This time around we see the iterative `chi` increase being done for the NS and BH, but overall the only changes 
+observed are related to the isolated solvers.  The binary solver itself is consistent.
 
-This results in the converged dataset of `BHNS_ECC_RED.togashi.28.0.52.0.3.6.q0.487603.0.0.11.info/dat`, however, the other implicit solutions have been saved as well
+This results in the converged dataset of `BHNS_ECC_RED.togashi.28.0.52.0.3.6.q0.487603.0.0.11.info/dat`, however, the other implicit solutions have been saved as well:
 
 1. `BHNS_TOTAL_BC_FIXED_OMEGA.`: is the initial solution after the import of the two isolated solutions have been solved in the binary space for a fixed COM and orbital frequency.  
 The hydro fields are simply rescaled to enforce the
 specified baryonic mass, but the fluid is not in hydrostatic equilibrium
-2. `BHNS_TOTAL_BC.`: this is the solution in complete hydrostatic equilibrium with the ADM linear momenta and the orbital frequency being fixed by the force-balance equation for the NS and varying the COM
+2. `BHNS_TOTAL_BC.`: this is the quasi-equilibrium solution in hydrostatic equilibrium with the ADM linear momenta and the orbital frequency being fixed by the force-balance equation for the NS and varying the COM
 4. `BHNS_ECC_RED.`:  The final solution is one where the orbital frequency and radial infall velocity is fixed to either 3.5th order PN estimates based on the COM obtained in the `TOTAL_BC` stage or the values for `adot` and `ecc_omega` are used in the case of iterative eccentricity reduction
 
 We can of course verify that the ID matches our expectation using
 
-`./bin/Release/reader BHNS_ECC_RED.togashi.35.0.0.52.3.6.q0.487603.0.0.11.info`
+`./bin/Release/reader BHNS_ECC_RED.togashi.35.0.0.52.3.6.q0.487603.0.1.11.info`
 
 ```
 ###################### Neutron Star ######################
-            Center_COM = (-23.57751, 0, 0)
-            Coord R_IN = +2.97850
-               Coord R = [+5.96311,+6.22628] ([+8.80751,+9.19621] km)
-           Coord R_OUT = +9.97836
-               Areal R = +7.74500
-                 NS Mb = +1.28557 (+0.36481,+0.92076,)
+            Center_COM = (-23.59686, 0, 0)
+            Coord R_IN = +2.97849
+               Coord R = [+5.96366,+6.22923] ([+8.80832,+9.20057] km)
+           Coord R_OUT = +9.98390
+               Areal R = +7.74423 [+11.43822km]
+                 NS Mb = +1.28308 (+0.36394,+0.91914,)
      Isolated ADM Mass = +1.18000
-      Quasi-local Madm = +1.15768 Diff:+0.01892
+      Quasi-local Madm = +1.15569 Diff:+0.02060
          Quasi-local S = +0.00000
                    Chi = +0.00000 [+0.00000]
                  Omega = +0.00007
-       Central Density = +1.22225e-03
-        Central log(h) = +1.84227e-01
-      Central Pressure = +1.58366e-04
-    Central dlog(h)/dx = +2.49019e-15
-Central Euler Constant = +7.58231e-01
-     Integrated log(h) = +141.96974
+       Central Density = +1.22110e-03
+        Central log(h) = +1.83889e-01
+      Central Pressure = +1.57870e-04
+    Central dlog(h)/dx = -3.32816e-15
+Central Euler Constant = +7.58121e-01
+     Integrated log(h) = +141.62632
 
 ###################### Black Hole ######################
-            Center_COM = (+11.42249, 0, 0)
-            Coord R_IN = +0.94427
-               Coord R = +1.79591 [+2.65255km]
-           Coord R_OUT = +9.97836
-               Areal R = +4.66020
-                LAPSE = [+0.37110, +0.39523]
-                  PSI = [+1.60048, +1.62197]
+            Center_COM = (+11.40314, 0, 0)
+            Coord R_IN = +0.94460
+               Coord R = +1.79601 [+2.65270km]
+                SHELL1 = +5.93655
+           Coord R_OUT = +9.98390
+               Areal R = +4.66020 [+6.88312km]
+                LAPSE = [+0.37053, +0.39461]
+                  PSI = [+1.60043, +1.62193]
                   Mirr = +2.33010
-                   Mch = +2.42016 [+2.42000]
-                   Chi = +0.52039 [+0.52000]
-                     S = +3.04801
-                 Omega = -0.04992
+                   Mch = +2.42000 [+2.42000]
+                   Chi = +0.52001 [+0.52000]
+                     S = +3.04536
+                 Omega = -0.04983
 
 ###################### Binary ######################
+                   RES = [+11,+11,+10]
                      Q = +0.48760
-            Separation = +35.00000 [+14.46188]
+            Separation = +35.00 [+9.72] (+51.69km)
          Orbital Omega = +0.00807
-            Komar mass = +3.55526
-              Adm mass = +3.56874, Diff: +0.00378
-            Total Mass = +3.60016 [+3.60000]
-           Adm moment. = +13.78446
-        Binding energy = -0.03142
+            Komar mass = +3.56884
+              Adm mass = +3.56615, Diff: +0.00076
+            Total Mass = +3.60000 [+3.60000]
+           Adm moment. = +13.77530
+        Binding energy = -0.03385
             Minf * Ome = +0.02906
-            E_b / Minf = -0.00873
-                    Px = -3.48680e-15
-                    Py = -2.14706e-15
+            E_b / Minf = -0.00940
+                    Px = +8.46062e-15
+                    Py = -2.04151e-15
                     Pz = +0.00000e+00
-                  COMx = -6.07751, A-COMx = -6.05926
-                  COMy = -0.03323, A-COMy = -0.10260
+                  COMx = -6.09686, A-COMx = -6.07039
+                  COMy = -0.03263, A-COMy = -0.10284
                 A-COMz = +0.00000
 ```
 
-# How NS ID is Generated
+# How BHNS ID is Generated
 
 ## Initial Setup
 
@@ -412,13 +384,14 @@ For example, if we wanted to compute the initial guess for the lapse at a given 
 
 `lapse(x) = 1. + decay_rate_NS * (lapse_NS(x) - 1.) + decay_rate_BH * (lapse_BH(x) - 1.)`
 
-This is then repeated for all fields in all numerical domains, with the compactified domain set the asymptotic 
-values of the fields, i.e. `lapse = psi = 1`, `log(h) = shift = 0`.
+This is then repeated for all fields in all numerical domains, with the compactified domain set to the asymptotic 
+values of the fields, i.e. `lapse = psi = 1`, `log(h) = shift^i = 0`.
 
 ## Initial Solution
 
 Once the initial guess has been setup for the BHNS, the first solver stage solves the full XCTS 
-system of equations consistently and all at once, however, with regards to NS source, 
+system of equations consistently and all at once using a fixed orbital velocity, however, 
+with regards to a NS source, 
 the matter is simply rescaled to achieve the desired baryonic mass.  The reason for this is two fold:
 
   1. The spacetime fields need to settle to a more accurate estimate before resolving the matter consistently
@@ -431,27 +404,27 @@ discarded once a solution from a later stage is obtained.
 
 Now with a more stable background, the matter becomes a variable field and is allowed to be solved for
 consistently in order to obtain a solution in hydrostatic equilibrium. Now
-`global_omega` is determined by- and the ADM linear momenta are minimized by- using the force balance equation
+`global_omega` is determined by- and the ADM linear momenta are minimized by- using the force-balance equation
 and varying the COM.
 
-Note: in the event one wants to later increase the resolution or make iterative changes 
+**Note: in the event one wants to later increase the resolution or make iterative changes 
 (e.g. make small changes to the MADM, MB, CHI of one or both stars),
-it can only be done using the solution from this stage, `BHNS_TOTAL.*<info/dat>`, 
-as the initial starting point.  Using the solutions from the hydro-rescaling stage
-will more often than not cause the solution to diverge.  Therefore, these solutions can be useful
-to retain.
+it can only be done using the solution from this stage, `BHNS_TOTAL_BC.*<info/dat>`, 
+as the initial starting point.  Reusing the solutions from the hydro-rescaling stage
+will more often than not cause the solution to diverge or lead to unphysical results in the numerical
+evolution.  Therefore, these solutions can be useful to retain.**
 
 ### Automated resolution increase
 
 In the event the binary resolution was set to something higher than the sequence_setting `initial_resolution`, 
 the automated increase resolution will take place here and resolve the binary in hydro-static equilibrium.  
-This is very important as increasing the resolution and repeating a matter-rescaling stage will result 
+This is very important as increasing the resolution from a solution from a matter-rescaling stage will result 
 in a very inconsistent description of the fluid as it will include numerical errors from the interpolated solution at lower resolution.
 
 ## Eccentricity Reduction
 
 Using either 3.5PN estimates or, in the case of iterative eccentricity reduction, 
 `ecc_omega` and `adot` from the config file,
-a final stage of matter rescaling is done based on the changes introduced by 
+a final stage of matter rescaling is performed based on the changes introduced by 
 `ecc_omega` and `adot`.  This is the recommended
 solution to use for evolutions and it is stored with a filename title of `BHNS_ECC_RED.*<info/dat>`

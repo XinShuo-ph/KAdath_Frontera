@@ -20,10 +20,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "mpi.h"
-#include "Solvers/bh_3d_xcts/bh_3d_xcts_solver.hpp"
+#include "Solvers/bh_3d_xcts/bh_3d_xcts_driver.hpp"
 #include "Solvers/solver_startup.hpp"
+#include "Solvers/sequences/parameter_sequence.hpp"
 
 using namespace Kadath;
+using namespace FUKA_Solvers;
 
 int main(int argc, char** argv) {
   int rc = MPI_Init(&argc, &argv) ;
@@ -49,14 +51,44 @@ int main(int argc, char** argv) {
   if(InitSolver::example_setup) {
     if(rank == 0) {
       // Generate <example name>.info and terminate      
-      bconfig.set_defaults();
-      bconfig.control(SEQUENCES) = InitSolver::setup_first;
-      bconfig.write_config();
+      if(InitSolver::minimal_config) {
+        bconfig.set_minimal_defaults();
+        bconfig.write_minimal_config();
+      } else {
+        bconfig.set_defaults();
+        bconfig.control(CONTROLS::SEQUENCES) = InitSolver::setup_first;
+        bconfig.write_config();
+      }
     }
   } else {
+    // We now have to assume bconfig is a minimal config
+    // that contains sequences _init/_final
     bconfig.open_config();
-    bconfig.control(SEQUENCES) = InitSolver::setup_first;
-    int err = bh_3d_xcts_driver(bconfig, InitSolver::outputdir);
+    bconfig.control(CONTROLS::SEQUENCES) = InitSolver::setup_first;
+    
+    auto tree = bconfig.get_config_tree();
+    auto N = number_of_sequences(tree, MBCO_PARAMS, "bh");
+    if(N > 1) {
+      if(rank == 0) {
+        std::cerr << "Only sequences along one component is allowed.\n";
+        std::_Exit(EXIT_FAILURE);
+      }
+    }
+    
+    auto resolution = parse_seq_tree(tree, "bh", "res", BCO_PARAMS::BCO_RES);
+
+    auto seq = find_sequence(tree, MBCO_PARAMS, "bh");
+    
+    if(!seq.is_set() && !bconfig.control(CONTROLS::SEQUENCES))
+      int err = bh_3d_xcts_driver(bconfig, resolution, InitSolver::outputdir);
+    else {
+      verify_resolution_sequence(bconfig, resolution);
+      
+      auto [ branch_name, key, val ] = find_leaf(tree, "N");
+      if(!key.empty()) seq.set_N(std::stoi(val));
+
+      bh_3d_xcts_sequence(bconfig, seq, resolution, InitSolver::outputdir);
+    }
   }
   
   MPI_Finalize();
