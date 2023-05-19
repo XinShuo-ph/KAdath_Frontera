@@ -263,6 +263,9 @@ inline int ns_3d_xcts_driver (config_t& bconfig, Res_t& resolution, std::string 
   bconfig.set(BCO_PARAMS::BVELY) = 0.;
 
   exit_status = ns_3d_xcts_stationary_driver(bconfig, outputdir);
+  // We now have a "low" resolution solution for the NS of interest
+  // Set this to false to avoid iterative M and CHI
+  bconfig.control(CONTROLS::SEQUENCES) = false;
 
   // Placeholder
   // if(stage_enabled[STAGES::LINBOOST]) {
@@ -279,6 +282,8 @@ inline int ns_3d_xcts_driver (config_t& bconfig, Res_t& resolution, std::string 
     MPI_Barrier(MPI_COMM_WORLD);
     bconfig.set_filename(fname);
     bconfig.open_config();
+    
+    stage_enabled.fill(false);
     stage_enabled[last_stage_idx] = true;
   };
 
