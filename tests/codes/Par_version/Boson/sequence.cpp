@@ -34,8 +34,9 @@ int main(int argc, char **argv) {
     int ndom = space.get_nbr_domains();
     double qpi = 4 * M_PI;
 
-    phi.affect_parameters();
-    phi.set_parameters().set_m_quant() = kk;
+    Param_tensor parameters ;
+    parameters.set_m_quant() = kk ;
+    phi.set_parameters() = parameters ;
 
     int number = 2; // Number of configurations to compute
     double step = 0.001; // Increase in omega between configs

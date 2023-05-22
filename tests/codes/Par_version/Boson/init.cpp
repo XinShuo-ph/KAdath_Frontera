@@ -70,7 +70,10 @@ int main(int argc, char** argv) {
     for (int d=0 ; d<ndom-1 ; d++)
     phi.set_domain(d) = vmax * pow(rsint(d), kk) * exp(-pow(space.get_domain(d)->get_cart(1), 2)/sigmax) *  exp(-pow(space.get_domain(d)->get_cart(2),2)/ sigmaz);
     phi.set_domain(ndom-1) = 0 ;
-    phi.set_parameters().set_m_quant() = kk ;
+
+    Param_tensor parameters() ;
+    parameters.set_m_quant = kk ;
+    phi.set_parameters() = parameters ;
 
     phi.set_domain(ndom-1) = 0 ;
     phi.std_base() ;

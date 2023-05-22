@@ -20,7 +20,10 @@ int main(int argc, char** argv) {
 	Scalar incNphi (space, fin) ;
 	Scalar phi (space, fin) ;
 	fclose(fin) ;
-    phi.set_parameters().set_m_quant() = kk ;
+
+	Param_tensor parameters() ;
+	parameters.set_m_quant() = kk ;
+	phi.set_parameters() = parameters ;
 	
 	int ndom = space.get_nbr_domains() ;
 	int nr = space.get_domain(0)->get_nbr_coefs()(0) ;
