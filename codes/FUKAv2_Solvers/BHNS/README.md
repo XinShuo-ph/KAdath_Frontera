@@ -1,7 +1,8 @@
-# FUKAv2 - Neutron Star - Black Hole (BHNS)
+\page bhnsxcts Black Hole - Neutron Star
+# Neutron Star - Black Hole (BHNS)
 
 # Overview
-
+ 
 A considerable amount of the effort that went into the FUKAv2 solvers for the isolated objects (BH, NS) along with
 the BBH and BNS solvers built up to constructing this solver.  The BHNS has the benefit of suffering from the sensitivity
 of introducing a NS to a binary setup along with the resolution issues inherent to BH ID.  It has presented quite a challenge
@@ -152,10 +153,12 @@ data unless for very small changes in `chi` is inefficient.
 
 2. In FUKAv2.2 a minimal Config file was introduced such that only the basic fixing parameters most
 relevant to users are shown.  This minimal Config file can be bypassed by running: 
-    > `solve full`
+    
+    solve full
 
-    to obtain the full Config file. Although useful for development, there is little advantage to using
+to obtain the full Config file. Although useful for development, there is little advantage to using
 the full Config.
+
 </b>
 
 ## BHNS Fixing parameters

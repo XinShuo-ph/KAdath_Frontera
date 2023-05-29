@@ -1,3 +1,4 @@
+\page bnsxcts Binary Neutron Star
 # FUKAv2 - Binary Neutron Star (BNS)
 
 # Overview

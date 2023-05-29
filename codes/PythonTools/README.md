@@ -1,14 +1,15 @@
-# PythonTools
+\page pythontools PythonTools
 
-## Author(s)    : Samuel D. Tootle,  L. Jens Papenfort
-## Contributor(s) : Konrad Topolski
+Author(s)    : Samuel D. Tootle,  L. Jens Papenfort  
+Contributor(s) : Konrad Topolski
 
 Maintainer(s):  
 Samuel D. Tootle - tootle@itp.uni-frankfurt.de  
-License      : GPLv3+ for all other code  
+License      : GPLv3+ for all other code
+
 --------------------------------------------------------------------------
 
-# Overview
+# 1. Overview
 
 A common question regarding the generation of initial conditions is, 
 "what resolution should I use?" This question is
@@ -38,12 +39,13 @@ for changes within these global routines to be accessible to the readers.
 * An additional functionality not previously available with the old `kadath_readers` is the
 ingestion of the `info` file.
 
-# Nomenclature and Units
+# 2. Nomenclature and Units
 
-The readers do not perform any unit conversions.  As such, the raw values obtained from the readers are in geometric units such that `G = c = 1` unless otherwise specifically stated
+The readers do not perform any unit conversions.  As such, the raw values obtained from 
+the readers are in geometric units such that `G = c = 1` unless otherwise specifically stated
 
 
-# Organization
+# 3. Organization
 
 `PythonTools` is laid out in the following way
 
@@ -54,19 +56,19 @@ are not set, build errors may be encountered.
 3. `src` directory contains a reader for each initial data type which will be built into a 
 shared library that can be read by Python.
     * `src/include` directory contains tools that are solely used by the python readers.
-1. `lib` contains the new centralized Python libraries
+4. `lib` contains the new centralized Python libraries
     * `lib/fukaID_readers` is the python library directory which contains various `__init__.py`
     files that construct the library once the readers are built.
     * `lib/fuka_plot_tools` is a new library that includes some basic plot tools which enable
     the `plot_fukaid_1D.py` and `plot_fukaid_2D.py` scripts
-1. `plot_fukaid_1D.py` and `plot_fukaid_2D.py` are plot scripts to enable easy access to
+5. `plot_fukaid_1D.py` and `plot_fukaid_2D.py` are plot scripts to enable easy access to
 visualizing the interpolated solution of various quantities from the FUKA ID slice.
-1. `test.py` is a basic script that shows the minimal code to initiate a reader using the example
+6. `test.py` is a basic script that shows the minimal code to initiate a reader using the example
 initial data stored in `Example_id`
-1. `Example_id` stores example initial data for playing around with
-1. `Example_2D.sh` is a script that shows an advanced setup
+7. `Example_id` stores example initial data for playing around with
+8. `Example_2D.sh` is a script that shows an advanced setup
 
-# Getting Started
+# 4. Getting Started
 
 1. Use of the `test.py` file gives a very easy introduction to how to import and access
 the Python readers for each ID type
@@ -74,6 +76,8 @@ the Python readers for each ID type
 Simple examples of both:
     * ```./plot_fukaid_1D.py --bh -f ./Example_id/converged_BH_TOTAL_BC.0.5.0.0.09.dat --vars cPsi --extent -3 3 --log```
     * ```./plot_fukaid_2D.py --bh -f ./Example_id/converged_BH_TOTAL_BC.0.5.0.0.09.dat --vars cPsi --extent -3 3 -3 3 --log```
+
+<b>
 Notes:
 * By default a `pickle` file is generated once the solution as been interpolated based on the input
 coordinates.  This can be disabled using the `--no_pickle` flag.
@@ -82,7 +86,9 @@ the `dat` file
 * The plot is saved to file by default and no pop-up of the plot is generated.  To see the plot,
 use the `--pltshow` flag
 
-# Quiver Plots
+</b>
+
+# 5. Quiver Plots
 
 The `plot_fukaid_2D.py` is capable of using quiver plots as well.  If used in conjunction with a
 FUKA DAT file, the quiver plot will by default use the same filename as that supplied with `-f`,
@@ -99,18 +105,21 @@ An example of what such a command could look like is:
 ```
 
 
-# Acknowledgements
+# 6. Acknowledgements
 
-The origin Python readers were written by L. Jens Papenfort which have since been rewritten by Samuel Tootle.  Konrad Topoloski has also contributed to the python readers by developing the original BHNS reader which has since been rewritten to be included in this library.
+The origin Python readers were written by L. Jens Papenfort which have since been rewritten 
+and significantly extended by Samuel Tootle.  
+Konrad Topoloski has also contributed to the python readers by developing the original 
+BHNS reader which has since been rewritten to be included in this library.
 
-# Outstanding Tasks
+# 7. Outstanding Tasks
 
 The following are on the list of things to do based on expected level of effort:
 
 1. Include optional excision filling
-1. Include norm computation
+2. Include norm computation
 
-# Contributing
+# 8. Contributing
 
 1. Feedback and bugs are always a welcomed contribution.  Please report via the bitbucket issue
 tracker

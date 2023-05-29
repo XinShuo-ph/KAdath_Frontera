@@ -1,4 +1,5 @@
-# FUKAv2 - Isolated Black Hole (BH) Initial Data
+\page bhxcts Black Hole
+# Black Hole (BH) Initial Data
 
 # Overview
 
@@ -97,10 +98,10 @@ Finally, the fourth block contains the
 
 <b>
 Note: 
-
 1. In all blocks, brackets denote the values stored in the config file that the solution was fixed by
+2. The `Diff` noted by the ADM mass is the symmetric difference between the ADM and Komar mass.
 
-1. The `Diff` noted by the ADM mass is the symmetric difference between the ADM and Komar mass.
+</b>
 
 # Understanding the BH INFO file
 
@@ -116,10 +117,12 @@ data unless for very small changes in `chi` is inefficient.
 
 2. In FUKAv2.2 a minimal Config file was introduced such that only the basic fixing parameters most
 relevant to users are shown.  This minimal Config file can be bypassed by running: 
-    > `solve full`
+    
+    solve full
 
-    to obtain the full Config file. Although useful for development, there is little advantage to using
+to obtain the full Config file. Although useful for development, there is little advantage to using
 the full Config.
+
 </b>
 
 ## BH Fixing parameters

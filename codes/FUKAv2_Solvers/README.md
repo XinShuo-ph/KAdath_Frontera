@@ -1,14 +1,13 @@
+\mainpage FUKA Initial Data
 # FUKAv2
 
-## Author(s)    : Samuel D. Tootle,  L. Jens Papenfort
-
-Maintainer(s):  
-Samuel D. Tootle - tootle@itp.uni-frankfurt.de  
+Author(s)    : Samuel D. Tootle,  L. Jens Papenfort  
+Maintainer(s): Samuel D. Tootle - tootle@itp.uni-frankfurt.de  
 License      : GPLv3+ for all other code  
 
 ---
 
-# Overview
+# 1. Overview
 
 The FUKAv2 encompasses a rewrite of the original initial data (ID) solvers that were made publicly
 available in 2021.  Although portions of the original codes have been reused, a significant
@@ -26,7 +25,7 @@ near the excision or stellar surfaces due to Gibbs phenomena that occur.  In the
 cases this does not prohibit the construction of ID even at extreme mass ratios `q^{-1} > 20`.
 It remains an on-going effort to optimize the domain decomposition to minimize these effects.
 
-# Nomenclature and Units
+# 2. Nomenclature and Units
 
 - In all FUKA solvers we work in geometric units such that `G = c = 1` unless otherwise specifically stated [^1]
 - There will be mentions of *implicit solutions* throughout the various solver READMEs.  Each subsequent stage for
@@ -44,7 +43,7 @@ they are simply a consequence of the ID solving process.
 
 [^1]: There exists a variable in the config file call `qpig` which is equivalent to `4*PI*G`.  This was originally designed to allow an arbitrary rescaling of the system of equations, matter, etc; however, this has not been implemented consistently as there was no clear benefit other than confusion when working in different unit systems
 
-# Organization
+# 3. Organization
 
 The solvers are structured as follows:
 
@@ -54,55 +53,37 @@ The solvers are structured as follows:
     3. `src` directory contains the relevant source files:
         - `solve.cpp`: the one and done solve code for each solver
         - `reader.cpp`: the reader can provide diagnostics from ID solutions that are computed from the ID
-        - `kadath_readers.cpp`: Python libraries to allow for additional analysis of the initial data without needing to evolve it! 
-        For example, the user can assess whether the XCTS system constraint violations are below a satisfactory level or easily inspect the interpolated
-        solution of the variable fields
 2. The related `solve.cpp` in most cases is simply a frontend with minimal functionality.  
 Most of the business is stored in `$HOME_KADATH/include/Solvers`
-3. The `reader.cpp` and `kadath_readers.cpp` codes are shared between v1 and v2 solvers, therefore symbolic links are used
+3. The `reader.cpp` code is currently shared between v1 and v2 solvers, therefore symbolic links are used
 
-# Getting Started
+# 4. Getting Started
 
-The user interface for all the solvers is in the form of a Configurator (config) file.  
-See the [Configurator README](https://bitbucket.org/fukaws/fuka/src/fuka/include/Configurator/) for details.
-To this end, using all the ID solvers is the same:
+First and foremost, see \ref install for instructions on how to obtain and build
+the FUKA library, initial data codes, and related PythonTools.
 
-1. Generate the initial config file by running `solve` for the first time
-2. Modify the initial config file based on ID characteristics you are interested in
-3. Rerun (using parallelization) using this config file, e.g. `mpirun solve initial_bh.info`
+Once the intended features have been successfully compiled, the \ref tutorials are
+a great place to get acquainted with FUKA!
 
-For this reason, it is recommended to learn about using FUKAv2 solvers by generating ID in the following order
+# 5. Acknowledgements
 
-1. [Black Hole ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BH/)
-1. [Binary Black Hole ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BBH/)
-1. [Neutron Star ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/NS/)
-1. [Binary Neutron Star ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BNS/)
-1. [Black Hole-Neutron Star Binary ID](https://bitbucket.org/fukaws/fuka/src/fuka/codes/FUKAv2_Solvers/BHNS/)
+I have been developing FUKAv2 since before the initial public release in an 
+effort to automate ID construction across the space of parameters.
+To that end, I am very grateful to my original collaborators 
+L. Jens Papenfort and Elias R. Most for their helpful discussions.  
 
-# Acknowledgements
+Furthermore, I would like to thank Konrad Topolski for being an early adopter of the v2 codes and for his continued feedback and support throughout the many changes since
+then.
 
-I have been developing FUKAv2 since before the initial public release in an effort to automate ID construction.
-To that end, I am very grateful to my original collaborators L. Jens Papenfort and Elias R. Most for their helpful discussions as I've
-continued to develop the v2 codes.  Furthermore, I would like to thank Konrad Topolski for being an early adopter of the v2 codes for whom
-I'm very grateful for bugs discovered, the feedback on the user experience, and the contribution of the initial BHNS Python reader.
-
-# Outstanding Tasks
+# 6. Outstanding Tasks
 
 The following are on the list of things to do based on expected level of effort:
 
-1. Allow finer control of the resolution in each domain as opposed to being specified by a single number
 1. Rewrite exporters to make them more readable and consistent
-2. Rewrite `kadath_reader` codes to make them more readable and consistent
-3. Add documentation for `kadath_reader` codes to make them more accessible
-4. Determine a more optimized domain decomposition around neutron stars and black holes
+2. Add documentation for `PythonTools` to make them more accessible
+3. Implement solvers for BH, BBH, and BHNS that allow for maximal spinning black holes
 
-    - This would impact not only binaries, but also the isolated NS solutions as the domain decomposition can have 
-    a non-trivial impact on the measured baryonic mass which is fixed in the case of the binary
-    - For both BHs and NSs in the binary, this has been shown to play an important role in minimizing constraint violations
-    near the excision/stellar boundary even at low resolution
-5. Implement KerrSchild ID solvers for BH, BBH, and BHNS
-
-# Contributing
+# 7. Contributing
 
 1. Feedback and bugs are always a welcomed contribution.  One can always e-mail the maintainers for issues experienced or configurations that provide challenges as this can help to diagnose limitations in the solvers
 2. Help with the current outstanding tasks is of course possible whether through code or experience with certain issues, e.g. optimizing a fix grid setup to avoid spectral artifacts.  For code contributions, forking and submitting pull requests is possible.

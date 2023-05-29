@@ -1,4 +1,5 @@
-# FUKAv2 - Binary Black Hole (BBH) Initial Data
+\page bbhxcts Binary Black Hole
+# Binary Black Hole (BBH) Initial Data
 
 # Overview
 
@@ -9,11 +10,15 @@ to initialize the binary instead of building the binary from flat space.  When c
 ID is roughly `>4x` faster due to the reduced number of stages.  When comparing to FUKAv1, generating arbitrary spin and unequal mass, the cost savings is roughly `(4 + N)x` faster 
 where N is, in the case of FUKAv1, the number of iterative solutions needed to achieve a given mass ratio and spin.
 
+<b>
 Note:  
 
 - When referring to `Mtot` below, we will be referring to the sum of the individual Christodoulou masses `Mtot := (MCH_MINUS + MCH_PLUS)`
 where plus and minus simply refer to their location on the x-axis.
 - `q <= 1` is built into the FUKAv2 codes
+
+</b>
+
 
 # Organization
 
@@ -127,10 +132,12 @@ data unless for very small changes in `chi` is inefficient.
 
 2. In FUKAv2.2 a minimal Config file was introduced such that only the basic fixing parameters most
 relevant to users are shown.  This minimal Config file can be bypassed by running: 
-    > `solve full`
+    
+    solve full
 
-    to obtain the full Config file. Although useful for development, there is little advantage to using
+to obtain the full Config file. Although useful for development, there is little advantage to using
 the full Config.
+
 </b>
 
 ## BBH Fixing parameters

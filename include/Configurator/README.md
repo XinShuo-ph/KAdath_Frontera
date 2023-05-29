@@ -1,4 +1,4 @@
-\page readme Configurator
+\page configreadme Configurator
 # Configurator
 
 ## Author(s) : Samuel D. Tootle

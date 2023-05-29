@@ -1,6 +1,7 @@
-# FUKAv2 - Isolated Neutron Star (NS) Initial Data
+\page nsxcts Neutron Star
+# Neutron Star (NS) Initial Data
 
-# Overview
+# 1. Overview
 
 The isolated NS code was created to test many aspects of the initial data creation such as
 formalism implementation, initial guess generation, and import into an evolution framework.
@@ -9,7 +10,7 @@ The codes included here are simply the means for a user to generate an isolated 
 This is an excellent way for a new user to get acquainted with how the FUKAv2 solvers work 
 with ID that requires an EOS.
 
-# Organization
+# 2. Organization
 
 1. `CMakeLists.txt` is the file needed by CMake to compile the codes
 2. `compile` is a symbolic link to the script stored in `$HOME_KADATH/build_release` to ease compiling
@@ -17,13 +18,13 @@ with ID that requires an EOS.
     - `solve.cpp`: the one and done solve code
     - `reader.cpp`: the reader can provide diagnostics from ID solutions that are computed from the ID
 
-# Base Usage
+# 3. Base Usage
 
 1. Generate the initial config file by running `solve` for the first time
 2. Modify the initial config file based on ID characteristics you are interested in
 3. Rerun (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_ns.info`
 
-# Your first run!
+# 4. Your first run!
 
 1. Generate the initial config file by running `solve` for the first time
 2. Rerun (using parallelization) using this config file, e.g. `mpirun ./bin/Release/solve initial_ns.info`
@@ -106,11 +107,11 @@ Finally, the third block includes
 Note: 
 
 1. In all blocks, brackets denote the values stored in the config file that the solution was fixed by
+2. The `Diff` noted by the Komar mass is the symmetric difference between the ADM and Komar mass.
 
-1. The `Diff` noted by the Komar mass is the symmetric difference between the ADM and Komar mass.
 </b>
 
-# Understanding the NS INFO file
+# 5. Understanding the NS INFO file
 
 Using your favorite text editor, you can open up the `initial_ns.info`.  We will go through the file,
 but we'll discuss only the details relevant to the NS case.  For details on all the parameters you can
@@ -121,13 +122,14 @@ Notes:
 
 1. It is always best practice to generate new ID using the `initial_ns.info`.  Using old initial
 data unless for very small changes in `chi` is inefficient.
-
 2. In FUKAv2.2 a minimal Config file was introduced such that only the basic fixing parameters most
 relevant to users are shown.  This minimal Config file can be bypassed by running: 
-    > `solve full`
+    
+    solve full
 
-    to obtain the full Config file. Although useful for development, there is little advantage to using
+to obtain the full Config file. Although useful for development, there is little advantage to using
 the full Config.
+
 </b>
 
 ## NS Fixing parameters
@@ -222,7 +224,7 @@ sequence_settings
 - `initial_resolution`: (optional) by default all solutions are ran at at a default resolution of `[9,9,8]` prior to regridding to a higher resolution.  In the event one wants to increase the default `initial_resolution`, it can be done here
 
 
-# Your Second run!
+# 6. Your Second run!
 
 Now that you've generated the simplest case and we have a better understanding of the config file, we can try something more interesting
 
@@ -284,7 +286,7 @@ Central Euler Constant = -7.39008e-01
                     Pz = +0.00000
 ```
 
-# How NS ID is Generated
+# 7. How NS ID is Generated
 
 ## Initial Setup
 

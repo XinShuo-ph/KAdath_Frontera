@@ -1,4 +1,4 @@
-\mainpage Home
+\mainpage FUKA Reference
 # Frankfurt University/Kadath Initial Data branch
 #### Author(s)    : L. Jens Papenfort, Samuel D. Tootle, Philippe Grandclément
 
@@ -83,10 +83,10 @@ https://bitbucket.org/fukaws/
 - KAD_NUMC - number of parallel compiling jobs CMake can run, e.g. 7
 
 ## Build Process
-\subpage build
+
 1. Go to build_release.
-1. Create a build directory and enter it
-1. Invoke `cmake (options) ..`
+2. Create a build directory and enter it
+3. Invoke `cmake (options) ..`
   - where `..` denotes the location where the CMakeList.txt file is
   - The important cmake options are the following (the value in parentheses corresponds to the default settings) :
     - `-DPAR_VERSION = On/Off (On)`
@@ -126,11 +126,11 @@ The above mentioned [compile script](https://bitbucket.org/fukaws/fuka/src/fuka/
 1. C++ compiler - gcc is recommended
     - Must support c++17 standards
     - Must support `<filesystem>`
-1. Cmake
-1. git
-1. FFTW3
-1. GSL
-1. scaLAPACK
-1. MPI
-1. Boost
-1. Boost::python (to compile [PythonTools](https://bitbucket.org/fukaws/fuka/src/fuka/codes/PythonTools/))
+2. Cmake
+3. git
+4. FFTW3
+5. GSL
+6. scaLAPACK
+7. MPI
+8. Boost
+9. Boost::python (to compile [PythonTools](https://bitbucket.org/fukaws/fuka/src/fuka/codes/PythonTools/))

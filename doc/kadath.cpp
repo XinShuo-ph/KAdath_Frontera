@@ -17,10 +17,6 @@
     along with Kadath.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*!\mainpage KADATH --- Reference manual
- *
- */
-
 /**
  * \defgroup util Utilities.
  *
