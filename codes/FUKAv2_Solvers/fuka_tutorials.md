@@ -16,11 +16,11 @@ To this end, using all the ID solvers is the same:
 
 For this reason, it is recommended to learn about using FUKA solvers by generating ID in the following order
 
--  \subpage bhxcts
--  \subpage bbhxcts
--  \subpage nsxcts
--  \subpage bnsxcts
--  \subpage bhnsxcts
+-  \ref bhxcts
+-  \ref bbhxcts
+-  \ref nsxcts
+-  \ref bnsxcts
+-  \ref bhnsxcts
 
 # 2. Maintainers
 
