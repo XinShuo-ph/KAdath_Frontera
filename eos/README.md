@@ -1,3 +1,4 @@
+\page eos Equation of State support
 # Equations of State (EOS)
 
 The FUKA solvers support both piecewise polytropic and tabulated EOS in generating ID for Neutron Stars.  For both cases, a file is required

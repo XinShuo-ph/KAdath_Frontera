@@ -22,6 +22,8 @@ For this reason, it is recommended to learn about using FUKA solvers by generati
 -  \ref bnsxcts
 -  \ref bhnsxcts
 
+Furthermore, details related to the use of polytropic and tabulated equations of state can be found in \ref eos
+
 # 2. Maintainers
 
 Author/Maintainer: Samuel. D. Tootle - tootle@itp.uni-frankfurt.de
