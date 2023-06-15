@@ -20,12 +20,16 @@
 // C headers
 #include <stdio.h>
 #include <assert.h>
+#include <stdexcept>
 namespace Kadath {
 			//-------------------------//
 			//	int version 	   //
 			//-------------------------//
 			
 int fread_be(int* aa, int size, int nb, FILE* fich) {
+	if (fich == NULL) {
+    throw std::runtime_error("Filepointer is null.\n");
+  }
 
 	assert(size == 4) ;
 	
@@ -34,7 +38,6 @@ int fread_be(int* aa, int size, int nb, FILE* fich) {
 	
 	int itest = 1 ;
 	bool little_endian = ( *( reinterpret_cast<char*>(&itest) ) == 1) ;
-	
 	if (little_endian) {
 
 		int size_tot = 4 * nb ;
@@ -74,6 +77,9 @@ int fread_be(int* aa, int size, int nb, FILE* fich) {
 			//-------------------------//
 			
 int fread_be(double* aa, int size, int nb, FILE* fich) {
+	if (fich == NULL) {
+    throw std::runtime_error("Filepointer is null.\n");
+  }
 
 	assert(size == 8) ;
 	
@@ -82,7 +88,7 @@ int fread_be(double* aa, int size, int nb, FILE* fich) {
 	
 	int itest = 1 ;
 	bool little_endian = ( *( reinterpret_cast<char*>(&itest) ) == 1) ;
-	
+
 	if (little_endian) {
 
 		int size_tot = 8 * nb ;

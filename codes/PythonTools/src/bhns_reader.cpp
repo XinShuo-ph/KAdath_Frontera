@@ -202,6 +202,41 @@ class bhns_reader_t : public Kadath::python_reader_t<space_t, bhns_vars_t> {
     space_radius.std_base();
     vars["rfield"] = space_radius;
 
+    // this was used to do a colored plot of the domains
+    // like kids coloring books - color the numbered areas.
+    Scalar dom_colors(conf);
+    dom_colors.annule_hard();
+    int c = 1;
+    for(int d = 0; d < ndom; ++d){
+        //set BH interiors to the same color
+        if( d == space.NS    ||
+            d == space.NS+1  ||
+            d == space.BH    ||
+            d == space.BH+1){
+          dom_colors.set_domain(d) = 0;
+        }
+        //set inner_adapted domains to the same color
+        //else if( d < space.BH || d < space.OUTER){
+        else if( d == space.ADAPTEDBH+1 || d == space.ADAPTEDNS+1){
+          dom_colors.set_domain(d) = 1;
+        }
+        //set chi_first domains to the same color
+        else if( d == space.OUTER || d == space.OUTER+4) {
+          dom_colors.set_domain(d) = 2;
+        }
+        //rect domains
+        else if( d == space.OUTER+1 || d == space.OUTER+3){
+          dom_colors.set_domain(d) = 3;
+        }
+        //eta + shells + compactified domains
+        else {
+          dom_colors.set_domain(d) = 3 + c;
+          c++;
+        }
+    }
+    dom_colors.std_base();
+    vars["dom_color_chart"] = dom_colors;
+
 	}
 };
 

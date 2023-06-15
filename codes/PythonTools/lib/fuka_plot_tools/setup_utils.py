@@ -1,5 +1,5 @@
 import sys, os
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt, matplotlib
 pyFUKA_libspath = os.getenv('HOME_KADATH')+'/codes/PythonTools/lib/'
 sys.path.append(pyFUKA_libspath)
 
@@ -10,7 +10,7 @@ CbarLabelSize=15
 # Set default matplotlib settings
 plt.rcParams.update({
     'figure.figsize'    : [8.0, 8.0],
-    'text.usetex'       : True,
+    'text.usetex'       : matplotlib.checkdep_usetex(True),
     'font.family'       : "sans-serif",
     'font.serif'        : "cm",
     'xtick.major.size'  : 6,
@@ -45,8 +45,8 @@ def gen_cbarlabel(var_name,sq=False,inv=False,log=False):
   cbarlabel = r'$'+cbarlabel+r'$'
   return cbarlabel
 
-def check_ID_filename(f):
-  path, f = extract_path_filename(f)
+def check_ID_filename(input_filename):
+  path, f = extract_path_filename(input_filename)
   
   # make sure we have the correct ext
   ext = f.split('.')[-1].lower()
@@ -58,22 +58,38 @@ def check_ID_filename(f):
   
   return path+f, ispickle
 
-def get_reader(args, filepathabs):
-  if args.bhns:
+def get_reader_args(args, filepathabs):
+  return get_reader(filepathabs,
+    bhns=args.bhns,
+    bbh = args.bbh,
+    bns = args.bns,
+    ns = args.ns,
+    bh = args.bh)
+  
+def get_reader(filepathabs,
+               bhns=False,
+               bns=False,
+               bbh=False,
+               ns=False,
+               bh=False):
+  reader = None
+  if bhns:
     from fukaID_readers.bhns import bhns_reader
-    return bhns_reader(filepathabs)
-  elif args.bbh:
+    reader = bhns_reader(filepathabs)
+  elif bbh:
     from fukaID_readers.bbh import bbh_reader
-    return bbh_reader(filepathabs)
-  elif args.bh:
+    reader = bbh_reader(filepathabs)
+  elif bh:
     from fukaID_readers.bh import bh_reader
-    return bh_reader(filepathabs)
-  elif args.bns:
+    reader = bh_reader(filepathabs)
+  elif bns:
     from fukaID_readers.bns import bns_reader
-    return bns_reader(filepathabs)
-  elif args.ns:
+    reader = bns_reader(filepathabs)
+  elif ns:
     from fukaID_readers.ns import ns_reader
-    return ns_reader(filepathabs)
+    reader = ns_reader(filepathabs)
+    
+  return reader
 
 def parse_var(var):
   inv = False
@@ -99,6 +115,35 @@ name_dict = {
   'cShift_1' : r'\mathcal{C}_{\beta}^1',
   'cShift_2' : r'\mathcal{C}_{\beta}^2',
   'cShift_3' : r'\mathcal{C}_{\beta}^3',
+  'logh' : r'\log \left( h \right)',
+  'drPsi' : r'\partial_r \Psi',
+  'ddrPsi' : r'\partial_r^2 \Psi',
+  'A' : r'\hat{A}^i_i',
+  'A_11' : r'\hat{A}_{11}',
+  'A_12' : r'\hat{A}_{12}',
+  'A_13' : r'\hat{A}_{13}',
+  'A_22' : r'\hat{A}_{22}',
+  'A_23' : r'\hat{A}_{23}',
+  'A_33' : r'\hat{A}_{33}',
+  'A_xx' : r'\hat{A}_{ij} e^x e^x',
+  'A_yy' : r'\hat{A}_{ij} e^y e^y',
+  'A_zz' : r'\hat{A}_{ij} e^z e^z',
+  'A_xy' : r'\hat{A}_{ij} e^x e^y',
+  'A_yz' : r'\hat{A}_{ij} e^y e^z',
+  'A_xz' : r'\hat{A}_{ij} e^x e^z',
+  'rho' : r'\rho',
+  'eps' : r'\epsilon',
+  'press' : 'P',
+  'dHdx' : 'e^x D_x \log \left( H \right)',
+  'P/rho' : r'\frac{P}{\rho}',
+  'Stilde' : r'\tilde{S}',
+  'Etilde' : r'\tilde{E}',
+  'vel_1' : r'U^1',
+  'vel_2' : r'U^2',
+  'vel_3' : r'U^3',
+  'shift_1' : r'\beta_1',
+  'shift_2' : r'\beta_2',
+  'shift_3' : r'\beta_3',
 }
 
 def var_name(var):
@@ -115,7 +160,8 @@ def extract_data(
   plotz=False,
   logscale=False,
   square=False,
-  inverse=False):
+  inverse=False,
+  zval=0):
   
   import numpy as np
 
@@ -123,9 +169,9 @@ def extract_data(
   ylen = len(y_coords)
   
   if not plotz:
-    coords_lst = [[x, y, 0] for y in y_coords for x in x_coords]
+    coords_lst = [[x, y, zval] for y in y_coords for x in x_coords]
   else:
-    coords_lst = [[x, 0, z] for z in y_coords for x in x_coords]
+    coords_lst = [[x, zval, z] for z in y_coords for x in x_coords]
   
   # FIXME add excision filling extrapolation
   # if excision_extraction is not None:

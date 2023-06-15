@@ -30,7 +30,7 @@ void syst_vars_hydro(dict_t& vars, System_of_eqs & syst) {
 
   vars["drhodx"] = syst.give_val_def("drhodx");
   vars["dHdx"] = syst.give_val_def("dHdx");
-  vars["delta"] = syst.give_val_def("delta");
+  vars["P/rho"] = syst.give_val_def("delta");
 
   vars["W"] = syst.give_val_def("W");
   vars["h"] = syst.give_val_def("h");

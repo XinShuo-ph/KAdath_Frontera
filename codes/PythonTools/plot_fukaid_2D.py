@@ -96,7 +96,7 @@ if __name__ == "__main__":
     
   if not ispickle:
     # Setup ID python reader
-    reader = get_reader(args, f)
+    reader = get_reader_args(args, f)
     
     for i, v in enumerate(pltvars):    
       inv, sq, plotz, var = parse_var(v)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
       print("Plotting data: {} with {}-shape".format(var_name(var), data.shape))
 
       # dump data to pickle file
-      if not args.no_pickle:
+      if args.pickle:
         p, fn = extract_path_filename(f)
         datadim = "2D"
         pdumpf = fn[0:fn.rfind('.')] \
@@ -186,7 +186,6 @@ if __name__ == "__main__":
         orientation='horizontal', extend='both',
         ticks=np.linspace(norm.vmin, norm.vmax, num=5)
       )
-      cbar.ax.invert_xaxis()
     else:
       cbarax,kw = mpl.colorbar.make_axes(axs, location='right', orientation='vertical', aspect=30)
       cbar = fig.colorbar(
@@ -206,7 +205,7 @@ if __name__ == "__main__":
     else:
       qf = f
     if not ispickle:
-      reader = get_reader(args, qf)
+      reader = get_reader_args(args, qf)
       vec_data = []
       for i, v in enumerate(pltqvars):
         inv, sq, plotz, var = parse_var(v)
@@ -234,12 +233,13 @@ if __name__ == "__main__":
       ax.get_yaxis().set_visible(False)
       ax.set_axis_off()
     if args.cbar:
-      ticks=np.linspace(norm.vmax, norm.vmin, num=5)
+      ticks=cbar.get_ticks()
       cbar.set_label(cbarlabel, labelpad=cbarpad, rotation=270, color=font_color, size=CbarLabelSize)
 
       # set colorbar tick color
       cbar.ax.xaxis.set_tick_params(color=font_color)
-      cbar.ax.xaxis.set_ticklabels(ticks,color=font_color)
+      cbar.set_ticklabels(ticks,color=font_color)
+      cbar.update_ticks()
 
       # set colorbar edgecolor 
       cbar.outline.set_edgecolor(font_color)

@@ -18,7 +18,7 @@ def plot_1d(x_coords, var, data, axs=None, fig=None, cbarlabel=None, **kwargs):
 
 if __name__ == "__main__":
   args = get_args()
-  f, ispickle = check_ID_filename(args)
+  f, ispickle = check_ID_filename(args.filename)
   print("Reading from file: {}".format(f))
   
   # setup norm
@@ -37,7 +37,6 @@ if __name__ == "__main__":
   
   x_coords = np.linspace(x1, x2, num=args.npts)
   y_coords = np.array([0.]) if len(ext) == 2 else np.array(ext[2:])
-  print(y_coords)
   
   # Setup matplotlib 
   # If a pickle file is used, we assume the 
@@ -53,7 +52,7 @@ if __name__ == "__main__":
 
   if not ispickle:
     # Setup ID python reader
-    reader = get_reader(args, f)
+    reader = get_reader_args(args, f)
     
     for i, v in enumerate(pltvars):    
       inv, sq, plotz, var = parse_var(v)
@@ -74,7 +73,7 @@ if __name__ == "__main__":
         print("Plotting data with shape {}".format(data.shape))
 
         # dump data to pickle file
-        if not args.no_pickle:
+        if args.pickle:
           p, fn = extract_path_filename(f)
           datadim = "1D"
           pdumpf = fn[0:fn.rfind('.')] + "-{}_{}.pickle".format(v,datadim)
@@ -106,10 +105,10 @@ if __name__ == "__main__":
     plt.gca().get_xaxis().set_visible(False)
     plt.gca().get_yaxis().set_visible(False)
     plt.gca().set_axis_off()
-    plt.savefig("fig-{}.png".format(datadim), dpi=300, bbox_inches="tight", pad_inches=0, facecolor='black')
+    plt.savefig("fig-1D.png", dpi=300, bbox_inches="tight", pad_inches=0, facecolor='black')
   else:
     axs.minorticks_on()
     axs.tick_params(left=True, bottom=True, top=True, right=True, which='both', labelsize=TickSize)
-    plt.savefig("fig-{}.png".format(datadim), dpi=300, bbox_inches="tight")
+    plt.savefig("fig-1D.png", dpi=300, bbox_inches="tight")
   if args.pltshow:
     plt.show()

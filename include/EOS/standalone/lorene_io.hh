@@ -41,11 +41,9 @@ static std::array<std::vector<double>, 3> Lorene_Table(const std::string &filena
 
   std::ifstream file(filename);
   if (!file.is_open()) {
-    std::cerr << "failed to open " << filename << '\n';
-    std::_Exit(EXIT_FAILURE);
+    std::string msg = "failed to open " + filename;
+    throw std::runtime_error(msg.c_str());
   }
-  // std::cout << std::setiosflags(std::ios::scientific) <<
-  // std::setprecision(16);
 
   // Create vectors
   std::array<std::vector<double>, 3> vectors;
