@@ -85,6 +85,7 @@ int main(int argc, char** argv) {
     }
 
     auto resolution = parse_seq_tree(tree, "binary", "res", BIN_PARAMS::BIN_RES);
+    verify_resolution_sequence(bconfig, resolution);
 
     auto seq = find_sequence_binary(tree);
     auto seq_bin = find_sequence(tree, MBIN_PARAMS, "binary");
@@ -93,7 +94,6 @@ int main(int argc, char** argv) {
     if(!(seq.is_set() || seq_bin.is_set()) && !bconfig.control(CONTROLS::SEQUENCES))
       err = bns_xcts_driver(bconfig, resolution, InitSolver::outputdir);
     else {
-      verify_resolution_sequence(bconfig, resolution);
       
       auto [ branch_name, key, val ] = find_leaf(tree, "N");
       if(!key.empty()) seq.set_N(std::stoi(val));

@@ -76,17 +76,16 @@ int main(int argc, char** argv) {
     }
     
     auto resolution = parse_seq_tree(tree, "bh", "res", BCO_PARAMS::BCO_RES);
-
+    verify_resolution_sequence(bconfig, resolution);
     auto seq = find_sequence(tree, MBCO_PARAMS, "bh");
     
     if(!seq.is_set() && !bconfig.control(CONTROLS::SEQUENCES))
       int err = bh_3d_xcts_driver(bconfig, resolution, InitSolver::outputdir);
     else {
-      verify_resolution_sequence(bconfig, resolution);
+      
       
       auto [ branch_name, key, val ] = find_leaf(tree, "N");
       if(!key.empty()) seq.set_N(std::stoi(val));
-
       bh_3d_xcts_sequence(bconfig, seq, resolution, InitSolver::outputdir);
     }
   }
