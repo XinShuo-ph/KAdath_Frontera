@@ -84,8 +84,7 @@ int bh_3d_xcts_stationary_driver (config_t& bconfig, std::string outputdir){
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if(std::abs( bconfig(BCO_PARAMS::CHI) ) > 0.84) {
-    std::cerr << "Unable to handle chi > 0.84\n";
-    return EXIT_FAILURE;
+    std::cerr << "Warning: Solutions above |chi| > 0.84 are not necessarily stable solutions\n";
   }
 
   // In the event we wish to solve for a highly spinning solution
