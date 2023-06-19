@@ -12,7 +12,7 @@ if __name__ == "__main__":
   print("Reading from file: {}".format(f))
   
   # Setup ID python reader
-  reader = get_reader(args, f)
+  reader = get_reader_args(args, f)
   
   for v in reader.vars:
       if 'Kadath' in type(reader.vars[v]).__name__:
