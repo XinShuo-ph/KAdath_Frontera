@@ -435,7 +435,7 @@ public:
     bconfig.set_stage(STAGES::TOTAL_BC) = true;
     bconfig.set_stage(STAGES::ECC_RED) = true;
 
-    bconfig.control(CONTROLS::SAVE_COS) = true;
+    bconfig.control(CONTROLS::SAVE_COS) = false;
   }
 };
 /**

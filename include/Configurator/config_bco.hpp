@@ -301,7 +301,7 @@ public:
     //end   - set BH fields
 
     bconfig.seq_setting(SEQ_SETTINGS::INIT_RES) = 9;
-    bconfig.control(CONTROLS::SAVE_COS) = true;
+    bconfig.control(CONTROLS::SAVE_COS) = false;
   }
 
     /** 
@@ -553,7 +553,7 @@ public:
     // end   - set NS fields
 
     bconfig.seq_setting(SEQ_SETTINGS::INIT_RES) = 9;
-    bconfig.control(CONTROLS::SAVE_COS) = true;
+    bconfig.control(CONTROLS::SAVE_COS) = false;
   }
 
   /** 
