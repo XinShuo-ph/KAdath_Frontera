@@ -321,6 +321,7 @@ public:
     bconfig.set(BCO_PARAMS::CHI) = 0;
     bconfig.set(BCO_PARAMS::MCH) = 0.5 ;
     //end   - set BH parameters
+    bconfig.set_stage(STAGES::TOTAL_BC) = true;
   }
 };
 
