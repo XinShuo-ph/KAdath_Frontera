@@ -368,7 +368,7 @@ template <typename EOS> class MargheritaTOV {
     while(true && count < max_iter) {
       auto res = rk_iteration(state.back(), dr);
       
-      double delm = std::abs(res[MASSR] - state.back()[MASSR]);
+      double delm = 2. * std::abs(res[MASSR] - state.back()[MASSR]) / (res[MASSR] + state.back()[MASSR]);
       if((delm < loop_eps && state.back()[PRESS] < loop_eps) ||
           res[PRESS] < 0)
         break;
@@ -376,10 +376,11 @@ template <typename EOS> class MargheritaTOV {
       count++;
     }
     if(count >= max_iter) {
-      std::cerr << "Maximum iterations (" << max_iter << ") reached.\n"
-        "The central density provided may not be able to produce a stable\n"
+      std::stringstream ss;
+      ss << "Maximum iterations (" << max_iter << ") reached.\n"
+        "The central density provided, " << rho_init << ", may not be able to produce a stable\n"
         "static TOV solution\n\n";
-      std::_Exit(EXIT_FAILURE);
+      throw std::runtime_error(ss.str().c_str());
     }
 
     // erase initial conditions if a stable solution was found at all
