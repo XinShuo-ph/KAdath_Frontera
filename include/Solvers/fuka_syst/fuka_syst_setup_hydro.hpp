@@ -12,6 +12,11 @@
 namespace Kadath {
 namespace FUKA_Syst_tools {
   
+/**
+ * @brief Add various tensor contractions of fluid quantities
+ * 
+ * @param syst System of equations to modify
+ */
 inline
 void syst_init_contraction_defs_hydro(System_of_eqs & syst) {
   int const ndom = syst.get_space().get_nbr_domains();
@@ -25,6 +30,13 @@ void syst_init_contraction_defs_hydro(System_of_eqs & syst) {
   syst.add_def("dHdx2 = ex^i * D_i dHdx");
 }
 
+/**
+ * @brief Initialize fluid operators and definitions needed
+ * for solving or accessing initial data
+ * 
+ * @tparam eos_t EOS type
+ * @param syst System of equations to modify
+ */
 template<class eos_t>
 void syst_init_defs_hydro(System_of_eqs& syst) {
   #ifdef DEBUG
@@ -45,6 +57,13 @@ void syst_init_defs_hydro(System_of_eqs& syst) {
   syst.add_def("delta = h - eps - 1.");
 }
 
+/**
+ * @brief Initialize fluid definitions in the case of corotation since these are
+ * significantly simpler than the arbitrary rotation case
+ * 
+ * @param syst System of equations to modify
+ * @param doms vector of domains to populate these definitions
+ */
 inline
 void syst_init_eqdefs_hydro_corot(System_of_eqs& syst, std::vector<int> doms) {
   #ifdef DEBUG
@@ -81,6 +100,13 @@ void syst_init_eqdefs_hydro_corot(System_of_eqs& syst, std::vector<int> doms) {
   }
 }
 
+/**
+ * @brief Initialize fluid definitions in the case of arbitrary rotation
+ * 
+ * @param syst System of equations to modify
+ * @param doms vector of domains to populate these definitions
+ * @param spin_def string definition for the spin field
+ */
 inline
 void syst_init_eqdefs_hydro(System_of_eqs& syst, std::vector<int> doms,
   std::string spin_def) {
@@ -126,6 +152,12 @@ void syst_init_eqdefs_hydro(System_of_eqs& syst, std::vector<int> doms,
   }
 }
 
+/**
+ * @brief Initialize quasi-local definition of fluid diagnostics
+ * 
+ * @param syst System of equations to modify
+ * @param doms vector of domains to populate these definitions
+ */
 inline
 void syst_init_quasi_local_defs_hydro(System_of_eqs& syst, 
   std::vector<int> doms) {

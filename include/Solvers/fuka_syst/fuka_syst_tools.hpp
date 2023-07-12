@@ -11,6 +11,18 @@
 namespace Kadath {
 namespace FUKA_Syst_tools {
 
+/**
+ * @brief Generate a scalar field of domain outer radii for a range
+ * of continuous domain indicies \in [dom_min, dom_max]
+ * 
+ * @tparam space_t Numerical space type
+ * @tparam dict_t Python dictionary type
+ * @param space numerical space
+ * @param vars python dictionary to add to
+ * @param dom_min Minimum domain index
+ * @param dom_max Maximum domain index
+ * @param forestr String to append at the start
+ */
 template<class space_t, class dict_t>
 void export_radii(space_t & space, dict_t& vars, 
   int const dom_min, int const dom_max, std::string forestr) {
@@ -32,7 +44,16 @@ void export_radii(space_t & space, dict_t& vars,
   }
 }
 
-// addition of raw tensor components
+/**
+ * @brief Add rank 2 tensor data to python dictionary componentwise
+ * along with extracting the trace from System of equations
+ * 
+ * @tparam dict_t Python dictionary type
+ * @param syst System of equations 
+ * @param vars python dictionary to add fields to
+ * @param var System of equations string definition of tensor
+ * @param field Tensor field to extract scalar fields from
+ */
 template<class dict_t>
 inline void dict_add_tensor_cmp(System_of_eqs& syst, dict_t& vars,
   std::string var, Tensor field) {
@@ -46,6 +67,15 @@ inline void dict_add_tensor_cmp(System_of_eqs& syst, dict_t& vars,
   }
 };
 
+/**
+ * @brief Add rank 1 tensor data to python dictionary componentwise
+ * 
+ * @tparam dict_t Python dictionary type
+ * @param syst System of equations 
+ * @param vars python dictionary to add fields to
+ * @param var System of equations string definition of tensor
+ * @param field Tensor field to extract scalar fields from
+ */
 template<class dict_t>
 inline void dict_add_vector_cmp(System_of_eqs& syst, dict_t& vars,
   std::string var, Tensor field) {
@@ -57,6 +87,14 @@ inline void dict_add_vector_cmp(System_of_eqs& syst, dict_t& vars,
   }
 };
 
+/**
+ * @brief Helper function to get a vector of continuous domain indicies
+ * up to, but not including dom_max
+ * 
+ * @param dom_min minimum domain index
+ * @param dom_max maximum domain index
+ * @return std::vector<int> vector of domains
+ */
 inline 
 std::vector<int> vector_of_domains(int const dom_min, int const dom_max) {
   #include <numeric>

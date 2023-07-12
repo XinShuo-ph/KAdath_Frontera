@@ -13,6 +13,13 @@ namespace Kadath {
 namespace FUKA_Syst_tools {
 using namespace ::Kadath::FUKA_Config;
 
+/**
+ * @brief Initialize constants that are used for all initial data
+ * 
+ * @tparam cfields_t container type holding coordinate fields
+ * @param syst System of equations to modify
+ * @param coord_vectors container of coordinate fields
+ */
 template<class cfields_t>
 void syst_init_csts(System_of_eqs & syst, cfields_t& coord_vectors) {
   #ifdef DEBUG
@@ -29,6 +36,11 @@ void syst_init_csts(System_of_eqs & syst, cfields_t& coord_vectors) {
   syst.add_cst("einf", *coord_vectors[S_INF]) ;
 }
 
+/**
+ * @brief Initialize system definitions relevant for all initial data
+ * 
+ * @param syst System of equations to modify
+ */
 inline
 void syst_init_defs(System_of_eqs & syst) {
   int const ndom = syst.get_space().get_nbr_domains();
@@ -55,6 +67,11 @@ void syst_init_defs(System_of_eqs & syst) {
   syst.add_def("intMirrsq  = intArea / 4") ;
 }
 
+/**
+ * @brief Initialize various tensor contractions for spacetime quantities
+ * 
+ * @param syst System of equations to modify
+ */
 inline
 void syst_init_contraction_defs_vac(System_of_eqs & syst) {
   #ifdef DEBUG
@@ -81,6 +98,14 @@ void syst_init_contraction_defs_vac(System_of_eqs & syst) {
   syst.add_def("betz = bet^i  * ez_i");
 }
 
+/**
+ * @brief Add definitions specific to inspiral binaries
+ * 
+ * @tparam config_t Config type
+ * @param syst System of equations to modify
+ * @param bconfig Config file
+ * @param CART coordinate field relative to the coordinate distance to the center of mass
+ */
 template<class config_t>
 void syst_init_inspiral(System_of_eqs & syst, config_t& bconfig, Vector& CART) {
   int const ndom = syst.get_space().get_nbr_domains();
@@ -103,6 +128,15 @@ void syst_init_inspiral(System_of_eqs & syst, config_t& bconfig, Vector& CART) {
   syst.add_def(ndom - 1, "intJ = multr(A_ij * Morb^j * einf^i) / 2 / 4piG");
 }
 
+/**
+ * @brief Initialize definitions important for two-body problems
+ * 
+ * @tparam cfields_t Coordinate fields container type
+ * @tparam config_t Config type
+ * @param syst System of equations to modify
+ * @param coord_vectors Container of coordinate fields
+ * @param bconfig Config file
+ */
 template<class cfields_t, class config_t>
 void syst_init_binary(System_of_eqs & syst, 
   cfields_t& coord_vectors, config_t& bconfig) {
@@ -122,6 +156,14 @@ void syst_init_binary(System_of_eqs & syst,
   syst.add_cst("sp", *coord_vectors[S_BCO2])  ;
 }
 
+/**
+ * @brief Initialize quasi-local definitions based purely on spacetime
+ * 
+ * @param syst System of equations to modify
+ * @param doms vector of domains to populate these definitions
+ * @param rotdef String related to the rotation field definition
+ * @param surfdef String related to the surface element definition
+ */
 inline
 void syst_init_quasi_local_defs(System_of_eqs& syst,
   std::vector<int> doms, std::string rotdef, std::string surfdef) {
@@ -135,10 +177,19 @@ void syst_init_quasi_local_defs(System_of_eqs& syst,
   }
 }
 
-// FIXME boosts not considered
+/**
+ * @brief Initialize definitions relevent for isolated objects
+ * 
+ * @tparam cfields_t Coordinate fields container type
+ * @tparam config_t Config type
+ * @param syst System of equations to modify
+ * @param coord_vectors Container of coordinate fields
+ * @param bconfig Config file
+ */
 template<class cfields_t, class config_t>
 void syst_init_co(System_of_eqs & syst, 
   cfields_t& coord_vectors, config_t& bconfig) {
+  // FIXME boosts not considered
   #ifdef DEBUG
     std::cout << "Initializing standard CO fields, constants, and definitions.\n";
   #endif
@@ -158,6 +209,12 @@ void syst_init_co(System_of_eqs & syst,
   syst.add_def("intS = A_ij * mg^i * sm^j / 2 / 4piG") ;
 }
 
+/**
+ * @brief Initialize vacuum equation definitions
+ * 
+ * @param syst System of equations to modify
+ * @param doms vector of domains to populate these definitions
+ */
 inline
 void syst_init_eqdefs_vac(System_of_eqs& syst, std::vector<int> doms) {
   #ifdef DEBUG
