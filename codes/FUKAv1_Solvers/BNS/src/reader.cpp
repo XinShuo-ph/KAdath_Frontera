@@ -34,6 +34,7 @@
 
 using namespace Kadath;
 using namespace Kadath::Margherita;
+using namespace Kadath::FUKA_Config;
 
 // conversion from solar mass to km
 double M2km = 1.4769994423016508;

@@ -28,6 +28,7 @@
 #include <numeric>
 #include "mpi.h"
 using namespace Kadath;
+using namespace Kadath::FUKA_Config;
 using vec_d = std::vector<double>;
 using ary_d = std::array<double,2>;
 using ary_i = std::array<int,2>;

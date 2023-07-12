@@ -20,7 +20,8 @@
 #include "configurator_boost.hpp"
 #include <cmath>
 #include <variant>
-
+namespace Kadath {
+namespace FUKA_Config {
 /**
  * \addtogroup Containers
  * @ingroup Configurator
@@ -709,3 +710,4 @@ public:
  * @}*/
 
 std::ostream &operator<<(std::ostream &out, const BCO_INFO &BCO);
+}}

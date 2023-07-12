@@ -4,11 +4,13 @@
 #include<array>
 #include<string>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BBH_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 /**
  * bbh_xcts_setup_bin
@@ -58,6 +60,6 @@ inline void bbh_xcts_setup_boosted_3d(
   kadath_config_boost<BCO_BH_INFO>& BH1config, 
   kadath_config_boost<BCO_BH_INFO>& BH2config,
   kadath_config_boost<BIN_INFO>& bconfig);
+}}
 /** @}*/
-}
 #include "bbh_xcts_setup.cpp"

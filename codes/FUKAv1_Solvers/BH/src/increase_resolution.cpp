@@ -30,6 +30,7 @@
 #include <memory>
 
 using namespace Kadath;
+using namespace Kadath::FUKA_Config;
 
 int main(int argc, char **argv) {
 	int rc = MPI_Init(&argc, &argv) ;

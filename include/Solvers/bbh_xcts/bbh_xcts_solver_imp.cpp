@@ -28,12 +28,14 @@
 #include <iostream>
 #include <utility>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BBH_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
+
+namespace Kadath {
+namespace FUKA_Solvers {
+namespace bco_u = ::Kadath::bco_utils;
 
 template<typename config_t, typename space_t>
 bbh_xcts_solver<config_t, space_t>::bbh_xcts_solver(config_t& config_in, 
@@ -42,8 +44,8 @@ bbh_xcts_solver<config_t, space_t>::bbh_xcts_solver(config_t& config_in,
       Solver<config_t, space_t>(config_in, space_in, base_in), 
         conf(conf_in), lapse(lapse_in), shift(shift_in), 
           fmet(Metric_flat(space_in, base_in)),
-            xc1(bco_utils::get_center(space_in,space.BH1)),
-              xc2(bco_utils::get_center(space_in,space.BH2)),
+            xc1(bco_u::get_center(space_in,space.BH1)),
+              xc2(bco_u::get_center(space_in,space.BH2)),
                 excluded_doms({space.BH1,space.BH1+1,space.BH2,space.BH2+1})
 
 {
@@ -265,7 +267,7 @@ void bbh_xcts_solver<config_t, space_t>::print_diagnostics(const System_of_eqs &
 
   std::cout << FORMAT << "BH1-Mirr: " << Mirrm << std::endl;
   std::cout << FORMAT << "BH1-Mch: " << Mchm << std::endl;
-  std::cout << FORMAT << "BH1-R: " << bco_utils::get_radius(space.get_domain(space.BH1+1), EQUI)
+  std::cout << FORMAT << "BH1-R: " << bco_u::get_radius(space.get_domain(space.BH1+1), EQUI)
             << std::endl;
   std::cout << FORMAT << "BH1-S: " << Sm << std::endl;
   std::cout << FORMAT << "BH1-Chi: " << Sm / Mchm / Mchm << std::endl;
@@ -273,7 +275,7 @@ void bbh_xcts_solver<config_t, space_t>::print_diagnostics(const System_of_eqs &
 
   std::cout << FORMAT << "BH2-Mirr: " << Mirrp << std::endl;
   std::cout << FORMAT << "BH2-Mch: " << Mchp << std::endl;
-  std::cout << FORMAT << "BH2-R: " << bco_utils::get_radius(space.get_domain(space.BH2+1), EQUI)
+  std::cout << FORMAT << "BH2-R: " << bco_u::get_radius(space.get_domain(space.BH2+1), EQUI)
             << std::endl;
   std::cout << FORMAT << "BH2-S: " << Sp << std::endl;
   std::cout << FORMAT << "BH2-Chi: " << Sp / Mchp / Mchp << std::endl;
@@ -283,5 +285,5 @@ void bbh_xcts_solver<config_t, space_t>::print_diagnostics(const System_of_eqs &
   cout << std::string(42,'=') << endl;
 
 }
+}}
 /** @}*/
-}

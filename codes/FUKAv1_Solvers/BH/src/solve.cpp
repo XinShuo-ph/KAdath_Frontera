@@ -32,7 +32,8 @@
 
 //config_file includes
 #include "Configurator/config_bco.hpp"
-using namespace Kadath ;
+using namespace Kadath;
+using namespace Kadath::FUKA_Config;
 
 template<typename space_t, typename syst_t, typename config_t>
 void print_diagnostics(space_t const & space, syst_t const & syst, int const ite, double const conv, config_t& bconfig);

@@ -4,12 +4,14 @@
 #include<array>
 #include<string>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BBH_XCTS
  * \ingroup FUKA
  * @{*/
 
+namespace Kadath {
+namespace FUKA_Solvers {
+namespace bco_u = ::Kadath::bco_utils;
 /**
  * @brief 
  * 
@@ -28,11 +30,11 @@ void bbh_xcts_setup_bin_config(config_t& bconfig){
                              / bconfig(BCO_PARAMS::MCH, NODES::BCO1);
   
   // classical Newtonian estimate
-  bconfig.set(BIN_PARAMS::COM) = bco_utils::com_estimate(bconfig(BIN_PARAMS::DIST), 
+  bconfig.set(BIN_PARAMS::COM) = bco_u::com_estimate(bconfig(BIN_PARAMS::DIST), 
     bconfig(BCO_PARAMS::MCH, NODES::BCO1), bconfig(BCO_PARAMS::MCH, NODES::BCO2));
   
   // obtain 3PN estimate for the global, orbital omega
-  bco_utils::KadathPNOrbitalParams(bconfig, \
+  bco_u::KadathPNOrbitalParams(bconfig, \
         bconfig(BCO_PARAMS::MCH, NODES::BCO1), bconfig(BCO_PARAMS::MCH, NODES::BCO2));
 
   // delete ADOT, this can always be recalculated during
@@ -82,7 +84,7 @@ inline void bbh_xcts_setup_boosted_3d(
 	Scalar       lapsein1(spacein1, ff1) ;
 	Vector       shiftin1(spacein1, ff1) ;
   fclose(ff1) ;
-  bco_utils::update_config_BH_radii(spacein1, BH1config, 1, confin1);
+  bco_u::update_config_BH_radii(spacein1, BH1config, 1, confin1);
   
   in_spacefile = BH2config.space_filename();
   FILE *ff2 = fopen(in_spacefile.c_str(), "r");
@@ -91,7 +93,7 @@ inline void bbh_xcts_setup_boosted_3d(
 	Scalar       lapsein2(spacein2, ff2) ;
 	Vector       shiftin2(spacein2, ff2) ;
   fclose(ff2) ;
-  bco_utils::update_config_BH_radii(spacein2, BH2config, 1, confin2);
+  bco_u::update_config_BH_radii(spacein2, BH2config, 1, confin2);
   // end opening old solutions
   
   // update binary parameters - but save shell input
@@ -108,7 +110,7 @@ inline void bbh_xcts_setup_boosted_3d(
     bconfig(BCO_PARAMS::RMID, NODES::BCO1) : bconfig(BCO_PARAMS::RMID, NODES::BCO2);
   
   const double rout_sep_est = (bconfig(BIN_PARAMS::DIST) / 2. - r_max_tot) / 3. + r_max_tot;
-  const double rout_max_est = 2. * bco_utils::gold_ratio * r_max_tot;
+  const double rout_max_est = 2. * bco_u::gold_ratio * r_max_tot;
   
   bconfig.set(BCO_PARAMS::ROUT, NODES::BCO1) = (rout_sep_est > rout_max_est) ? rout_max_est : rout_sep_est;
   bconfig.set(BCO_PARAMS::ROUT, NODES::BCO2) = bconfig(BCO_PARAMS::ROUT, NODES::BCO1);
@@ -122,10 +124,10 @@ std::vector<double> BH1_bounds;
       Metric_flat(spacein1, shiftin1.get_basis()), 
       {0,1}
     ));
-    BH1_bounds = bco_utils::set_arb_bounds(bconfig, BCO1, ddrPsi, 2, 0.9);
+    BH1_bounds = bco_u::set_arb_bounds(bconfig, BCO1, ddrPsi, 2, 0.9);
   }
   std::cout << "Bound1 done\n";
-  bco_utils::print_bounds("bh1",BH1_bounds);
+  bco_u::print_bounds("bh1",BH1_bounds);
   std::vector<double> BH2_bounds;
   {
     auto ddrPsi(compute_ddrPsi(
@@ -134,17 +136,17 @@ std::vector<double> BH1_bounds;
       Metric_flat(spacein2, shiftin2.get_basis()), 
       {0,1}
     ));
-    BH2_bounds = bco_utils::set_arb_bounds(bconfig, BCO2, ddrPsi, 2, 0.9);
+    BH2_bounds = bco_u::set_arb_bounds(bconfig, BCO2, ddrPsi, 2, 0.9);
   }
   std::cout << "Bound2 done\n";
-  bco_utils::print_bounds("bh2",BH2_bounds);
+  bco_u::print_bounds("bh2",BH2_bounds);
 
   // for out_bounds.size > 1 - add equi-distant shells
   for(int e = 0; e < out_bounds.size(); ++e)
     out_bounds[e] = bconfig(BIN_PARAMS::REXT) + e * 0.25 * bconfig(BIN_PARAMS::REXT);
 
-  bco_utils::set_BH_bounds(BH1_bounds, bconfig, NODES::BCO1, true);
-  bco_utils::set_BH_bounds(BH2_bounds, bconfig, NODES::BCO2, false);
+  bco_u::set_BH_bounds(BH1_bounds, bconfig, NODES::BCO1, true);
+  bco_u::set_BH_bounds(BH2_bounds, bconfig, NODES::BCO2, false);
 
   // create space containing the domain decomposition
   int type_coloc = CHEB_TYPE;
@@ -155,18 +157,18 @@ std::vector<double> BH1_bounds;
     const Domain_shell_outer_homothetic* old_bh_outer = 
       dynamic_cast<const Domain_shell_outer_homothetic*>(bhspacein.get_domain(1));
     //Update BH fields based to help with interpolation later
-    bco_utils::update_adapted_field(bhconf, 2, 1, old_bh_outer, OUTER_BC);
-    bco_utils::update_adapted_field(bhlapse, 2, 1, old_bh_outer, OUTER_BC);
+    bco_u::update_adapted_field(bhconf, 2, 1, old_bh_outer, OUTER_BC);
+    bco_u::update_adapted_field(bhlapse, 2, 1, old_bh_outer, OUTER_BC);
     for(int i = 1; i <=3; ++i)
-      bco_utils::update_adapted_field(bhshift.set(i), 2, 1, old_bh_outer, OUTER_BC);
+      bco_u::update_adapted_field(bhshift.set(i), 2, 1, old_bh_outer, OUTER_BC);
 
   };
   
   interp_BH_fields(confin1, lapsein1, shiftin1, spacein1);
   interp_BH_fields(confin2, lapsein2, shiftin2, spacein2);
   
-  double xc1 = bco_utils::get_center(space, space.BH1);
-  double xc2 = bco_utils::get_center(space, space.BH2);
+  double xc1 = bco_u::get_center(space, space.BH1);
+  double xc2 = bco_u::get_center(space, space.BH2);
   
   Scalar conf(space);
   conf.annule_hard();
@@ -178,8 +180,8 @@ std::vector<double> BH1_bounds;
   for (int i = 1; i <= 3; i++)
     shift.set(i).annule_hard();
   
-  const double bh1_invw4 = bco_utils::set_decay(bconfig, NODES::BCO1);
-  const double bh2_invw4 = bco_utils::set_decay(bconfig, NODES::BCO2);
+  const double bh1_invw4 = bco_u::set_decay(bconfig, NODES::BCO1);
+  const double bh2_invw4 = bco_u::set_decay(bconfig, NODES::BCO2);
   
   // start importing the fields from the single star
   int ndom = space.get_nbr_domains();
@@ -251,7 +253,7 @@ std::vector<double> BH1_bounds;
 	lapse.std_base();
   shift.std_base();
 
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+  bco_u::save_to_file(space, bconfig, conf, lapse, shift);
 }
+}}
 /** @}*/
-}

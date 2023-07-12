@@ -33,6 +33,7 @@
 
 namespace fs = std::filesystem;
 using namespace Kadath ;
+using namespace Kadath::FUKA_Config;
 
 // forward declarations
 template<typename space_t, typename syst_t, typename config_t>

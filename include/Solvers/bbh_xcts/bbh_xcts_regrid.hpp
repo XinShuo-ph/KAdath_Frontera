@@ -27,13 +27,14 @@
 #include <math.h>
 #include <sstream>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BBH_XCTS
  * \ingroup FUKA
  * @{*/
 
-using namespace Kadath;
+namespace Kadath {
+namespace FUKA_Solvers {
+namespace bco_u = ::Kadath::bco_utils;
 using config_t = kadath_config_boost<BIN_INFO>;
 
 inline
@@ -44,8 +45,8 @@ void update_bin_config(config_t& bconfig, const Space_bin_bh& space, const Scala
   
   bconfig.set(Q) = bconfig(MCH, BCO1) / bconfig(MCH, BCO2);
 
-  bconfig.set(MIRR,BCO1) = bco_utils::mirr_from_mch(bconfig(CHI, BCO1), bconfig(MCH, BCO1));
-  bconfig.set(MIRR,BCO2) = bco_utils::mirr_from_mch(bconfig(CHI, BCO2), bconfig(MCH, BCO2));
+  bconfig.set(MIRR,BCO1) = bco_u::mirr_from_mch(bconfig(CHI, BCO1), bconfig(MCH, BCO1));
+  bconfig.set(MIRR,BCO2) = bco_u::mirr_from_mch(bconfig(CHI, BCO2), bconfig(MCH, BCO2));
 
   if(!bconfig.control(USE_CONFIG_VARS)) {
     int i = BCO1;
@@ -54,7 +55,7 @@ void update_bin_config(config_t& bconfig, const Space_bin_bh& space, const Scala
       // estimate how small the inner radius should be based on relation
       // between conformal factor and numerical radius.
       // see https://arxiv.org/pdf/0805.4192, eq(64)
-      double conf_inner = bco_utils::get_boundary_val(d+1, conf, INNER_BC);
+      double conf_inner = bco_u::get_boundary_val(d+1, conf, INNER_BC);
       double conf_i_sq  = conf_inner * conf_inner;
       double est_r_div2 = bconfig(MCH, i) / conf_i_sq;
       bconfig.set(RIN, i) =  est_r_div2;
@@ -62,7 +63,7 @@ void update_bin_config(config_t& bconfig, const Space_bin_bh& space, const Scala
       // set this here only for shell bounds to be calculated.
       bconfig.set(RMID, i) = 2. * est_r_div2;
 
-      auto [fmin, fmax] = bco_utils::get_field_min_max(lapse, 2, INNER_BC);
+      auto [fmin, fmax] = bco_u::get_field_min_max(lapse, 2, INNER_BC);
       bconfig.set(FIXED_LAPSE, i) = fmin;
 
       i = BCO2;
@@ -103,29 +104,29 @@ int bbh_xcts_regrid(config_t& bconfig, std::string outputfile) {
 
   std::vector<double> BH1_bounds(3+bconfig(NSHELLS,BCO1));
   std::vector<double> BH2_bounds(3+bconfig(NSHELLS,BCO2));
-  bco_utils::set_BH_bounds(BH1_bounds, bconfig, BCO1);
-  bco_utils::set_BH_bounds(BH2_bounds, bconfig, BCO2);
+  bco_u::set_BH_bounds(BH1_bounds, bconfig, BCO1);
+  bco_u::set_BH_bounds(BH2_bounds, bconfig, BCO2);
 
   // Set radius of the excision boundary to the current radius so that the solver
   // starts from the originial solution
-  BH1_bounds[1] = bco_utils::get_radius(old_space.get_domain(old_space.BH1+1), OUTER_BC) ;
-  BH2_bounds[1] = bco_utils::get_radius(old_space.get_domain(old_space.BH2+1), OUTER_BC) ;
+  BH1_bounds[1] = bco_u::get_radius(old_space.get_domain(old_space.BH1+1), OUTER_BC) ;
+  BH2_bounds[1] = bco_u::get_radius(old_space.get_domain(old_space.BH2+1), OUTER_BC) ;
   // end setup bounds
 
   Space_bin_bh space (type_coloc, bconfig(DIST), BH1_bounds, BH2_bounds, out_bounds, bconfig(BIN_RES));
   Base_tensor basis  (space, CARTESIAN_BASIS);
   
   std::cout << "Resolution of old space: ";
-  bco_utils::print_constant_space_resolution(old_space);
+  bco_u::print_constant_space_resolution(old_space);
 
   std::cout << "Resolution of new space: ";
-  bco_utils::print_constant_space_resolution(space);
+  bco_u::print_constant_space_resolution(space);
 
   std::cout << "\nold bounds:" << std::endl;
-  bco_utils::print_bounds_from_space(old_space);  
+  bco_u::print_bounds_from_space(old_space);  
 	
   std::cout << "New bounds:" << std::endl;
-  bco_utils::print_bounds_from_space(space);
+  bco_u::print_bounds_from_space(space);
 
   // needed in some cases, since there is no data in 0,1 and the interpolation can go crazy
   std::array<const int, 2> old_nuc_doms{old_space.BH1, old_space.BH2};
@@ -135,10 +136,10 @@ int bbh_xcts_regrid(config_t& bconfig, std::string outputfile) {
   };
   for(auto& i : {0, 1}){
     // update BH fields to help with interpolation later
-    bco_utils::update_adapted_field(old_conf , old_nuc_doms[i]+2, old_nuc_doms[i]+1, old_outer_homothetic[i], OUTER_BC);
-    bco_utils::update_adapted_field(old_lapse, old_nuc_doms[i]+2, old_nuc_doms[i]+1, old_outer_homothetic[i], OUTER_BC);
+    bco_u::update_adapted_field(old_conf , old_nuc_doms[i]+2, old_nuc_doms[i]+1, old_outer_homothetic[i], OUTER_BC);
+    bco_u::update_adapted_field(old_lapse, old_nuc_doms[i]+2, old_nuc_doms[i]+1, old_outer_homothetic[i], OUTER_BC);
     for(int j = 1; j < 4; ++j)
-      bco_utils::update_adapted_field(old_shift.set(j), old_nuc_doms[i]+2, old_nuc_doms[i]+1, old_outer_homothetic[i], OUTER_BC);
+      bco_u::update_adapted_field(old_shift.set(j), old_nuc_doms[i]+2, old_nuc_doms[i]+1, old_outer_homothetic[i], OUTER_BC);
   }
 
   // setup new fields
@@ -180,8 +181,8 @@ int bbh_xcts_regrid(config_t& bconfig, std::string outputfile) {
   shift.std_base();
 
   bconfig.set_filename(outputfile);
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+  bco_u::save_to_file(space, bconfig, conf, lapse, shift);
   return exit_status;
 }
+}}
 /** @}*/
-}

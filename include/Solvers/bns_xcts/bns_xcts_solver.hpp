@@ -23,12 +23,14 @@
 #include "Solvers/solvers.hpp"
 #include "kadath_bin_ns.hpp"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BNS_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
+
+namespace Kadath {
+namespace FUKA_Solvers {
+
 
 template<class eos_t, typename config_t, typename space_t = Kadath::Space_bin_ns>
 class bns_xcts_solver : Solver<config_t, space_t> {
@@ -80,7 +82,7 @@ class bns_xcts_solver : Solver<config_t, space_t> {
   std::string converged_filename(const std::string stage="") const override;
   
   void save_to_file() const override {
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+    ::Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   }
   
   // solve driver
@@ -113,7 +115,8 @@ template<typename eos_t>
 inline void bns_setup_boosted_3d(
   kadath_config_boost<BCO_NS_INFO>& NS1config, kadath_config_boost<BCO_NS_INFO>& NS2config,
   kadath_config_boost<BIN_INFO>& bconfig);
+
+}}
 /** @}*/
-}
 #include "bns_xcts_solver_imp.cpp"
 #include "bns_xcts_stages.cpp"

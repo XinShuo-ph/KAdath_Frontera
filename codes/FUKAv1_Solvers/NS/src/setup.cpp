@@ -36,6 +36,7 @@
 #include <algorithm>
 using namespace Kadath;
 using namespace Kadath::Margherita;
+using namespace Kadath::FUKA_Config;
 
 template<typename eos_t, typename config_t>
 int norot_3dsetup (config_t bconfig);

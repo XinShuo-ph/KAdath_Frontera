@@ -1,10 +1,11 @@
-namespace FUKA_Solvers {
 /**
  * \addtogroup BNS_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
 
+namespace Kadath {
+namespace FUKA_Solvers {
+namespace bco_u = ::Kadath::bco_utils;
 template<class config_t>
 inline void bns_xcts_setup_bin_config(config_t& bconfig) {
   check_dist(bconfig(BIN_PARAMS::DIST), 
@@ -17,11 +18,11 @@ inline void bns_xcts_setup_bin_config(config_t& bconfig) {
                              / bconfig(BCO_PARAMS::MADM, NODES::BCO1);
   
   // classical Newtonian estimate
-  bconfig.set(BIN_PARAMS::COM) = bco_utils::com_estimate(bconfig(BIN_PARAMS::DIST), 
+  bconfig.set(BIN_PARAMS::COM) = bco_u::com_estimate(bconfig(BIN_PARAMS::DIST), 
     bconfig(BCO_PARAMS::MADM, NODES::BCO1), bconfig(BCO_PARAMS::MADM, NODES::BCO2));
   
   // obtain 3PN estimate for the global, orbital omega
-  bco_utils::KadathPNOrbitalParams(bconfig, \
+  bco_u::KadathPNOrbitalParams(bconfig, \
         bconfig(BCO_PARAMS::MADM, NODES::BCO1), bconfig(BCO_PARAMS::MADM,NODES::BCO2));
 
   // delete ADOT, this can always be recalculated during
@@ -67,12 +68,12 @@ void bns_xcts_superimposed_import(config_t& bconfig,
   const std::string eos_type = NS1config.eos<std::string>(EOS_PARAMS::EOSTYPE);
 
   if(eos_type == "Cold_PWPoly") {
-    using eos_t = Kadath::Margherita::Cold_PWPoly;
+    using eos_t = ::Kadath::Margherita::Cold_PWPoly;
 
     EOS<eos_t, eos_var_t::PRESSURE>::init(eos_file, h_cut);
     bns_setup_boosted_3d<eos_t>(NS1config, NS2config, bconfig);
   } else if(eos_type == "Cold_Table") {
-    using eos_t = Kadath::Margherita::Cold_Table;
+    using eos_t = ::Kadath::Margherita::Cold_Table;
 
     const int interp_pts = (NS1config.eos<int>(EOS_PARAMS::INTERP_PTS) == 0) ? \
                             2000 : NS1config.eos<int>(EOS_PARAMS::INTERP_PTS);
@@ -104,9 +105,9 @@ inline void bns_setup_boosted_3d(
 	int ndomin1 = spacein1.get_nbr_domains() ;
 
   // update NS1config quantities before updating binary configuration file
-  NS1config.set(BCO_PARAMS::HC) = std::exp(bco_utils::get_boundary_val(0, loghin1, INNER_BC));
+  NS1config.set(BCO_PARAMS::HC) = std::exp(bco_u::get_boundary_val(0, loghin1, INNER_BC));
   NS1config.set(BCO_PARAMS::NC) = EOS<eos_t,DENSITY>::get(NS1config(BCO_PARAMS::HC)) ;
-  bco_utils::update_config_NS_radii(spacein1, NS1config, 1);
+  bco_u::update_config_NS_radii(spacein1, NS1config, 1);
   
   // read single NS configuration and data
   nsspacein  = NS2config.space_filename();
@@ -122,9 +123,9 @@ inline void bns_setup_boosted_3d(
 	int ndomin2 = spacein2.get_nbr_domains() ;
 
   // update NS2config quantities before updating binary configuration file
-  NS2config.set(BCO_PARAMS::HC) = std::exp(bco_utils::get_boundary_val(0, loghin2, INNER_BC));
+  NS2config.set(BCO_PARAMS::HC) = std::exp(bco_u::get_boundary_val(0, loghin2, INNER_BC));
   NS2config.set(BCO_PARAMS::NC) = EOS<eos_t,DENSITY>::get(NS2config(BCO_PARAMS::HC)) ;
-  bco_utils::update_config_NS_radii(spacein2, NS2config, 1);
+  bco_u::update_config_NS_radii(spacein2, NS2config, 1);
   
   // update NS parameters in binary config
   for(int i = 0; i < BCO_PARAMS::NUM_BCO_PARAMS; ++i) 
@@ -151,7 +152,7 @@ inline void bns_setup_boosted_3d(
     const Domain_shell_inner_adapted* old_inner = 
       dynamic_cast<const Domain_shell_inner_adapted*>(space.get_domain(d+1));
     //interpolate old_phi field outside of the star for import
-    bco_utils::update_adapted_field(old_phi, d, d+1, old_inner, INNER_BC);
+    bco_u::update_adapted_field(old_phi, d, d+1, old_inner, INNER_BC);
   };
   // in case we used boosted TOVs, we need to import PHI
   if(NS1config.set_field(BCO_FIELDS::PHI) == true)
@@ -186,16 +187,16 @@ inline void bns_setup_boosted_3d(
     out_bounds[e] = bconfig(BIN_PARAMS::REXT) * (1. + e * 0.25);
   
   // set reasonable radii to each stellar domain
-  bco_utils::set_NS_bounds(NS1_bounds, bconfig, NODES::BCO1);
-  bco_utils::set_NS_bounds(NS2_bounds, bconfig, NODES::BCO2);
+  bco_u::set_NS_bounds(NS1_bounds, bconfig, NODES::BCO1);
+  bco_u::set_NS_bounds(NS2_bounds, bconfig, NODES::BCO2);
   // end setup domain boundaries
   
   // output stellar domain radii
   if(rank == 0) {
     std::cout << "Bounds:" << std::endl;
-    bco_utils::print_bounds("Outer", out_bounds);
-    bco_utils::print_bounds("NS1", NS1_bounds);
-    bco_utils::print_bounds("NS2", NS2_bounds);
+    bco_u::print_bounds("Outer", out_bounds);
+    bco_u::print_bounds("NS1", NS1_bounds);
+    bco_u::print_bounds("NS2", NS2_bounds);
   }
 
   // create a binary neutron star space
@@ -218,15 +219,15 @@ inline void bns_setup_boosted_3d(
   };
 
   // updated the radius mapping for both NS
-  bco_utils::interp_adapted_mapping(new_inner_adapted[0], 1, old_space_radius1);
-  bco_utils::interp_adapted_mapping(new_outer_adapted[0], 1, old_space_radius1);
+  bco_u::interp_adapted_mapping(new_inner_adapted[0], 1, old_space_radius1);
+  bco_u::interp_adapted_mapping(new_outer_adapted[0], 1, old_space_radius1);
   
-  bco_utils::interp_adapted_mapping(new_inner_adapted[1], 1, old_space_radius2);
-  bco_utils::interp_adapted_mapping(new_outer_adapted[1], 1, old_space_radius2);
+  bco_u::interp_adapted_mapping(new_inner_adapted[1], 1, old_space_radius2);
+  bco_u::interp_adapted_mapping(new_outer_adapted[1], 1, old_space_radius2);
   
   // get and print center of each star
-  double xc1 = bco_utils::get_center(space,space.NS1);
-  double xc2 = bco_utils::get_center(space,space.NS2);
+  double xc1 = bco_u::get_center(space,space.NS1);
+  double xc2 = bco_u::get_center(space,space.NS2);
   
   if(rank == 0)
     std::cout << "xc1: " << xc1 << std::endl
@@ -251,8 +252,8 @@ inline void bns_setup_boosted_3d(
   phi.annule_hard();
   //end create new fields
   
-  const double ns1_invw4 = bco_utils::set_decay(bconfig, NODES::BCO1);
-  const double ns2_invw4 = bco_utils::set_decay(bconfig, NODES::BCO2);
+  const double ns1_invw4 = bco_u::set_decay(bconfig, NODES::BCO1);
+  const double ns2_invw4 = bco_u::set_decay(bconfig, NODES::BCO2);
   
   if(rank == 0)
     std::cout << "WeightNS1: " << bconfig(BCO_PARAMS::DECAY, NODES::BCO1) << ", "
@@ -347,6 +348,6 @@ inline void bns_setup_boosted_3d(
   phi.std_base();
 
   // save everything to a binary file
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+  bco_u::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
 }
-}
+}}

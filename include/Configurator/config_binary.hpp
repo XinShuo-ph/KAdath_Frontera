@@ -23,6 +23,8 @@
 #include <memory>
 #include <array>
 #include <numeric>
+namespace Kadath {
+namespace FUKA_Config {
 /**
  * \addtogroup Containers
  * @ingroup Configurator
@@ -50,10 +52,10 @@ private:
 
   void init_bco(const int idx, const std::string bco_type) {
     switch (MBCO.at(bco_type)) {
-      case BH:
+      case NODES::BH:
         BCOS[idx] = std::make_unique<BCO_BH_INFO>();
         break;
-      case NS:
+      case NODES::NS:
         BCOS[idx] = std::make_unique<BCO_NS_INFO>();
         break;
       default:
@@ -442,3 +444,4 @@ public:
  * @}*/
 
 std::ostream &operator<<(std::ostream &out, const BIN_INFO &BIN);
+}}

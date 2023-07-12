@@ -29,6 +29,7 @@
 #include "coord_fields.hpp"
 #include "bco_utilities.hpp"
 using namespace Kadath;
+using namespace Kadath::FUKA_Config;
 
 template<typename config_t, typename space_t>
 void setup_bin_config(config_t& bconfig, const space_t& space, const Scalar& conf, const Scalar& lapse){

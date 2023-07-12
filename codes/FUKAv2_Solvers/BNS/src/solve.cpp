@@ -27,8 +27,6 @@
 #include "Solvers/bns_xcts/bns_xcts_solver.hpp"
 #include "Solvers/sequences/parameter_sequence.hpp"
 
-using namespace Kadath;
-using namespace FUKA_Solvers;
 
 int main(int argc, char** argv) {
   int rc = MPI_Init(&argc, &argv) ;
@@ -39,8 +37,9 @@ int main(int argc, char** argv) {
   int rank = 0 ;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
 
-  using config_t = kadath_config_boost<BIN_INFO>;
-  using InitSolver = Initialize_Solver<config_t>;
+  namespace solvers = ::Kadath::FUKA_Solvers;
+  using config_t = kadath_config_boost<BIN_INFO>;  
+  using InitSolver = solvers::Initialize_Solver<config_t>;
   
   // Initialize static member variables
   InitSolver::input_configname = "initial_bns.info";
@@ -67,7 +66,7 @@ int main(int argc, char** argv) {
       if(InitSolver::minimal_config) {        
         bconfig.write_minimal_config();
       } else {        
-        bns_xcts_setup_bin_config(bconfig);
+        solvers::bns_xcts_setup_bin_config(bconfig);
         bconfig.write_config();
       }
     }
@@ -76,7 +75,7 @@ int main(int argc, char** argv) {
     bconfig.control(CONTROLS::SEQUENCES) = InitSolver::setup_first;
     
     auto tree = bconfig.get_config_tree();
-    auto N = number_of_sequences_binary(tree);
+    auto N = solvers::number_of_sequences_binary(tree);
     if(N > 1) {
       if(rank == 0) {
         std::cerr << "Only sequences along one component is allowed.\n";
@@ -84,11 +83,11 @@ int main(int argc, char** argv) {
       }
     }
 
-    auto resolution = parse_seq_tree(tree, "binary", "res", BIN_PARAMS::BIN_RES);
-    verify_resolution_sequence(bconfig, resolution);
+    auto resolution = solvers::parse_seq_tree(tree, "binary", "res", BIN_PARAMS::BIN_RES);
+    solvers::verify_resolution_sequence(bconfig, resolution);
 
-    auto seq = find_sequence_binary(tree);
-    auto seq_bin = find_sequence(tree, MBIN_PARAMS, "binary");
+    auto seq = solvers::find_sequence_binary(tree);
+    auto seq_bin = solvers::find_sequence(tree, MBIN_PARAMS, "binary");
     int err = EXIT_SUCCESS;
 
     if(!(seq.is_set() || seq_bin.is_set()) && !bconfig.control(CONTROLS::SEQUENCES))

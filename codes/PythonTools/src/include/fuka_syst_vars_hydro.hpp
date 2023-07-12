@@ -1,6 +1,7 @@
 #pragma once
 #include "Solvers/fuka_syst/fuka_syst_tools.hpp"
 #include "bco_utilities.hpp"
+namespace Kadath {
 namespace FUKA_Syst_tools {
 
 template<class dict_t>
@@ -94,4 +95,4 @@ void syst_vars_NS(dict_t& vars, System_of_eqs & syst,
     double Chi = S / Madm / Madm;
     vars[std::string{iden+"Chi"}.c_str()] = Chi;
 }
-}
+}}

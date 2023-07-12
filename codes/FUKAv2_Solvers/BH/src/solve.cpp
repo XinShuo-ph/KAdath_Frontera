@@ -24,8 +24,8 @@
 #include "Solvers/solver_startup.hpp"
 #include "Solvers/sequences/parameter_sequence.hpp"
 
-using namespace Kadath;
-using namespace FUKA_Solvers;
+using namespace Kadath::FUKA_Config;
+using namespace Kadath::FUKA_Solvers;
 
 int main(int argc, char** argv) {
   int rc = MPI_Init(&argc, &argv) ;

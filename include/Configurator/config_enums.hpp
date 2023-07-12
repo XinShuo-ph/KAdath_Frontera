@@ -28,7 +28,8 @@
   * also allows for calling container locations using physically meaningful names
   * @{
   */
-
+namespace Kadath {
+namespace FUKA_Config {
 /** @brief enum BIN_PARAMS enumerator over binary parameters */
 enum BIN_PARAMS {
   DIST=0, DDIST, BIN_RES, GOMEGA, COM, COMY, \
@@ -98,3 +99,5 @@ extern const std::map<std::string, STAGES> MNSSTAGE;
 extern const std::map<std::string, CONTROLS> MMIN_CONTROLS;
 /**@} end extern group definition*/
 /**@} end config_enums group*/
+
+}}

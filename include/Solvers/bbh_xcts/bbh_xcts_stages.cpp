@@ -24,11 +24,14 @@
 #include "bco_utilities.hpp"
 #include "mpi.h"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BBH_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
+namespace bco_u = ::Kadath::bco_utils;
 
 inline void print_stage (std::string stage_name) {
   std::cout << "############################" << std::endl
@@ -63,7 +66,7 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
     // in case of the eccentricity stage
     if(std::isnan(bconfig.set(ADOT)) || std::isnan(bconfig.set(ECC_OMEGA)) || bconfig.control(USE_PN)) {
 
-      bco_utils::KadathPNOrbitalParams(bconfig, bconfig(MCH,BCO1), bconfig(MCH,BCO2));
+      bco_u::KadathPNOrbitalParams(bconfig, bconfig(MCH,BCO1), bconfig(MCH,BCO2));
 
       if(rank == 0)
         std::cout << "### Using PN estimate for adot and omega! ###" << std::endl;
@@ -199,9 +202,9 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
 
   // in the case of corotation or fixed local spin frequency, we calculate MCH accordingly
   if(!std::isnan(bconfig.set(FIXED_BCOMEGA, BCO1)) || bconfig.control(COROT_BIN))
-    bconfig(MCH, BCO1) = bco_utils::syst_mch(syst, space, "intSm", space.BH1+2);
+    bconfig(MCH, BCO1) = bco_u::syst_mch(syst, space, "intSm", space.BH1+2);
   if(!std::isnan(bconfig.set(FIXED_BCOMEGA, BCO2)) || bconfig.control(COROT_BIN))
-    bconfig(MCH, BCO2) = bco_utils::syst_mch(syst, space, "intSp", space.BH2+2);
+    bconfig(MCH, BCO2) = bco_u::syst_mch(syst, space, "intSp", space.BH2+2);
 
   bconfig.set_filename(converged_filename(stage_text));
   if(rank == 0)
@@ -209,5 +212,5 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
 
   return exit_status;
 }
+}}
 /** @}*/
-}

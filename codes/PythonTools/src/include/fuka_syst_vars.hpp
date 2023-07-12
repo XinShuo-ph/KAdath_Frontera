@@ -1,5 +1,6 @@
 #pragma once
 #include "Solvers/fuka_syst/fuka_syst_tools.hpp"
+namespace Kadath {
 namespace FUKA_Syst_tools {
 
 template<class dict_t>
@@ -88,5 +89,5 @@ void syst_vars_BH(dict_t& vars, System_of_eqs & syst,
     double Chi = S / Mch / Mch;
     vars[std::string{iden+"Chi"}.c_str()] = Chi;
 }
-}
+}}
 #include "fuka_syst_vars_hydro.hpp"

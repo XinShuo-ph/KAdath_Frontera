@@ -1,12 +1,15 @@
 #pragma once
 #include "exporter_utilities.hpp"
 #include <string>
-namespace FUKA_Syst_tools {
+
 /**
  * \addtogroup Syst_tools
  * \ingroup FUKA
  * Centralized tools to populate and manipulate System_of_eqs
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Syst_tools {
 
 template<class space_t, class dict_t>
 void export_radii(space_t & space, dict_t& vars, 
@@ -63,5 +66,5 @@ std::vector<int> vector_of_domains(int const dom_min, int const dom_max) {
   std::iota(doms.begin(), doms.end(), dom_min);
   return doms;
 }
+}}
 /** @}*/
-}

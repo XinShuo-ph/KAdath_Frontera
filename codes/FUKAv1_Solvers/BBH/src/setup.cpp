@@ -30,6 +30,7 @@
 #include <iostream>
 #include <utility>
 using namespace Kadath ;
+using namespace Kadath::FUKA_Config;
 
 auto set_bin_defaults() {
   /******* Equal Mass, irrot Initial Data Setup *********************/

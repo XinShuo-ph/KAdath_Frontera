@@ -2,12 +2,15 @@
 #include "coord_fields.hpp"
 #include "ns_3d_xcts/ns_3d_xcts_solver.hpp"
 #include "bco_utilities.hpp"
-namespace FUKA_Solvers {
+
 /**
  * \addtogroup Solver_utils
  * \ingroup FUKA
  * @{*/
 
+namespace Kadath {
+namespace FUKA_Solvers {
+  
 template <std::size_t s_type,typename config_t>
 void setup_co(config_t& bconfig) {
   auto& fields = bconfig.return_fields();
@@ -29,13 +32,13 @@ void setup_co(config_t& bconfig) {
     // Estimate Radius of BH based on Schwarzschild radius and an 
     // estimate for Psi on the horizon based on prev. BH solutions
     if(!bconfig.control(CONTROLS::USE_CONFIG_VARS)) {
-      bconfig.set(BCO_PARAMS::RIN) = bconfig(BCO_PARAMS::MCH) * bco_utils::invpsisq;
-      bconfig.set(BCO_PARAMS::RMID) = 2 * bconfig(BCO_PARAMS::MCH) * bco_utils::invpsisq;
+      bconfig.set(BCO_PARAMS::RIN) = bconfig(BCO_PARAMS::MCH) * Kadath::bco_utils::invpsisq;
+      bconfig.set(BCO_PARAMS::RMID) = 2 * bconfig(BCO_PARAMS::MCH) * Kadath::bco_utils::invpsisq;
       bconfig.set(BCO_PARAMS::ROUT) = 4 * bconfig(BCO_PARAMS::RMID);
     }    
-    bco_utils::set_isolated_BH_bounds(bounds, bconfig);
+    Kadath::bco_utils::set_isolated_BH_bounds(bounds, bconfig);
     #ifdef DEBUG
-    bco_utils::print_bounds("BH", bounds);
+    Kadath::bco_utils::print_bounds("BH", bounds);
     #endif
     Space_adapted_bh space(type_coloc, center, res, bounds);
 
@@ -48,7 +51,7 @@ void setup_co(config_t& bconfig) {
     
     // Lambda to reduce code based on EOSTYPE
     auto gen_NS = [&](auto tov) {
-      bco_utils::set_NS_bounds(bounds, bconfig);
+      Kadath::bco_utils::set_NS_bounds(bounds, bconfig);
       
       // generate a full single star space including compactification to infinity
       Space_spheric_adapted space(type_coloc, center, res, bounds);
@@ -58,12 +61,12 @@ void setup_co(config_t& bconfig) {
     
     if(!bconfig.control(CONTROLS::USE_CONFIG_VARS)) {
       if(eos_type == "Cold_PWPoly") {
-        using eos_t = Kadath::Margherita::Cold_PWPoly;
+        using eos_t = ::Kadath::Margherita::Cold_PWPoly;
         EOS<eos_t, eos_var_t::PRESSURE>::init(eos_file, h_cut);
         auto tov = setup_ns_config_from_TOV<eos_t>(bconfig);
         gen_NS(std::move(tov));
       } else if(eos_type == "Cold_Table") {
-        using eos_t = Kadath::Margherita::Cold_Table;
+        using eos_t = ::Kadath::Margherita::Cold_Table;
 
         const int interp_pts = (bconfig.template eos<int>(EOS_PARAMS::INTERP_PTS) == 0) ? \
                                 2000 : bconfig.template eos<int>(EOS_PARAMS::INTERP_PTS);
@@ -96,7 +99,7 @@ void write_bh_init_setup_tofile_XCTS(Space_adapted_bh& space, config_t& bconfig)
   Scalar conf(lapse);
   
   // set a better estimate for PSI on the horizon
-  conf.set_domain(2) = bco_utils::psi;
+  conf.set_domain(2) = Kadath::bco_utils::psi;
   conf.std_base();
   lapse.std_base();
 
@@ -106,7 +109,7 @@ void write_bh_init_setup_tofile_XCTS(Space_adapted_bh& space, config_t& bconfig)
   shift.std_base();
   // end setup fields
   
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+  Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
 }
 
 template<typename tov_t, typename config_t>
@@ -163,7 +166,7 @@ void write_ns_init_setup_tofile_XCTS(Space_spheric_adapted& space, config_t& bco
   lapse.std_base();
   // end setup fields
   
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+  Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
 }
 
 template<typename eos_t, typename config_t>
@@ -214,5 +217,5 @@ auto setup_interpolator_from_TOV(tov_t& tov) {
   linear_interp_t<double,3> ltp(max_iter, std::move(radius_lin_ptr), std::move(lapse_lin_ptr), std::move(rho_lin_ptr), std::move(conf_lin_ptr)); 
   return ltp; 
 }
+}}
 /** @}*/
-}

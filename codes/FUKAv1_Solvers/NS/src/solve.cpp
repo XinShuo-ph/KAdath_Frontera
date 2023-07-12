@@ -30,13 +30,14 @@
 
 using namespace Kadath;
 using namespace Kadath::Margherita;
+using namespace Kadath::FUKA_Config;
 
 // forward declarations
 template<typename space_t, typename syst_t, typename config_t>
-void print_diagnostics_norot(space_t const & space, syst_t const & syst, const config_t & bconfig, int const ite, double const conv);
+void print_diagnostics_norot(space_t const & space, syst_t const & syst, config_t & bconfig, int const ite, double const conv);
 
 template<typename space_t, typename syst_t, typename config_t>
-void print_diagnostics_rot(space_t const & space, syst_t const & syst, const config_t & bconfig, int const ite, double const conv);
+void print_diagnostics_rot(space_t const & space, syst_t const & syst, config_t & bconfig, int const ite, double const conv);
 
 template<typename config_t>
 std::string converged_filename(const std::string&  stage, config_t bconfig);
@@ -850,7 +851,7 @@ int NS_solver_3d (config_t bconfig, std::string outputdir) {
 #define FORMAT std::setw(10) << std::left << std::showpos 
 template<typename space_t, typename syst_t, typename config_t>
 void print_diagnostics_norot(space_t const & space, syst_t const & syst, 
-    const config_t & bconfig, int const ite, double const conv) {
+    config_t & bconfig, int const ite, double const conv) {
 
   // total number of domains	
   int ndom = space.get_nbr_domains() ;

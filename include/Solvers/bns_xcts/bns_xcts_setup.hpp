@@ -27,11 +27,13 @@
 #include <filesystem>
 
 namespace fs = std::filesystem;
-namespace FUKA_Solvers {
 /**
  * \addtogroup BNS_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 /**
  * bns_xcts_setup_bin
@@ -82,5 +84,5 @@ inline void bns_setup_boosted_3d(
   kadath_config_boost<BCO_NS_INFO>& NS1config, kadath_config_boost<BCO_NS_INFO>& NS2config,
   kadath_config_boost<BIN_INFO>& bconfig);
 /** @}*/
-}
+}}
 #include "bns_xcts_setup.cpp"

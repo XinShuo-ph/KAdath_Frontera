@@ -9,6 +9,7 @@
 
 using namespace Kadath;
 using namespace export_utils;
+using namespace Kadath::FUKA_Config;
 
 std::array<std::vector<double>,NUM_OUT> KadathExportBNS(int const npoints,
                                                         double const * xx, double const * yy, double const * zz,
@@ -56,9 +57,9 @@ std::array<std::vector<double>,NUM_OUT> KadathExportBNS(int const npoints,
 
   int ndom = space.get_nbr_domains();
 
- 	double xc1 = bco_utils::get_center(space,space.NS1);
- 	double xc2 = bco_utils::get_center(space,space.NS2);
-  double xo  = bco_utils::get_center(space,ndom-1);
+ 	double xc1 = Kadath::bco_utils::get_center(space,space.NS1);
+ 	double xc2 = Kadath::bco_utils::get_center(space,space.NS2);
+  double xo  = Kadath::bco_utils::get_center(space,ndom-1);
 
   Metric_flat fmet(space, basis);
 

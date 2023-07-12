@@ -25,13 +25,13 @@
 #include "bh_3d_xcts_solver.hpp"
 #include "bh_3d_xcts_regrid.hpp"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BH_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
-using namespace Kadath::Margherita;
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 template<typename config_t, typename space_t>
 bh_3d_xcts_solver<config_t, space_t>::bh_3d_xcts_solver(config_t& config_in, 
@@ -163,7 +163,7 @@ void bh_3d_xcts_solver<config_t, space_t>::print_diagnostics_norot(const System_
     const int ite, const double conv) const {
 
 	int ndom = space.get_nbr_domains() ;
-  double r = bco_utils::get_radius(space.get_domain(1), OUTER_BC);
+  double r = Kadath::bco_utils::get_radius(space.get_domain(1), OUTER_BC);
   
   Val_domain integMsq(syst.give_val_def("intMsq")()(2));
   double Mirrsq = space.get_domain(2)->integ(integMsq, INNER_BC);
@@ -216,5 +216,5 @@ void bh_3d_xcts_solver<config_t, space_t>::print_diagnostics(System_of_eqs const
   std::cout.flags(f);
   std::cout << "=======================================" << "\n\n";
 } // end print diagnostics rot
+}}
 /** @}*/
-}

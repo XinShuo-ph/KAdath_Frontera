@@ -7,6 +7,7 @@
 
 using namespace Kadath;
 using namespace export_utils;
+using namespace Kadath::FUKA_Config;
 
 std::array<std::vector<double>,NUM_VOUT> KadathExportBH(int const npoints,
                                                         double const * xx, double const * yy, double const * zz,
@@ -24,7 +25,7 @@ std::array<std::vector<double>,NUM_VOUT> KadathExportBH(int const npoints,
   Vector shift(space, fin);
 	fclose(fin) ;
  
-  double rbh = bco_utils::get_radius(space.get_domain(1), OUTER_BC);
+  double rbh = Kadath::bco_utils::get_radius(space.get_domain(1), OUTER_BC);
   int ndom = space.get_nbr_domains();
 
   std::vector<std::reference_wrapper<const Scalar>> quants;

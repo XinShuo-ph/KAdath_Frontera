@@ -20,6 +20,8 @@
 #include <Configurator/config_enums.hpp>
 #include <string>
 #include <map>
+namespace Kadath {
+namespace FUKA_Config {
 /**
   * \addtogroup Configurator_enums
 	* \ingroup Configurator
@@ -222,3 +224,4 @@ const std::map<std::string, CONTROLS> MMIN_CONTROLS = {
   {"centralized_cos", SAVE_COS},///< Save CO solutions to a central location for reuse
 };
 /** @}*/
+}}

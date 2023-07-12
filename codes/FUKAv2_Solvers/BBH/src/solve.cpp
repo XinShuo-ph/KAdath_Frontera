@@ -27,9 +27,6 @@
 #include "Solvers/bbh_xcts/bbh_xcts_setup.hpp"
 #include "Solvers/sequences/parameter_sequence.hpp"
 
-using namespace Kadath;
-using namespace FUKA_Solvers;
-
 int main(int argc, char** argv) {
   int rc = MPI_Init(&argc, &argv) ;
   if (rc!=MPI_SUCCESS) {
@@ -39,8 +36,9 @@ int main(int argc, char** argv) {
   int rank = 0 ;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
 
-  using config_t = kadath_config_boost<BIN_INFO>;
-  using InitSolver = Initialize_Solver<config_t>;
+    namespace solvers = ::Kadath::FUKA_Solvers;
+  using config_t = kadath_config_boost<BIN_INFO>;  
+  using InitSolver = solvers::Initialize_Solver<config_t>;
   
   // Initialize static member variables
   InitSolver::input_configname = "initial_bbh.info";
@@ -66,7 +64,7 @@ int main(int argc, char** argv) {
       if(InitSolver::minimal_config) {        
         bconfig.write_minimal_config();
       } else {        
-        bbh_xcts_setup_bin_config(bconfig);
+        solvers::bbh_xcts_setup_bin_config(bconfig);
         bconfig.write_config();
       }
     }
@@ -75,7 +73,7 @@ int main(int argc, char** argv) {
     bconfig.control(CONTROLS::SEQUENCES) = InitSolver::setup_first;
     
     auto tree = bconfig.get_config_tree();
-    auto N = number_of_sequences_binary(tree);
+    auto N = solvers::number_of_sequences_binary(tree);
     if(N > 1) {
       if(rank == 0) {
         std::cerr << "Only sequences along one component is allowed.\n";
@@ -83,11 +81,11 @@ int main(int argc, char** argv) {
       }
     }
 
-    auto resolution = parse_seq_tree(tree, "binary", "res", BIN_PARAMS::BIN_RES);
-    verify_resolution_sequence(bconfig, resolution);
+    auto resolution = solvers::parse_seq_tree(tree, "binary", "res", BIN_PARAMS::BIN_RES);
+    solvers::verify_resolution_sequence(bconfig, resolution);
 
-    auto seq = find_sequence_binary(tree);
-    auto seq_bin = find_sequence(tree, MBIN_PARAMS, "binary");
+    auto seq = solvers::find_sequence_binary(tree);
+    auto seq_bin = solvers::find_sequence(tree, MBIN_PARAMS, "binary");
 
     if(!(seq.is_set() || seq_bin.is_set()) && !bconfig.control(CONTROLS::SEQUENCES))
       int err = bbh_xcts_driver(bconfig, resolution, InitSolver::outputdir);
@@ -96,9 +94,9 @@ int main(int argc, char** argv) {
       auto [ branch_name, key, val ] = find_leaf(tree, "N");
       if(!key.empty()) seq.set_N(std::stoi(val));
       if(seq.is_set())
-        bbh_xcts_sequence(bconfig, seq, resolution, InitSolver::outputdir);
+        solvers::bbh_xcts_sequence(bconfig, seq, resolution, InitSolver::outputdir);
       else
-        bbh_xcts_sequence(bconfig, seq_bin, resolution, InitSolver::outputdir);
+        solvers::bbh_xcts_sequence(bconfig, seq_bin, resolution, InitSolver::outputdir);
     }
 
   }

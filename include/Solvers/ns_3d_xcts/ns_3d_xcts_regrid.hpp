@@ -27,12 +27,14 @@
 #include "Solvers/co_solver_utils.hpp"
 #include "bco_utilities.hpp"
 
-namespace FUKA_Solvers {
-using space_t = Space_spheric_adapted;
 /**
  * \addtogroup NS_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
+using space_t = Space_spheric_adapted;
 
 template<typename config_t>
 int ns_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
@@ -79,7 +81,7 @@ int ns_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
   //end setup old radius field
 
   // get the minimal and maximal radius from the adapted domain
-  auto [r_min, r_max] = bco_utils::get_rmin_rmax(old_space, 1);
+  auto [r_min, r_max] = Kadath::bco_utils::get_rmin_rmax(old_space, 1);
 
   std::cout << "Rmin/max: " << r_min << " " << r_max << std::endl;
 
@@ -115,9 +117,9 @@ int ns_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
 
   int ndom = 4 + bconfig(NSHELLS);
   std::vector<double> bounds(ndom-1);
-  bco_utils::set_NS_bounds(bounds, bconfig);
+  Kadath::bco_utils::set_NS_bounds(bounds, bconfig);
   
-  bco_utils::print_bounds("New bounds: ", bounds);
+  Kadath::bco_utils::print_bounds("New bounds: ", bounds);
 
   // get origin of nucleus domain
   Point center = old_space.get_domain(0)->get_center();
@@ -131,8 +133,8 @@ int ns_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
 	const Domain_shell_inner_adapted* new_inner_adapted = dynamic_cast<const Domain_shell_inner_adapted*>(space.get_domain(2));
 
   // update adapted domain mapping
-  bco_utils::interp_adapted_mapping(new_outer_adapted, 1, old_space_radius);
-  bco_utils::interp_adapted_mapping(new_inner_adapted, 1, old_space_radius);
+  Kadath::bco_utils::interp_adapted_mapping(new_outer_adapted, 1, old_space_radius);
+  Kadath::bco_utils::interp_adapted_mapping(new_inner_adapted, 1, old_space_radius);
 
   // setup new fields
   // initialize to one or zero first
@@ -174,9 +176,9 @@ int ns_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
   
   // output data  
   bconfig.set_filename(outputfile);
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+  Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
 
   return EXIT_SUCCESS;
 }
+}}
 /** @}*/
-}

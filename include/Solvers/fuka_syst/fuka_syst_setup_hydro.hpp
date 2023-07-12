@@ -2,13 +2,16 @@
 #include "coord_fields.hpp"
 #include "Configurator/config_bco.hpp"
 #include "Configurator/config_binary.hpp"
-namespace FUKA_Syst_tools {
+
 /**
  * \addtogroup Syst_tools
  * \ingroup FUKA
  * Centralized tools to populate and manipulate System_of_eqs
  * @{*/
 
+namespace Kadath {
+namespace FUKA_Syst_tools {
+  
 inline
 void syst_init_contraction_defs_hydro(System_of_eqs & syst) {
   int const ndom = syst.get_space().get_nbr_domains();
@@ -138,5 +141,5 @@ void syst_init_quasi_local_defs_hydro(System_of_eqs& syst,
     syst.add_def(d, "intH  = P^6 * H * W") ;
   }
 }
+}}
 /** @}*/
-}

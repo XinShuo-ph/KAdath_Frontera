@@ -28,8 +28,9 @@
 #include "config_bco.hpp"
 #include "config_binary.hpp"
 
-
 namespace Kadath {
+namespace FUKA_pyTools {
+using namespace Kadath::FUKA_Config;
 /** @defgroup pyConfigurator
   * @ingroup Configurator
 	* Utility functions to enable parsing and saving Configurator files currently
@@ -181,5 +182,5 @@ namespace Kadath {
     auto reader = class_<reader_t>(reader_name.c_str(), init<std::string>());
     reader.def_readonly("config", &reader_t::config);
   }
-}
+}}
 /** @} end pyConfigurator group */

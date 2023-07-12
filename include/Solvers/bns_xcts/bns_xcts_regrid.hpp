@@ -26,18 +26,20 @@
 #include "Configurator/config_binary.hpp"
 #include "bco_utilities.hpp"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BNS_XCTS
  * \ingroup FUKA
  * @{*/
 
-using namespace Kadath;
+namespace Kadath {
+namespace FUKA_Solvers {
+
 using bin_space_t = Space_bin_ns;
 
 template<typename config_t>
 int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   int exit_status = EXIT_SUCCESS;
+  namespace bco_u = ::Kadath::bco_utils;
 
   // file containing KADATH fields must have same name as config file with only the extension being different
   std::string kadath_filename = bconfig.space_filename();
@@ -96,7 +98,7 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
     int const dom = old_adapted_doms[i];
 
     // array of {rmin, rmax}
-    auto [ rmin, rmax ] = bco_utils::get_rmin_rmax(old_space, dom);
+    auto [ rmin, rmax ] = bco_u::get_rmin_rmax(old_space, dom);
 	  std::cout << rmin << " " << rmax << std::endl;
 
     bconfig.set(BCO_PARAMS::RIN , i) = 0.5 * rmin;
@@ -133,12 +135,12 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   for(int e = 0; e < out_bounds.size(); ++e)
     out_bounds[e] = bconfig(BIN_PARAMS::REXT) * (1. + e * 0.25);
 
-  bco_utils::set_NS_bounds(NS1_bounds, bconfig, NODES::BCO1);
-  bco_utils::set_NS_bounds(NS2_bounds, bconfig, NODES::BCO2);
+  bco_u::set_NS_bounds(NS1_bounds, bconfig, NODES::BCO1);
+  bco_u::set_NS_bounds(NS2_bounds, bconfig, NODES::BCO2);
   
   std::cout << "Bounds:" << std::endl;
-  bco_utils::print_bounds("NS1", NS1_bounds);
-  bco_utils::print_bounds("NS2", NS2_bounds);
+  bco_u::print_bounds("NS1", NS1_bounds);
+  bco_u::print_bounds("NS2", NS2_bounds);
 
 
   bin_space_t space (type_coloc, bconfig(BIN_PARAMS::DIST), NS1_bounds, NS2_bounds, out_bounds, res);
@@ -164,11 +166,11 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
 		int const dom = old_adapted_doms[i];
 
     // Updated mapping for NS
-    bco_utils::interp_adapted_mapping(new_inner_adapted[i], dom, old_space_radius);
-    bco_utils::interp_adapted_mapping(new_outer_adapted[i], dom, old_space_radius);
+    bco_u::interp_adapted_mapping(new_inner_adapted[i], dom, old_space_radius);
+    bco_u::interp_adapted_mapping(new_outer_adapted[i], dom, old_space_radius);
     
     // Interpolate old_phi field outside of the star for import
-    bco_utils::update_adapted_field(old_phi, dom, dom+1, old_inner_adapted[i], INNER_BC);
+    bco_u::update_adapted_field(old_phi, dom, dom+1, old_inner_adapted[i], INNER_BC);
 	}
 
   std::cout << "xc1: " << xc[0] << std::endl;
@@ -227,8 +229,8 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   phi.std_base();
 
   bconfig.set_filename(output_fname);
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+  bco_u::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   return exit_status;
 }
+}}
 /** @}*/
-}

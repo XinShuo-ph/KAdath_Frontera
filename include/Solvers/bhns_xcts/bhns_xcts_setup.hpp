@@ -26,12 +26,15 @@
 #include <string>
 #include <filesystem>
 
-namespace fs = std::filesystem;
-namespace FUKA_Solvers {
 /**
  * \addtogroup BHNS_XCTS
  * \ingroup FUKA
  * @{*/
+
+// using namespace Kadath::FUKA_Config;
+namespace Kadath {
+namespace FUKA_Solvers {
+namespace fs = std::filesystem;
 
 /**
  * bhns_xcts_setup_bin
@@ -82,6 +85,6 @@ inline void bhns_setup_boosted_3d(
   kadath_config_boost<BCO_NS_INFO>& NSconfig, 
   kadath_config_boost<BCO_BH_INFO>& BHconfig,
   kadath_config_boost<BIN_INFO>& bconfig);
+}}
 /** @}*/
-}
 #include "bhns_xcts_setup.cpp"

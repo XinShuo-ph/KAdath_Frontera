@@ -1,12 +1,13 @@
 #include "mpi.h"
 #include "bco_utilities.hpp"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup Stages
  * \ingroup NS_XCTS
  * @{*/
-
+namespace Kadath {
+namespace FUKA_Solvers {
+  
 template<class eos_t, typename config_t, typename space_t>
 int ns_3d_xcts_solver<eos_t, config_t, space_t>::norot_stage(bool fixed) {
   int exit_status = EXIT_SUCCESS;
@@ -143,7 +144,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::norot_stage(bool fixed) {
  
   // print the variation of the surface radius over the whole star
   if(rank == 0) {
-    auto rs = bco_utils::get_rmin_rmax(space, 1); 
+    auto rs = Kadath::bco_utils::get_rmin_rmax(space, 1); 
     std::cout << "[Rmin, Rmax] : [" << rs[0] << ", " << rs[1] << "]\n";
   }
  
@@ -365,7 +366,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::binary_boost_stage(
 
   double xo = 0.0;
   
-	double loghc1 = bco_utils::get_boundary_val(0, logh, INNER_BC);
+	double loghc1 = Kadath::bco_utils::get_boundary_val(0, logh, INNER_BC);
   
   if(rank == 0) std::cout << "############################" << std::endl
                           << "Binary boosted NS" << std::endl
@@ -498,7 +499,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::binary_boost_stage(
       print_diagnostics(syst, ite, conv);
       if(bconfig.control(CHECKPOINT)) {
         // Manual save here since we need to save PHI
-        bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+        Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
       }
     }
     update_fields_co(cfields, coord_vectors, {}, xo, &syst);
@@ -508,9 +509,9 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::binary_boost_stage(
 
   bconfig.set_filename(converged_filename(boost_converged_filename));
   if (rank == 0) {
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+    Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   }
   return EXIT_SUCCESS;
 }
+}}
 /** @}*/
-}

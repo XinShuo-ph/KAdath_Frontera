@@ -29,7 +29,7 @@
 #include "mpi.h"
 
 using namespace Kadath;
-
+using namespace Kadath::FUKA_Config;
 template<class eos_t, typename config_t>
 void reader_3d(config_t bconfig);
 

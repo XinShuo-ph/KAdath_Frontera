@@ -1,8 +1,9 @@
-namespace FUKA_Solvers {
 /**
  * \addtogroup NS_XCTS
  * \ingroup FUKA
  * @{*/
+namespace Kadath {
+namespace FUKA_Solvers {
 
 template<class config_t>
 config_t ns_3d_xcts_sequence_setup (config_t & seqconfig, std::string outputdir) {
@@ -383,5 +384,5 @@ inline int ns_3d_xcts_binary_boost_driver (config_t& bconfig,
   }
   return exit_status;
 }
+}}
 /** @}*/
-}

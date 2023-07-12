@@ -22,6 +22,7 @@
 #pragma once
 #include "Solvers/solvers.hpp"
 #include <string>
+namespace Kadath {
 namespace FUKA_Solvers {
 /**
  * \addtogroup Solver_startup
@@ -133,4 +134,4 @@ void Initialize_Solver<config_t>::init_solver(int argc, char** argv) {
   Initialize_Solver::bconfig.set_filename(Initialize_Solver::input_configname);
 }
 /** @}*/
-}
+}}

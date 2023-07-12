@@ -36,14 +36,15 @@ namespace fs = std::filesystem;
 
 using namespace Kadath;
 using namespace Kadath::Margherita;
+using namespace Kadath::FUKA_Config;
 
 // forward declarations
 template<class eos_t, typename config_t>
 int BNS_solver (config_t& bconfig, std::string outputdir);
 
-template<typename space_t, typename syst_t, typename config_t>
-void print_diagnostics(space_t const & space, syst_t const & syst, int const ite,
-                       double const conv, config_t& bconfig);
+template<typename config_t>
+void print_diagnostics(Space_bin_ns const & space, System_of_eqs const & syst,
+    int const ite, double const conv, config_t& bconfig);
 
 template<typename config_t>
 std::stringstream converged_filename(const std::string&  stage, config_t bconfig);

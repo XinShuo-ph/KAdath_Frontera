@@ -22,13 +22,12 @@
 #pragma once
 #include "kadath.hpp"
 #include <optional>
-using namespace Kadath;
 
 /**
  * \addtogroup domain
  * @{
  */
-
+namespace Kadath {
 enum coord_vector {GLOBAL_ROT, BCO1_ROT, BCO2_ROT, EX, EY, EZ, S_BCO1, S_BCO2, S_INF, NUM_VECTORS};
 enum coord_scalar {R_BCO1=0, R_BCO2, NUM_SCALARS};
                    
@@ -508,4 +507,5 @@ vec_ary_t default_co_vector_ary(space_t& space) {
   coord_vectors[S_BCO1]     = Vector(space,COV,basis);
   coord_vectors[S_INF]      = Vector(space,COV,basis);
   return coord_vectors;
+}
 }

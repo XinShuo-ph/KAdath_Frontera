@@ -1,12 +1,16 @@
-namespace FUKA_Solvers {
 /**
  * \addtogroup BHNS_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
+
+using namespace ::Kadath::FUKA_Config;
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 template<class config_t>
 inline void bhns_xcts_setup_bin_config(config_t& bconfig) {
+  using namespace ::Kadath::bco_utils;
   check_dist(bconfig(BIN_PARAMS::DIST), 
     bconfig(BCO_PARAMS::MADM, NODES::BCO1), bconfig(BCO_PARAMS::MCH, NODES::BCO2));
  
@@ -17,11 +21,11 @@ inline void bhns_xcts_setup_bin_config(config_t& bconfig) {
                              / bconfig(BCO_PARAMS::MCH, NODES::BCO2);
   
   // classical Newtonian estimate
-  bconfig.set(BIN_PARAMS::COM) = bco_utils::com_estimate(bconfig(BIN_PARAMS::DIST), 
+  bconfig.set(BIN_PARAMS::COM) = com_estimate(bconfig(BIN_PARAMS::DIST), 
     bconfig(BCO_PARAMS::MADM, NODES::BCO1), bconfig(BCO_PARAMS::MCH, NODES::BCO2));
   
   // obtain 3PN estimate for the global, orbital omega
-  bco_utils::KadathPNOrbitalParams(bconfig, \
+  KadathPNOrbitalParams(bconfig, \
         bconfig(BCO_PARAMS::MADM, NODES::BCO1), bconfig(BCO_PARAMS::MCH,NODES::BCO2));
 
   // delete ADOT, this can always be recalculated during
@@ -68,12 +72,12 @@ void bhns_xcts_superimposed_import(config_t& bconfig,
   const std::string eos_type = NSconfig.eos<std::string>(EOS_PARAMS::EOSTYPE);
 
   if(eos_type == "Cold_PWPoly") {
-    using eos_t = Kadath::Margherita::Cold_PWPoly;
+    using eos_t = ::Kadath::Margherita::Cold_PWPoly;
 
     EOS<eos_t, eos_var_t::PRESSURE>::init(eos_file, h_cut);
     bhns_setup_boosted_3d<eos_t>(NSconfig, BHconfig, bconfig);
   } else if(eos_type == "Cold_Table") {
-    using eos_t = Kadath::Margherita::Cold_Table;
+    using eos_t = ::Kadath::Margherita::Cold_Table;
 
     const int interp_pts = (NSconfig.eos<int>(EOS_PARAMS::INTERP_PTS) == 0) ? \
                             2000 : NSconfig.eos<int>(EOS_PARAMS::INTERP_PTS);
@@ -90,6 +94,7 @@ inline void bhns_setup_boosted_3d(
   kadath_config_boost<BIN_INFO>& bconfig) {
   int rank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  using namespace ::Kadath::bco_utils;
   
   // open previous ns solution
   std::string nsspaceinf = NSconfig.space_filename();
@@ -104,9 +109,9 @@ inline void bhns_setup_boosted_3d(
   // end opening bns solution
 
   // update NSconfig quantities before updating binary configuration file
-  NSconfig.set(BCO_PARAMS::HC) = std::exp(bco_utils::get_boundary_val(0, nslogh));
+  NSconfig.set(BCO_PARAMS::HC) = std::exp(get_boundary_val(0, nslogh));
   NSconfig.set(BCO_PARAMS::NC) = EOS<eos_t,eos_var_t::DENSITY>::get(NSconfig(BCO_PARAMS::HC)) ;
-  bco_utils::update_config_NS_radii(nsspacein, NSconfig, 1);
+  update_config_NS_radii(nsspacein, NSconfig, 1);
   
   // obtain adapted NS shells for radius information and copying adapted mapping later
   const Domain_shell_outer_adapted* old_outer_adapted1 =
@@ -136,14 +141,14 @@ inline void bhns_setup_boosted_3d(
 	Vector bhshift (bhspacein, ff2) ;
 	fclose(ff2) ;
   // end open BH solution
-  bco_utils::update_config_BH_radii(bhspacein, BHconfig, 1, bhconf);
+  update_config_BH_radii(bhspacein, BHconfig, 1, bhconf);
   
   auto interp_field = [&](auto& space, int outer_dom, auto& old_phi) {
     const int d = outer_dom;
     const Domain_shell_inner_adapted* old_inner = 
       dynamic_cast<const Domain_shell_inner_adapted*>(space.get_domain(d+1));
     //interpolate old_phi field outside of the star for import
-    bco_utils::update_adapted_field(old_phi, d, d+1, old_inner, INNER_BC);
+    update_adapted_field(old_phi, d, d+1, old_inner, INNER_BC);
   };
 
   // in case we used boosted TOVs, we need to import PHI
@@ -169,7 +174,7 @@ inline void bhns_setup_boosted_3d(
       Metric_flat(nsspacein, nsshift.get_basis()), 
       {0,1}
     ));
-    NS_bounds = bco_utils::set_arb_bounds(bconfig, NODES::BCO1, ddrPsi, 2, 0.9);
+    NS_bounds = set_arb_bounds(bconfig, NODES::BCO1, ddrPsi, 2, 0.9);
   }
   std::vector<double> BH_bounds;
   {
@@ -179,16 +184,16 @@ inline void bhns_setup_boosted_3d(
       Metric_flat(bhspacein, bhshift.get_basis()), 
       {0,1}
     ));
-    BH_bounds = bco_utils::set_arb_bounds(bconfig, NODES::BCO2, ddrPsi, 2, 0.9);
+    BH_bounds = set_arb_bounds(bconfig, NODES::BCO2, ddrPsi, 2, 0.9);
   }
 
   //for out_bounds.size > 1 - add equi-distance shells
   for(int e = 0; e < out_bounds.size(); ++e)
     out_bounds[e] = bconfig(BIN_PARAMS::REXT) + e * 0.25 * bconfig(BIN_PARAMS::REXT);
 
-  bco_utils::print_bounds("NS-bounds", NS_bounds);
-  bco_utils::print_bounds("BH-bounds", BH_bounds);
-  bco_utils::print_bounds("outer-bounds", out_bounds);
+  print_bounds("NS-bounds", NS_bounds);
+  print_bounds("BH-bounds", BH_bounds);
+  print_bounds("outer-bounds", out_bounds);
 
   // Setup actual space
   int typer = CHEB_TYPE ;
@@ -203,15 +208,15 @@ inline void bhns_setup_boosted_3d(
   const Domain_shell_outer_homothetic* old_bh_outer = dynamic_cast<const Domain_shell_outer_homothetic*>(bhspacein.get_domain(1));
   
   // Update BH fields based to help with interpolation later
-  bco_utils::update_adapted_field(bhconf , 2, 1, old_bh_outer, OUTER_BC);
-  bco_utils::update_adapted_field(bhlapse, 2, 1, old_bh_outer, OUTER_BC);
+  update_adapted_field(bhconf , 2, 1, old_bh_outer, OUTER_BC);
+  update_adapted_field(bhlapse, 2, 1, old_bh_outer, OUTER_BC);
   
   // Updated mapping for NS
-  bco_utils::interp_adapted_mapping(new_ns_inner, 1, old_space_radius);
-  bco_utils::interp_adapted_mapping(new_ns_outer, 1, old_space_radius);
+  interp_adapted_mapping(new_ns_inner, 1, old_space_radius);
+  interp_adapted_mapping(new_ns_outer, 1, old_space_radius);
   
-  double xc1 = bco_utils::get_center(space, space.NS);
-  double xc2 = bco_utils::get_center(space, space.BH);
+  double xc1 = get_center(space, space.NS);
+  double xc2 = get_center(space, space.BH);
 
   if(rank == 0) {
     std::cout << "xc1: " << xc1 << std::endl;
@@ -219,7 +224,7 @@ inline void bhns_setup_boosted_3d(
   }
 
   if(NSconfig.set_field(PHI) == true)
-    bco_utils::update_adapted_field(nsphi, 1, 2, old_inner_adapted1, INNER_BC);
+    update_adapted_field(nsphi, 1, 2, old_inner_adapted1, INNER_BC);
   
   // start to create the new fields
   // initialized to zero globally
@@ -241,8 +246,8 @@ inline void bhns_setup_boosted_3d(
   phi.annule_hard();
   //end create new fields
 
-  const double ns_invw4 = bco_utils::set_decay(bconfig, NODES::BCO1);
-  const double bh_invw4 = bco_utils::set_decay(bconfig, NODES::BCO2);
+  const double ns_invw4 = set_decay(bconfig, NODES::BCO1);
+  const double bh_invw4 = set_decay(bconfig, NODES::BCO2);
   
   if(rank == 0)
     std::cout << "WeightNS: " << bconfig(BCO_PARAMS::DECAY, NODES::BCO1) << ", "
@@ -331,7 +336,7 @@ inline void bhns_setup_boosted_3d(
   phi.std_base();
 
   // save everything to a binary file
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+  save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
 }
+}}
 /** @}*/
-}

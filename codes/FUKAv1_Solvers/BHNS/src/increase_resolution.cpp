@@ -26,6 +26,7 @@
 #include <math.h>
 #include <sstream>
 using namespace Kadath;
+using namespace Kadath::FUKA_Config;
 
 int main(int argc, char **argv) {
   if (argc < 2) {

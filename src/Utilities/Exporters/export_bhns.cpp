@@ -7,6 +7,7 @@
 
 using namespace Kadath;
 using namespace export_utils;
+using namespace Kadath::FUKA_Config;
 
 std::array<std::vector<double>,NUM_OUT> KadathExportBHNS(int const npoints,
                                                         double const * xx, double const * yy, double const * zz,

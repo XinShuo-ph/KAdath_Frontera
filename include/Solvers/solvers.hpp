@@ -32,12 +32,18 @@
 #include <string>
 #include <filesystem>
 namespace fs = std::filesystem;
-namespace FUKA_Solvers {
+
 /** \addtogroup Solver_base
   * \ingroup FUKA
   * Various FUKA initial data solvers
   * @{
   */
+
+using namespace ::Kadath::FUKA_Config;
+using namespace ::Kadath::FUKA_Config_Utils;
+namespace Kadath {
+namespace FUKA_Solvers {
+
 /**
  * @brief Get the global path to saved compact object solutions (COs)
  * 
@@ -50,7 +56,6 @@ inline std::string get_cos_path() {
 }
 
 #define FORMAT std::setw(13) << std::left << std::showpos 
-using namespace Kadath;
 const int RELOAD_FILE = 2;
 const int RUN_BOOST = 3;
 
@@ -211,5 +216,5 @@ class Solver {
   public:
   void set_solver_stage(STAGES const _stage) { this->solver_stage = _stage; }
 };
+}}
 /** @}*/
-}

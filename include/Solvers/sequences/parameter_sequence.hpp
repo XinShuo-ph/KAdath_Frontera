@@ -28,6 +28,7 @@
  * \addtogroup Sequences
  * \ingroup FUKA
  * @{*/
+namespace Kadath {
 namespace FUKA_Solvers {
 
 /**
@@ -185,5 +186,5 @@ struct Resolution_sequence : public Parameter_sequence_base {
   friend std::ostream &operator<<(std::ostream &, const BIN_INFO &);
 };
 
-}
+}}
 /** @}*/

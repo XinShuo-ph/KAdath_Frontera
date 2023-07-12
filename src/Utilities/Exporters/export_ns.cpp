@@ -9,6 +9,7 @@
 
 using namespace Kadath;
 using namespace export_utils;
+using namespace Kadath::FUKA_Config;
 
 std::array<std::vector<double>,NUM_OUT> KadathExportNS(int const npoints,
                                                         double const * xx, double const * yy, double const * zz,
@@ -51,7 +52,7 @@ std::array<std::vector<double>,NUM_OUT> KadathExportNS(int const npoints,
   vec_ary_t coord_vectors {default_co_vector_ary(space)};
 
   // get origin of the system and initialize coordinate fields
-  double xo = bco_utils::get_center(space,0);
+  double xo = Kadath::bco_utils::get_center(space,0);
   update_fields_co(cf_generator, coord_vectors, {}, xo);
 
   System_of_eqs syst(space, 0, ndom - 1);

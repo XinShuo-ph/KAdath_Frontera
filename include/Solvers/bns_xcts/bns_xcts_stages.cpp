@@ -22,11 +22,16 @@
  */
 #include "mpi.h"
 #include "bco_utilities.hpp"
-namespace FUKA_Solvers {
+
 /**
  * \addtogroup BNS_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
+namespace bco_u = ::Kadath::bco_utils;
+
 template<class eos_t, typename config_t, typename space_t>
 int bns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage() {
   int rank = 0;
@@ -34,8 +39,8 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydrostatic_equilibrium_stage() {
   int exit_status = EXIT_SUCCESS;
 
   // get central values of the logarithmic enthalpy
-	double loghc1 = bco_utils::get_boundary_val(space.NS1, logh, INNER_BC);
-	double loghc2 = bco_utils::get_boundary_val(space.NS2, logh, INNER_BC);
+	double loghc1 = bco_u::get_boundary_val(space.NS1, logh, INNER_BC);
+	double loghc2 = bco_u::get_boundary_val(space.NS2, logh, INNER_BC);
 
   update_fields(cfields, coord_vectors, {}, xo, xc1, xc2);
 
@@ -289,7 +294,7 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(std::strin
     // in case of the eccentricity stage
     if(std::isnan(bconfig.set(ADOT)) || std::isnan(bconfig.set(ECC_OMEGA)) || bconfig.control(USE_PN)) {
 
-      bco_utils::KadathPNOrbitalParams(bconfig, bconfig(MADM,BCO1), bconfig(MADM,BCO2));
+      bco_u::KadathPNOrbitalParams(bconfig, bconfig(MADM,BCO1), bconfig(MADM,BCO2));
 
       if(rank == 0)
         std::cout << "### Using PN estimate for adot and omega! ###" << std::endl;
@@ -559,5 +564,5 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(std::strin
     checkpoint();
   return exit_status;
 }
+}}
 /** @}*/
-}

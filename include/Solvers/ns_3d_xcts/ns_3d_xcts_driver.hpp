@@ -25,12 +25,14 @@
 #include "Solvers/sequences/parameter_sequence.hpp"
 #include "Solvers/sequences/sequence_utilities.hpp"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup NS_XCTS
  * \ingroup FUKA
  * @{*/
 
+namespace Kadath {
+namespace FUKA_Solvers {
+  
 /**
  * @brief Setup complete Config file for an NS sequence
  * 
@@ -100,6 +102,6 @@ template<typename config_t, class Res_t>
 inline int ns_3d_xcts_binary_boost_driver (config_t& bconfig, 
   Res_t& resolution, std::string outputdir,
     kadath_config_boost<BIN_INFO> binconfig, const size_t bco);
+}}
 /** @}*/
-}
 #include "ns_3d_xcts_driver.cpp"

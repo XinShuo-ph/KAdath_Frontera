@@ -1,5 +1,6 @@
 #include "bco_utilities.hpp"
 
+namespace Kadath {
 namespace bco_utils {
 
 void KadathPNOrbitalParams(kadath_config_boost<BIN_INFO>& bconfig, double Madm1, double Madm2) {
@@ -40,4 +41,4 @@ void KadathPNOrbitalParams(kadath_config_boost<BIN_INFO>& bconfig, double Madm1,
   bconfig.set(ADOT) = adot_pn;
   bconfig.set(GOMEGA) = omega_pn;
 }
-}
+}}

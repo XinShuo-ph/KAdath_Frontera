@@ -24,15 +24,16 @@
 #include "Solvers/bco_solver_utils.hpp"
 #include "Solvers/ns_3d_xcts/ns_3d_xcts_solver.hpp"
 
-
-namespace FUKA_Solvers {
 /**
  * \addtogroup BNS_XCTS
  * \ingroup FUKA
  * @{*/
 
-using namespace Kadath;
-using namespace Kadath::Margherita;
+namespace Kadath {
+namespace FUKA_Solvers {
+
+using namespace ::Kadath::Margherita;
+namespace bco_u = ::Kadath::bco_utils;
 
 template<class eos_t, typename config_t, typename space_t>
 bns_xcts_solver<eos_t, config_t, space_t>::bns_xcts_solver(config_t& config_in, 
@@ -41,9 +42,9 @@ bns_xcts_solver<eos_t, config_t, space_t>::bns_xcts_solver(config_t& config_in,
       Solver<config_t, space_t>(config_in, space_in, base_in), 
         conf(conf_in), lapse(lapse_in), shift(shift_in), logh(logh_in), phi(phi_in),
           fmet(Metric_flat(space_in, base_in)),
-            xc1(bco_utils::get_center(space_in,space.NS1)),
-              xc2(bco_utils::get_center(space_in,space.NS2)),
-                xo(bco_utils::get_center(space,ndom-1))
+            xc1(bco_u::get_center(space_in,space.NS1)),
+              xc2(bco_u::get_center(space_in,space.NS2)),
+                xo(bco_u::get_center(space,ndom-1))
 {
   // initialize coordinate vector fields
   coord_vectors = default_binary_vector_ary(space);
@@ -137,7 +138,7 @@ int bns_xcts_solver<eos_t, config_t, space_t>::solve() {
 
 template<class eos_t, typename config_t, typename space_t>
 void bns_xcts_solver<eos_t, config_t, space_t>::syst_init(System_of_eqs& syst) {
-  using namespace Kadath::Margherita;
+  using namespace ::Kadath::Margherita;
   
   const int ndom = space.get_nbr_domains();
   // call the (flat) conformal metric "f"
@@ -310,7 +311,7 @@ void bns_xcts_solver<eos_t, config_t, space_t>::print_diagnostics(System_of_eqs 
 
   // print mininmal and maximal radius of the surface adapted domains
   auto print_rs = [&](int dom) {
-    auto rs = bco_utils::get_rmin_rmax(space, dom);
+    auto rs = bco_u::get_rmin_rmax(space, dom);
     std::cout << FORMAT << "NS-Rs: " << rs[0] << " " << rs[1] << std::endl;
   };
 
@@ -359,6 +360,5 @@ void bns_xcts_solver<eos_t, config_t, space_t>::update_config_quantities(const d
   bconfig.set(HC) = std::exp(loghc);
   bconfig.set(NC) = EOS<eos_t,DENSITY>::get(bconfig(HC));
 }
-
+}}
 /** @}*/
-}

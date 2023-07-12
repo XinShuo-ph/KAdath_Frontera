@@ -42,6 +42,7 @@ double distkm = 45.;
 
 using namespace Kadath;
 using namespace Kadath::Margherita;
+using namespace Kadath::FUKA_Config;
 
 // forward declarations
 template<typename config_t, typename space_t>

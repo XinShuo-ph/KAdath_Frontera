@@ -25,10 +25,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
-using namespace Kadath;
-
-#define EQUI -11
-#define INNER_EQUI -12
 
 /**
  * @namespace bco_utils
@@ -36,12 +32,19 @@ using namespace Kadath;
  * initial data solvers for compact objects and make code (hopefully)
  * easier to read.
  */
+namespace Kadath {
 namespace bco_utils {
+// using namespace Kadath;
+using namespace ::Kadath::FUKA_Config;
+
 // approximate value of psi on the horizon
 // to make coordinate estimates
 constexpr double psi = 1.55 ;
 constexpr double psisq = psi * psi;
 constexpr double invpsisq = 1. / psisq;
+
+#define EQUI -11
+#define INNER_EQUI -12
 
 // this is in principle a joke and came from the need to have
 // a scaling factor (R) s.t. 1.5 < R < 2.
@@ -291,7 +294,7 @@ void interp_adapted_mapping(const adapted_t* new_shell, const int old_outer_adap
     y /= r / rinner;
     z /= r / rinner;
 
-    Point absol(3);
+    Kadath::Point absol(3);
     absol.set(1) = x + xc_old;
     absol.set(2) = y;
     absol.set(3) = z;
@@ -548,10 +551,10 @@ T gen_shell_bound_radius(Scalar& field, T r0, T r1,
   };
 
   // Setup points relative to coordinate center
-  Point pt_r0(3);
+  Kadath::Point pt_r0(3);
   pt_r0.set(1) = xc + r0;
 
-  Point pt_r1(3);
+  Kadath::Point pt_r1(3);
   pt_r1.set(1) = xc + r1;
   // end point setup
 
@@ -643,7 +646,7 @@ std::vector<double> set_arb_bounds (config_t& bconfig, const int bco,
   auto adapted_dom(ddrconf_sol.get_space().get_domain(adapted_dom_sol));
   
   // Coordinate centered point
-  Point pt(adapted_dom->get_center());
+  Kadath::Point pt(adapted_dom->get_center());
   double xc{pt(1)};
   
   // Initial radii starting at the inner adapted radius on the
@@ -954,4 +957,4 @@ void print_constant_space_resolution(space_t const & space){
   	std::cout << dom->get_nbr_points()(i) << " (" << directions[i] << ")     ";
   std::cout << "\n";
 };
-}
+}}

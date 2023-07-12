@@ -10,6 +10,7 @@
  * \addtogroup Sequences
  * \ingroup FUKA
  * @{*/
+namespace Kadath {
 namespace FUKA_Solvers {
 
 /**
@@ -167,6 +168,6 @@ std::ostream& operator<< (std::ostream& os, const std::tuple<T...>& _tup);
  */
 template<class config_t, class Res_t>
 void verify_resolution_sequence(config_t& bconfig, Res_t& resolution);
+}}
 /** @}*/
-}
 #include "sequence_utilities.cpp"

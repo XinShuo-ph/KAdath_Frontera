@@ -1,5 +1,6 @@
 #include <Configurator/configurator_base.hpp>
-
+namespace Kadath {
+namespace FUKA_Config {
 const std::string configurator_base::config_filename_abs() const {
     int idx = filename.rfind(".");
     return std::string{outputdir+filename};
@@ -24,3 +25,4 @@ void configurator_base::set_outputdir(std::string dir) {
 void configurator_base::read_config() { 
     pt::read_info(this->config_filename_abs(), tree); 
 };
+}}

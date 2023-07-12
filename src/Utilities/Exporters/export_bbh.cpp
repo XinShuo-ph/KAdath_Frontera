@@ -7,6 +7,8 @@
 
 using namespace Kadath;
 using namespace export_utils;
+using namespace Kadath::FUKA_Config;
+using namespace Kadath::FUKA_Config_Utils;
 
 std::array<std::vector<double>,NUM_VOUT> KadathExportBBH(int const npoints,
                                                         double const * xx, double const * yy, double const * zz,
@@ -67,11 +69,11 @@ std::array<std::vector<double>,NUM_VOUT> KadathExportBBH(int const npoints,
   ind.inc();
   quants[AZZ] = std::cref(A(ind));
 
- 	double xm = bco_utils::get_center(space,space.BH1);
- 	double xp = bco_utils::get_center(space,space.BH2);
+ 	double xm = Kadath::bco_utils::get_center(space,space.BH1);
+ 	double xp = Kadath::bco_utils::get_center(space,space.BH2);
 
-  double rm = bco_utils::get_radius(space.get_domain(space.BH1 + 2),INNER_BC);
-  double rp = bco_utils::get_radius(space.get_domain(space.BH2 + 2),INNER_BC);
+  double rm = Kadath::bco_utils::get_radius(space.get_domain(space.BH1 + 2),INNER_BC);
+  double rp = Kadath::bco_utils::get_radius(space.get_domain(space.BH2 + 2),INNER_BC);
 
   std::array<std::vector<double>,NUM_VOUT> out;
   for(auto& v : out)

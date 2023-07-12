@@ -33,6 +33,7 @@
 
 using namespace Kadath ;
 using namespace Kadath::Margherita ;
+using namespace Kadath::FUKA_Config;
 
 // forward declarations
 template<class eos_t, typename config_t>

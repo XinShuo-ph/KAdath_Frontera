@@ -22,15 +22,15 @@
 #pragma once
 #include "Solvers/solvers.hpp"
 
-namespace FUKA_Solvers {
-using namespace Kadath;
-
 /**
  * \addtogroup NS_XCTS
  * \ingroup FUKA
  * @{*/
 
-template<class eos_t, typename config_t, typename space_t = Kadath::Space_spheric_adapted>
+namespace Kadath {
+namespace FUKA_Solvers {
+
+template<class eos_t, typename config_t, typename space_t = Space_spheric_adapted>
 class ns_3d_xcts_solver : public Solver<config_t, space_t> {
   public:
   using typename Solver<config_t, space_t>::base_config_t;
@@ -76,7 +76,7 @@ class ns_3d_xcts_solver : public Solver<config_t, space_t> {
   std::string converged_filename(const std::string stage="") const override;
   
   void save_to_file() const override {
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
+    Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh);
   }
   
   /// solver driver
@@ -99,8 +99,8 @@ class ns_3d_xcts_solver : public Solver<config_t, space_t> {
   // Update bconfig(HC) and bconfig(NC)
   void update_config_quantities(const double& loghc);
 };
+}}
 /** @}*/
-}
 
 #include "ns_3d_xcts_solver_imp.cpp"
 #include "ns_3d_xcts_stages.cpp"

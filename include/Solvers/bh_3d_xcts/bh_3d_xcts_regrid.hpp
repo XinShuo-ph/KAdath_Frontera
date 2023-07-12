@@ -30,12 +30,12 @@
 #include <cmath>
 #include <memory>
 
+namespace Kadath {
 namespace FUKA_Solvers {
 /**
  * \addtogroup BH_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
 
 template<typename config_t>
 int bh_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
@@ -64,12 +64,12 @@ int bh_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
   
   // Make sure the domains have adequate space between them based on
   // the previous solution
-  bconfig.set(RMID) = bco_utils::get_radius(old_space.get_domain(1), OUTER_BC) ;
+  bconfig.set(RMID) = Kadath::bco_utils::get_radius(old_space.get_domain(1), OUTER_BC) ;
   
   // estimate how small the inner radius should be based on relation
   // between conformal factor and numerical radius.
   // see https://arxiv.org/pdf/0805.4192, eq(64)
-  double conf_inner = bco_utils::get_boundary_val(2, old_conf, INNER_BC);
+  double conf_inner = Kadath::bco_utils::get_boundary_val(2, old_conf, INNER_BC);
   double conf_i_sq  = conf_inner * conf_inner;
   double est_r_div2 = bconfig(MCH) / conf_i_sq;
   bconfig.set(RIN)  =  est_r_div2;
@@ -96,16 +96,16 @@ int bh_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
   fclose(ff2) ;
 
   std::cout << "Resolution of old space: ";
-  bco_utils::print_constant_space_resolution(old_space);
+  Kadath::bco_utils::print_constant_space_resolution(old_space);
 
   std::cout << "Resolution of new space: ";
-  bco_utils::print_constant_space_resolution(space);
+  Kadath::bco_utils::print_constant_space_resolution(space);
 
   std::cout << "\nold bounds:" << std::endl;
-  bco_utils::print_bounds_from_space(old_space);  
+  Kadath::bco_utils::print_bounds_from_space(old_space);  
 	
   std::cout << "New bounds:" << std::endl;
-  bco_utils::print_bounds_from_space(space);
+  Kadath::bco_utils::print_bounds_from_space(space);
   std::cout << endl;
 
   // needed in some cases, since the interpolation can go crazy
@@ -113,10 +113,10 @@ int bh_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
     dynamic_cast<const Domain_shell_outer_homothetic*>(old_space.get_domain(1));
   
   //import fields
-  bco_utils::update_adapted_field(old_conf , 2, 1, old_outer_homothetic, OUTER_BC);
-  bco_utils::update_adapted_field(old_lapse , 2, 1, old_outer_homothetic, OUTER_BC);
+  Kadath::bco_utils::update_adapted_field(old_conf , 2, 1, old_outer_homothetic, OUTER_BC);
+  Kadath::bco_utils::update_adapted_field(old_lapse , 2, 1, old_outer_homothetic, OUTER_BC);
   for(int i = 1; i <= 3; ++i)
-    bco_utils::update_adapted_field(old_shift.set(i), 2, 1, old_outer_homothetic, OUTER_BC);
+    Kadath::bco_utils::update_adapted_field(old_shift.set(i), 2, 1, old_outer_homothetic, OUTER_BC);
 
   conf.import(old_conf);
   lapse.import(old_lapse);
@@ -138,8 +138,8 @@ int bh_3d_xcts_regrid(config_t& bconfig, std::string outputfile) {
   conf.std_base();
   shift.std_base();
   
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+  Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
   return exit_status;
 }
 /** @}*/
-}
+}}

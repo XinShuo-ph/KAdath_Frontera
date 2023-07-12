@@ -24,11 +24,13 @@
 #include "bco_utilities.hpp"
 #include "mpi.h"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BH_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 template<typename config_t, typename space_t>
 int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage(std::string stage_text) {
@@ -50,7 +52,7 @@ int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage(std::string stage_te
   if(rank == 0) std::cout << "############################" << std::endl
                           << "Total system with von Neumann BC" << std::endl
                           << "############################" << std::endl;
-  bconfig.set(MIRR) = bco_utils::mirr_from_mch(bconfig(CHI), bconfig(MCH));
+  bconfig.set(MIRR) = Kadath::bco_utils::mirr_from_mch(bconfig(CHI), bconfig(MCH));
 
  	double xo = 0.;
   
@@ -118,8 +120,8 @@ int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage(std::string stage_te
     check_max_iter_exceeded(rank, ite, conv);
   }
   
-  bconfig.set(RMID) = bco_utils::get_radius(space.get_domain(1), OUTER_BC) ;
-  bconfig.set(FIXED_LAPSE) = bco_utils::get_boundary_val(2, lapse, INNER_BC) ;
+  bconfig.set(RMID) = Kadath::bco_utils::get_radius(space.get_domain(1), OUTER_BC) ;
+  bconfig.set(FIXED_LAPSE) = Kadath::bco_utils::get_boundary_val(2, lapse, INNER_BC) ;
   bconfig.set_filename(converged_filename("TOTAL_BC")) ;
   if(rank == 0)
     checkpoint();
@@ -147,7 +149,7 @@ int bh_3d_xcts_solver<config_t, space_t>::fixed_lapse_stage() {
   if(rank == 0) std::cout << "############################" << std::endl
                           << "Total system with Fixed Lapse BC" << std::endl
                           << "############################" << std::endl;
-  bconfig.set(MIRR) = bco_utils::mirr_from_mch(bconfig(CHI), bconfig(MCH));
+  bconfig.set(MIRR) = Kadath::bco_utils::mirr_from_mch(bconfig(CHI), bconfig(MCH));
 
  	double xo = 0.;
   
@@ -216,7 +218,7 @@ int bh_3d_xcts_solver<config_t, space_t>::fixed_lapse_stage() {
     check_max_iter_exceeded(rank, ite, conv);
   }
   
-  bconfig.set(RMID) = bco_utils::get_radius(space.get_domain(1), OUTER_BC) ;
+  bconfig.set(RMID) = Kadath::bco_utils::get_radius(space.get_domain(1), OUTER_BC) ;
   bconfig.set_filename(converged_filename("TOTAL")) ;
   if(rank == 0)
     checkpoint();
@@ -235,7 +237,7 @@ int bh_3d_xcts_solver<config_t, space_t>::binary_boost_stage(
   if(rank == 0) std::cout << "############################" << std::endl
                           << "Binary boost using von Neumann BC" << std::endl
                           << "############################" << std::endl;
-  bconfig.set(MIRR) = bco_utils::mirr_from_mch(bconfig(CHI), bconfig(MCH));
+  bconfig.set(MIRR) = Kadath::bco_utils::mirr_from_mch(bconfig(CHI), bconfig(MCH));
   
   // generate filename string unique to this binary setup
   std::stringstream ss;
@@ -318,12 +320,12 @@ int bh_3d_xcts_solver<config_t, space_t>::binary_boost_stage(
     check_max_iter_exceeded(rank, ite, conv);
   }
   
-  bconfig.set(RMID) = bco_utils::get_radius(space.get_domain(1), OUTER_BC) ;
+  bconfig.set(RMID) = Kadath::bco_utils::get_radius(space.get_domain(1), OUTER_BC) ;
   bconfig.set_filename(converged_filename(boost_converged_filename)) ;
   if(rank == 0)
     checkpoint();
 
   return exit_status;
 }
+}}
 /** @}*/
-}

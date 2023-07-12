@@ -30,7 +30,8 @@
 #include <iostream>
 #include <utility>
 #include <vector>
-using namespace Kadath ;
+using namespace Kadath;
+using namespace Kadath::FUKA_Config;
 
 int main(int argc, char** argv) {
   kadath_config_boost<BCO_BH_INFO> bconfig;

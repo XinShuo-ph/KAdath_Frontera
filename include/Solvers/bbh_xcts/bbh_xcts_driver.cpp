@@ -1,13 +1,15 @@
 #include "bbh_xcts_driver.hpp"
 #include <filesystem>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BBH_XCTS
  * \ingroup FUKA
  * @{*/
 
 namespace fs = std::filesystem;
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 template<class config_t>
 int bbh_xcts_solution_driver (config_t& bconfig, std::string outputdir) {
@@ -182,5 +184,5 @@ int bbh_xcts_sequence (config_t & seqconfig,
   }
   return exit_status;
 }
+}}
 /** @}*/
-}

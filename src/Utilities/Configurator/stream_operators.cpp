@@ -19,21 +19,22 @@
 
 #include <Configurator/config_bco.hpp>
 #include <Configurator/config_binary.hpp>
-
-std::ostream &operator<<(std::ostream &out, const BCO_INFO &BCO) {
+namespace Kadath {
+namespace FUKA_Config {
+std::ostream & operator<<(std::ostream &out, const BCO_INFO &BCO) {
   std::string s = BCO.get_type() + " info";
   int n = ((42 - s.size()) > 0) ? 42 - s.size() : s.size() - 42;
   n /= 2;
   std::string title = std::string(n, '*') + s + std::string(n, '*');
   out << title << std::endl;
-  print_params(BCO.bco_map, BCO.bco_params, out);
+  Kadath::FUKA_Config_Utils::print_params(BCO.bco_map, BCO.bco_params, out);
   if(auto ns_ptr = dynamic_cast<const BCO_NS_INFO*>(&BCO)) {
       print_params(ns_ptr->get_eos_map(), ns_ptr->return_eos_params());
   }
   return out;
 }
 
-std::ostream &operator<<(std::ostream &out, const BIN_INFO &BIN) {
+std::ostream & operator<<(std::ostream &out, const BIN_INFO &BIN) {
   std::string s = BIN.get_type() + " info";
   int n = ((42 - s.size()) > 0) ? 42 - s.size() : s.size() - 42;
   n /= 2;
@@ -44,3 +45,4 @@ std::ostream &operator<<(std::ostream &out, const BIN_INFO &BIN) {
   out << *BIN.BCOS[1];
   return out;
 }
+}}

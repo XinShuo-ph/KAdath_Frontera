@@ -1,11 +1,13 @@
 #include "bns_xcts_driver.hpp"
 #include <filesystem>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BNS_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 namespace fs = std::filesystem;
 
@@ -69,14 +71,14 @@ int bns_xcts_solution_driver (config_t& bconfig, std::string outputdir) {
     bconfig.template eos<std::string>(EOS_PARAMS::EOSTYPE, NODES::BCO1);
 
   if(eos_type == "Cold_PWPoly") {
-    using eos_t = Kadath::Margherita::Cold_PWPoly;
+    using eos_t = ::Kadath::Margherita::Cold_PWPoly;
 
     EOS<eos_t,eos_var_t::PRESSURE>::init(eos_file, h_cut);
     bns_xcts_solver<eos_t, decltype(bconfig), decltype(space)> 
       bns_solver(bconfig, space, basis, conf, lapse, shift, logh, phi);
     bns_solver.solve();
   } else if(eos_type == "Cold_Table") {
-    using eos_t = Kadath::Margherita::Cold_Table;
+    using eos_t = ::Kadath::Margherita::Cold_Table;
 
     const int interp_pts = 
       (bconfig.template eos<int>(EOS_PARAMS::INTERP_PTS, NODES::BCO1) == 0) ? \
@@ -232,5 +234,5 @@ int bns_xcts_sequence (config_t & seqconfig,
   }
   return exit_status;
 }
+}}
 /** @}*/
-}

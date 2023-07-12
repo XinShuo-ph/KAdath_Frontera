@@ -26,13 +26,15 @@
 #include "Solvers/ns_3d_xcts/ns_3d_xcts_solver.hpp"
 #include "kadath.hpp"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BHNS_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
-using namespace Kadath::Margherita;
+
+namespace Kadath {
+namespace FUKA_Solvers {
+using namespace ::Kadath::Margherita;
+using namespace ::Kadath::bco_utils;
 
 template<class eos_t, typename config_t, typename space_t>
 bhns_xcts_solver<eos_t, config_t, space_t>::bhns_xcts_solver(config_t& config_in, 
@@ -41,9 +43,9 @@ bhns_xcts_solver<eos_t, config_t, space_t>::bhns_xcts_solver(config_t& config_in
       Solver<config_t, space_t>(config_in, space_in, base_in), 
         conf(conf_in), lapse(lapse_in), shift(shift_in), logh(logh_in), phi(phi_in),
           fmet(Metric_flat(space_in, base_in)),
-            xc1(bco_utils::get_center(space_in,space.NS)),
-              xc2(bco_utils::get_center(space_in,space.BH)),
-                xo(bco_utils::get_center(space,ndom-1)),
+            xc1(get_center(space_in,space.NS)),
+              xc2(get_center(space_in,space.BH)),
+                xo(get_center(space,ndom-1)),
                   excluded_doms({space.BH,space.BH+1})
 {
   // initialize coordinate vector fields
@@ -146,7 +148,7 @@ int bhns_xcts_solver<eos_t, config_t, space_t>::solve() {
 
 template<class eos_t, typename config_t, typename space_t>
 void bhns_xcts_solver<eos_t, config_t, space_t>::syst_init(System_of_eqs& syst) {
-  using namespace Kadath::Margherita;
+  using namespace ::Kadath::Margherita;
   
   const int ndom = space.get_nbr_domains();
   // call the (flat) conformal metric "f"
@@ -279,6 +281,7 @@ template<class eos_t, typename config_t, typename space_t>
 void bhns_xcts_solver<eos_t, config_t, space_t>::print_diagnostics(System_of_eqs const & syst, 
     const int ite, const double conv) const {
   std::ios_base::fmtflags f( std::cout.flags() );
+  using namespace ::Kadath::bco_utils;
   
   double baryonic_massNS = 0.;
   double ql_massNS = 0.;
@@ -287,8 +290,8 @@ void bhns_xcts_solver<eos_t, config_t, space_t>::print_diagnostics(System_of_eqs
     ql_massNS += syst.give_val_def("intM")()(d).integ_volume();
   }
   
-  auto [ rmin, rmax ] = bco_utils::get_rmin_rmax(space, space.ADAPTEDNS);
-  double r_bh = bco_utils::get_radius(space.get_domain(space.ADAPTEDBH), EQUI) ;
+  auto [ rmin, rmax ] = get_rmin_rmax(space, space.ADAPTEDNS);
+  double r_bh = get_radius(space.get_domain(space.ADAPTEDBH), EQUI) ;
   
   double mirrsq = space.get_domain(space.BH+2)->integ(syst.give_val_def("intMsq")()(space.BH+2), INNER_BC);
   double Mirr = std::sqrt(mirrsq);
@@ -336,5 +339,5 @@ void bhns_xcts_solver<eos_t, config_t, space_t>::print_diagnostics(System_of_eqs
   std::cout.flags(f);
   std::cout << "=======================================" << endl;
 } // end print_diagnostics
+}}
 /** @}*/
-}

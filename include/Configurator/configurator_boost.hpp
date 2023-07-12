@@ -22,6 +22,9 @@
 #include "config_utils_boost.hpp"
 namespace pt = boost::property_tree;
 using Tree = pt::ptree;
+namespace Kadath {
+namespace FUKA_Config {
+using namespace Kadath::FUKA_Config_Utils;
 
 template<typename ParamC> class kadath_config_boost;
 template<typename ParamC> std::ostream& operator<<(std::ostream& out, const kadath_config_boost<ParamC>& config);
@@ -297,3 +300,4 @@ struct kadath_config_boost : public configurator_base {
  * @}*/
 
 #include "configurator_boost_imp.cpp"
+}}

@@ -27,16 +27,17 @@
 #include <math.h>
 #include <sstream>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BHNS_XCTS
  * \ingroup FUKA
  * @{*/
-
-using namespace Kadath;
+using namespace Kadath::FUKA_Config;
+namespace Kadath {
+namespace FUKA_Solvers {
 using config_t = kadath_config_boost<BIN_INFO>;
-inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
 
+inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
+  using namespace ::Kadath::bco_utils;
   bconfig.set(Q) = bconfig(MADM, BCO1) / bconfig(MCH, BCO2);
   
   if(std::isnan(bconfig.set(OUTER_SHELLS)))
@@ -93,12 +94,12 @@ inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   if(!bconfig.control(USE_CONFIG_VARS)) {
     // Loop for ease of initialization
     for(int i = 0; i < 2; ++i){
-      bco_utils::set_radius(old_nuc_doms[i]    , old_space, bconfig, RIN , i);
-      bco_utils::set_radius(old_adapted_doms[i], old_space, bconfig, FIXED_R, i);
+      set_radius(old_nuc_doms[i]    , old_space, bconfig, RIN , i);
+      set_radius(old_adapted_doms[i], old_space, bconfig, FIXED_R, i);
     }
 
     // update NS radii
-    auto [ rmin, rmax ] = bco_utils::get_rmin_rmax(old_space, old_space.ADAPTEDNS);
+    auto [ rmin, rmax ] = get_rmin_rmax(old_space, old_space.ADAPTEDNS);
 
     std::cout << "Rmin/max: " << std::endl
               << rmin << " " << rmax << std::endl;
@@ -109,7 +110,7 @@ inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
     // estimate how small the inner radius should be based on relation
     // between conformal factor and numerical radius.
     // see https://arxiv.org/pdf/0805.4192, eq(64)
-    auto [ cmin, cmax ] = bco_utils::get_field_min_max(old_conf, old_space.ADAPTEDBH+1, INNER_BC);
+    auto [ cmin, cmax ] = get_field_min_max(old_conf, old_space.ADAPTEDBH+1, INNER_BC);
     double conf_inner = cmin;
     double conf_i_sq  = conf_inner * conf_inner;
     double est_r_div2 = bconfig(MCH, BCO2) / conf_i_sq;
@@ -146,18 +147,18 @@ inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   for(int e = 0; e < out_bounds.size(); ++e)
     out_bounds[e] = bconfig(REXT) * (1. + e * 0.25);
 
-  bco_utils::set_NS_bounds(NS_bounds, bconfig, BCO1);
-  bco_utils::set_BH_bounds(BH_bounds, bconfig, BCO2);
+  set_NS_bounds(NS_bounds, bconfig, BCO1);
+  set_BH_bounds(BH_bounds, bconfig, BCO2);
   
   // Set radius of the excision boundary to the current radius so that the solver
   // starts from the originial solution
-  BH_bounds[1] = bco_utils::get_radius(old_space.get_domain(old_space.BH+1), OUTER_BC) ;
+  BH_bounds[1] = get_radius(old_space.get_domain(old_space.BH+1), OUTER_BC) ;
   // end setup bounds
 
   // print bounds to stdout - debugging only
   //std::cout << "Bounds:" << std::endl;
-	//bco_utils::print_bounds("NS", NS_bounds);
-	//bco_utils::print_bounds("BH", BH_bounds);
+	//print_bounds("NS", NS_bounds);
+	//print_bounds("BH", BH_bounds);
   //std::cout << std::endl;
 
   Space_bhns space (type_coloc, bconfig(DIST), NS_bounds, BH_bounds, out_bounds, bconfig(BIN_RES), bconfig(NINSHELLS, BCO1));
@@ -169,18 +170,18 @@ inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
     dynamic_cast<const Domain_shell_outer_adapted*>(space.get_domain(space.ADAPTEDNS));
 
   // update BH fields to help with import
-  bco_utils::update_adapted_field(old_conf , old_space.ADAPTEDBH+1, old_space.ADAPTEDBH, old_bh_outer, OUTER_BC);
-  bco_utils::update_adapted_field(old_lapse, old_space.ADAPTEDBH+1, old_space.ADAPTEDBH, old_bh_outer, OUTER_BC);
+  update_adapted_field(old_conf , old_space.ADAPTEDBH+1, old_space.ADAPTEDBH, old_bh_outer, OUTER_BC);
+  update_adapted_field(old_lapse, old_space.ADAPTEDBH+1, old_space.ADAPTEDBH, old_bh_outer, OUTER_BC);
   for(int i = 1; i < 4; ++i)
-    bco_utils::update_adapted_field(old_shift.set(i), old_space.ADAPTEDBH+1, old_space.ADAPTEDBH, 
+    update_adapted_field(old_shift.set(i), old_space.ADAPTEDBH+1, old_space.ADAPTEDBH, 
       old_bh_outer, OUTER_BC);
 
-  bco_utils::update_adapted_field(old_phi, old_space.ADAPTEDNS, old_space.ADAPTEDNS+1, 
+  update_adapted_field(old_phi, old_space.ADAPTEDNS, old_space.ADAPTEDNS+1, 
     old_inner_adaptedNS, INNER_BC);
 
   // Updated mapping for NS adapted fields
-  bco_utils::interp_adapted_mapping(new_ns_inner, old_space.ADAPTEDNS, old_space_radius);
-  bco_utils::interp_adapted_mapping(new_ns_outer, old_space.ADAPTEDNS, old_space_radius);
+  interp_adapted_mapping(new_ns_inner, old_space.ADAPTEDNS, old_space_radius);
+  interp_adapted_mapping(new_ns_outer, old_space.ADAPTEDNS, old_space_radius);
 
   // setup new fields
   Scalar conf(space);
@@ -236,8 +237,8 @@ inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
 
   bconfig.set_filename(output_fname);
   
-  bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+  save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   return EXIT_SUCCESS;
 }
+}}
 /** @}*/
-}

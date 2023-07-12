@@ -22,6 +22,9 @@ using Tree = pt::ptree;
 /**
  * \addtogroup Configurator
  * @{*/
+namespace Kadath {
+namespace FUKA_Config {
+// using namespace Kadath::FUKA_Config_Utils;
 
 class configurator_base {
     protected:
@@ -71,3 +74,4 @@ class configurator_base {
 
 /**
  * @}*/
+}}

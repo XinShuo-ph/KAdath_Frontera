@@ -28,11 +28,13 @@
 #include "Solvers/sequences/parameter_sequence.hpp"
 #include<filesystem>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BNS_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 /**
  * @brief bns_xcts_solution_driver
@@ -95,6 +97,6 @@ int bns_xcts_sequence (config_t & seqconfig,
                           Seq_t const & seq,
                           Res_t const & resolution,
                           std::string outputdir);
+}}
 /** @}*/
-}
 #include "bns_xcts_driver.cpp"

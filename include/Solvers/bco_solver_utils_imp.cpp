@@ -30,11 +30,13 @@
 #include "Solvers/bh_3d_xcts/bh_3d_xcts_driver.hpp"
 #include <iostream>
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup Solver_utils
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 template<typename config_t>
 std::string solve_NS_from_binary(config_t& bconfig, const size_t bco) {
@@ -185,6 +187,5 @@ Scalar compute_ddrPsi(space_t& space, Scalar& conf, metric_t metric,
   field.std_base();
   return field;
 }
-
+}}
 /** @}*/
-}

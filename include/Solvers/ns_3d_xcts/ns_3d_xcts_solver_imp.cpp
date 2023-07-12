@@ -4,14 +4,14 @@
 #include "ns_3d_xcts_regrid.hpp"
 #include <cmath>
 
-namespace FUKA_Solvers {
-using namespace Kadath;
-using namespace Kadath::Margherita;
-
 /**
  * \addtogroup NS_XCTS
  * \ingroup FUKA
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Solvers {
+using namespace ::Kadath::Margherita;
 
 template<class eos_t, typename config_t, typename space_t>
 ns_3d_xcts_solver<eos_t, config_t, space_t>::ns_3d_xcts_solver(config_t& config_in, 
@@ -87,7 +87,7 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::solve() {
 
 template<class eos_t, typename config_t, typename space_t>
 void ns_3d_xcts_solver<eos_t, config_t, space_t>::syst_init(System_of_eqs& syst) {
-  using namespace Kadath::Margherita;
+  using namespace ::Kadath::Margherita;
   
   auto& space = syst.get_space();
   const int ndom = space.get_nbr_domains();
@@ -161,7 +161,7 @@ void ns_3d_xcts_solver<eos_t, config_t, space_t>::print_diagnostics_norot(const 
 
   // get the maximum and minimum coordinate radius along the surface,
   // i.e. the adapted domain boundary
-  auto rs = bco_utils::get_rmin_rmax(space, 1);
+  auto rs = Kadath::bco_utils::get_rmin_rmax(space, 1);
 
   // alternative, equivalent ADM mass integral
   Val_domain integMadmalt(syst.give_val_def("intMadmalt")()(ndom - 1));
@@ -215,5 +215,5 @@ void ns_3d_xcts_solver<eos_t, config_t, space_t>::update_config_quantities(const
   bconfig.set(HC) = std::exp(loghc);
   bconfig.set(NC) = EOS<eos_t,DENSITY>::get(bconfig(HC));
 }
+}}
 /** @}*/
-}

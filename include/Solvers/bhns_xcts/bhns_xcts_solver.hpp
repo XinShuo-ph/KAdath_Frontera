@@ -23,12 +23,13 @@
 #include "Solvers/solvers.hpp"
 #include "bhns.hpp"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BHNS_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 template<class eos_t, typename config_t, typename space_t = Kadath::Space_bhns>
 class bhns_xcts_solver : Solver<config_t, space_t> {
@@ -80,7 +81,7 @@ class bhns_xcts_solver : Solver<config_t, space_t> {
   std::string converged_filename(const std::string stage="") const override;
   
   void save_to_file() const override {
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
+    ::Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   }
   
   // solve driver
@@ -108,8 +109,8 @@ class bhns_xcts_solver : Solver<config_t, space_t> {
   // Update bconfig(HC) and bconfig(NC)
   void update_config_quantities(const double& loghc);
 };
+}}
 /** @}*/
-}
 #include "bhns_xcts_solver_imp.cpp"
 #include "bhns_xcts_stages.cpp"
 

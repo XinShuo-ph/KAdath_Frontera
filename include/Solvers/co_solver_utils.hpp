@@ -29,12 +29,14 @@
 #include "bco_utilities.hpp"
 #include "EOS/standalone/tov.hh"
 #include "kadath_adapted_bh.hpp"
-namespace FUKA_Solvers {
+
 /**
  * \addtogroup Solver_utils
  * \ingroup FUKA
  * @{*/
-
+namespace Kadath {
+namespace FUKA_Solvers {
+    
 /**
  * @brief Set the initial guess for a compact object
  * 
@@ -120,7 +122,6 @@ void setup_KerrSchild_BH(config_t& bconfig);
  */
 template<class space_t, class config_t>
 void write_KerrSchild_bh_init_setup_tofile_XCTS(space_t& space, config_t& bconfig);
+}}
 /** @}*/
-}
-
 #include "co_solver_utils_imp.cpp"

@@ -43,7 +43,8 @@ namespace pt = boost::property_tree;
 	* by changing the include to another BOOST parser, however, this is untested.
   * @{
   */
-
+namespace Kadath {
+namespace FUKA_Config_Utils {
 /**
   * check_for_nan
   *
@@ -232,4 +233,4 @@ auto find_leaf(tree_t const & tree, std::string key) {
 /** @} end config_utils group */
 
 #include "config_utils_boost_imp.cpp"
-
+}}

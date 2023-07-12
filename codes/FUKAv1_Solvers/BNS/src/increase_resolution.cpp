@@ -29,6 +29,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 using namespace Kadath;
+using namespace Kadath::FUKA_Config;
 using bin_space_t = Space_bin_ns;
 int main(int argc, char **argv) {
   int rc = MPI_Init(&argc, &argv) ;

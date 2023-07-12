@@ -24,12 +24,13 @@
 #include "Solvers/bh_3d_xcts/bh_3d_xcts_solver.hpp"
 #include "kadath_bin_bh.hpp"
 
-namespace FUKA_Solvers {
 /**
  * \addtogroup BBH_XCTS
  * \ingroup FUKA
  * @{*/
-using namespace Kadath;
+
+namespace Kadath {
+namespace FUKA_Solvers {
 
 template<typename config_t, typename space_t = Kadath::Space_bin_bh>
 class bbh_xcts_solver : Solver<config_t, space_t> {
@@ -79,7 +80,7 @@ class bbh_xcts_solver : Solver<config_t, space_t> {
   std::string converged_filename(const std::string stage="") const override;
   
   void save_to_file() const override {
-    bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
+    ::Kadath::bco_utils::save_to_file(space, bconfig, conf, lapse, shift);
   }
   
   // solve driver
@@ -87,7 +88,7 @@ class bbh_xcts_solver : Solver<config_t, space_t> {
 
   int solve_stage(std::string stage_text);
 };
+}}
 /** @}*/
-}
 #include "bbh_xcts_solver_imp.cpp"
 #include "bbh_xcts_stages.cpp"

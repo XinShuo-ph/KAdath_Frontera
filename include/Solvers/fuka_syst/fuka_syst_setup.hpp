@@ -2,12 +2,16 @@
 #include "coord_fields.hpp"
 #include "Configurator/config_bco.hpp"
 #include "Configurator/config_binary.hpp"
-namespace FUKA_Syst_tools {
+
 /**
  * \addtogroup Syst_tools
  * \ingroup FUKA
  * Centralized tools to populate and manipulate System_of_eqs
  * @{*/
+
+namespace Kadath {
+namespace FUKA_Syst_tools {
+using namespace ::Kadath::FUKA_Config;
 
 template<class cfields_t>
 void syst_init_csts(System_of_eqs & syst, cfields_t& coord_vectors) {
@@ -166,8 +170,6 @@ void syst_init_eqdefs_vac(System_of_eqs& syst, std::vector<int> doms) {
                           + D^i D_j bet^j / 3. - 2. * A^ij * D_j Ntilde");
   }
 }
+}}
 /** @}*/
-}
 #include "fuka_syst_setup_hydro.hpp"
-
-// Constraint equations

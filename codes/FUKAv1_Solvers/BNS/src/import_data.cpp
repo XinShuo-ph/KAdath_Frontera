@@ -3,7 +3,7 @@
 
 #include <sstream>
 #include <filesystem>
-
+using namespace Kadath::FUKA_Config;
 namespace fs = std::filesystem;
 
 int main(int argc, char** argv) {

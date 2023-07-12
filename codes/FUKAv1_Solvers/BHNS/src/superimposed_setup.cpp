@@ -36,6 +36,7 @@ double distkm = 45.;
 
 using namespace Kadath;
 using namespace Kadath::Margherita;
+using namespace Kadath::FUKA_Config;
 
 using config_t = kadath_config_boost<BIN_INFO>;
 
