@@ -109,8 +109,7 @@ class bhns_xcts_solver : Solver<config_t, space_t> {
   // Update bconfig(HC) and bconfig(NC)
   void update_config_quantities(const double& loghc);
 };
-}}
 /** @}*/
+}}
 #include "bhns_xcts_solver_imp.cpp"
 #include "bhns_xcts_stages.cpp"
-

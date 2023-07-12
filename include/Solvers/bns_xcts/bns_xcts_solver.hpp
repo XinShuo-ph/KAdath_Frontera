@@ -115,8 +115,7 @@ template<typename eos_t>
 inline void bns_setup_boosted_3d(
   kadath_config_boost<BCO_NS_INFO>& NS1config, kadath_config_boost<BCO_NS_INFO>& NS2config,
   kadath_config_boost<BIN_INFO>& bconfig);
-
-}}
 /** @}*/
+}}
 #include "bns_xcts_solver_imp.cpp"
 #include "bns_xcts_stages.cpp"

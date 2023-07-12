@@ -85,6 +85,6 @@ inline void bhns_setup_boosted_3d(
   kadath_config_boost<BCO_NS_INFO>& NSconfig, 
   kadath_config_boost<BCO_BH_INFO>& BHconfig,
   kadath_config_boost<BIN_INFO>& bconfig);
-}}
 /** @}*/
+}}
 #include "bhns_xcts_setup.cpp"

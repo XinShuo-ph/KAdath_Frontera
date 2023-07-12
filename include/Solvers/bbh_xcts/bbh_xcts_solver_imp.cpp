@@ -285,5 +285,5 @@ void bbh_xcts_solver<config_t, space_t>::print_diagnostics(const System_of_eqs &
   cout << std::string(42,'=') << endl;
 
 }
-}}
 /** @}*/
+}}

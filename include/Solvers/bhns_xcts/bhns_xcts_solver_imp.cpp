@@ -339,5 +339,5 @@ void bhns_xcts_solver<eos_t, config_t, space_t>::print_diagnostics(System_of_eqs
   std::cout.flags(f);
   std::cout << "=======================================" << endl;
 } // end print_diagnostics
-}}
 /** @}*/
+}}

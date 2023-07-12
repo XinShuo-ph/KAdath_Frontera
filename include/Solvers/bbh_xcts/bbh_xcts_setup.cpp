@@ -255,5 +255,5 @@ std::vector<double> BH1_bounds;
 
   bco_u::save_to_file(space, bconfig, conf, lapse, shift);
 }
-}}
 /** @}*/
+}}

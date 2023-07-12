@@ -27,11 +27,10 @@
 #include <cstdlib>
 
 /**
- * @namespace bco_utils
- * Kadath specific utilities to reduce duplicate code in 
- * initial data solvers for compact objects and make code (hopefully)
- * easier to read.
- */
+ * \addtogroup FUKA_BCO_Utils
+ * @ingroup FUKA
+ * @{*/
+
 namespace Kadath {
 namespace bco_utils {
 // using namespace Kadath;
@@ -957,4 +956,5 @@ void print_constant_space_resolution(space_t const & space){
   	std::cout << dom->get_nbr_points()(i) << " (" << directions[i] << ")     ";
   std::cout << "\n";
 };
+/** @}*/
 }}

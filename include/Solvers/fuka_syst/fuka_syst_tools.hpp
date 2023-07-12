@@ -66,5 +66,5 @@ std::vector<int> vector_of_domains(int const dom_min, int const dom_max) {
   std::iota(doms.begin(), doms.end(), dom_min);
   return doms;
 }
-}}
 /** @}*/
+}}

@@ -185,6 +185,5 @@ struct Resolution_sequence : public Parameter_sequence_base {
   /// Formatted output
   friend std::ostream &operator<<(std::ostream &, const BIN_INFO &);
 };
-
-}}
 /** @}*/
+}}

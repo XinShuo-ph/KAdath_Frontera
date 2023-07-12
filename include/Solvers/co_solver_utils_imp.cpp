@@ -217,5 +217,5 @@ auto setup_interpolator_from_TOV(tov_t& tov) {
   linear_interp_t<double,3> ltp(max_iter, std::move(radius_lin_ptr), std::move(lapse_lin_ptr), std::move(rho_lin_ptr), std::move(conf_lin_ptr)); 
   return ltp; 
 }
-}}
 /** @}*/
+}}

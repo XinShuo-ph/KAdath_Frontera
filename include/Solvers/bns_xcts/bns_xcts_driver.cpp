@@ -234,5 +234,5 @@ int bns_xcts_sequence (config_t & seqconfig,
   }
   return exit_status;
 }
-}}
 /** @}*/
+}}

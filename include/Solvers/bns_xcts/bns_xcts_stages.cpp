@@ -564,5 +564,5 @@ int bns_xcts_solver<eos_t, config_t, space_t>::hydro_rescaling_stages(std::strin
     checkpoint();
   return exit_status;
 }
-}}
 /** @}*/
+}}

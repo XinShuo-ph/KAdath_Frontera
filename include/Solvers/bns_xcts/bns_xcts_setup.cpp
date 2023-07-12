@@ -350,4 +350,5 @@ inline void bns_setup_boosted_3d(
   // save everything to a binary file
   bco_u::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
 }
+/** @}*/
 }}

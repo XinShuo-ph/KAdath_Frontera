@@ -97,6 +97,6 @@ int bhns_xcts_sequence (config_t & seqconfig,
                           Seq_t const & seq,
                           Res_t const & resolution,
                           std::string outputdir);
-}}
 /** @}*/
+}}
 #include "bhns_xcts_driver.cpp"

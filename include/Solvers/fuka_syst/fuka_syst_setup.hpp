@@ -170,6 +170,6 @@ void syst_init_eqdefs_vac(System_of_eqs& syst, std::vector<int> doms) {
                           + D^i D_j bet^j / 3. - 2. * A^ij * D_j Ntilde");
   }
 }
-}}
 /** @}*/
+}}
 #include "fuka_syst_setup_hydro.hpp"

@@ -141,5 +141,5 @@ void syst_init_quasi_local_defs_hydro(System_of_eqs& syst,
     syst.add_def(d, "intH  = P^6 * H * W") ;
   }
 }
-}}
 /** @}*/
+}}

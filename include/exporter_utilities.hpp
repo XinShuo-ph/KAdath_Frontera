@@ -247,4 +247,5 @@ void spherical_turduck(fields_ary_t& quants, quant_ary_t& quant_vals,
       lagrange_gen_k(order_, r_, r_points.data(), vals.data());
   }
 }
+/** @}*/
 }

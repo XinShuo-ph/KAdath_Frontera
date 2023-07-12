@@ -99,7 +99,7 @@ class bh_3d_xcts_solver : public Solver<config_t, space_t> {
    */
   int binary_boost_stage(kadath_config_boost<BIN_INFO>& binconfig, const size_t bco);
 };
-}}
 /** @}*/
+}}
 #include "bh_3d_xcts_solver_imp.cpp"
 #include "bh_3d_xcts_stages.cpp"

@@ -232,5 +232,5 @@ int bns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   bco_u::save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   return exit_status;
 }
-}}
 /** @}*/
+}}

@@ -60,6 +60,6 @@ inline void bbh_xcts_setup_boosted_3d(
   kadath_config_boost<BCO_BH_INFO>& BH1config, 
   kadath_config_boost<BCO_BH_INFO>& BH2config,
   kadath_config_boost<BIN_INFO>& bconfig);
-}}
 /** @}*/
+}}
 #include "bbh_xcts_setup.cpp"

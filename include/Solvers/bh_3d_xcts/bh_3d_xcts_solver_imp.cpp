@@ -216,5 +216,5 @@ void bh_3d_xcts_solver<config_t, space_t>::print_diagnostics(System_of_eqs const
   std::cout.flags(f);
   std::cout << "=======================================" << "\n\n";
 } // end print diagnostics rot
-}}
 /** @}*/
+}}

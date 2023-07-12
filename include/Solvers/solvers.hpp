@@ -216,5 +216,5 @@ class Solver {
   public:
   void set_solver_stage(STAGES const _stage) { this->solver_stage = _stage; }
 };
-}}
 /** @}*/
+}}

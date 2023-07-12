@@ -327,5 +327,5 @@ int bh_3d_xcts_solver<config_t, space_t>::binary_boost_stage(
 
   return exit_status;
 }
-}}
 /** @}*/
+}}

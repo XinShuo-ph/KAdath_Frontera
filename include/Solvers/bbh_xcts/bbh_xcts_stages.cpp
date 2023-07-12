@@ -212,5 +212,5 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
 
   return exit_status;
 }
-}}
 /** @}*/
+}}

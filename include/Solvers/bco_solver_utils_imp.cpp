@@ -187,5 +187,5 @@ Scalar compute_ddrPsi(space_t& space, Scalar& conf, metric_t metric,
   field.std_base();
   return field;
 }
-}}
 /** @}*/
+}}

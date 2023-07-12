@@ -99,8 +99,7 @@ class ns_3d_xcts_solver : public Solver<config_t, space_t> {
   // Update bconfig(HC) and bconfig(NC)
   void update_config_quantities(const double& loghc);
 };
-}}
 /** @}*/
-
+}}
 #include "ns_3d_xcts_solver_imp.cpp"
 #include "ns_3d_xcts_stages.cpp"

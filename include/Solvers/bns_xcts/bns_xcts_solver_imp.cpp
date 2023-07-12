@@ -360,5 +360,5 @@ void bns_xcts_solver<eos_t, config_t, space_t>::update_config_quantities(const d
   bconfig.set(HC) = std::exp(loghc);
   bconfig.set(NC) = EOS<eos_t,DENSITY>::get(bconfig(HC));
 }
-}}
 /** @}*/
+}}

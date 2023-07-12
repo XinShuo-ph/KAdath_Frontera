@@ -338,5 +338,5 @@ inline void bhns_setup_boosted_3d(
   // save everything to a binary file
   save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
 }
-}}
 /** @}*/
+}}

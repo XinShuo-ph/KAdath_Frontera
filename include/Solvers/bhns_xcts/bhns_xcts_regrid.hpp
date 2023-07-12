@@ -240,5 +240,5 @@ inline int bhns_xcts_regrid(config_t& bconfig, std::string output_fname) {
   save_to_file(space, bconfig, conf, lapse, shift, logh, phi);
   return EXIT_SUCCESS;
 }
-}}
 /** @}*/
+}}

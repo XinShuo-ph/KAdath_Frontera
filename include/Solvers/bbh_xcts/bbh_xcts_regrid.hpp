@@ -184,5 +184,5 @@ int bbh_xcts_regrid(config_t& bconfig, std::string outputfile) {
   bco_u::save_to_file(space, bconfig, conf, lapse, shift);
   return exit_status;
 }
-}}
 /** @}*/
+}}

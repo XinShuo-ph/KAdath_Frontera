@@ -286,5 +286,5 @@ void verify_resolution_sequence(config_t& bconfig, Res_t& resolution) {
   
   resolution.set(final_res, init_res, final_res);
 }
-}}
 /** @}*/
+}}

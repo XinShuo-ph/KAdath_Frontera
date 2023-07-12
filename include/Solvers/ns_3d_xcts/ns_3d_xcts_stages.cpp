@@ -513,5 +513,5 @@ int ns_3d_xcts_solver<eos_t, config_t, space_t>::binary_boost_stage(
   }
   return EXIT_SUCCESS;
 }
-}}
 /** @}*/
+}}

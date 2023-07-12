@@ -384,5 +384,5 @@ inline int ns_3d_xcts_binary_boost_driver (config_t& bconfig,
   }
   return exit_status;
 }
-}}
 /** @}*/
+}}
