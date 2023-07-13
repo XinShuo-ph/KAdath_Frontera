@@ -2,13 +2,14 @@
 #include "point.hpp"
 #include <vector>
 #include "kadath.hpp"
-using namespace Kadath;
+
 //class Point ;
 /** 
  * @namespace export_utils
  * Utilities for exporting Kadath initial data to evolution kits such as ETK
  */
 namespace export_utils {
+
 std::vector<int> const R2TensorSymmetricIndices = {0, 1, 2, 4, 5, 8};
 /// id quantities
 enum {
@@ -85,7 +86,7 @@ double lagrange_gen_k(int interp_order, double x, const double *xp, const double
  * [input] phi: angle phi
  * [input] shift_x: offset of x
  */
-Point point_spherical(double r, double theta, double phi, double shift_x);
+Kadath::Point point_spherical(double r, double theta, double phi, double shift_x);
 
 /**
  * Need to refine the excision radius to ensure that it is outside
@@ -157,7 +158,7 @@ T get_excision_r (space_t const & space,
  * [input] xshift_: coordinate x shift (for binaries)
  */
 template<class T = double, class space_t>
-T interpolate_radial(space_t const & space, Scalar const & field_in,
+T interpolate_radial(space_t const & space, Kadath::Scalar const & field_in,
   int const order_, T const dr_, T const offset_, T const ah_r, 
   T const r_, T const theta_, T const phi_, const int dom_, 
   T const xshift_) {
@@ -179,11 +180,11 @@ T interpolate_radial(space_t const & space, Scalar const & field_in,
 }
 
 template <class qarray_t>
-void add_tensor_refs(qarray_t& quants, std::vector<int>&& ary_indicies, Tensor& field) {
+void add_tensor_refs(qarray_t& quants, std::vector<int>&& ary_indicies, Kadath::Tensor& field) {
   auto c = 0;
   for(auto i : ary_indicies) {
     auto tidx = export_utils::R2TensorSymmetricIndices[c];
-    Array<int> ind (field.indices(tidx));
+    Kadath::Array<int> ind (field.indices(tidx));
     quants[i] = std::cref(field(ind));
     c++;
   }

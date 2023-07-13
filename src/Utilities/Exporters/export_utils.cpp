@@ -2,8 +2,8 @@
 #include <point.hpp>
 #include <cmath>
 
-Point export_utils::point_spherical(double r, double theta, double phi, double shift_x) {
-  Point abs_coords(3);
+Kadath::Point export_utils::point_spherical(double r, double theta, double phi, double shift_x) {
+  Kadath::Point abs_coords(3);
 
   abs_coords.set(1) = r * std::sin(theta) * std::cos(phi) + shift_x;
   abs_coords.set(2) = r * std::sin(theta) * std::sin(phi);
