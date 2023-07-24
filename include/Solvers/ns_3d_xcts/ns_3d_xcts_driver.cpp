@@ -69,10 +69,6 @@ config_t ns_3d_xcts_sequence (config_t & seqconfig,
       }
     }
 
-    if(rank == 0) {
-      bconfig.write_config();
-    } MPI_Barrier(MPI_COMM_WORLD);
-
     // Need to get a rotating solution before increasing the
     // NS mass up to final_MADM
     if(bconfig.control(CONTROLS::ITERATIVE_M)){

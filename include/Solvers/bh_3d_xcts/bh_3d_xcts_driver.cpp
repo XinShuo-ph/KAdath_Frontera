@@ -60,9 +60,6 @@ config_t bh_3d_xcts_sequence (config_t & seqconfig,
       MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    if(rank == 0) {
-      bconfig.write_config();
-    } MPI_Barrier(MPI_COMM_WORLD);
     exit_status = bh_3d_xcts_driver(bconfig, resolution, outputdir);
     return exit_status;
   };
