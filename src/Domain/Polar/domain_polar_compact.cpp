@@ -209,7 +209,7 @@ bool Domain_polar_compact::is_in (const Point& xx, double prec) const {
 const Point Domain_polar_compact::absol_to_num(const Point& abs) const {
 
 	assert (is_in(abs)) ;
-	Point num(3) ;
+	Point num(2) ;
 	
 	double rho_loc = fabs(abs(1) - center(1)) ;
 	double z_loc = abs(2) - center(2) ;
