@@ -26,7 +26,6 @@ Ope_point::Ope_point (const System_of_eqs* zesys, const Point &MM, Ope_eq* targe
 		Ope_eq(zesys, target->get_dom(), 1),  num(MM){
 
 	parts[0] = target ;
-	num = zesys->get_space().get_domain(dom)->absol_to_num(MM) ;	
 }
 
 Ope_point::~Ope_point() {
