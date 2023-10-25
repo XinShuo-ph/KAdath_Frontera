@@ -264,8 +264,6 @@ Space_bispheric::Space_bispheric (int ttype, double distance, int nminus, const 
     double r1 = withnuc ? rminus(nminus-1) : rminus(nminus) ;
     double r2 = withnuc ? rplus(nplus-1) : rplus(nplus) ;
     
-    cout << r1 << " " << r2 << endl ;
-   
     if (fabs(r1-r2)>1e-12) {
       cerr << "Constructor of Space_bispheric not correct for different radii" << endl ;
       abort() ;
