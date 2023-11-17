@@ -277,6 +277,8 @@ namespace Kadath {
             do
                 res = ((*a.bases_1d[i])(index) == (*b.bases_1d[i])(index)) ;
             while (index.inc() && res) ;
+            if (!res)
+            	break ;
         }
         return res ;
     }
