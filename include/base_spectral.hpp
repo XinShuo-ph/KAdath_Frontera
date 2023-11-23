@@ -273,6 +273,10 @@ namespace Kadath {
     inline bool operator== (const Base_spectral& a, const Base_spectral& b) {
         bool res {(a.def) && (b.def) && (a.ndim == b.ndim)} ;
         for (int i=0 ; i<a.ndim ; i++) {
+            if (a.bases_1d[i]->get_dimensions() != b.bases_1d[i]->get_dimensions())
+            	res = false ;
+            if (!res)
+            	break ;
             Array_iterator index (a.bases_1d[i]->get_dimensions()) ;
             do
                 res = ((*a.bases_1d[i])(index) == (*b.bases_1d[i])(index)) ;
