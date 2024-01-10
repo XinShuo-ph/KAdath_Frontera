@@ -287,6 +287,7 @@ class Domain_polar_shell : public Domain {
      virtual Val_domain div_xp1 (const Val_domain&) const ; 
      virtual double integrale (const Val_domain&) const ;
      virtual double integ_volume (const Val_domain&) const ;
+     virtual double integ (const Val_domain&, int) const ;
 
      virtual void find_other_dom (int, int, int&, int&) const ;     
      virtual Val_domain der_normal (const Val_domain&, int) const ;

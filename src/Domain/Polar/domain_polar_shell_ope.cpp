@@ -118,6 +118,51 @@ Val_domain Domain_polar_shell::div_xp1 (const Val_domain& so) const {
 	return res ;
 }
 
+double Domain_polar_shell::integ(const Val_domain& so, int bound) const // compute int (so sin(theta) dtheta) at a boundary
+{
+   assert ((bound==INNER_BC) || (bound==OUTER_BC)) ;
+   
+   double res(0.0);
+   int baset((*so.base.bases_1d[1])(0));
+   if (baset != COS_EVEN) 
+      return res;
+   else 
+   {
+      so.coef();
+      //Loop on theta :
+      Index pos(get_nbr_coefs());
+      pos.set(2) = 0;
+      for (int j(0) ; j < nbr_coefs(1) ; ++j) 
+      {
+         pos.set(1) = j;
+         double fact_tet(2.0/(1.0 - 4.0*j*j));
+         // Loop on r :
+         
+         if (bound==INNER_BC) {
+         
+ 	        for (int i(0) ; i < nbr_coefs(0) ; ++i) 
+ 		        {
+ 		           pos.set(0) = i;
+ 		           if (i%2==0)
+            		   	res += fact_tet*(*so.cf)(pos);
+         		   else
+         		   	res -= fact_tet*(*so.cf)(pos);
+       		 }
+       	}
+       	
+       	if (bound==OUTER_BC) {
+ 	        for (int i(0) ; i < nbr_coefs(0) ; ++i) 
+ 		        {
+ 		           pos.set(0) = i;
+ 		           res += fact_tet*(*so.cf)(pos);
+         		   res -= fact_tet*(*so.cf)(pos);
+       		 }
+       	}	
+      }
+      return res;
+   }
+}
+
 double Domain_polar_shell::integrale (const Val_domain& so) const {
   double res = 0 ;
   Val_domain integrant (mult_r(so)) ;
