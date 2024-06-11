@@ -125,6 +125,14 @@ namespace Kadath {
         * @return a pointer on the tensorial variation.
         */
         const Tensor* get_p_der_t() const {return der_t;} ;
+          /**
+        * @return a pointer on the tensorial value.
+        */
+        const double* get_p_val_d() const {return val_d;} ;
+        /**
+        * @return a pointer on the tensorial variation.
+        */
+        const double* get_p_der_d() const {return der_d;} ;
         /**
         * @return the type of data (TERM_D or TERM_T)
         */
