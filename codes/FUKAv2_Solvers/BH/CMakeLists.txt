@@ -3,6 +3,15 @@ project(myproject)
 
 include ($ENV{HOME_KADATH}/Cmake/CMakeExec.cmake)
 
+
+if (DEFINED FFTW_INCLUDE_DIR)
+	include_directories (${FFTW_INCLUDE_DIR})
+endif()
+
+if (DEFINED GSL_INCLUDE_DIR)
+	include_directories (${GSL_INCLUDE_DIR})
+endif()
+
 #Executable 1
 set (PROG1 solve)
 set (SOURCES1 src/${PROG1}.cpp)

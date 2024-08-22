@@ -18,3 +18,5 @@ src/System_of_eqs/do_newton.cpp
 *.pickle
 *.png
 *.pdf
+*/.ipynb_checkpoints
+.ipynb_checkpoints
