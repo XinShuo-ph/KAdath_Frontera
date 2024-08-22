@@ -149,6 +149,7 @@ const std::map<std::string, STAGES> MSTAGE = {
   {"vel_pot_only",VEL_POT_ONLY},
   {"ecc_red", ECC_RED},
   {"binary_boost", BIN_BOOST},
+  {"linboost", LINBOOST},
   {"testing",TESTING}
 };
 

@@ -85,6 +85,12 @@ config_t generate_sequence_config (config_t & seqconfig, std::string outputdir) 
   for(auto idx = 0; idx < CONTROLS::NUM_CONTROLS; ++idx)
     if(seqconfig.control(idx))
       bconfig.control(idx) = seqconfig.control(idx);
+
+    
+  // Activate all controls that are active in the seq config
+  for(auto idx = 0; idx < STAGES::NUM_STAGES; ++idx)
+    // if(seqconfig.set_stage(idx))
+      bconfig.set_stage(idx) = seqconfig.set_stage(idx);
   
   // Check for disabled controls that matter
   for(auto [ key, idx] : MMIN_CONTROLS)

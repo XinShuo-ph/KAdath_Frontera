@@ -78,6 +78,20 @@ int main(int argc, char** argv) {
     auto resolution = parse_seq_tree(tree, "bh", "res", BCO_PARAMS::BCO_RES);
     verify_resolution_sequence(bconfig, resolution);
     auto seq = find_sequence(tree, MBCO_PARAMS, "bh");
+
+    if(rank == 0) {
+      std::cout << bconfig << std::endl;
+      // bconfig.set_stage(STAGES::LINBOOST) = true;
+      std::cout <<  "NUM_STAGES: " << NUM_STAGES << std::endl;
+      std::array<bool, NUM_STAGES>& stage_enabled = bconfig.return_stages();
+      std::cout << "Stages enabled: ";
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled[i]) std::cout << i << std::endl;
+      }
+
+    }
+
+
     
     if(!seq.is_set() && !bconfig.control(CONTROLS::SEQUENCES))
       int err = bh_3d_xcts_driver(bconfig, resolution, InitSolver::outputdir);
@@ -86,6 +100,19 @@ int main(int argc, char** argv) {
       
       auto [ branch_name, key, val ] = find_leaf(tree, "N");
       if(!key.empty()) seq.set_N(std::stoi(val));
+
+      
+    if(rank == 0) {
+      std::cout << bconfig << std::endl;
+      // bconfig.set_stage(STAGES::LINBOOST) = true;
+      std::cout <<  "NUM_STAGES: " << NUM_STAGES << std::endl;
+      std::array<bool, NUM_STAGES>& stage_enabled = bconfig.return_stages();
+      std::cout << "Stages enabled: ";
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled[i]) std::cout << i << std::endl;
+      }
+
+    }
       bh_3d_xcts_sequence(bconfig, seq, resolution, InitSolver::outputdir);
     }
   }

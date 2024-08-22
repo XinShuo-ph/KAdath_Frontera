@@ -43,7 +43,7 @@ int bh_3d_xcts_solver<config_t, space_t>::von_Neumann_stage(std::string stage_te
     if(bconfig.config_filename_abs() == current_file){
       if(rank == 0)
         std::cout << "Solved previously: " << bconfig.config_filename_abs() << std::endl;
-      return EXIT_SUCCESS;
+      // return EXIT_SUCCESS;
     } else {
       return RELOAD_FILE;
     }

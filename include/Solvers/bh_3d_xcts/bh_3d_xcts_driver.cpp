@@ -13,6 +13,29 @@ config_t bh_3d_xcts_sequence_setup (config_t & seqconfig, std::string outputdir)
   config_t bconfig = generate_sequence_config(seqconfig, outputdir);
 
   if(rank == 0) bconfig.write_config();
+  // std::cout << foo;
+// output seqconfig and bconfig for debug
+  if (rank == 0) {
+    std::cout << "in bh_3d_xcts_sequence_setup(): seqconfig: " << seqconfig << std::endl;
+    
+      std::cout <<  "NUM_STAGES: " << NUM_STAGES << std::endl;
+      std::array<bool, NUM_STAGES>& stage_enabled1 = seqconfig.return_stages();
+      std::cout << "Stages enabled: ";
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled1[i]) std::cout << i << std::endl;
+      }
+
+    std::cout << "bconfig: " << bconfig << std::endl;
+    
+      std::cout <<  "NUM_STAGES: " << NUM_STAGES << std::endl;
+      std::array<bool, NUM_STAGES>& stage_enabled2 = bconfig.return_stages();
+      std::cout << "Stages enabled: ";
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled2[i]) std::cout << i << std::endl;
+      }
+
+  }
+
   return bconfig;
 }
 
@@ -40,6 +63,14 @@ config_t bh_3d_xcts_sequence (config_t & seqconfig,
 
   std::array<bool, NUM_STAGES> stage_enabled = base_config.return_stages();
   auto [ last_stage, last_stage_idx ] = get_last_enabled(MSTAGE, stage_enabled);
+
+  
+  if (rank == 0) {
+      std::cout << " in bh_3d_xcts_sequence(): Stages enabled: ";
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled[i]) std::cout << i << std::endl;
+      }
+  }
   
   #ifdef DEBUG
   std::cout << seq << std::endl;
@@ -230,18 +261,21 @@ inline int bh_3d_xcts_driver (config_t& bconfig,
   
   std::array<bool, NUM_STAGES>& stage_enabled = bconfig.return_stages();
   auto [ last_stage, last_stage_idx ] = get_last_enabled(MSTAGE, stage_enabled);
+  
 
-  // These need to be zero prior to computing
+  if(stage_enabled[STAGES::LINBOOST]) {
+    bconfig.set(BCO_PARAMS::BVELX) = xboost;
+    bconfig.set(BCO_PARAMS::BVELY) = yboost;
+    exit_status = bh_3d_xcts_linear_boost_driver(bconfig, outputdir);
+  }
+  else{
+      // These need to be zero prior to computing
   // a stationary solution
   bconfig.set(BCO_PARAMS::BVELX) = 0.;
   bconfig.set(BCO_PARAMS::BVELY) = 0.;
 
   exit_status = bh_3d_xcts_stationary_driver(bconfig, outputdir);
 
-  if(stage_enabled[STAGES::LINBOOST]) {
-    bconfig.set(BCO_PARAMS::BVELX) = xboost;
-    bconfig.set(BCO_PARAMS::BVELY) = yboost;
-    exit_status = bh_3d_xcts_linear_boost_driver(bconfig, outputdir);
   }
 
   auto regrid = [&]() {
