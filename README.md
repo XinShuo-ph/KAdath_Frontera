@@ -134,3 +134,25 @@ The above mentioned [compile script](https://bitbucket.org/fukaws/fuka/src/fuka/
 7. MPI
 8. Boost
 9. Boost::python (to compile [PythonTools](https://bitbucket.org/fukaws/fuka/src/fuka/codes/PythonTools/))
+
+
+
+# For build on Frontera
+
+modules:
+
+```
+(base) c209-005[clx](551)$ module list
+
+Currently Loaded Modules:
+  1) git/2.24.1      3) cmake/3.24.2    5) xalt/2.10.34   7) gcc/9.1.0   9) python3/3.8.2  11) fftw3/3.3.8
+  2) autotools/1.2   4) hwloc/1.11.12   6) TACC           8) gsl/2.6    10) impi/19.0.9    12) mkl/19.0.5
+```
+
+download pgplot with conda:
+
+```
+conda install conda-forge::pgplot
+```
+
+check the paths in `Kadath/Cmake/CMakeLocal.cmake`
