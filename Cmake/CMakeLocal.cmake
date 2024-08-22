@@ -1,10 +1,10 @@
 set (PGPLOT_LIBRARIES "/work2/10061/physixin/frontera/miniconda/lib/libpgplot.so")
 # set (GSL_LIBRARIES "/opt/apps/intel19/gsl/2.6/lib/libgsl.so")
 # set (GSL_LIBRARIES "/work2/10061/physixin/frontera/miniconda/envs/NR/lib/libgsl.so")
-# set (GSL_LIBRARIES "/opt/apps/intel19/gsl/2.6/lib/libgsl.so")
+set (GSL_LIBRARIES "/opt/apps/intel19/gsl/2.6/lib/libgsl.so")
 set (GSL_INCLUDE_DIR  "/opt/apps/intel19/gsl/2.6/include")
 include_directories ("/opt/apps/intel19/gsl/2.6/include")
-set (GSL_LIBRARIES "-I/opt/apps/intel19/gsl/2.6/include -L/opt/apps/intel19/gsl/2.6/lib -lgsl -lgslcblas -lm")
+# set (GSL_LIBRARIES "-I/opt/apps/intel19/gsl/2.6/include -L/opt/apps/intel19/gsl/2.6/lib -lgsl -lgslcblas -lm")
 # set (SCALAPACK_LIBRARIES "/work2/10061/physixin/frontera/miniconda/envs/NR/lib/libscalapack.so")
 # set (SCALAPACK_LIBRARIES "/opt/intel/compilers_and_libraries_2019.5.281/linux/mkl/lib/intel64/libmkl_scalapack_lp64.so")
 

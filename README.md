@@ -139,9 +139,33 @@ The above mentioned [compile script](https://bitbucket.org/fukaws/fuka/src/fuka/
 
 # For build on Frontera
 
+set the Kadath env
+
+```bash
+export HOME_KADATH=$WORK/Kadath
+export KAD_CC=gcc
+export KAD_CXX=g++
+export KAD_NUMC=32
+```
+
+compilers:
+```shell
+(base) c202-030[clx](607)$ which gcc
+/opt/apps/gcc/9.1.0/bin/gcc
+(base) c202-030[clx](608)$ which g++
+/opt/apps/gcc/9.1.0/bin/g++
+(base) c202-030[clx](609)$ which gfortran
+/opt/apps/gcc/9.1.0/bin/gfortran
+(base) c202-030[clx](616)$ which cmake
+/opt/apps/cmake/3.24.2/bin/cmake
+(base) c202-030[clx](610)$ which mpirun
+/opt/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/bin/mpirun
+```
+
+
 modules:
 
-```
+```shell
 (base) c209-005[clx](551)$ module list
 
 Currently Loaded Modules:
@@ -155,4 +179,41 @@ download pgplot with conda:
 conda install conda-forge::pgplot
 ```
 
+
 check the paths in `Kadath/Cmake/CMakeLocal.cmake`
+```Makefile
+set (PGPLOT_LIBRARIES "/work2/10061/physixin/frontera/miniconda/lib/libpgplot.so")
+set (GSL_LIBRARIES "/opt/apps/intel19/gsl/2.6/lib/libgsl.so")
+set (GSL_INCLUDE_DIR  "/opt/apps/intel19/gsl/2.6/include")
+include_directories ("/opt/apps/intel19/gsl/2.6/include")
+set(SCALAPACK_LIBRARIES "-L$ENV{MKLROOT} -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
+set (FFTW_LIBRARIES "/opt/apps/intel19/impi19_0/fftw3/3.3.8/lib/libfftw3.so")
+set (FFTW_INCLUDE_DIR "/opt/apps/intel19/impi19_0/fftw3/3.3.8/include")
+set (LAPACK_LIBRARIES "/opt/intel/compilers_and_libraries_2019.5.281/linux/mkl/lib/intel64/libmkl_lapack95_lp64.a")
+```
+
+check the cmake output
+```
+-- The C compiler identification is GNU 9.1.0
+-- The CXX compiler identification is GNU 9.1.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /opt/apps/gcc/9.1.0/bin/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /opt/apps/gcc/9.1.0/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+Parallel version
+Version with scalapack
+-- Found MPI_C: /opt/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib/release/libmpi.so (found version "3.1") 
+-- Found MPI_CXX: /opt/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib/libmpicxx.so (found version "3.1") 
+-- Found MPI: TRUE (found version "3.1")  
+MPI CXX /opt/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/bin/mpigxx
+CMAKE_CXX_FLAGS_DEBUG is -g -O0 -DNDEBUG
+CMAKE_CXX_FLAGS_RELEASE is -g -O3 -std=c++17
+-- Configuring done
+-- Generating done
+```
