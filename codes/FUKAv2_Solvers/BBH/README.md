@@ -388,3 +388,8 @@ binary has been created, two new parameters appear called `ecc_omega` and `adot`
 Once the above procedures are completed for the last stage and the input `res` is higher than the `initial_resolution`, 
 the low resolution solution is interpolated onto the higher resolution numerical grid and is used as the initial guess before 
 running the last stage again.  No additional iterative procedures are required at this point.
+
+
+## Boost stage
+
+to be implemented

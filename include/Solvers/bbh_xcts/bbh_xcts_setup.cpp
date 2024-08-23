@@ -40,6 +40,9 @@ void bbh_xcts_setup_bin_config(config_t& bconfig){
   // delete ADOT, this can always be recalculated during
   // the eccentricity reduction stage
   bconfig.reset(BIN_PARAMS::ADOT);
+
+  
+
 }
 
 template<class config_t>
@@ -58,6 +61,18 @@ void bbh_xcts_setup_space (config_t& bconfig) {
 
   bconfig.open_config();
   bconfig.control(CONTROLS::SEQUENCES) = false;
+
+  
+  std::array<bool, NUM_STAGES> stage_enabled = bconfig.return_stages();
+  if (rank == 0) {
+      std::cout << "in bbh_xcts_setup_space(): bconfig: " << bconfig << std::endl;
+      std::cout <<  "NUM_STAGES: " << NUM_STAGES << std::endl;
+      std::cout << "Stages enabled: "<< std::endl;
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled[i]) std::cout << i << std::endl;
+      }
+  }
+
 }
 
 template<class config_t>

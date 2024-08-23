@@ -75,6 +75,18 @@ int bbh_xcts_driver (config_t & bconfig,
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   auto & stages = bconfig.return_stages();
+
+  
+  std::array<bool, NUM_STAGES> stage_enabled = bconfig.return_stages();
+  if (rank == 0) {
+      std::cout << "in bbh_xcts_driver(): bconfig: " << bconfig << std::endl;
+      std::cout <<  "NUM_STAGES: " << NUM_STAGES << std::endl;
+      std::cout << "Stages enabled: "<< std::endl;
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled[i]) std::cout << i << std::endl;
+      }
+  }
+
   auto [ last_stage, last_stage_idx ] = get_last_enabled(MSTAGE, stages);
   
   // solve at low res first    
@@ -139,9 +151,22 @@ int bbh_xcts_sequence (config_t & seqconfig,
 
   auto const & dx = seq.step_size();
 
+
+
   // Initialize full Configurator container
   config_t base_config = bbh_xcts_sequence_setup(seqconfig, outputdir);
   base_config.set(resolution_indices) = resolution.init();
+
+  std::array<bool, NUM_STAGES> stage_enabled = base_config.return_stages();
+  if (rank == 0) {
+      std::cout << "in bbh_xcts_sequence(): base_config: " << base_config << std::endl;
+      std::cout <<  "NUM_STAGES: " << NUM_STAGES << std::endl;
+      std::cout << "Stages enabled: "<< std::endl;
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled[i]) std::cout << i << std::endl;
+      }
+  }
+
 
   #ifdef DEBUG
   if(rank == 0) {

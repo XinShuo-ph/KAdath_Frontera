@@ -121,7 +121,13 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
   // boundary conditions on variable fields at infinity
   syst.add_eq_bc(ndom-1, OUTER_BC     , "N     = 1") ;
   syst.add_eq_bc(ndom-1, OUTER_BC     , "P     = 1") ;
-  syst.add_eq_bc(ndom-1, OUTER_BC     , "bet^i = 0") ;
+  if (solver_stage == LINBOOST){
+    syst.add_cst("xboost", 0.4 ); // testing, should change to a parameter later
+    syst.add_eq_bc(ndom-1, OUTER_BC     , "bet^i = xboost * ex^i") ;
+  }
+  else{
+    syst.add_eq_bc(ndom-1, OUTER_BC     , "bet^i = 0") ;
+  }
 
   // quasi-equallibrium condition if binary orbital frequency is not fixed
   if(!bconfig.control(FIXED_GOMEGA) && solver_stage != ECC_RED) {

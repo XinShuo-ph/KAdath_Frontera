@@ -87,6 +87,16 @@ int bbh_xcts_solver<config_t, space_t>::solve() {
   int exit_status = EXIT_SUCCESS;
 
   std::array<bool, NUM_STAGES> stage_enabled = bconfig.return_stages();
+
+  if (rank == 0) {
+      std::cout << "in bbh_xcts_solver(): bconfig: " << bconfig << std::endl;
+      std::cout <<  "NUM_STAGES: " << NUM_STAGES << std::endl;
+      std::cout << "Stages enabled: "<< std::endl;
+      for(int i = 0; i < NUM_STAGES; i++) {
+        if(stage_enabled[i]) std::cout << i << std::endl;
+      }
+  }
+
   auto [ last_stage, last_stage_idx ] = get_last_enabled(MSTAGE, stage_enabled);
   
   // check if we have solved this before til the last stage
@@ -109,6 +119,14 @@ int bbh_xcts_solver<config_t, space_t>::solve() {
   if(stage_enabled[ECC_RED]) {
     this->solver_stage = ECC_RED;
     exit_status = solve_stage("ECC_RED");
+  }
+
+  if(stage_enabled[LINBOOST]) {
+    this->solver_stage = LINBOOST;
+    if(bconfig.control(FIXED_GOMEGA)) {
+      bconfig.control(FIXED_GOMEGA) = false;
+      exit_status = solve_stage("LINBOOST");
+    }
   }
 
   // Barrier needed in case we need to read from the previous output
