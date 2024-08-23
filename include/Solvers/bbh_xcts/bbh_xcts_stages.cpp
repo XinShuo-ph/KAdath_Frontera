@@ -55,6 +55,8 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
 
     if(solver_stage == ECC_RED)
       std::cout << "Ecc. Reduction - fixed Omega & Adot" << '\n';
+    if(solver_stage == LINBOOST)
+      std::cout << " add boost to beta boundary condition " << '\n';
     if(bconfig.control(FIXED_GOMEGA))
       std::cout << "using fixed orbital velocity" << '\n';
     if(bconfig.control(COROT_BIN))

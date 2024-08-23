@@ -98,14 +98,31 @@ int bbh_xcts_solver<config_t, space_t>::solve() {
   }
 
   auto [ last_stage, last_stage_idx ] = get_last_enabled(MSTAGE, stage_enabled);
+
+  if (rank == 0) {
+    std::cout << "last_stage: " << last_stage << std::endl;
+    std::cout << "last_stage_idx: " << last_stage_idx << std::endl;
+  }
   
   // check if we have solved this before til the last stage
   if(solution_exists(last_stage)) {
     if(rank == 0)
       std::cout << "Solved previously: " << bconfig.config_filename() << std::endl;
-    return EXIT_SUCCESS;
+    
+    if(stage_enabled[LINBOOST]) {
+      this->solver_stage = LINBOOST;
+      if(bconfig.control(FIXED_GOMEGA)) {
+        bconfig.control(FIXED_GOMEGA) = false;
+      }
+      exit_status = solve_stage("LINBOOST");
+      MPI_Barrier(MPI_COMM_WORLD);
+    
+      return exit_status;
+    }
+    else{
+      return EXIT_SUCCESS;
+    }
   }
-  
   if(stage_enabled[TOTAL_BC]) {
     this->solver_stage = TOTAL_BC;
     exit_status = solve_stage("TOTAL_BC");
@@ -125,8 +142,8 @@ int bbh_xcts_solver<config_t, space_t>::solve() {
     this->solver_stage = LINBOOST;
     if(bconfig.control(FIXED_GOMEGA)) {
       bconfig.control(FIXED_GOMEGA) = false;
-      exit_status = solve_stage("LINBOOST");
     }
+    exit_status = solve_stage("LINBOOST");
   }
 
   // Barrier needed in case we need to read from the previous output
