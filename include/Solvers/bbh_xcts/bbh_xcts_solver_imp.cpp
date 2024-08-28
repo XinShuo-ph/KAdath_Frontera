@@ -133,10 +133,10 @@ int bbh_xcts_solver<config_t, space_t>::solve() {
     }
   }
 
-  if(stage_enabled[ECC_RED]) {
-    this->solver_stage = ECC_RED;
-    exit_status = solve_stage("ECC_RED");
-  }
+  // if(stage_enabled[ECC_RED]) {
+  //   this->solver_stage = ECC_RED;
+  //   exit_status = solve_stage("ECC_RED");
+  // }
 
   if(stage_enabled[LINBOOST]) {
     this->solver_stage = LINBOOST;
