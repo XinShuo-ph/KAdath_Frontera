@@ -94,8 +94,8 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
   }
   if (solver_stage == LINBOOST){
     // hard code the center of mass position for now
-    bconfig.set(COM) = 1.451508605146889;
-    bconfig.set(COMY) = 0.006838936784917614;
+    syst.add_cst("xaxis", bconfig(COM)) ;
+    syst.add_cst("yaxis", bconfig(COMY)) ;
   }
   syst.add_var("xaxis", bconfig(COM)) ;
   syst.add_var("yaxis", bconfig(COMY)) ;
@@ -130,7 +130,7 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
   syst.add_eq_bc(ndom-1, OUTER_BC     , "P     = 1") ;
   if (solver_stage == LINBOOST){
     syst.add_cst("xboost", 0.4 ); // testing, should change to a parameter later
-    syst.add_cst("yboost", 0. ); // testing, should change to a parameter later
+    syst.add_cst("yboost", 0.0 ); // testing, should change to a parameter later
     syst.add_eq_bc(ndom-1, OUTER_BC     , "bet^i = xboost * ex^i + yboost * ey^i") ;
   }
   else{
