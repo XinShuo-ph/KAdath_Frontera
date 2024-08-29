@@ -147,8 +147,12 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
   }
   // minimize ADM linear momenta at infinity, Pz is zero by symmetry
   //space.add_eq_int_inf(syst, "integ(COMx) - xaxis = 0");
-  space.add_eq_int_inf(syst, "integ(intPx) = 0");
-  space.add_eq_int_inf(syst, "integ(intPy) = 0");
+
+  if(solver_stage!=LINBOOST){
+    // keep # of eq = # of var
+    space.add_eq_int_inf(syst, "integ(intPx) = 0");
+    space.add_eq_int_inf(syst, "integ(intPy) = 0");
+  }
   
   // Lapse condition BCs
   if(bconfig.control(USE_FIXED_LAPSE)) {
