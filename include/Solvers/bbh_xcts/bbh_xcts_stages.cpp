@@ -97,8 +97,11 @@ int bbh_xcts_solver<config_t, space_t>::solve_stage(std::string stage_text) {
     syst.add_cst("xaxis", bconfig(COM)) ;
     syst.add_cst("yaxis", bconfig(COMY)) ;
   }
-  syst.add_var("xaxis", bconfig(COM)) ;
-  syst.add_var("yaxis", bconfig(COMY)) ;
+  else{
+    syst.add_var("xaxis", bconfig(COM)) ;
+    syst.add_var("yaxis", bconfig(COMY)) ;
+  }
+  
   syst_init(syst);
 
  
